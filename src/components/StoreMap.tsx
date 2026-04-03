@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useCallback } from 'react';
 import { StoreData } from '@/lib/types';
 
 interface StoreMapProps {
@@ -8,32 +9,159 @@ interface StoreMapProps {
   onSelect: (store: StoreData) => void;
 }
 
+const MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+
+let mapsPromise: Promise<typeof google.maps> | null = null;
+
+function loadGoogleMaps(): Promise<typeof google.maps> {
+  if (mapsPromise) return mapsPromise;
+  mapsPromise = new Promise((resolve, reject) => {
+    if (window.google?.maps) {
+      resolve(window.google.maps);
+      return;
+    }
+    if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+      const check = setInterval(() => {
+        if (window.google?.maps) { clearInterval(check); resolve(window.google.maps); }
+      }, 100);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}`;
+    script.async = true;
+    script.onload = () => resolve(window.google.maps);
+    script.onerror = () => { mapsPromise = null; reject(new Error('Google Maps failed to load')); };
+    document.head.appendChild(script);
+  });
+  return mapsPromise;
+}
+
 export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapProps) {
-  if (stores.length === 0) return null;
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<google.maps.Map | null>(null);
+  const markersRef = useRef<google.maps.Marker[]>([]);
+  const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
+  const storesRef = useRef(stores);
+  const onSelectRef = useRef(onSelect);
+  storesRef.current = stores;
+  onSelectRef.current = onSelect;
 
-  // Calculate center of all stores
-  const centerLat = stores.reduce((sum, s) => sum + s.lat, 0) / stores.length;
-  const centerLng = stores.reduce((sum, s) => sum + s.lng, 0) / stores.length;
+  const updateMarkers = useCallback((selected: StoreData | null) => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
 
-  // Build Google Maps embed URL with markers for all stores
-  const markers = stores.map(s => `markers=color:${selectedStore?.store_id === s.store_id ? '0xd97706' : '0x0f1c2e'}%7Clabel:${encodeURIComponent(s.store_name.charAt(0))}%7C${s.lat},${s.lng}`).join('&');
-  const mapSrc = `https://maps.google.com/maps?q=${centerLat},${centerLng}&z=10&output=embed`;
+    // Clear old markers
+    markersRef.current.forEach(m => m.setMap(null));
+    markersRef.current = [];
+
+    const currentStores = storesRef.current;
+    const bounds = new google.maps.LatLngBounds();
+
+    currentStores.forEach(store => {
+      const isSelected = selected?.store_id === store.store_id;
+      const position = { lat: store.lat, lng: store.lng };
+      bounds.extend(position);
+
+      const marker = new google.maps.Marker({
+        map,
+        position,
+        title: store.store_name,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: isSelected ? 14 : 10,
+          fillColor: isSelected ? '#d97706' : '#0f1c2e',
+          fillOpacity: 1,
+          strokeColor: '#ffffff',
+          strokeWeight: 3,
+        },
+        zIndex: isSelected ? 10 : 1,
+      });
+
+      const infoContent = `<div style="padding:8px 4px;min-width:200px;font-family:sans-serif;">
+        <div style="font-size:14px;font-weight:bold;color:${isSelected ? '#d97706' : '#0f1c2e'};margin-bottom:6px;">${store.store_name}</div>
+        <div style="font-size:11px;color:#555;margin-bottom:4px;">${store.address}</div>
+        ${store.tel ? `<div style="font-size:11px;color:#555;margin-bottom:4px;">📞 ${store.tel}</div>` : ''}
+        ${store.email ? `<div style="font-size:11px;color:#555;margin-bottom:4px;">✉️ ${store.email}</div>` : ''}
+        <div style="font-size:10px;color:#999;margin-bottom:4px;">🕐 ${store.business_hours} ｜ ${store.regular_holiday}</div>
+        ${store.has_booth ? '<div style="font-size:10px;color:#d97706;font-weight:bold;">専用ブース完備</div>' : ''}
+        ${store.parking_spaces > 0 ? `<div style="font-size:10px;color:#999;">駐車場 ${store.parking_spaces}台</div>` : ''}
+      </div>`;
+
+      marker.addListener('mouseover', () => {
+        if (infoWindowRef.current) {
+          infoWindowRef.current.setContent(infoContent);
+          infoWindowRef.current.open(map, marker);
+        }
+      });
+
+      marker.addListener('mouseout', () => {
+        if (infoWindowRef.current && !isSelected) {
+          infoWindowRef.current.close();
+        }
+      });
+
+      marker.addListener('click', () => {
+        onSelectRef.current(store);
+      });
+
+      if (isSelected && infoWindowRef.current) {
+        infoWindowRef.current.setContent(infoContent);
+        infoWindowRef.current.open(map, marker);
+      }
+
+      markersRef.current.push(marker);
+    });
+
+    if (selected) {
+      map.setCenter({ lat: selected.lat, lng: selected.lng });
+      map.setZoom(14);
+    } else {
+      map.fitBounds(bounds, { top: 50, bottom: 50, left: 50, right: 50 });
+    }
+  }, []);
+
+  // Initialize map
+  useEffect(() => {
+    if (!mapRef.current || stores.length === 0) return;
+
+    loadGoogleMaps().then(() => {
+      if (mapInstanceRef.current) return;
+
+      const map = new google.maps.Map(mapRef.current!, {
+        center: { lat: 36.0, lng: 137.0 },
+        zoom: 6,
+        disableDefaultUI: false,
+        zoomControl: true,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+        gestureHandling: 'cooperative',
+      });
+
+      infoWindowRef.current = new google.maps.InfoWindow();
+      mapInstanceRef.current = map;
+      updateMarkers(selectedStore);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stores]);
+
+  // Update on selection change
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      updateMarkers(selectedStore);
+    }
+  }, [selectedStore, updateMarkers]);
 
   return (
     <div className="space-y-3">
-      {/* Map */}
-      <div className="rounded-xl overflow-hidden border border-slate-200">
-        <iframe
-          src={mapSrc}
-          className="w-full h-[280px] border-0"
-          loading="lazy"
-          allowFullScreen
-          referrerPolicy="no-referrer-when-downgrade"
-          title="店舗マップ"
-        />
-      </div>
+      <div ref={mapRef} className="rounded-xl overflow-hidden border border-slate-200 h-[380px]" />
 
-      {/* Store pins as clickable cards overlaid below map */}
+      {!selectedStore && (
+        <p className="text-[11px] text-slate-400 text-center">
+          マップ上のピンまたは下の一覧をクリックして店舗を選択
+        </p>
+      )}
+
       <div className="grid grid-cols-1 gap-2">
         {stores.map(store => {
           const isSelected = selectedStore?.store_id === store.store_id;
@@ -48,7 +176,6 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
               }`}
             >
               <div className="flex items-start gap-3">
-                {/* Pin icon */}
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
                   isSelected ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500'
                 }`}>
@@ -66,18 +193,6 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
                     {store.parking_spaces > 0 && <span>駐車場{store.parking_spaces}台</span>}
                   </div>
                 </div>
-                {/* Map link */}
-                {store.access_map_url && (
-                  <a
-                    href={store.access_map_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={e => e.stopPropagation()}
-                    className="flex-shrink-0 text-[10px] text-slate-400 hover:text-amber-600 underline"
-                  >
-                    Google Map
-                  </a>
-                )}
               </div>
             </button>
           );
