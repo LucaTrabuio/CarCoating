@@ -23,6 +23,7 @@ export interface StoreData {
   min_price_limit: number;
   google_place_id: string;
   line_url: string;
+  email: string;
   parking_spaces: number;
   landmark: string;
   nearby_stations: string; // JSON string: [{name, time}]

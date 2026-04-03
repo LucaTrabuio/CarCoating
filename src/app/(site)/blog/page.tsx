@@ -1,0 +1,105 @@
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { blogArticles } from '@/data/blog-articles';
+
+export const metadata: Metadata = {
+  title: 'カーコーティングブログ｜基礎知識・比較・お手入れガイド｜KeePer PRO SHOP',
+  description: 'カーコーティングの基礎知識、ワックスとの違い、ガラスvsセラミック比較、施工後のお手入れ方法など、プロが解説する記事一覧。',
+};
+
+const categoryLabels: Record<string, string> = {
+  educational: '基礎知識',
+  comparison: '比較',
+  seasonal: '季節',
+};
+
+const categoryColors: Record<string, string> = {
+  educational: 'bg-blue-100 text-blue-700',
+  comparison: 'bg-amber-100 text-amber-700',
+  seasonal: 'bg-green-100 text-green-700',
+};
+
+export default function BlogPage() {
+  return (
+    <main>
+      {/* HERO */}
+      <section className="bg-[#0f1c2e] py-14 px-5 text-center">
+        <div className="max-w-[700px] mx-auto">
+          <h1
+            className="text-white text-2xl md:text-3xl font-bold mb-3"
+            style={{ fontFamily: '"Noto Serif JP", serif' }}
+          >
+            コーティングブログ
+          </h1>
+          <p className="text-white/40 text-sm leading-relaxed">
+            初めてのコーティングで迷わないための基礎知識。ワックスとの違い、ガラスとセラミックの比較、施工後のお手入れまで。
+          </p>
+        </div>
+      </section>
+
+      {/* ARTICLE GRID */}
+      <section className="py-12 px-5">
+        <div className="max-w-[900px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {blogArticles.map((article) => (
+            <Link
+              key={article.slug}
+              href={`/blog/${article.slug}`}
+              className="group block bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-amber-300 transition-all"
+            >
+              <div className="p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <span
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${categoryColors[article.category]}`}
+                  >
+                    {categoryLabels[article.category]}
+                  </span>
+                  <span className="text-[10px] text-gray-400">
+                    {article.publishDate}
+                  </span>
+                </div>
+                <h2 className="text-base font-bold text-[#0f1c2e] mb-2 group-hover:text-amber-700 transition-colors leading-snug">
+                  {article.title}
+                </h2>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  {article.summary}
+                </p>
+                <span className="inline-block mt-3 text-xs font-semibold text-amber-600 group-hover:underline">
+                  続きを読む →
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-12 px-5 bg-[#0f1c2e]">
+        <div className="max-w-[500px] mx-auto text-center text-white">
+          <h2
+            className="text-lg font-bold mb-2"
+            style={{ fontFamily: '"Noto Serif JP", serif' }}
+          >
+            コーティングを検討中の方へ
+          </h2>
+          <p className="text-sm text-white/40 mb-6">
+            お車の状態を見て最適なコースをご提案します。
+          </p>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link
+              href="/coatings"
+              className="px-5 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20 transition-colors"
+            >
+              メニュー一覧
+            </Link>
+            <Link
+              href="/booking"
+              className="px-5 py-2.5 bg-amber-500 text-white font-bold rounded-md text-sm hover:bg-amber-600 transition-colors"
+            >
+              ご予約・お問い合わせ →
+            </Link>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

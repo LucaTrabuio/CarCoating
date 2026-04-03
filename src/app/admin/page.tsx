@@ -33,6 +33,7 @@ const STORE_FIELDS: { key: keyof StoreData; label: string; required: boolean }[]
   { key: 'regular_holiday', label: '定休日', required: false },
   { key: 'discount_rate', label: '割引率', required: false },
   { key: 'campaign_title', label: 'キャンペーン', required: false },
+  { key: 'email', label: 'メール', required: false },
 ];
 
 function parseCSVLine(line: string): string[] {
@@ -101,6 +102,7 @@ function csvRowToStore(row: Record<string, string>): StoreData {
     min_price_limit: parseInt(row.min_price_limit) || 0,
     google_place_id: row.google_place_id || '',
     line_url: row.line_url || '',
+    email: row.email || '',
     parking_spaces: parseInt(row.parking_spaces) || 0,
     landmark: row.landmark || '',
     nearby_stations: row.nearby_stations || '[]',
@@ -180,7 +182,7 @@ export default function AdminPage() {
       'has_booth', 'level1_staff_count', 'level2_staff_count',
       'seo_keywords', 'meta_description',
       'campaign_title', 'campaign_deadline', 'discount_rate', 'campaign_color_code', 'min_price_limit',
-      'google_place_id', 'line_url', 'parking_spaces', 'landmark', 'nearby_stations'
+      'google_place_id', 'line_url', 'email', 'parking_spaces', 'landmark', 'nearby_stations'
     ];
     const example = [
       'tokyo-shinjuku', 'KeePer PRO SHOP 新宿高島屋店', '東京都新宿区千駄ヶ谷5-24-2', '151-0051', '東京都', '新宿区',
@@ -188,7 +190,7 @@ export default function AdminPage() {
       'TRUE', '2', '1',
       'コーティング 新宿', 'KeePer PRO SHOP 新宿店',
       '春の新生活キャンペーン', '2026-04-30', '20', '#c49a2a', '14560',
-      'ChIJ...', 'https://line.me/...', '3', '高島屋タイムズスクエア隣', '"[{""name"":""新宿駅"",""time"":""徒歩5分""}]"'
+      'ChIJ...', 'https://line.me/...', 'store@example.com', '3', '高島屋タイムズスクエア隣', '"[{""name"":""新宿駅"",""time"":""徒歩5分""}]"'
     ];
     const csv = headers.join(',') + '\n' + example.join(',');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -267,7 +269,7 @@ export default function AdminPage() {
       'has_booth', 'level1_staff_count', 'level2_staff_count',
       'seo_keywords', 'meta_description',
       'campaign_title', 'campaign_deadline', 'discount_rate', 'campaign_color_code', 'min_price_limit',
-      'google_place_id', 'line_url', 'parking_spaces', 'landmark', 'nearby_stations'
+      'google_place_id', 'line_url', 'email', 'parking_spaces', 'landmark', 'nearby_stations'
     ];
     const rows = savedStores.map(store =>
       allHeaders.map(h => {

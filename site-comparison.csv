@@ -1,103 +1,116 @@
 Feature Category,Feature,CarCoating (Vercel),Minato-Shibuya-Coating,PIT in plus,Notes
-Navigation,Fixed header with store name,Yes,Yes,Yes,All three have persistent headers
-Navigation,Hamburger mobile menu,Yes,No (footer nav),Yes,Minato uses bottom nav instead
-Navigation,Sticky anchor nav for coatings,Yes (coatings page),Yes (collapsible sections),No,PIT in plus has no quick-jump nav
+Navigation,Fixed header with store name,Yes,Yes,Yes,All three
+Navigation,Hamburger mobile menu,Yes,No (footer nav),Yes,Minato uses bottom nav
+Navigation,Menu dropdown (Coatings + Options),Yes,No,No,Only CarCoating
+Navigation,Sticky anchor nav for coatings,Yes,Yes (collapsible),No,PIT in plus has no quick-jump
 Navigation,Breadcrumb navigation,No,No,Yes,Only PIT in plus
-Navigation,Login/user account,No,No,Yes,PIT in plus has user auth
-Coating Menu,Number of coating types listed,8,8,8,Same count but different products
-Coating Menu,EX Keeper,Yes,Yes,Yes,All three
-Coating Menu,EX Keeper Premium,Yes,Yes,No,PIT in plus doesn't list Premium
-Coating Menu,Diamond Keeper,Yes,Yes,Yes,All three
-Coating Menu,Diamond Keeper Premium,Yes,Yes,No,PIT in plus doesn't list Premium
-Coating Menu,Diamond II Keeper,Yes,Yes,No,PIT in plus has Eco Diamond and W Diamond instead
-Coating Menu,Diamond II Premium,Yes,Yes,No,PIT in plus N/A
+Navigation,Login/user account,No,No,Yes,Only PIT in plus
+Navigation,Desktop nav includes Reviews/Access,Yes,Yes,Yes,All three now
+Coating Menu,Number of coating types,8,8,8,Same count but different products
+Coating Menu,EX Keeper + Premium,Yes,Yes,Yes (no Premium),PIT in plus lacks Premium variants
+Coating Menu,Diamond Keeper + Premium,Yes,Yes,No,PIT in plus has W Diamond instead
+Coating Menu,Diamond II Keeper + Premium,Yes,Yes,No,PIT in plus has Eco Diamond instead
 Coating Menu,Fresh Keeper,Yes,Yes,Yes,All three
 Coating Menu,Crystal Keeper,Yes,Yes,Yes,All three
 Coating Menu,Matt Texture Keeper,No,No,Yes,Only PIT in plus
-Coating Menu,Pure Keeper (polymer),No,No,Yes,Only PIT in plus — entry-level 3-month
-Coating Menu,Eco Diamond Keeper,No,No,Yes,Only PIT in plus
-Coating Menu,W Diamond Keeper,No,No,Yes,Only PIT in plus
-Coating Descriptions,Tagline per coating,Yes,Yes (brief),Yes,All have short descriptions
-Coating Descriptions,Full paragraph description,Yes,Yes,Yes,All three
-Coating Descriptions,Benefits checklist,Yes (4 per tier),No,No,Only CarCoating
+Coating Menu,Pure Keeper (polymer),No,No,Yes,Only PIT in plus — 3-month entry
+Coating Menu,Tier level badges (Flagship/Premium/Standard/Entry),Yes,No,No,Only CarCoating
+Coating Descriptions,Full description per tier,Yes,Yes,Yes,All three
+Coating Descriptions,Benefits checklist (4 per tier),Yes,No,No,Only CarCoating
 Coating Descriptions,"Recommended for" box,Yes,No,No,Only CarCoating
-Coating Descriptions,Technology explanation,Yes (dark box with text),No,Yes (brief),PIT in plus has molecular diagrams
-Coating Descriptions,Layer structure diagram,Yes (KeePer images),No,Yes (cross-section),Minato has no diagrams
-Coating Descriptions,Tier level badge (Flagship/Premium/Entry),Yes,No,No,Only CarCoating
-Pricing,Size-based pricing table (SS-XL),Yes,Yes,Yes (price range only),PIT in plus shows min-max not full table
-Pricing,Regular price shown,Yes (strikethrough),Yes (strikethrough),Yes,All show original price
-Pricing,Web discount price,Yes,Yes,No,PIT in plus doesn't show web discounts
-Pricing,Discount percentage displayed,Yes (per tier: 5/10/20%),Yes (per tier: 5/10/20%),No,PIT in plus has no discount system
-Pricing,Maintenance pricing,Yes,Yes,No,PIT in plus doesn't show maintenance costs
-Pricing,5-year total cost comparison,Yes,No,No,Only CarCoating
+Coating Descriptions,Technology explanation with diagram,Yes,No,Yes (cross-section),PIT in plus has molecular diagrams
+Coating Descriptions,Layer structure images (KeePer official),Yes,No,Yes,CarCoating uses KeePer site images
+Coating Descriptions,Patent badges (small format),Yes,No,Yes (mentions),CarCoating shows actual patent images
+Coating Descriptions,Image captions/subtitles,Yes,No,No,Only CarCoating — accurate descriptions from KeePer site
+Pricing,Size-based pricing table (SS-XL),Yes,Yes,Yes (range only),PIT in plus shows min-max not full table
+Pricing,Regular price (strikethrough),Yes,Yes,Yes,All three
+Pricing,Web discount price,Yes,Yes,No,PIT in plus has no web discounts
+Pricing,Dynamic discount from store data,Yes (API-driven),Yes (static),No,CarCoating reads from Vercel Blob API
+Pricing,Discount percentage per tier (5/10/20%),Yes,Yes,No,PIT in plus has no discount system
+Pricing,Maintenance pricing displayed,Yes,Yes,No,PIT in plus doesn't show maintenance costs
+Pricing,5-year total cost comparison table,Yes,No,No,Only CarCoating
 Pricing,Application time displayed,Yes,Yes,Yes,All three
-Pricing,Durability years displayed,Yes,Yes,Yes,All three
-Pricing Tools,Car make/model selector,Yes,No,No,Only CarCoating
-Pricing Tools,Size-based pricing mode (direct),Yes,No,No,Only CarCoating — click SS/S/M/L/LL/XL directly
+Pricing Tools,Car make/model selector (90+ vehicles),Yes,No,No,Only CarCoating
+Pricing Tools,Size-based pricing mode (direct click),Yes,No,No,Only CarCoating — click SS/S/M/L/LL/XL
 Pricing Tools,3-tier recommendation (Crystal/Diamond/EX),Yes,No,No,Only CarCoating
 Pricing Tools,Comparison matrix (horizontal scroll),Yes,No,No,Only CarCoating
-Pricing Tools,Option calculator (add-ons),Yes,No,No,Only CarCoating
-Pricing Tools,Running total display,Yes,No,No,Only CarCoating
+Pricing Tools,Option calculator with running total,Yes,No,No,Only CarCoating — 16 options with live total
+Pricing Tools,10% web discount on options (auto-applied),Yes,No,No,Only CarCoating
 Pricing Tools,PDF/email export of estimate,Yes (buttons),No,No,Only CarCoating
-Options/Add-ons,Window coating,Yes (in calculator),Yes (detailed pricing),No,Minato has full options section
-Options/Add-ons,Wheel coating,Yes (in calculator),Yes (single + double layer),No,Minato more detailed
-Options/Add-ons,Lens/headlight coating,Yes (in calculator),Yes (separate items),No,Minato more detailed
-Options/Add-ons,Interior disinfection,Yes (in calculator),Yes,No,Minato shows pricing
-Options/Add-ons,Fine polishing,Yes (in calculator),Yes,No,Minato shows pricing
-Options/Add-ons,Iron particle removal,No,Yes,No,Only Minato
-Options/Add-ons,Tree sap removal,No,Yes,No,Only Minato
-Options/Add-ons,Oil film removal,No,Yes,No,Only Minato
-Options/Add-ons,Engine room cleaning,No,Yes,No,Only Minato
-Options/Add-ons,Paint damage repair,No,Yes (custom quote),No,Only Minato
+Options/Add-ons,Dedicated options page,Yes (19 services),Yes (inline on price page),No,CarCoating has standalone page
+Options/Add-ons,Window coating (full + front),Yes,Yes,No,Both with size pricing
+Options/Add-ons,Wheel coating (single + double),Yes,Yes,No,Both with size pricing
+Options/Add-ons,Lens/headlight coating,Yes,Yes,No,Both
+Options/Add-ons,Headlight clean & coat,Yes,Yes,No,Both
+Options/Add-ons,Interior disinfection,Yes,Yes,No,Both
+Options/Add-ons,Fine polishing,Yes,Yes,No,Both
+Options/Add-ons,Iron particle removal,Yes,Yes,No,Both — added to CarCoating
+Options/Add-ons,Tree sap removal,Yes,Yes,No,Both — added to CarCoating
+Options/Add-ons,Oil film removal (full + front),Yes,Yes,No,Both — added to CarCoating
+Options/Add-ons,Wheel cleaning,Yes,Yes,No,Both — added to CarCoating
+Options/Add-ons,Window scale removal,Yes,Yes,No,Both — added to CarCoating
+Options/Add-ons,Resin fender keeper,Yes,Yes,No,Both
+Options/Add-ons,Engine room clean (quote-based),Yes,Yes,No,Both
+Options/Add-ons,Paint damage repair (quote-based),Yes,Yes,No,Both
+Options/Add-ons,Water spot removal (quote-based),Yes,Yes,No,Both
+Options/Add-ons,Options grouped by category,Yes (5 categories),No (flat list),No,Only CarCoating
 Booking,Web booking form,Yes,Yes (contact form),Yes,All three
-Booking,Calendar date picker,Yes (3 preferred dates),No,Yes,Minato uses simple form
-Booking,Phone booking,Yes (toll-free),Yes (toll-free 0800),Yes,All three
+Booking,Calendar with 3 preferred dates,Yes,No,Yes,Minato uses simple form
+Booking,Phone booking,Yes (toll-free),Yes (toll-free),Yes,All three
 Booking,LINE consultation,Yes,No,No,Only CarCoating
 Booking,Plan/car pre-filled from estimate,Yes (URL params),No,No,Only CarCoating
 Booking,4-step booking process visualization,No,No,Yes,Only PIT in plus
+Booking,Today's date selectable in calendar,Yes (fixed),N/A,N/A,Was broken — now fixed
 Trust Signals,Google rating display,Yes (4.8 stars),No,No,Only CarCoating
-Trust Signals,Staff certification badges,Yes (1級/2級),No,Yes (1級 highlight),CarCoating and PIT in plus
-Trust Signals,Booth certification,Yes,No,No,Only CarCoating
+Trust Signals,Staff certification badges (1級/2級),Yes,No,Yes (1級),CarCoating and PIT in plus
+Trust Signals,Booth certification badge,Yes,No,No,Only CarCoating
 Trust Signals,Customer reviews page,Yes,Yes (link),No,CarCoating has dedicated page
-Trust Signals,Case studies with real photos,Yes (32 cases),Yes (link to gallery),No,CarCoating has most
-Trust Signals,Loyalty points (Ponta/Rakuten/d-point),No,Yes,No,Only Minato
-Campaign/Promotions,Campaign banner,Yes (dynamic with admin),Yes (static),No,CarCoating has admin-editable banners
-Campaign/Promotions,Campaign deadline display,Yes,Yes,No,Both show expiry dates
-Campaign/Promotions,Free post-service inspections,Yes (2 free),Yes (2 free),No,CarCoating and Minato
-Campaign/Promotions,Free option for new car coating,No,Yes,No,Only Minato
-Campaign/Promotions,Discount on all options (10%),No,Yes,No,Only Minato
-Store Info,Google Maps embed,Yes,No (address only),No,Only CarCoating
-Store Info,Nearby stations with walk time,Yes,Yes,No,CarCoating and Minato
-Store Info,Parking spaces count,Yes,Yes,No,CarCoating and Minato
+Trust Signals,Case studies with real photos,Yes (32 cases),Yes (link),No,CarCoating has most data
+Trust Signals,Loyalty points (Ponta/Rakuten/d-point),Yes,Yes,No,Both — added to CarCoating footer
+Campaign/Promotions,Dynamic campaign banner (admin-editable),Yes,No (static),No,Only CarCoating
+Campaign/Promotions,Campaign deadline display,Yes,Yes,No,Both
+Campaign/Promotions,5 web booking benefits,Yes,Yes (5 benefits),No,Both now match
+Campaign/Promotions,Free option for new car Diamond,Yes,Yes,No,Both
+Campaign/Promotions,10% off all options,Yes,Yes,No,Both
+Campaign/Promotions,2 free post-service inspections,Yes,Yes,No,Both
+Campaign/Promotions,Free disinfection of high-touch areas,Yes,Yes,No,Both
+Campaign/Promotions,Campaign save with live preview,Yes,No,No,Only CarCoating admin
+Campaign/Promotions,Campaign settings persist across sessions,Yes (localStorage),No,No,Only CarCoating
+Store Info,Google Maps embed,Yes,No,No,Only CarCoating — with lat/lng fallback
+Store Info,Nearby stations with walk time,Yes,Yes,No,Both
+Store Info,Parking spaces count,Yes,Yes,No,Both
+Store Info,Multi-store support,Yes (3+ stores),No (single),Yes (chain),CarCoating is multi-tenant
 Store Info,Store locator (geolocation),No,No,Yes,Only PIT in plus
-Store Info,Multi-store support,Yes (3 stores),No (single store),Yes (chain),CarCoating is multi-tenant
-Educational Content,What is coating? section,Yes,No,Yes (blog articles),CarCoating on coatings page
-Educational Content,Coating comparison blog articles,No,No,Yes (4 articles),Only PIT in plus
-Educational Content,Wax vs coating explanation,No,No,Yes,Only PIT in plus
-Educational Content,Ceramic vs glass explanation,No,No,Yes,Only PIT in plus
-Educational Content,Post-application care guide,No,No,Yes,Only PIT in plus
+Educational Content,Dedicated guide page,Yes (5 articles),No,Yes (4 blog articles),Different formats
+Educational Content,What is car coating?,Yes,No,Yes,Both
+Educational Content,Wax vs coating comparison,Yes,No,Yes,Both
+Educational Content,Glass vs ceramic comparison,Yes,No,Yes,Both
+Educational Content,Post-application care guide,Yes,No,Yes,Both
+Educational Content,New vs used car coating,Yes,No,No,Only CarCoating
 Educational Content,Star ratings (gloss/water-repellency),Yes,No,Yes,CarCoating and PIT in plus
-Educational Content,Patent information display,Yes (badges),No,Yes (mentions),CarCoating shows patent images
 Admin Panel,Booking management dashboard,Yes,No,No,Only CarCoating
-Admin Panel,CSV store data import/export,Yes,No,No,Only CarCoating
+Admin Panel,CSV store data import with validation,Yes,No,No,Only CarCoating — with error handling
+Admin Panel,CSV export of store data,Yes,No,No,Only CarCoating
 Admin Panel,CSV template download,Yes,No,No,Only CarCoating
+Admin Panel,Store data persists to Vercel Blob,Yes,No,No,Only CarCoating — API-driven
 Admin Panel,Campaign settings with live preview,Yes,No,No,Only CarCoating
-Admin Panel,Case study upload form,Yes,No,No,Only CarCoating
-Mobile Experience,Fixed bottom CTA bar,Yes (call + booking),Yes (phone + form + price),No,Different button configs
+Admin Panel,Case study upload form,Yes (mockup),No,No,Only CarCoating
+Admin Panel,Saved stores display with preview links,Yes,No,No,Only CarCoating
+Payment,Payment methods displayed,Yes (footer),Yes (detailed),No,Both
+Payment,Loyalty point programs,Yes (Ponta/Rakuten/d),Yes,No,Both
+Payment,Point rate displayed (¥200=1pt),Yes,Yes,No,Both
+Mobile Experience,Fixed bottom CTA bar,Yes (call + LINE),Yes (phone + form + price),No,Different configs
 Mobile Experience,Responsive grid layouts,Yes,Yes,Yes,All three
-Mobile Experience,Touch-friendly card sizing,Yes,Yes,Yes,All three
-Mobile Experience,Horizontal scroll galleries,Yes (cases),Yes (pricing),No,Different content scrolled
-Homepage,Hero video/visual section,Yes (video placeholder),No,No,Only CarCoating
-Homepage,Quick 30-second simulator,Yes,No,No,Only CarCoating
-Homepage,Featured plans comparison (3 tiers),Yes,No,No,Only CarCoating
-Homepage,Process steps visualization,Yes (3 steps),No,Yes (4 steps),Different step counts
-Homepage,Case studies carousel,Yes (real photos),No,No,Only CarCoating on homepage
-Payment,Multiple payment methods listed,No,Yes (cash/cards/digital),No,Only Minato
-Payment,Point accumulation programs,No,Yes (Ponta/Rakuten/d),No,Only Minato
-SEO,Per-store meta descriptions,Yes,N/A (single store),Yes,CarCoating and PIT in plus
-SEO,Dynamic page titles per store,Yes,N/A,Yes,CarCoating and PIT in plus
-SEO,Structured coating descriptions,Yes,Yes,Yes,All three
-Technical,Next.js SSG (static generation),Yes,No (static HTML),No (server-rendered),Different stacks
-Technical,Collapsible/accordion pricing,No,Yes (jQuery),No,Only Minato
-Technical,Google Tag Manager,No,Yes,Yes,Minato and PIT in plus
-Technical,Analytics integration,No,Yes (GTM),Yes (GTM + Treasure Data),CarCoating has none yet
+Mobile Experience,Horizontal scroll galleries,Yes (cases),Yes (pricing),No,Different content
+Homepage,Hero video section,Yes,No,No,Only CarCoating
+Homepage,30-second car simulator,Yes,No,No,Only CarCoating
+Homepage,Featured 3-tier plan comparison,Yes,No,No,Only CarCoating
+Homepage,Case studies carousel (real photos),Yes,No,No,Only CarCoating
+Homepage,3-step process visualization,Yes,No,Yes (4 steps),Different step counts
+Homepage,Car selection persists to price page,Yes (URL params),No,No,Only CarCoating
+SEO,Dynamic meta per store (API-driven),Yes,N/A (single),Yes,CarCoating reflects CSV changes
+SEO,Per-page meta descriptions,Yes,Yes,Yes,All three
+Technical,Dynamic store data (Vercel Blob API),Yes,No (static),No,Only CarCoating
+Technical,60-second revalidation,Yes,No,No,Only CarCoating
+Technical,Collapsible/accordion sections,No,Yes (jQuery),No,Only Minato
+Technical,Analytics (GTM),No,Yes,Yes (GTM + Treasure Data),CarCoating has none yet
