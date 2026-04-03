@@ -172,14 +172,16 @@ export default async function StorePage({ params }: { params: Promise<{ storeId:
         </div>
       </section>
 
-      {/* CTA BLOCK */}
+      {/* CTA BLOCK — 5 BENEFITS */}
       <section className="py-10 px-5">
         <div className="max-w-[700px] mx-auto bg-gradient-to-br from-amber-600 via-amber-500 to-amber-700 rounded-xl p-8 text-center text-white">
-          <h2 className="text-xl font-bold mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>Web予約限定 3大特典</h2>
-          <div className="space-y-1.5 mb-4 max-w-[400px] mx-auto text-left">
-            <div className="flex items-center gap-2 text-sm font-semibold">✓ 全コーティング 最大{campaign.discount_rate}%OFF</div>
-            <div className="flex items-center gap-2 text-sm font-semibold">✓ 施工後の手洗い洗車＆点検 2回無料</div>
-            <div className="flex items-center gap-2 text-sm font-semibold">✓ 人気オプション1つ無料（新車ダイヤ系）</div>
+          <h2 className="text-xl font-bold mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>Web予約限定 5大特典</h2>
+          <div className="space-y-2 mb-4 max-w-[480px] mx-auto text-left">
+            <div className="flex items-start gap-2 text-sm font-semibold"><span className="bg-white/20 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">1</span>全コーティング 最大{campaign.discount_rate}%OFF</div>
+            <div className="flex items-start gap-2 text-sm font-semibold"><span className="bg-white/20 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">2</span>新車ダイヤ系ご予約で人気オプション1つ無料（ウィンドウ・ホイール・レンズから選択）</div>
+            <div className="flex items-start gap-2 text-sm font-semibold"><span className="bg-white/20 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">3</span>オプション全メニュー10%OFF</div>
+            <div className="flex items-start gap-2 text-sm font-semibold"><span className="bg-white/20 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">4</span>施工後の手洗い洗車＆点検を2回無料（1ヶ月後・6ヶ月後）</div>
+            <div className="flex items-start gap-2 text-sm font-semibold"><span className="bg-white/20 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5">5</span>かんたん除菌を無料実施（ハンドル・ドアノブ等の高接触部）</div>
           </div>
           <p className="text-xs opacity-80 mb-4">{campaign.deadline}までのWeb予約に限る</p>
           <div className="flex gap-3 justify-center flex-wrap">
@@ -198,9 +200,13 @@ export default async function StorePage({ params }: { params: Promise<{ storeId:
           <h2 className="text-xl font-bold text-[#0f1c2e] text-center mb-8" style={{ fontFamily: '"Noto Serif JP", serif' }}>アクセス</h2>
           <div className="grid md:grid-cols-[3fr_2fr] gap-8">
             <div>
-              {store.access_map_url ? (
+              {(store.access_map_url || (store.lat && store.lng)) ? (
                 <iframe
-                  src={store.access_map_url.replace('maps?q=', 'maps?q=').replace(' ', '+') + '&output=embed'}
+                  src={
+                    store.access_map_url
+                      ? store.access_map_url.replace(' ', '+') + '&output=embed'
+                      : `https://www.google.com/maps?q=${store.lat},${store.lng}&z=16&output=embed`
+                  }
                   className="w-full aspect-[4/3] rounded-xl border-0"
                   loading="lazy"
                   allowFullScreen
