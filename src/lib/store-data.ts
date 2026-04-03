@@ -5,6 +5,17 @@ export function getAllStores(): StoreData[] {
   return storeDataArray;
 }
 
+export async function getAllStoresAsync(baseUrl?: string): Promise<StoreData[]> {
+  try {
+    const url = baseUrl ? `${baseUrl}/api/stores` : '/api/stores';
+    const res = await fetch(url, { next: { revalidate: 60 } });
+    if (res.ok) return res.json();
+  } catch (e) {
+    console.error('Failed to fetch stores from API:', e);
+  }
+  return storeDataArray;
+}
+
 export function getStoreById(storeId: string): StoreData | undefined {
   return getAllStores().find(s => s.store_id === storeId);
 }

@@ -60,7 +60,7 @@ function parseCSVLine(line: string): string[] {
 }
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
-  const lines = text.split('\n').filter(l => l.trim());
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 1) return { headers: [], rows: [] };
   const headers = parseCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/, '').trim()).filter(h => h);
   const rows = lines.slice(1).map(line => {
@@ -163,6 +163,7 @@ export default function AdminPage() {
   function handleCSVUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    e.target.value = '';
     setCsvFileName(file.name);
     setSaveSuccess(false);
     const reader = new FileReader();
@@ -186,10 +187,21 @@ export default function AdminPage() {
     reader.readAsText(file);
   }
 
-  function handleCSVSave() {
-    const stores = csvRows.map(csvRowToStore).filter(s => s.store_id);
-    localStorage.setItem('admin_stores', JSON.stringify(stores));
-    setSavedStores(stores);
+  async function handleCSVSave() {
+    const importedStores = csvRows.map(csvRowToStore).filter(s => s.store_id);
+    // Save to Vercel Blob via API
+    await fetch('/api/stores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(importedStores),
+    });
+    // Also keep localStorage for admin UI state
+    localStorage.setItem('admin_stores', JSON.stringify(importedStores));
+    // Merge: hardcoded as base, imported as overrides
+    const mergedMap = new Map<string, StoreData>();
+    hardcodedStores.forEach(s => mergedMap.set(s.store_id, s));
+    importedStores.forEach(s => mergedMap.set(s.store_id, s));
+    setSavedStores(Array.from(mergedMap.values()));
     setSaveSuccess(true);
     setCsvHeaders([]);
     setCsvRows([]);
