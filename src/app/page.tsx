@@ -1,65 +1,63 @@
-import Image from "next/image";
+import { getAllStores } from '@/lib/store-data';
+import Link from 'next/link';
 
 export default function Home() {
+  const stores = getAllStores();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-[#0f1c2e]">
+      <div className="max-w-[1100px] mx-auto px-5 py-20">
+        <div className="text-center mb-12">
+          <div className="text-amber-500 text-sm font-semibold mb-2">KeePer PRO SHOP</div>
+          <h1 className="text-white text-3xl md:text-5xl font-bold mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            カーコーティング専門店
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-white/50 text-sm max-w-lg mx-auto">
+            全国{stores.length}店舗のKeePer認定プロショップ。お近くの店舗をお選びください。
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {stores.map(store => (
+            <Link
+              key={store.store_id}
+              href={`/${store.store_id}`}
+              className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 hover:border-amber-500/30 transition-all group"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h2 className="text-white font-bold text-lg group-hover:text-amber-400 transition-colors">
+                    {store.store_name}
+                  </h2>
+                  <p className="text-white/40 text-xs mt-0.5">{store.prefecture} {store.city}</p>
+                </div>
+                <div className="flex gap-1">
+                  {store.has_booth && (
+                    <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded font-semibold">ブース</span>
+                  )}
+                  {store.level1_staff_count > 0 && (
+                    <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded font-semibold">1級×{store.level1_staff_count}</span>
+                  )}
+                </div>
+              </div>
+              <div className="text-white/50 text-xs space-y-1">
+                <div>📍 {store.address}</div>
+                <div>📞 {store.tel}</div>
+                <div>🕐 {store.business_hours}（{store.regular_holiday}）</div>
+              </div>
+              {store.campaign_title && (
+                <div className="mt-3 text-xs bg-amber-500/10 text-amber-400 px-2.5 py-1.5 rounded font-semibold">
+                  {store.campaign_title} ｜ 最大{store.discount_rate}%OFF
+                </div>
+              )}
+            </Link>
+          ))}
         </div>
-      </main>
-    </div>
+
+        <div className="text-center mt-12">
+          <Link href="/admin" className="text-white/30 text-xs hover:text-white/60 transition-colors">管理パネル →</Link>
+        </div>
+      </div>
+    </main>
   );
 }
