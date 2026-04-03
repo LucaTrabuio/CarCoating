@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { StoreData } from '@/lib/types';
+import { stores as hardcodedStores } from '@/data/stores';
 
 type Tab = 'bookings' | 'stores' | 'cases' | 'campaigns';
 
@@ -59,7 +60,7 @@ function parseCSVLine(line: string): string[] {
 }
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
-  const lines = text.split('\n').filter(l => l.trim());
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 1) return { headers: [], rows: [] };
   const headers = parseCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/, '').trim()).filter(h => h);
   const rows = lines.slice(1).map(line => {
@@ -112,11 +113,15 @@ export default function AdminPage() {
   const [csvFileName, setCsvFileName] = useState('');
   const [csvErrors, setCsvErrors] = useState<string[]>([]);
   const [savedStores, setSavedStores] = useState<StoreData[]>(() => {
+    const localStores: StoreData[] = [];
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('admin_stores');
-      if (saved) return JSON.parse(saved);
+      if (saved) localStores.push(...JSON.parse(saved));
     }
-    return [];
+    const mergedMap = new Map<string, StoreData>();
+    hardcodedStores.forEach(s => mergedMap.set(s.store_id, s));
+    localStores.forEach(s => mergedMap.set(s.store_id, s));
+    return Array.from(mergedMap.values());
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -165,6 +170,7 @@ export default function AdminPage() {
   function handleCSVUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    e.target.value = '';
     setCsvFileName(file.name);
     setSaveSuccess(false);
     const reader = new FileReader();
@@ -188,10 +194,19 @@ export default function AdminPage() {
     reader.readAsText(file);
   }
 
-  function handleCSVSave() {
-    const stores = csvRows.map(csvRowToStore).filter(s => s.store_id);
-    localStorage.setItem('admin_stores', JSON.stringify(stores));
-    setSavedStores(stores);
+  async function handleCSVSave() {
+    const importedStores = csvRows.map(csvRowToStore).filter(s => s.store_id);
+    // Save to Vercel Blob via API
+    await fetch('/api/stores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(importedStores),
+    });
+    localStorage.setItem('admin_stores', JSON.stringify(importedStores));
+    const mergedMap = new Map<string, StoreData>();
+    hardcodedStores.forEach(s => mergedMap.set(s.store_id, s));
+    importedStores.forEach(s => mergedMap.set(s.store_id, s));
+    setSavedStores(Array.from(mergedMap.values()));
     setSaveSuccess(true);
     setCsvHeaders([]);
     setCsvRows([]);
@@ -327,7 +342,7 @@ export default function AdminPage() {
                 <h2 className="font-bold text-lg">店舗マスターCSV管理</h2>
                 <div className="flex gap-2">
                   <button onClick={handleCSVTemplateDownload} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📋 テンプレート</button>
-                  <button onClick={handleExportCSV} disabled={savedStores.length === 0} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed">📤 CSVエクスポート</button>
+                  <button onClick={handleExportCSV} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📤 CSVエクスポート</button>
                   <label className="px-3 py-1.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
                     📥 CSVインポート
                     <input type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
@@ -423,7 +438,7 @@ export default function AdminPage() {
                   ))}
                 </div>
                 <button
-                  onClick={() => { localStorage.removeItem('admin_stores'); setSavedStores([]); setSaveSuccess(false); }}
+                  onClick={() => { localStorage.removeItem('admin_stores'); setSavedStores([...hardcodedStores]); setSaveSuccess(false); }}
                   className="mt-3 text-xs text-red-500 hover:text-red-700"
                 >
                   保存データをクリア

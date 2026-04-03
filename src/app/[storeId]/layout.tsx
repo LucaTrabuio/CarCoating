@@ -1,4 +1,5 @@
-import { getStoreById, getAllStoreIds, getStoreCampaign } from '@/lib/store-data';
+import { getAllStoresAsync, getAllStoreIds, getStoreCampaign } from '@/lib/store-data';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -17,7 +18,11 @@ export default async function StoreLayout({
   params: Promise<{ storeId: string }>;
 }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const headersList = await headers();
+  const host = headersList.get('host') ?? 'localhost:3000';
+  const protocol = host.startsWith('localhost') ? 'http' : 'https';
+  const stores = await getAllStoresAsync(`${protocol}://${host}`);
+  const store = stores.find(s => s.store_id === storeId);
   if (!store) notFound();
 
   const campaign = getStoreCampaign(store);
