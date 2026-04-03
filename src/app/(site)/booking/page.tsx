@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import BookingCalendar from '@/components/BookingCalendar';
+import StoreMap from '@/components/StoreMap';
 import { coatingTiers } from '@/data/coating-tiers';
 import { StoreData } from '@/lib/types';
 
@@ -146,65 +147,23 @@ function BookingContent() {
             </div>
           )}
 
-          {/* STEP 1: STORE SELECTION */}
+          {/* STEP 1: STORE SELECTION WITH MAP */}
           {!selectedStore && (
             <>
               <h2 className="text-base font-bold mb-4">
                 <span className="inline-flex items-center justify-center w-6 h-6 bg-amber-500 text-white text-xs font-bold rounded-full mr-2">
                   1
                 </span>
-                店舗を選択
+                お近くの店舗を選択
               </h2>
+              <p className="text-xs text-slate-400 mb-4">地図で場所を確認し、ご希望の店舗をタップしてください</p>
 
-              {loading && (
-                <p className="text-sm text-gray-400 text-center py-8">
-                  店舗情報を読み込み中...
-                </p>
-              )}
-
-              <div className="space-y-3">
-                {stores.map((store) => (
-                  <button
-                    key={store.store_id}
-                    onClick={() => setSelectedStore(store)}
-                    className="w-full text-left bg-white border border-gray-200 rounded-xl p-4 hover:border-amber-400 hover:shadow-md transition-all group"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-[#0f1c2e] group-hover:text-amber-700 transition-colors">
-                          {store.store_name}
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {store.address}
-                        </p>
-                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[10px] text-gray-400">
-                          <span>{store.business_hours}</span>
-                          <span>{store.regular_holiday}</span>
-                          {store.has_booth && (
-                            <span className="text-amber-600 font-semibold">
-                              専用ブース完備
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <a
-                        href={store.access_map_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex-shrink-0 px-3 py-1.5 border border-gray-200 rounded-lg text-[10px] font-semibold text-gray-500 hover:bg-gray-50 hover:text-amber-700 transition-colors"
-                      >
-                        地図を見る
-                      </a>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              {!loading && stores.length === 0 && (
-                <p className="text-sm text-gray-400 text-center py-8">
-                  店舗情報が見つかりません。
-                </p>
+              {loading ? (
+                <p className="text-sm text-gray-400 text-center py-8">店舗情報を読み込み中...</p>
+              ) : stores.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-8">店舗情報が見つかりません。</p>
+              ) : (
+                <StoreMap stores={stores} selectedStore={selectedStore} onSelect={setSelectedStore} />
               )}
             </>
           )}
