@@ -21,9 +21,9 @@ const tierImages: Record<string, { logo: string; cover?: string; features: { src
     logo: '/img/lineup/coating/p_idx_ex_logo.png',
     cover: '/img/lineup/coating/exkeeper/cover.png',
     features: [
-      { src: '/img/lineup/coating/exkeeper/property-1.jpg', alt: '圧倒的な撥水力' },
-      { src: '/img/lineup/coating/exkeeper/property-2.jpg', alt: 'ウォータースポット防止' },
-      { src: '/img/lineup/coating/exkeeper/property-3.jpg', alt: 'UV保護効果' },
+      { src: '/img/lineup/coating/exkeeper/property-1.jpg', alt: '水滴が転がり落ちる圧倒的な撥水力' },
+      { src: '/img/lineup/coating/exkeeper/property-2.jpg', alt: '洗車回数を削減 — 水資源の節約にも貢献' },
+      { src: '/img/lineup/coating/exkeeper/property-3.jpg', alt: '従来コーティングの断面 — ミネラルが固着する仕組み' },
     ],
     mechanism: '/img/lineup/coating/exkeeper/property-7-2.png',
   },
@@ -31,62 +31,62 @@ const tierImages: Record<string, { logo: string; cover?: string; features: { src
     logo: '/img/lineup/coating/p_idx_ex_logo.png',
     cover: '/img/lineup/coating/exkeeper/excar.png',
     features: [
-      { src: '/img/lineup/coating/exkeeper/property-4.jpg', alt: 'VP326厚膜コーティング' },
-      { src: '/img/lineup/coating/exkeeper/property-5.jpg', alt: '深い透明感' },
-      { src: '/img/lineup/coating/exkeeper/property-6.jpg', alt: 'ミネラル固着防止' },
+      { src: '/img/lineup/coating/exkeeper/property-4.jpg', alt: 'VP326有機被膜の断面 — ミネラル固着を防止' },
+      { src: '/img/lineup/coating/exkeeper/property-5.jpg', alt: '未施工の塗装 — 紫外線でチョーキング（白化）が発生' },
+      { src: '/img/lineup/coating/exkeeper/property-6.jpg', alt: 'EXキーパー施工済み — UV保護で塗装劣化なし' },
     ],
     mechanism: '/img/lineup/coating/exkeeper/property-7-2.png',
   },
   'dia2-premium': {
     logo: '/img/lineup/coating/p_idx_dia2_logo.png',
     features: [
-      { src: '/img/lineup/coating/dia2/dia2_01-mechanism.png', alt: 'ダイヤⅡの2層構造' },
-      { src: '/img/lineup/coating/dia2/dia2_01-water_spot.png', alt: 'ウォータースポット防止技術' },
+      { src: '/img/lineup/coating/dia2/dia2_01-mechanism.png', alt: '高密度ガラス＋ダイヤⅡレジンの2層構造の仕組み' },
+      { src: '/img/lineup/coating/dia2/dia2_01-water_spot.png', alt: '無機質ウォータースポットの形成メカニズム' },
     ],
     mechanism: '/img/lineup/coating/dia2/dia2_01-mechanism.png',
   },
   'dia2': {
     logo: '/img/lineup/coating/p_idx_dia2_logo.png',
     features: [
-      { src: '/img/lineup/coating/dia2/dia2_01-results_report.jpg', alt: '光沢試験結果' },
-      { src: '/img/lineup/coating/dia2/dia2_01-water_spot.png', alt: 'ウォータースポット防止' },
+      { src: '/img/lineup/coating/dia2/dia2_01-results_report.jpg', alt: '第三者機関の光沢テスト — ダイヤモンドの2倍以上の明度変化を記録' },
+      { src: '/img/lineup/coating/dia2/dia2_01-water_spot.png', alt: '有機被膜でウォータースポット・ミネラル固着を抑制' },
     ],
     mechanism: '/img/lineup/coating/dia2/dia2_01-mechanism.png',
     patents: [
-      { src: '/img/lineup/coating/dia2/dia2_01-patent.png', alt: '特許技術' },
+      { src: '/img/lineup/coating/dia2/dia2_01-patent.png', alt: '有機被膜によるウォータースポット抑制の特許技術' },
     ],
   },
   'diamond-premium': {
     logo: '/img/lineup/coating/p_idx_diamond_logo.png',
     features: [
-      { src: '/img/lineup/coating/p_idx_about01.png', alt: 'ガラスの透明感' },
-      { src: '/img/lineup/coating/p_idx_about02.png', alt: '撥水性能' },
+      { src: '/img/lineup/coating/p_idx_about01.png', alt: 'KeePer コーティングで手入れが楽に — 実用的な価値' },
+      { src: '/img/lineup/coating/p_idx_about02.png', alt: '全国6,600店舗 — 特許技術を地域のお店で' },
     ],
   },
   'diamond': {
     logo: '/img/lineup/coating/p_idx_diamond_logo.png',
     features: [
-      { src: '/img/lineup/coating/p_idx_about03.png', alt: '深いガラスの艶' },
-      { src: '/img/lineup/coating/p_idx_about04.jpg', alt: '圧倒的なコーティング膜厚' },
+      { src: '/img/lineup/coating/p_idx_about03.png', alt: '研究に裏付けられた確かな技術と理論' },
+      { src: '/img/lineup/coating/p_idx_about04.jpg', alt: 'ダイヤモンド＆クリスタル — 2大ガラスコーティング' },
     ],
   },
   'fresh': {
     logo: '/img/lineup/coating/p_idx_fresh_logo.png',
     features: [
-      { src: '/img/lineup/coating/fresh/befor_after_1.jpg', alt: '施工ビフォーアフター' },
-      { src: '/img/lineup/coating/fresh/befor_after_2.jpg', alt: '撥水比較' },
-      { src: '/img/lineup/coating/fresh/bouo-dispel.png', alt: '防汚メカニズム' },
+      { src: '/img/lineup/coating/fresh/befor_after_1.jpg', alt: '塗装の凹凸を被膜が埋め、光の乱反射を抑えて艶を向上' },
+      { src: '/img/lineup/coating/fresh/befor_after_2.jpg', alt: '圧倒的な撥水力 — ホコリも水滴と一緒に弾く' },
+      { src: '/img/lineup/coating/fresh/bouo-dispel.png', alt: '防汚メカニズム — 汚れの密着を防ぎ雨で自動洗浄' },
     ],
   },
   'crystal': {
     logo: '/img/lineup/coating/p_idx_crystal_logo.png',
     cover: '/img/lineup/p_price_ckeeper02-dispel.png',
     features: [
-      { src: '/img/lineup/coating/p_crystal03-dispel.png', alt: '塗装面改善の仕組み' },
+      { src: '/img/lineup/coating/p_crystal03-dispel.png', alt: '年1回の再施工でガラス粒子が蓄積 — 塗装面が年々改善' },
     ],
     patents: [
       { src: '/img/lineup/coating/p_crystal01.png', alt: '特許：塗装面保護理論' },
-      { src: '/img/lineup/coating/p_crystal02.png', alt: '特許：ウォータースポット除去' },
+      { src: '/img/lineup/coating/p_crystal02.png', alt: '特許：ウォータースポット除去技術' },
     ],
   },
 };
@@ -277,16 +277,17 @@ export default async function CoatingsPage({ params }: { params: Promise<{ store
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { src: '/img/lineup/coating/p_idx_about01.png', title: '防汚・撥水' },
-              { src: '/img/lineup/coating/p_idx_about02.png', title: '紫外線カット' },
-              { src: '/img/lineup/coating/p_idx_about03.png', title: '艶・光沢UP' },
-              { src: '/img/lineup/coating/p_idx_about04.jpg', title: '資産価値保護' },
+              { src: '/img/lineup/coating/p_idx_about01.png', title: '手入れが楽に', desc: 'コーティングで洗車の手間を大幅削減' },
+              { src: '/img/lineup/coating/p_idx_about02.png', title: '全国の認定店', desc: '特許技術を地域のKeePer店舗で' },
+              { src: '/img/lineup/coating/p_idx_about03.png', title: '確かな技術', desc: '研究に裏付けられた理論と品質' },
+              { src: '/img/lineup/coating/p_idx_about04.jpg', title: 'ガラスコーティング', desc: 'KeePer 2大ガラスコーティング' },
             ].map(item => (
               <div key={item.title} className="rounded-lg overflow-hidden border border-slate-200 bg-white">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={`${KEEPER_BASE}${item.src}`} alt={item.title} className="w-full aspect-[4/3] object-cover bg-slate-50" />
                 <div className="px-3 py-2.5 text-center">
                   <h3 className="font-bold text-xs text-[#0f1c2e]">{item.title}</h3>
+                  <p className="text-[10px] text-slate-400 mt-0.5">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -339,12 +340,15 @@ export default async function CoatingsPage({ params }: { params: Promise<{ store
               {/* Cover + description */}
               <div className={`grid ${images?.cover ? 'md:grid-cols-[1fr_1.3fr]' : ''} gap-5 mb-6`}>
                 {images?.cover && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={`${KEEPER_BASE}${images.cover}`}
-                    alt={`${tier.name}`}
-                    className="w-full rounded-lg object-cover aspect-[4/3] bg-slate-100"
-                  />
+                  <figure className="rounded-lg overflow-hidden bg-slate-100">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`${KEEPER_BASE}${images.cover}`}
+                      alt={`${tier.name}`}
+                      className="w-full object-cover aspect-[4/3]"
+                    />
+                    <figcaption className="px-3 py-1.5 text-[11px] text-slate-400 text-center bg-slate-50">{tier.name} — イメージ</figcaption>
+                  </figure>
                 )}
                 <div>
                   <p className="text-[13px] text-slate-600 leading-relaxed mb-4">{tier.description}</p>
@@ -373,13 +377,15 @@ export default async function CoatingsPage({ params }: { params: Promise<{ store
               {images?.features && images.features.length > 0 && (
                 <div className={`grid ${images.features.length === 1 ? 'grid-cols-1 max-w-[400px]' : images.features.length === 2 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3'} gap-2.5 mb-6`}>
                   {images.features.map((img, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={i}
-                      src={`${KEEPER_BASE}${img.src}`}
-                      alt={img.alt}
-                      className="w-full rounded-lg object-cover aspect-[3/2] bg-slate-100 border border-slate-200"
-                    />
+                    <figure key={i} className="rounded-lg overflow-hidden border border-slate-200 bg-slate-50">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`${KEEPER_BASE}${img.src}`}
+                        alt={img.alt}
+                        className="w-full object-cover aspect-[3/2] bg-slate-100"
+                      />
+                      <figcaption className="px-2.5 py-1.5 text-[11px] text-slate-500 text-center">{img.alt}</figcaption>
+                    </figure>
                   ))}
                 </div>
               )}
@@ -408,12 +414,15 @@ export default async function CoatingsPage({ params }: { params: Promise<{ store
                     <p className="text-[13px] text-white/75 leading-relaxed">{details.technology}</p>
                   </div>
                   {images?.mechanism && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={`${KEEPER_BASE}${images.mechanism}`}
-                      alt="被膜構造図"
-                      className="w-full rounded-lg object-contain bg-white border border-slate-200 p-3"
-                    />
+                    <figure className="rounded-lg overflow-hidden border border-slate-200 bg-white">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`${KEEPER_BASE}${images.mechanism}`}
+                        alt="被膜構造図"
+                        className="w-full object-contain p-3"
+                      />
+                      <figcaption className="px-3 py-1.5 text-[11px] text-slate-400 text-center border-t border-slate-100">被膜構造図</figcaption>
+                    </figure>
                   )}
                 </div>
               )}

@@ -126,6 +126,14 @@ export default function AdminPage() {
   const [campaignStart, setCampaignStart] = useState('2026-04-01');
   const [campaignEnd, setCampaignEnd] = useState('2026-04-30');
   const [campaignDiscount, setCampaignDiscount] = useState('20%');
+  const [campaignSaved, setCampaignSaved] = useState(false);
+
+  function handleCampaignSave() {
+    const data = { title: campaignTitle, color: bannerColor, start: campaignStart, end: campaignEnd, discount: campaignDiscount };
+    localStorage.setItem('admin_campaign', JSON.stringify(data));
+    setCampaignSaved(true);
+    setTimeout(() => setCampaignSaved(false), 3000);
+  }
 
   function handleCSVTemplateDownload() {
     const headers = [
@@ -505,7 +513,10 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <button className="px-6 py-2.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold">保存して全店舗に反映</button>
+            <button onClick={handleCampaignSave} className="px-6 py-2.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold">保存して全店舗に反映</button>
+            {campaignSaved && (
+              <p className="text-xs text-green-600 font-semibold mt-2">✓ キャンペーン設定を保存しました</p>
+            )}
             <p className="text-xs text-gray-400 mt-2">※ 店舗個別のcampaign_titleが設定されている店舗にはHQデフォルトは適用されません</p>
           </div>
         )}

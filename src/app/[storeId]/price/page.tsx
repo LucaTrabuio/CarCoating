@@ -9,6 +9,7 @@ import OptionCalculator from '@/components/OptionCalculator';
 import { CarSize } from '@/lib/types';
 import { coatingTiers } from '@/data/coating-tiers';
 import { getWebPrice, formatPrice, sizeLabels, getTotalCostOverYears } from '@/lib/pricing';
+import { getStoreById } from '@/lib/store-data';
 import Link from 'next/link';
 
 const ALL_SIZES: CarSize[] = ['SS', 'S', 'M', 'L', 'LL', 'XL'];
@@ -25,7 +26,8 @@ function PricePageContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const storeId = params.storeId as string;
-  const discountRate = 20; // TODO: load from store CSV at build time
+  const store = getStoreById(storeId);
+  const discountRate = store?.discount_rate ?? 20;
 
   const [selectedSize, setSelectedSize] = useState<CarSize | null>(null);
   const [selectedMake, setSelectedMake] = useState('');
