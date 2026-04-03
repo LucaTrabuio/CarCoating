@@ -198,9 +198,13 @@ export default async function StorePage({ params }: { params: Promise<{ storeId:
           <h2 className="text-xl font-bold text-[#0f1c2e] text-center mb-8" style={{ fontFamily: '"Noto Serif JP", serif' }}>アクセス</h2>
           <div className="grid md:grid-cols-[3fr_2fr] gap-8">
             <div>
-              {store.access_map_url ? (
+              {(store.access_map_url || (store.lat && store.lng)) ? (
                 <iframe
-                  src={store.access_map_url.replace('maps?q=', 'maps?q=').replace(' ', '+') + '&output=embed'}
+                  src={
+                    store.access_map_url
+                      ? store.access_map_url.replace(' ', '+') + '&output=embed'
+                      : `https://www.google.com/maps?q=${store.lat},${store.lng}&z=16&output=embed`
+                  }
                   className="w-full aspect-[4/3] rounded-xl border-0"
                   loading="lazy"
                   allowFullScreen
