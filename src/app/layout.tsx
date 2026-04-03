@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Serif_JP } from "next/font/google";
+import VersionSwitcher from "@/components/VersionSwitcher";
 import "./globals.css";
 
 const notoSerif = Noto_Serif_JP({
@@ -21,7 +22,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={`${notoSerif.variable} antialiased`}>
-      <body className="min-h-screen font-sans">{children}</body>
+      <body className="min-h-screen font-sans">
+        {children}
+        <VersionSwitcher />
+      </body>
     </html>
   );
 }

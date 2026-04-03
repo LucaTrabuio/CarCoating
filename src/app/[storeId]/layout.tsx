@@ -41,13 +41,13 @@ export default async function StoreLayout({
         tel={store.tel}
         lineUrl={store.line_url}
       />
-      <DynamicBanner
-        title={campaign.title}
-        discountRate={campaign.discount_rate}
-        deadline={campaign.deadline}
-        colorCode={campaign.color}
-      />
       <div className="pt-14">
+        <DynamicBanner
+          title={campaign.title}
+          discountRate={campaign.discount_rate}
+          deadline={campaign.deadline}
+          colorCode={campaign.color}
+        />
         {children}
       </div>
       <Footer

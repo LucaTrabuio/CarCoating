@@ -260,12 +260,11 @@ function PricePageContent() {
                   </h2>
                   <p className="text-sm text-gray-500 mt-1">チェックすると合計額がリアルタイムで更新されます</p>
                 </div>
-                <BlurOverlay ctaText="オプション詳細を見る" ctaHref="/booking?mode=inquiry" subtitle="オプション料金の詳細はご予約・お問い合わせ時にご案内します">
-                  <OptionCalculator
-                    basePlanPrice={getWebPrice(selectedTier, selectedSize, discountRate)}
-                    basePlanName={`${selectedTier.name}（${selectedSize}サイズ）`}
-                  />
-                </BlurOverlay>
+                <OptionCalculator
+                  basePlanPrice={getWebPrice(selectedTier, selectedSize, discountRate)}
+                  basePlanName={`${selectedTier.name}（${selectedSize}サイズ）`}
+                  blurPrices={true}
+                />
                 <div className="mt-6 text-center">
                   <Link
                     href={`/booking?plan=${selectedTier.id}&size=${selectedSize}&make=${encodeURIComponent(selectedMake)}&model=${encodeURIComponent(selectedModel)}`}

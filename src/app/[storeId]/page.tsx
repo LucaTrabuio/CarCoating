@@ -213,22 +213,16 @@ export default async function StoreHomePage({
           <div className="grid md:grid-cols-2 gap-8">
             {/* Map */}
             <div className="rounded-xl overflow-hidden border border-gray-200 bg-white">
-              {store.access_map_url ? (
-                <iframe
-                  src={store.access_map_url}
-                  width="100%"
-                  height="350"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title={`${store.store_name} 地図`}
-                />
-              ) : (
-                <div className="h-[350px] bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
-                  地図を準備中
-                </div>
-              )}
+              <iframe
+                src={`https://maps.google.com/maps?q=${store.lat},${store.lng}&z=15&output=embed`}
+                width="100%"
+                height="350"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title={`${store.store_name} 地図`}
+              />
             </div>
 
             {/* Details */}

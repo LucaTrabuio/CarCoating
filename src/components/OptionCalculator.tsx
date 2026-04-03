@@ -49,10 +49,11 @@ interface OptionCalculatorProps {
   basePlanPrice: number;
   basePlanName: string;
   optionDiscountRate?: number;
+  blurPrices?: boolean;
   onTotalChange?: (total: number, selectedOptions: string[]) => void;
 }
 
-export default function OptionCalculator({ basePlanPrice, basePlanName, optionDiscountRate = 10, onTotalChange }: OptionCalculatorProps) {
+export default function OptionCalculator({ basePlanPrice, basePlanName, optionDiscountRate = 10, blurPrices = false, onTotalChange }: OptionCalculatorProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showAll, setShowAll] = useState(false);
 
@@ -98,7 +99,7 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
                   <div className="text-[11px] text-gray-400">{opt.description} ｜ {opt.time}</div>
                 </div>
               </div>
-              <div className="text-right whitespace-nowrap">
+              <div className={`text-right whitespace-nowrap ${blurPrices ? 'blur-[5px] select-none' : ''}`}>
                 <div className="text-[10px] text-gray-400 line-through">+{formatPrice(opt.price)}</div>
                 <div className="text-sm font-semibold text-amber-700">+{formatPrice(Math.round(opt.price * (1 - optionDiscountRate / 100)))}</div>
               </div>
@@ -140,7 +141,7 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
       )}
 
       {/* Running total */}
-      <div className="mt-4 bg-[#0f1c2e] text-white rounded-xl p-4">
+      <div className={`mt-4 bg-[#0f1c2e] text-white rounded-xl p-4 ${blurPrices ? 'blur-[5px] select-none' : ''}`}>
         <div className="flex justify-between items-center">
           <span className="text-sm">お見積もり合計（税込）</span>
           <span className="text-2xl font-bold text-amber-300">{formatPrice(total)}</span>
