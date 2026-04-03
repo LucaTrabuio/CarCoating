@@ -5,6 +5,7 @@ import { formatPrice, getWebPrice } from '@/lib/pricing';
 import TrustStrip from '@/components/TrustStrip';
 import TrustBadges from '@/components/TrustBadges';
 import CarSimulator from '@/components/CarSimulator';
+import HomeSimulatorLink from '@/components/HomeSimulatorLink';
 import Link from 'next/link';
 
 export async function generateMetadata({ params }: { params: Promise<{ storeId: string }> }) {
@@ -74,13 +75,7 @@ export default async function StorePage({ params }: { params: Promise<{ storeId:
             あなたの車の見積もりを30秒で
           </h2>
           <p className="text-sm text-gray-500 mb-6">車種を選ぶだけ。全8プランの料金を即表示。</p>
-          <CarSimulator />
-          <Link
-            href={`/${storeId}/price`}
-            className="inline-block mt-6 px-8 py-3 bg-gradient-to-br from-amber-600 via-amber-400 to-amber-700 text-white font-bold rounded-lg text-base hover:opacity-90 transition-opacity"
-          >
-            見積もりシミュレーターへ →
-          </Link>
+          <HomeSimulatorLink storeId={storeId} />
         </div>
       </section>
 

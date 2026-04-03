@@ -27,6 +27,7 @@ export default function Header({ storeId, storeName, tel, lineUrl }: HeaderProps
 
         <nav className="hidden md:flex gap-5">
           <Link href={base} className="text-white/60 text-[13px] hover:text-white transition-colors">ホーム</Link>
+          <Link href={`${base}/coatings`} className="text-white/60 text-[13px] hover:text-white transition-colors">メニュー</Link>
           <Link href={`${base}/price`} className="text-white/60 text-[13px] hover:text-white transition-colors">見積もり</Link>
           <Link href={`${base}/cases`} className="text-white/60 text-[13px] hover:text-white transition-colors">施工事例</Link>
           <Link href={`${base}/booking`} className="text-white/60 text-[13px] hover:text-white transition-colors">ご予約</Link>
@@ -57,6 +58,7 @@ export default function Header({ storeId, storeName, tel, lineUrl }: HeaderProps
       {menuOpen && (
         <nav className="md:hidden bg-[#0f1c2e] border-t border-white/[.06] px-5 py-4 flex flex-col gap-3">
           <Link href={base} className="text-white/80 text-sm" onClick={() => setMenuOpen(false)}>ホーム</Link>
+          <Link href={`${base}/coatings`} className="text-white/80 text-sm" onClick={() => setMenuOpen(false)}>コーティングメニュー</Link>
           <Link href={`${base}/price`} className="text-white/80 text-sm" onClick={() => setMenuOpen(false)}>見積もりシミュレーター</Link>
           <Link href={`${base}/cases`} className="text-white/80 text-sm" onClick={() => setMenuOpen(false)}>施工事例</Link>
           <Link href={`${base}/reviews`} className="text-white/80 text-sm" onClick={() => setMenuOpen(false)}>お客様の声・Q&A</Link>

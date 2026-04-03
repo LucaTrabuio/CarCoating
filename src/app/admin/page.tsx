@@ -23,6 +23,40 @@ export default function AdminPage() {
   const [tab, setTab] = useState<Tab>('bookings');
   const [csvPreview, setCsvPreview] = useState<string[][] | null>(null);
 
+  // Campaign settings (controlled state for live preview)
+  const [campaignTitle, setCampaignTitle] = useState('春の新生活キャンペーン');
+  const [bannerColor, setBannerColor] = useState('#c49a2a');
+  const [campaignStart, setCampaignStart] = useState('2026-04-01');
+  const [campaignEnd, setCampaignEnd] = useState('2026-04-30');
+  const [campaignDiscount, setCampaignDiscount] = useState('20%');
+
+  function handleCSVTemplateDownload() {
+    const headers = [
+      'store_id', 'store_name', 'address', 'postal_code', 'prefecture', 'city',
+      'tel', 'business_hours', 'regular_holiday', 'access_map_url', 'lat', 'lng',
+      'has_booth', 'level1_staff_count', 'level2_staff_count',
+      'seo_keywords', 'meta_description',
+      'campaign_title', 'campaign_deadline', 'discount_rate', 'campaign_color_code', 'min_price_limit',
+      'google_place_id', 'line_url', 'parking_spaces', 'landmark', 'nearby_stations'
+    ];
+    const example = [
+      'tokyo-shinjuku', 'KeePer PRO SHOP 新宿高島屋店', '東京都新宿区千駄ヶ谷5-24-2', '151-0051', '東京都', '新宿区',
+      '03-1234-5678', '9:00〜18:00', '年中無休', '', '35.6896', '139.7006',
+      'TRUE', '2', '1',
+      'コーティング 新宿', 'KeePer PRO SHOP 新宿店',
+      '春の新生活キャンペーン', '2026-04-30', '20', '#c49a2a', '14560',
+      'ChIJ...', 'https://line.me/...', '3', '高島屋タイムズスクエア隣', '"[{\\"name\\":\\"新宿駅\\",\\"time\\":\\"徒歩5分\\"}]"'
+    ];
+    const csv = headers.join(',') + '\n' + example.join(',');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'store_template.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function handleCSVUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -130,6 +164,7 @@ export default function AdminPage() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-bold text-lg">店舗マスターCSV管理</h2>
               <div className="flex gap-2">
+                <button onClick={handleCSVTemplateDownload} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📋 テンプレート</button>
                 <button className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📤 CSVエクスポート</button>
                 <label className="px-3 py-1.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
                   📥 CSVインポート
@@ -220,33 +255,36 @@ export default function AdminPage() {
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
                 <label className="block text-xs font-semibold mb-1">キャンペーンタイトル</label>
-                <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" defaultValue="春の新生活キャンペーン" />
+                <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" value={campaignTitle} onChange={e => setCampaignTitle(e.target.value)} />
               </div>
               <div>
                 <label className="block text-xs font-semibold mb-1">バナーカラーコード</label>
-                <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" defaultValue="#c49a2a" />
+                <div className="flex gap-2">
+                  <input className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" value={bannerColor} onChange={e => setBannerColor(e.target.value)} />
+                  <input type="color" value={bannerColor} onChange={e => setBannerColor(e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-300" />
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
                 <label className="block text-xs font-semibold mb-1">適用期間</label>
-                <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" defaultValue="2026-04-01" />
+                <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" value={campaignStart} onChange={e => setCampaignStart(e.target.value)} />
                 <span className="text-xs text-gray-400">〜</span>
-                <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mt-1" defaultValue="2026-04-30" />
+                <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mt-1" value={campaignEnd} onChange={e => setCampaignEnd(e.target.value)} />
               </div>
               <div>
                 <label className="block text-xs font-semibold mb-1">デフォルト割引率</label>
-                <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" defaultValue="20%" />
+                <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" value={campaignDiscount} onChange={e => setCampaignDiscount(e.target.value)} />
                 <p className="text-xs text-gray-400 mt-1">店舗個別設定がある場合はそちらが優先</p>
               </div>
             </div>
 
-            {/* Preview */}
+            {/* Live Preview */}
             <div className="mt-4 mb-4">
-              <p className="text-xs text-gray-400 mb-2">プレビュー:</p>
-              <div className="text-white text-center py-3 px-5 font-bold text-sm rounded-lg" style={{ background: 'linear-gradient(135deg, #c49a2a, #e8c96d 40%, #c49a2a 60%, #a07d1e)' }}>
-                春の新生活キャンペーン ｜ 最大20%OFF
-                <div className="text-[11px] font-normal opacity-80 mt-0.5">Web予約限定 ｜ 2026/4/30まで</div>
+              <p className="text-xs text-gray-400 mb-2">プレビュー（リアルタイム）:</p>
+              <div className="text-white text-center py-3 px-5 font-bold text-sm rounded-lg" style={{ background: `linear-gradient(135deg, ${bannerColor}, ${bannerColor}88 40%, ${bannerColor} 60%, ${bannerColor}cc)` }}>
+                {campaignTitle || 'キャンペーンタイトル'} ｜ 最大{campaignDiscount || '0%'}OFF
+                <div className="text-[11px] font-normal opacity-80 mt-0.5">Web予約限定 ｜ {campaignEnd ? new Date(campaignEnd + 'T00:00:00').toLocaleDateString('ja-JP') : '—'}まで</div>
               </div>
             </div>
 

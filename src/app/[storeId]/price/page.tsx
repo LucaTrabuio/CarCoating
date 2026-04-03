@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 import CarSimulator from '@/components/CarSimulator';
 import PricingTable from '@/components/PricingTable';
 import ComparisonMatrix from '@/components/ComparisonMatrix';
@@ -11,8 +11,19 @@ import { coatingTiers } from '@/data/coating-tiers';
 import { getWebPrice, formatPrice, sizeLabels, getTotalCostOverYears } from '@/lib/pricing';
 import Link from 'next/link';
 
+const ALL_SIZES: CarSize[] = ['SS', 'S', 'M', 'L', 'LL', 'XL'];
+
 export default function PricePage() {
+  return (
+    <Suspense>
+      <PricePageContent />
+    </Suspense>
+  );
+}
+
+function PricePageContent() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const storeId = params.storeId as string;
   const discountRate = 20; // TODO: load from store CSV at build time
 
@@ -20,6 +31,19 @@ export default function PricePage() {
   const [selectedMake, setSelectedMake] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [sizeMode, setSizeMode] = useState<'car' | 'size'>('car');
+
+  // Read URL params from homepage on mount
+  useEffect(() => {
+    const size = searchParams.get('size') as CarSize | null;
+    const make = searchParams.get('make');
+    const model = searchParams.get('model');
+    if (size && ALL_SIZES.includes(size)) {
+      setSelectedSize(size);
+      if (make) setSelectedMake(make);
+      if (model) setSelectedModel(model);
+    }
+  }, [searchParams]);
 
   const selectedTier = selectedPlan ? coatingTiers.find(t => t.id === selectedPlan) : null;
 
@@ -27,7 +51,19 @@ export default function PricePage() {
     setSelectedSize(size);
     setSelectedMake(make);
     setSelectedModel(model);
+    setSelectedPlan(null);
   }
+
+  function handleDirectSizeSelect(size: CarSize) {
+    setSelectedSize(size);
+    setSelectedMake('');
+    setSelectedModel('');
+    setSelectedPlan(null);
+  }
+
+  const sizeHeading = selectedMake && selectedModel
+    ? `${selectedMake} ${selectedModel}（${selectedSize}サイズ）の料金`
+    : `${selectedSize}サイズの料金`;
 
   return (
     <main>
@@ -38,9 +74,61 @@ export default function PricePage() {
             <h1 className="text-white text-xl md:text-2xl font-bold" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>
               見積もりシミュレーター
             </h1>
-            <p className="text-white/50 text-sm mt-1">車種を選ぶだけ。全8プランの料金を即表示。</p>
+            <p className="text-white/50 text-sm mt-1">車種を選ぶか、サイズで直接料金を確認できます。</p>
           </div>
-          <CarSimulator onSizeChange={handleSizeChange} />
+
+          {/* Mode toggle */}
+          <div className="flex justify-center gap-2 mb-6">
+            <button
+              onClick={() => setSizeMode('car')}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
+                sizeMode === 'car'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white/10 text-white/60 hover:bg-white/20'
+              }`}
+            >
+              車種から探す
+            </button>
+            <button
+              onClick={() => setSizeMode('size')}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${
+                sizeMode === 'size'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white/10 text-white/60 hover:bg-white/20'
+              }`}
+            >
+              サイズから探す
+            </button>
+          </div>
+
+          {sizeMode === 'car' ? (
+            <CarSimulator onSizeChange={handleSizeChange} />
+          ) : (
+            <div className="max-w-[700px] mx-auto">
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                {ALL_SIZES.map(size => (
+                  <button
+                    key={size}
+                    onClick={() => handleDirectSizeSelect(size)}
+                    className={`py-3 px-2 rounded-lg text-center transition-all cursor-pointer ${
+                      selectedSize === size && sizeMode === 'size'
+                        ? 'bg-amber-500 text-white ring-2 ring-amber-300'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    <div className="text-lg font-bold">{size}</div>
+                    <div className="text-[10px] opacity-70 mt-0.5">{sizeLabels[size].replace(`${size}サイズ`, '').replace('（', '').replace('）', '')}</div>
+                  </button>
+                ))}
+              </div>
+              {selectedSize && sizeMode === 'size' && (
+                <div className="mt-4 p-4 bg-amber-50 border-2 border-amber-500 rounded-lg text-center">
+                  <span className="text-2xl font-bold text-amber-700">{selectedSize}サイズ</span>
+                  <p className="text-xs text-gray-500 mt-1">{sizeLabels[selectedSize]}</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -51,7 +139,7 @@ export default function PricePage() {
             <div className="max-w-[1100px] mx-auto">
               <div className="text-center mb-8">
                 <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>
-                  {selectedMake} {selectedModel}（{selectedSize}サイズ）の料金
+                  {sizeHeading}
                 </h2>
                 <p className="text-sm text-gray-500 mt-1">Web予約限定割引 ｜ 税込価格</p>
               </div>
@@ -203,7 +291,7 @@ export default function PricePage() {
         <section className="py-20 px-5 text-center">
           <div className="text-6xl mb-4">🚗</div>
           <h2 className="text-xl font-bold text-gray-300 mb-2">上の車種セレクターで車を選んでください</h2>
-          <p className="text-sm text-gray-400">メーカーと車種を選択すると、あなたの車の料金が全プラン表示されます。</p>
+          <p className="text-sm text-gray-400">メーカーと車種を選択するか、サイズを直接選ぶと料金が表示されます。</p>
         </section>
       )}
     </main>
