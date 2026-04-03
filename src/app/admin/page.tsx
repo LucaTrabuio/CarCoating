@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { StoreData } from '@/lib/types';
+import { stores as hardcodedStores } from '@/data/stores';
 
 type Tab = 'bookings' | 'stores' | 'cases' | 'campaigns';
 
@@ -112,11 +113,16 @@ export default function AdminPage() {
   const [csvFileName, setCsvFileName] = useState('');
   const [csvErrors, setCsvErrors] = useState<string[]>([]);
   const [savedStores, setSavedStores] = useState<StoreData[]>(() => {
+    const localStores: StoreData[] = [];
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('admin_stores');
-      if (saved) return JSON.parse(saved);
+      if (saved) localStores.push(...JSON.parse(saved));
     }
-    return [];
+    // Merge: start with hardcoded, override with any localStorage entries
+    const mergedMap = new Map<string, StoreData>();
+    hardcodedStores.forEach(s => mergedMap.set(s.store_id, s));
+    localStores.forEach(s => mergedMap.set(s.store_id, s));
+    return Array.from(mergedMap.values());
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -319,7 +325,7 @@ export default function AdminPage() {
                 <h2 className="font-bold text-lg">店舗マスターCSV管理</h2>
                 <div className="flex gap-2">
                   <button onClick={handleCSVTemplateDownload} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📋 テンプレート</button>
-                  <button onClick={handleExportCSV} disabled={savedStores.length === 0} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed">📤 CSVエクスポート</button>
+                  <button onClick={handleExportCSV} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📤 CSVエクスポート</button>
                   <label className="px-3 py-1.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
                     📥 CSVインポート
                     <input type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
@@ -415,7 +421,7 @@ export default function AdminPage() {
                   ))}
                 </div>
                 <button
-                  onClick={() => { localStorage.removeItem('admin_stores'); setSavedStores([]); setSaveSuccess(false); }}
+                  onClick={() => { localStorage.removeItem('admin_stores'); setSavedStores([...hardcodedStores]); setSaveSuccess(false); }}
                   className="mt-3 text-xs text-red-500 hover:text-red-700"
                 >
                   保存データをクリア
