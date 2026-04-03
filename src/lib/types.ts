@@ -126,3 +126,11 @@ export interface BookingRequest {
 }
 
 export type CarSize = 'SS' | 'S' | 'M' | 'L' | 'LL' | 'XL';
+
+export interface CampaignDefaults {
+  title: string;
+  color: string;
+  start: string;
+  end: string;
+  discount: number;
+}

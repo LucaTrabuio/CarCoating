@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { StoreData } from '@/lib/types';
 import { stores as hardcodedStores } from '@/data/stores';
@@ -130,46 +130,37 @@ export default function AdminPage() {
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Campaign settings — restore from localStorage
-  const [campaignTitle, setCampaignTitle] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin_campaign');
-      if (saved) return JSON.parse(saved).title ?? '春の新生活キャンペーン';
-    }
-    return '春の新生活キャンペーン';
-  });
-  const [bannerColor, setBannerColor] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin_campaign');
-      if (saved) return JSON.parse(saved).color ?? '#c49a2a';
-    }
-    return '#c49a2a';
-  });
-  const [campaignStart, setCampaignStart] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin_campaign');
-      if (saved) return JSON.parse(saved).start ?? '2026-04-01';
-    }
-    return '2026-04-01';
-  });
-  const [campaignEnd, setCampaignEnd] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin_campaign');
-      if (saved) return JSON.parse(saved).end ?? '2026-04-30';
-    }
-    return '2026-04-30';
-  });
-  const [campaignDiscount, setCampaignDiscount] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin_campaign');
-      if (saved) return JSON.parse(saved).discount ?? '20%';
-    }
-    return '20%';
-  });
+  // Campaign settings — restore from Blob API on mount
+  const [campaignTitle, setCampaignTitle] = useState('春の新生活キャンペーン');
+  const [bannerColor, setBannerColor] = useState('#c49a2a');
+  const [campaignStart, setCampaignStart] = useState('2026-04-01');
+  const [campaignEnd, setCampaignEnd] = useState('2026-04-30');
+  const [campaignDiscount, setCampaignDiscount] = useState('20');
   const [campaignSaved, setCampaignSaved] = useState(false);
+  const [campaignLoaded, setCampaignLoaded] = useState(false);
 
-  function handleCampaignSave() {
-    const data = { title: campaignTitle, color: bannerColor, start: campaignStart, end: campaignEnd, discount: campaignDiscount };
+  useEffect(() => {
+    fetch('/api/campaign')
+      .then(r => r.json())
+      .then(data => {
+        if (data.title) setCampaignTitle(data.title);
+        if (data.color) setBannerColor(data.color);
+        if (data.start) setCampaignStart(data.start);
+        if (data.end) setCampaignEnd(data.end);
+        if (data.discount !== undefined) setCampaignDiscount(String(data.discount));
+        setCampaignLoaded(true);
+      })
+      .catch(() => setCampaignLoaded(true));
+  }, []);
+
+  async function handleCampaignSave() {
+    const data = { title: campaignTitle, color: bannerColor, start: campaignStart, end: campaignEnd, discount: parseInt(campaignDiscount) || 20 };
+    try {
+      const res = await fetch('/api/campaign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error('Failed');
+    } catch {
+      // fallback to localStorage
+    }
     localStorage.setItem('admin_campaign', JSON.stringify(data));
     setCampaignSaved(true);
     setTimeout(() => setCampaignSaved(false), 3000);

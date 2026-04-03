@@ -1,4 +1,4 @@
-import { StoreData } from './types';
+import { StoreData, CampaignDefaults } from './types';
 import { stores as storeDataArray } from '@/data/stores';
 
 export function getAllStores(): StoreData[] {
@@ -42,6 +42,26 @@ export function getDefaultCampaign(): { title: string; color: string; deadline: 
     title: 'Web予約限定キャンペーン',
     color: '#c49a2a',
     deadline: '2026-04-30',
+  };
+}
+
+export async function getCampaignDefaultsAsync(baseUrl?: string): Promise<CampaignDefaults> {
+  try {
+    const url = baseUrl ? `${baseUrl}/api/campaign` : '/api/campaign';
+    const res = await fetch(url, { next: { revalidate: 60 } });
+    if (res.ok) return res.json();
+  } catch (e) {
+    console.error('Failed to fetch campaign defaults:', e);
+  }
+  return { title: 'Web予約限定キャンペーン', color: '#c49a2a', start: '2026-04-01', end: '2026-04-30', discount: 20 };
+}
+
+export function mergeStoreCampaign(store: StoreData, defaults: CampaignDefaults) {
+  return {
+    title: store.campaign_title || defaults.title,
+    color: store.campaign_color_code || defaults.color,
+    deadline: store.campaign_deadline || defaults.end,
+    discount_rate: store.discount_rate || defaults.discount,
   };
 }
 
