@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import BookingCalendar from '@/components/BookingCalendar';
 import { coatingTiers } from '@/data/coating-tiers';
 import { formatPrice, getWebPrice, sizeLabels } from '@/lib/pricing';
-import { CarSize } from '@/lib/types';
+import { CarSize, StoreData } from '@/lib/types';
 import Link from 'next/link';
 
 export default function BookingPage() {
@@ -20,6 +20,17 @@ function BookingContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const storeId = params.storeId as string;
+  const [discountRate, setDiscountRate] = useState(20);
+
+  useEffect(() => {
+    fetch('/api/stores')
+      .then(r => r.json())
+      .then((stores: StoreData[]) => {
+        const store = stores.find(s => s.store_id === storeId);
+        if (store?.discount_rate) setDiscountRate(store.discount_rate);
+      })
+      .catch(() => {});
+  }, [storeId]);
 
   // Inherited data from simulator
   const planId = searchParams.get('plan');
@@ -28,7 +39,7 @@ function BookingContent() {
   const model = searchParams.get('model') ? decodeURIComponent(searchParams.get('model')!) : '';
 
   const tier = planId ? coatingTiers.find(t => t.id === planId) : null;
-  const webPrice = tier && size ? getWebPrice(tier, size, 20) : null;
+  const webPrice = tier && size ? getWebPrice(tier, size, discountRate) : null;
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');

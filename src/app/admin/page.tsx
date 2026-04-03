@@ -62,11 +62,14 @@ function parseCSVLine(line: string): string[] {
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 1) return { headers: [], rows: [] };
-  const headers = parseCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/, '').trim()).filter(h => h);
+  const rawHeaders = parseCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/, '').trim());
+  // Keep track of which indices have real headers (to handle trailing commas)
+  const validIndices = rawHeaders.map((h, i) => h ? i : -1).filter(i => i >= 0);
+  const headers = validIndices.map(i => rawHeaders[i]);
   const rows = lines.slice(1).map(line => {
     const values = parseCSVLine(line);
     const row: Record<string, string> = {};
-    headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+    validIndices.forEach((origIdx, newIdx) => { row[headers[newIdx]] = values[origIdx] || ''; });
     return row;
   });
   return { headers, rows };
@@ -125,12 +128,42 @@ export default function AdminPage() {
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Campaign settings (controlled state for live preview)
-  const [campaignTitle, setCampaignTitle] = useState('春の新生活キャンペーン');
-  const [bannerColor, setBannerColor] = useState('#c49a2a');
-  const [campaignStart, setCampaignStart] = useState('2026-04-01');
-  const [campaignEnd, setCampaignEnd] = useState('2026-04-30');
-  const [campaignDiscount, setCampaignDiscount] = useState('20%');
+  // Campaign settings — restore from localStorage
+  const [campaignTitle, setCampaignTitle] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('admin_campaign');
+      if (saved) return JSON.parse(saved).title ?? '春の新生活キャンペーン';
+    }
+    return '春の新生活キャンペーン';
+  });
+  const [bannerColor, setBannerColor] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('admin_campaign');
+      if (saved) return JSON.parse(saved).color ?? '#c49a2a';
+    }
+    return '#c49a2a';
+  });
+  const [campaignStart, setCampaignStart] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('admin_campaign');
+      if (saved) return JSON.parse(saved).start ?? '2026-04-01';
+    }
+    return '2026-04-01';
+  });
+  const [campaignEnd, setCampaignEnd] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('admin_campaign');
+      if (saved) return JSON.parse(saved).end ?? '2026-04-30';
+    }
+    return '2026-04-30';
+  });
+  const [campaignDiscount, setCampaignDiscount] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('admin_campaign');
+      if (saved) return JSON.parse(saved).discount ?? '20%';
+    }
+    return '20%';
+  });
   const [campaignSaved, setCampaignSaved] = useState(false);
 
   function handleCampaignSave() {
@@ -196,12 +229,19 @@ export default function AdminPage() {
 
   async function handleCSVSave() {
     const importedStores = csvRows.map(csvRowToStore).filter(s => s.store_id);
-    // Save to Vercel Blob via API
-    await fetch('/api/stores', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(importedStores),
-    });
+    try {
+      const res = await fetch('/api/stores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(importedStores),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Unknown error' }));
+        setCsvErrors(prev => [...prev, `サーバー保存エラー: ${err.error || res.statusText}（ローカルには保存済み）`]);
+      }
+    } catch {
+      setCsvErrors(prev => [...prev, 'サーバーに接続できません（ローカルには保存済み）']);
+    }
     localStorage.setItem('admin_stores', JSON.stringify(importedStores));
     const mergedMap = new Map<string, StoreData>();
     hardcodedStores.forEach(s => mergedMap.set(s.store_id, s));
@@ -210,7 +250,6 @@ export default function AdminPage() {
     setSaveSuccess(true);
     setCsvHeaders([]);
     setCsvRows([]);
-    setCsvErrors([]);
     setCsvFileName('');
   }
 

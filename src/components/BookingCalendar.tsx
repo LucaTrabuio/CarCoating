@@ -23,6 +23,7 @@ const TIME_SLOTS = [
 
 export default function BookingCalendar({ holidays = [], onChoicesChange }: BookingCalendarProps) {
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -136,7 +137,7 @@ export default function BookingCalendar({ holidays = [], onChoicesChange }: Book
               key={day}
               onClick={() => handleDateClick(day)}
               disabled={unavailable}
-              className={`aspect-square flex items-center justify-center text-sm rounded-md border-2 transition-all
+              className={`relative aspect-square flex items-center justify-center text-sm rounded-md border-2 transition-all
                 ${unavailable ? 'text-gray-300 bg-gray-50 border-transparent cursor-not-allowed' :
                   rank === 1 ? 'bg-amber-500 text-white border-amber-700 font-bold' :
                   rank === 2 ? 'bg-amber-100 text-amber-800 border-amber-500 font-bold' :

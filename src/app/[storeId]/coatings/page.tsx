@@ -8,7 +8,7 @@
  * - Cleaner section dividers with left accent bar per tier
  */
 
-import { getStoreById, getAllStoreIds, getStoreCampaign } from '@/lib/store-data';
+import { getStoreByIdAsync, getBaseUrl, getAllStoreIds, getStoreCampaign } from '@/lib/store-data';
 import { notFound } from 'next/navigation';
 import { coatingTiers } from '@/data/coating-tiers';
 import { formatPrice } from '@/lib/pricing';
@@ -204,7 +204,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) return {};
   return {
     title: `コーティングメニュー一覧｜${store.store_name}｜KeePer PRO SHOP`,
@@ -223,7 +223,7 @@ function Stars({ rating }: { rating: number }) {
 
 export default async function CoatingsPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) notFound();
 
   return (

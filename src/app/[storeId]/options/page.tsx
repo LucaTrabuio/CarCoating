@@ -1,4 +1,4 @@
-import { getStoreById, getAllStoreIds } from '@/lib/store-data';
+import { getStoreByIdAsync, getBaseUrl, getAllStoreIds } from '@/lib/store-data';
 import { notFound } from 'next/navigation';
 import { formatPrice } from '@/lib/pricing';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) return {};
   return {
     title: `オプションメニュー｜${store.store_name}｜KeePer PRO SHOP`,
@@ -88,7 +88,7 @@ const categories: { title: string; description: string; options: Option[] }[] = 
 
 export default async function OptionsPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) notFound();
 
   return (

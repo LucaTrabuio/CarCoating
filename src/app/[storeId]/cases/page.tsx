@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { SAMPLE_CASES } from '@/data/cases-sample';
 import { coatingTiers } from '@/data/coating-tiers';
 import { getPriceForSize, getWebPrice, formatPrice } from '@/lib/pricing';
-import type { CarSize } from '@/lib/types';
+import type { CarSize, StoreData } from '@/lib/types';
 
 const FILTERS = ['すべて', 'クリスタル', 'フレッシュ', 'ダイヤモンド', 'ダイヤⅡ', 'EX'];
 const CAR_TYPES = ['全て', '軽自動車', 'セダン', 'SUV', 'ミニバン', '輸入車'];
@@ -16,11 +16,20 @@ export default function CasesPage() {
   const storeId = params.storeId as string;
   const [filter, setFilter] = useState('すべて');
   const [carTypeFilter, setCarTypeFilter] = useState('全て');
+  const [discountRate, setDiscountRate] = useState(20);
+
+  useEffect(() => {
+    fetch('/api/stores')
+      .then(r => r.json())
+      .then((stores: StoreData[]) => {
+        const store = stores.find(s => s.store_id === storeId);
+        if (store?.discount_rate) setDiscountRate(store.discount_rate);
+      })
+      .catch(() => {});
+  }, [storeId]);
 
   const sorted = [...SAMPLE_CASES].sort((a, b) => b.date.localeCompare(a.date));
   const featured = sorted[0];
-
-  const discountRate = 20;
   const featuredTier = coatingTiers.find(t => t.id === featured.tierId);
   const featuredRegularPrice = featuredTier
     ? formatPrice(getPriceForSize(featuredTier, featured.carSize as CarSize))

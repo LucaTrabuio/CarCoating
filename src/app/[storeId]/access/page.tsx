@@ -1,10 +1,10 @@
-import { getStoreById, getNearbyStations } from '@/lib/store-data';
+import { getStoreByIdAsync, getBaseUrl, getNearbyStations } from '@/lib/store-data';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 export default async function AccessPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) notFound();
   const stations = getNearbyStations(store);
 

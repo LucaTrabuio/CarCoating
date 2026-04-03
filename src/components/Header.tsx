@@ -63,6 +63,7 @@ export default function Header({ storeId, storeName, tel, lineUrl }: HeaderProps
           <Link href={`${base}/price`} className="text-white/60 text-[13px] hover:text-white transition-colors">見積もり</Link>
           <Link href={`${base}/guide`} className="text-white/60 text-[13px] hover:text-white transition-colors">ガイド</Link>
           <Link href={`${base}/cases`} className="text-white/60 text-[13px] hover:text-white transition-colors">施工事例</Link>
+          <Link href={`${base}/reviews`} className="text-white/60 text-[13px] hover:text-white transition-colors">お客様の声</Link>
           <Link href={`${base}/booking`} className="text-white/60 text-[13px] hover:text-white transition-colors">ご予約</Link>
         </nav>
 

@@ -1,9 +1,9 @@
-import { getStoreById } from '@/lib/store-data';
+import { getStoreByIdAsync, getBaseUrl } from '@/lib/store-data';
 import { notFound } from 'next/navigation';
 
 export default async function PrivacyPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) notFound();
 
   return (

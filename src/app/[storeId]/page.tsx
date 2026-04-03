@@ -1,4 +1,4 @@
-import { getStoreById, getStoreCampaign, getNearbyStations } from '@/lib/store-data';
+import { getStoreByIdAsync, getBaseUrl, getStoreCampaign, getNearbyStations } from '@/lib/store-data';
 import { notFound } from 'next/navigation';
 import { coatingTiers } from '@/data/coating-tiers';
 import { SAMPLE_CASES } from '@/data/cases-sample';
@@ -11,7 +11,7 @@ import Link from 'next/link';
 
 export async function generateMetadata({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) return {};
   return {
     title: `${store.store_name}｜KeePer PRO SHOP カーコーティング専門店`,
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ storeId: 
 
 export default async function StorePage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) notFound();
 
   const campaign = getStoreCampaign(store);

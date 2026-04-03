@@ -1,4 +1,4 @@
-import { getStoreById, getAllStoreIds } from '@/lib/store-data';
+import { getStoreByIdAsync, getBaseUrl, getAllStoreIds } from '@/lib/store-data';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
@@ -8,7 +8,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) return {};
   return {
     title: `カーコーティングガイド｜${store.store_name}｜KeePer PRO SHOP`,
@@ -116,7 +116,7 @@ const articles = [
 
 export default async function GuidePage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
-  const store = getStoreById(storeId);
+  const store = await getStoreByIdAsync(storeId, await getBaseUrl());
   if (!store) notFound();
 
   return (

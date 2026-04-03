@@ -1,8 +1,8 @@
-import { getAllStores } from '@/lib/store-data';
+import { getAllStoresAsync, getBaseUrl } from '@/lib/store-data';
 import Link from 'next/link';
 
-export default function Home() {
-  const stores = getAllStores();
+export default async function Home() {
+  const stores = await getAllStoresAsync(await getBaseUrl());
 
   return (
     <main className="min-h-screen bg-[#0f1c2e]">

@@ -20,6 +20,19 @@ export function getStoreById(storeId: string): StoreData | undefined {
   return getAllStores().find(s => s.store_id === storeId);
 }
 
+export async function getStoreByIdAsync(storeId: string, baseUrl?: string): Promise<StoreData | undefined> {
+  const stores = await getAllStoresAsync(baseUrl);
+  return stores.find(s => s.store_id === storeId);
+}
+
+export async function getBaseUrl(): Promise<string> {
+  const { headers } = await import('next/headers');
+  const headersList = await headers();
+  const host = headersList.get('host') ?? 'localhost:3000';
+  const protocol = host.startsWith('localhost') ? 'http' : 'https';
+  return `${protocol}://${host}`;
+}
+
 export function getAllStoreIds(): string[] {
   return getAllStores().map(s => s.store_id);
 }
