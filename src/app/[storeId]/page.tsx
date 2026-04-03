@@ -1,6 +1,7 @@
 import { getStoreById, getStoreCampaign, getNearbyStations } from '@/lib/store-data';
 import { notFound } from 'next/navigation';
 import { coatingTiers } from '@/data/coating-tiers';
+import { SAMPLE_CASES } from '@/data/cases-sample';
 import { formatPrice, getWebPrice } from '@/lib/pricing';
 import TrustStrip from '@/components/TrustStrip';
 import TrustBadges from '@/components/TrustBadges';
@@ -26,6 +27,10 @@ export default async function StorePage({ params }: { params: Promise<{ storeId:
 
   const campaign = getStoreCampaign(store);
   const stations = getNearbyStations(store);
+  const recentCases = [...SAMPLE_CASES]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 4);
+
   const featured = [
     coatingTiers.find(t => t.id === 'crystal')!,
     coatingTiers.find(t => t.id === 'diamond')!,
@@ -118,21 +123,21 @@ export default async function StorePage({ params }: { params: Promise<{ storeId:
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
-              施工事例 — ビフォーアフター
+              施工事例
             </h2>
           </div>
           <div className="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory">
-            {[0,1,2,3].map(i => (
+            {recentCases.map((c, i) => (
               <div key={i} className="flex-shrink-0 w-[280px] snap-start rounded-xl overflow-hidden border border-gray-200 bg-white">
-                <div className="grid grid-cols-2 relative">
-                  <div className="bg-[#e8e4db] h-[120px] flex items-center justify-center text-xs text-gray-500">BEFORE</div>
-                  <div className="bg-gray-200 h-[120px] flex items-center justify-center text-xs text-gray-500">AFTER</div>
-                  <span className="absolute top-1 left-1 text-[9px] bg-black/50 text-white px-1.5 py-0.5 rounded">BEFORE</span>
-                  <span className="absolute top-1 right-1 text-[9px] bg-black/50 text-white px-1.5 py-0.5 rounded">AFTER</span>
+                <div className="bg-gray-100 h-[160px] flex items-center justify-center">
+                  {c.imageUrl
+                    ? <img src={c.imageUrl} alt={c.car} className="w-full h-full object-cover" />
+                    : <span className="text-xs text-gray-400">画像準備中</span>
+                  }
                 </div>
                 <div className="p-3">
-                  <div className="text-sm font-bold text-[#0f1c2e]">施工事例 #{i + 1}</div>
-                  <div className="text-xs text-gray-500">ダイヤモンドキーパー ｜ 6ヶ月経過</div>
+                  <div className="text-sm font-bold text-[#0f1c2e]">{c.car}</div>
+                  <div className="text-xs text-gray-500">{c.coatingType} ｜ {c.date}</div>
                 </div>
               </div>
             ))}
