@@ -94,12 +94,18 @@ export default function V3HomePage() {
   }, []);
 
   // Init map when section is visible
+  const userPosRef = useRef<{ lat: number; lng: number } | null>(null);
+
   const initMap = useCallback(() => {
     if (storesLoading || !mapRef.current || mapReady) return;
     loadGoogleMaps().then(maps => {
+      // If user location already known, start centered there
+      const center = userPosRef.current || { lat: 36.5, lng: 137.5 };
+      const zoom = userPosRef.current ? 13 : 6;
+
       const map = new maps.Map(mapRef.current!, {
-        center: { lat: 36.5, lng: 137.5 },
-        zoom: 6,
+        center,
+        zoom,
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
@@ -107,10 +113,21 @@ export default function V3HomePage() {
       mapInstanceRef.current = map;
       infoWindowRef.current = new maps.InfoWindow();
 
+      // Show user marker if already positioned
+      if (userPosRef.current) {
+        userMarkerRef.current = new maps.Marker({
+          position: userPosRef.current, map, title: '現在地',
+          icon: { path: maps.SymbolPath.CIRCLE, scale: 8, fillColor: '#3b82f6', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 3 },
+          zIndex: 999,
+        });
+      }
+
       stores.forEach(store => {
-        if (!store.lat || !store.lng) return;
+        const lat = Number(store.lat);
+        const lng = Number(store.lng);
+        if (!lat || !lng || isNaN(lat) || isNaN(lng)) return;
         const marker = new maps.Marker({
-          position: { lat: store.lat, lng: store.lng },
+          position: { lat, lng },
           map,
           title: store.store_name,
           icon: { path: maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#f59e0b', fillOpacity: 1, strokeColor: '#0f1c2e', strokeWeight: 2 },
@@ -126,7 +143,7 @@ export default function V3HomePage() {
             </div>
           `);
           infoWindowRef.current?.open(map, marker);
-          map.panTo({ lat: store.lat, lng: store.lng });
+          map.panTo({ lat, lng });
           document.getElementById(`store-card-${store.store_id}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
         markersRef.current.push(marker);
@@ -135,15 +152,26 @@ export default function V3HomePage() {
     });
   }, [storesLoading, stores, mapReady]);
 
-  // Observe map section visibility
+  // Init map when stores are loaded
   useEffect(() => {
-    if (!mapSectionRef.current) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { initMap(); observer.disconnect(); }
-    }, { threshold: 0.1 });
-    observer.observe(mapSectionRef.current);
-    return () => observer.disconnect();
+    initMap();
   }, [initMap]);
+
+  // Apply user position to map if geolocation completes after map is ready
+  useEffect(() => {
+    if (mapReady && userPos && mapInstanceRef.current) {
+      mapInstanceRef.current.setCenter(userPos);
+      mapInstanceRef.current.setZoom(13);
+      if (!userMarkerRef.current) {
+        const maps = window.google.maps;
+        userMarkerRef.current = new maps.Marker({
+          position: userPos, map: mapInstanceRef.current, title: '現在地',
+          icon: { path: maps.SymbolPath.CIRCLE, scale: 8, fillColor: '#3b82f6', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 3 },
+          zIndex: 999,
+        });
+      }
+    }
+  }, [mapReady, userPos]);
 
   const detectLocation = useCallback(() => {
     if (!navigator.geolocation) { setGeoStatus('denied'); return; }
@@ -151,12 +179,13 @@ export default function V3HomePage() {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
+        userPosRef.current = { lat: latitude, lng: longitude };
         setUserPos({ lat: latitude, lng: longitude });
         setGeoStatus('done');
         setStores(prev => {
           const sorted = prev.map(s => ({
             ...s,
-            distance: s.lat && s.lng ? haversineKm(latitude, longitude, s.lat, s.lng) : null,
+            distance: s.lat && s.lng ? haversineKm(latitude, longitude, Number(s.lat), Number(s.lng)) : null,
           }));
           sorted.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
           return sorted;
@@ -170,7 +199,7 @@ export default function V3HomePage() {
             zIndex: 999,
           });
           mapInstanceRef.current.setCenter({ lat: latitude, lng: longitude });
-          mapInstanceRef.current.setZoom(10);
+          mapInstanceRef.current.setZoom(13);
         }
       },
       () => setGeoStatus('denied'),
@@ -182,7 +211,7 @@ export default function V3HomePage() {
     setSelectedStore(storeId);
     const store = stores.find(s => s.store_id === storeId);
     if (store && mapInstanceRef.current) {
-      mapInstanceRef.current.panTo({ lat: store.lat, lng: store.lng });
+      mapInstanceRef.current.panTo({ lat: Number(store.lat), lng: Number(store.lng) });
       mapInstanceRef.current.setZoom(13);
     }
   };
