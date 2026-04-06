@@ -8,12 +8,13 @@ interface HeaderProps {
   storeName: string;
   tel: string;
   lineUrl?: string;
+  basePath?: string;
 }
 
-export default function Header({ storeId, storeName, tel, lineUrl }: HeaderProps) {
+export default function Header({ storeId, storeName, tel, lineUrl, basePath }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuDropdown, setMenuDropdown] = useState(false);
-  const base = `/${storeId}`;
+  const base = basePath || `/${storeId}`;
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f1c2e]/97 backdrop-blur-md border-b border-white/[.06]">

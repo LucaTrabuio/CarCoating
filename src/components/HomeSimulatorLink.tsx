@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import CarSimulator from '@/components/CarSimulator';
 import { CarSize } from '@/lib/types';
 
-export default function HomeSimulatorLink({ storeId }: { storeId: string }) {
+export default function HomeSimulatorLink({ storeId, basePath }: { storeId: string; basePath?: string }) {
   const router = useRouter();
   const [selection, setSelection] = useState<{ size: CarSize; make: string; model: string } | null>(null);
 
@@ -21,7 +21,8 @@ export default function HomeSimulatorLink({ storeId }: { storeId: string }) {
       params.set('size', selection.size);
     }
     const qs = params.toString();
-    router.push(`/${storeId}/price${qs ? `?${qs}` : ''}`);
+    const base = basePath || `/${storeId}`;
+    router.push(`${base}/price${qs ? `?${qs}` : ''}`);
   }
 
   return (

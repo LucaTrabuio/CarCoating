@@ -6,15 +6,9 @@ import Link from 'next/link';
 export default function VersionSwitcher() {
   const pathname = usePathname();
 
-  // Detect which version we're on
-  const isV1 = pathname.startsWith('/stores') || /^\/[^/]+\/(price|coatings|booking|cases|access|options|guide|reviews|privacy)/.test(pathname) || /^\/(?!admin|api|blog|price|coatings|booking|cases|privacy|stores)[^/]+$/.test(pathname);
-  const isStores = pathname === '/stores';
+  const isV3 = pathname.startsWith('/v3');
+  const isV1 = !isV3 && (pathname.startsWith('/stores') || /^\/[^/]+\/(price|coatings|booking|cases|access|options|guide|reviews|privacy)/.test(pathname) || /^\/(?!admin|api|blog|price|coatings|booking|cases|privacy|stores|v3)[^/]+$/.test(pathname));
 
-  // Map v1 to v2
-  const v1ToV2 = '/';
-  const v2ToV1 = '/stores';
-
-  // Don't show on admin
   if (pathname.startsWith('/admin')) return null;
 
   return (
@@ -22,7 +16,7 @@ export default function VersionSwitcher() {
       <Link
         href="/"
         className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-colors ${
-          !isV1 ? 'bg-amber-500 text-white' : 'text-white/50 hover:text-white'
+          !isV1 && !isV3 ? 'bg-amber-500 text-white' : 'text-white/50 hover:text-white'
         }`}
       >
         V2 Single
@@ -34,6 +28,14 @@ export default function VersionSwitcher() {
         }`}
       >
         V1 Multi
+      </Link>
+      <Link
+        href="/v3/"
+        className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-colors ${
+          isV3 ? 'bg-amber-500 text-white' : 'text-white/50 hover:text-white'
+        }`}
+      >
+        V3 Firebase
       </Link>
     </div>
   );
