@@ -18,14 +18,14 @@ export default async function V3StoreHomePage({
 }) {
   const { storeId } = await params;
   const store = await getV3StoreById(storeId);
-  if (!store || !(store.is_active === true || (store.is_active as unknown) === 'TRUE')) notFound();
+  if (!store || !store.is_active) notFound();
 
   const defaults = await getV3CampaignDefaults();
   const discountRate = store.discount_rate || defaults.discount;
   const base = `/v3/${storeId}`;
 
   const stations: { name: string; time: string }[] = (() => {
-    try { return JSON.parse(store.nearby_stations || '[]'); } catch { return []; }
+    try { const parsed = JSON.parse(store.nearby_stations || '[]'); return Array.isArray(parsed) ? parsed : []; } catch { return []; }
   })();
 
   const recentCases = [...SAMPLE_CASES].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
@@ -126,7 +126,7 @@ export default async function V3StoreHomePage({
       {/* GALLERY */}
       {(() => {
         let galleryUrls: string[] = [];
-        try { galleryUrls = JSON.parse(store.gallery_images || '[]'); } catch { /* empty */ }
+        try { const parsed = JSON.parse(store.gallery_images || '[]'); galleryUrls = Array.isArray(parsed) ? parsed : []; } catch { /* empty */ }
         if (galleryUrls.length === 0) return null;
         return (
           <section className="py-10 px-5 bg-slate-50">

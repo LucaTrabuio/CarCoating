@@ -39,7 +39,7 @@ function V3StorePricePageContent() {
       .then(store => {
         if (store?.discount_rate) setDiscountRate(store.discount_rate);
       })
-      .catch(() => {});
+      .catch((err) => console.error('Failed to fetch store:', err));
   }, [storeId]);
 
   useEffect(() => {

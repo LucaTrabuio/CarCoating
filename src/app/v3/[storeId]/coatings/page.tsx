@@ -34,7 +34,7 @@ function Stars({ rating }: { rating: number }) {
 export default async function V3CoatingsPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
   const store = await getV3StoreById(storeId);
-  if (!store || !(store.is_active === true || (store.is_active as unknown) === 'TRUE')) notFound();
+  if (!store || !store.is_active) notFound();
 
   const base = `/v3/${storeId}`;
 

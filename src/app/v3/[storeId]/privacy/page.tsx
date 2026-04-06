@@ -5,7 +5,7 @@ import { getV3StoreById } from '@/lib/firebase-stores';
 export default async function V3PrivacyPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
   const store = await getV3StoreById(storeId);
-  if (!store || !(store.is_active === true || (store.is_active as unknown) === 'TRUE')) notFound();
+  if (!store || !store.is_active) notFound();
 
   const base = `/v3/${storeId}`;
 

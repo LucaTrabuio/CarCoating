@@ -29,9 +29,12 @@ function loadGoogleMaps(): Promise<typeof google.maps> {
     return mapsPromise;
   }
   mapsPromise = new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src*="maps.googleapis.com"]`)) {
-      const check = () => { if (window.google?.maps) resolve(window.google.maps); else setTimeout(check, 100); };
-      check();
+    const existing = document.querySelector(`script[src*="maps.googleapis.com"]`) as HTMLScriptElement | null;
+    if (existing) {
+      // Script already in DOM — listen for its load event
+      if (window.google?.maps) { resolve(window.google.maps); return; }
+      existing.addEventListener('load', () => resolve(window.google.maps));
+      existing.addEventListener('error', () => reject(new Error('Failed to load Google Maps')));
       return;
     }
     const script = document.createElement('script');
@@ -90,7 +93,7 @@ export default function V3HomePage() {
         setStores(data.map(s => ({ ...s, distance: null })));
         setStoresLoading(false);
       })
-      .catch(() => setStoresLoading(false));
+      .catch((err) => { console.error('Failed to fetch stores:', err); setStoresLoading(false); });
   }, []);
 
   // Init map when section is visible
@@ -123,8 +126,8 @@ export default function V3HomePage() {
       }
 
       stores.forEach(store => {
-        const lat = Number(store.lat);
-        const lng = Number(store.lng);
+        const lat = store.lat;
+        const lng = store.lng;
         if (!lat || !lng || isNaN(lat) || isNaN(lng)) return;
         const marker = new maps.Marker({
           position: { lat, lng },
@@ -185,7 +188,7 @@ export default function V3HomePage() {
         setStores(prev => {
           const sorted = prev.map(s => ({
             ...s,
-            distance: s.lat && s.lng ? haversineKm(latitude, longitude, Number(s.lat), Number(s.lng)) : null,
+            distance: s.lat && s.lng ? haversineKm(latitude, longitude, s.lat, s.lng) : null,
           }));
           sorted.sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
           return sorted;
@@ -203,7 +206,7 @@ export default function V3HomePage() {
         }
       },
       () => setGeoStatus('denied'),
-      { timeout: 8000, maximumAge: 300000 }
+      { timeout: 5000, maximumAge: 300000 }
     );
   }, []);
 
@@ -218,7 +221,7 @@ export default function V3HomePage() {
     setSelectedStore(storeId);
     const store = stores.find(s => s.store_id === storeId);
     if (store && mapInstanceRef.current) {
-      mapInstanceRef.current.panTo({ lat: Number(store.lat), lng: Number(store.lng) });
+      mapInstanceRef.current.panTo({ lat: store.lat, lng: store.lng });
       mapInstanceRef.current.setZoom(13);
     }
   };
@@ -348,9 +351,12 @@ export default function V3HomePage() {
               )}
               {geoStatus === 'detecting' && <span className="text-white/40 text-xs">位置情報を取得中...</span>}
               {geoStatus === 'denied' && (
-                <button onClick={detectLocation} className="px-4 py-2 bg-white/10 border border-white/20 text-white text-xs font-semibold rounded-lg hover:bg-white/20 cursor-pointer">
-                  現在地を再取得
-                </button>
+                <div className="flex items-center gap-3">
+                  <span className="text-red-400/70 text-xs">位置情報が取得できませんでした</span>
+                  <button onClick={detectLocation} className="px-4 py-2 bg-white/10 border border-white/20 text-white text-xs font-semibold rounded-lg hover:bg-white/20 cursor-pointer">
+                    再試行
+                  </button>
+                </div>
               )}
               {geoStatus === 'done' && <span className="text-emerald-400 text-xs font-semibold">現在地取得済み — 近い順に表示</span>}
             </div>

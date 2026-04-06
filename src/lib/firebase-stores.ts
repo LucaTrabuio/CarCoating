@@ -8,23 +8,40 @@ const CAMPAIGN_DOC_ID = 'defaults';
 
 // ─── Store CRUD ──────────────────────────────────────────────
 
+/** Normalize Firestore doc to V3StoreData with proper types.
+ *  CSV import stores booleans as strings and numbers as strings — fix them here once. */
+function normalizeStore(raw: Record<string, unknown>): V3StoreData {
+  return {
+    ...raw,
+    is_active: raw.is_active === true || raw.is_active === 'TRUE' || raw.is_active === 'true',
+    has_booth: raw.has_booth === true || raw.has_booth === 'TRUE' || raw.has_booth === 'true',
+    lat: Number(raw.lat) || 0,
+    lng: Number(raw.lng) || 0,
+    discount_rate: Number(raw.discount_rate) || 0,
+    parking_spaces: Number(raw.parking_spaces) || 0,
+    level1_staff_count: Number(raw.level1_staff_count) || 0,
+    level2_staff_count: Number(raw.level2_staff_count) || 0,
+    price_multiplier: Number(raw.price_multiplier) || 1.0,
+    min_price_limit: Number(raw.min_price_limit) || 0,
+  } as V3StoreData;
+}
+
 export async function getAllV3Stores(): Promise<V3StoreData[]> {
-  // is_active may be boolean true or string "TRUE" depending on how data was imported
   const snapshot = await getAdminDb().collection(STORES_COLLECTION).get();
   return snapshot.docs
-    .map(doc => doc.data() as V3StoreData)
-    .filter(s => s.is_active === true || (s.is_active as unknown) === 'TRUE');
+    .map(doc => normalizeStore(doc.data()))
+    .filter(s => s.is_active);
 }
 
 export async function getAllV3StoresIncludingInactive(): Promise<V3StoreData[]> {
   const snapshot = await getAdminDb().collection(STORES_COLLECTION).get();
-  return snapshot.docs.map(doc => doc.data() as V3StoreData);
+  return snapshot.docs.map(doc => normalizeStore(doc.data()));
 }
 
 export async function getV3StoreById(storeId: string): Promise<V3StoreData | null> {
   const doc = await getAdminDb().collection(STORES_COLLECTION).doc(storeId).get();
   if (!doc.exists) return null;
-  return doc.data() as V3StoreData;
+  return normalizeStore(doc.data()!);
 }
 
 export async function getAllV3StoreIds(): Promise<string[]> {

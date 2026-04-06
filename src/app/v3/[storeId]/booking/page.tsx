@@ -30,7 +30,7 @@ function V3BookingContent() {
     fetch(`/api/v3/stores/${storeId}`)
       .then(res => res.json())
       .then(data => { if (data.store_id) setStore(data); })
-      .catch(() => {});
+      .catch((err) => console.error('Failed to fetch store:', err));
   }, [storeId]);
 
   function handleSubmit(e: React.FormEvent) {
