@@ -1,3 +1,5 @@
+export const revalidate = 60; // revalidate every 60 seconds
+
 import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
