@@ -12,7 +12,8 @@ export async function GET(request: Request) {
     return NextResponse.json(stores);
   } catch (error) {
     console.error('GET /api/v3/stores error:', error);
-    return NextResponse.json({ error: 'Failed to fetch stores' }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: 'Failed to fetch stores', detail: msg }, { status: 500 });
   }
 }
 
