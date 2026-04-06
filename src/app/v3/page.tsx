@@ -207,6 +207,13 @@ export default function V3HomePage() {
     );
   }, []);
 
+  // Auto-detect location on mount
+  useEffect(() => {
+    if (!storesLoading && stores.length > 0 && geoStatus === 'idle') {
+      detectLocation();
+    }
+  }, [storesLoading, stores.length, geoStatus, detectLocation]);
+
   const handleStoreClick = (storeId: string) => {
     setSelectedStore(storeId);
     const store = stores.find(s => s.store_id === storeId);
