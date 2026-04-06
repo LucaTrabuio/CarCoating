@@ -9,11 +9,11 @@ const CAMPAIGN_DOC_ID = 'defaults';
 // ─── Store CRUD ──────────────────────────────────────────────
 
 export async function getAllV3Stores(): Promise<V3StoreData[]> {
-  const snapshot = await getAdminDb()
-    .collection(STORES_COLLECTION)
-    .where('is_active', '==', true)
-    .get();
-  return snapshot.docs.map(doc => doc.data() as V3StoreData);
+  // is_active may be boolean true or string "TRUE" depending on how data was imported
+  const snapshot = await getAdminDb().collection(STORES_COLLECTION).get();
+  return snapshot.docs
+    .map(doc => doc.data() as V3StoreData)
+    .filter(s => s.is_active === true || (s.is_active as unknown) === 'TRUE');
 }
 
 export async function getAllV3StoresIncludingInactive(): Promise<V3StoreData[]> {

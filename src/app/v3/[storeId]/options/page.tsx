@@ -33,7 +33,7 @@ const OPTIONS = [
 export default async function V3OptionsPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
   const store = await getV3StoreById(storeId);
-  if (!store || !store.is_active) notFound();
+  if (!store || !(store.is_active === true || (store.is_active as unknown) === 'TRUE')) notFound();
 
   const base = `/v3/${storeId}`;
   const optionDiscount = 10;

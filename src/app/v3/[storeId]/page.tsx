@@ -18,7 +18,7 @@ export default async function V3StoreHomePage({
 }) {
   const { storeId } = await params;
   const store = await getV3StoreById(storeId);
-  if (!store || !store.is_active) notFound();
+  if (!store || !(store.is_active === true || (store.is_active as unknown) === 'TRUE')) notFound();
 
   const defaults = await getV3CampaignDefaults();
   const discountRate = store.discount_rate || defaults.discount;

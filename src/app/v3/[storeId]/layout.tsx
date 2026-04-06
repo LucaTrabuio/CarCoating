@@ -38,7 +38,8 @@ export default async function V3StoreLayout({
   let campaign;
   try {
     store = await getV3StoreById(storeId);
-    if (!store || !store.is_active) notFound();
+    const isActive = store?.is_active === true || (store?.is_active as unknown) === 'TRUE';
+    if (!store || !isActive) notFound();
     const defaults = await getV3CampaignDefaults();
     campaign = mergeV3Campaign(store, defaults);
   } catch {

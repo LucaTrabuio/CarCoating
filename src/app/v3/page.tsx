@@ -95,7 +95,7 @@ export default function V3HomePage() {
 
   // Init map when section is visible
   const initMap = useCallback(() => {
-    if (storesLoading || stores.length === 0 || !mapRef.current || mapReady) return;
+    if (storesLoading || !mapRef.current || mapReady) return;
     loadGoogleMaps().then(maps => {
       const map = new maps.Map(mapRef.current!, {
         center: { lat: 36.5, lng: 137.5 },

@@ -5,7 +5,7 @@ import { getV3StoreById, getAllV3Stores } from '@/lib/firebase-stores';
 export default async function V3AccessPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
   const store = await getV3StoreById(storeId);
-  if (!store || !store.is_active) notFound();
+  if (!store || !(store.is_active === true || (store.is_active as unknown) === 'TRUE')) notFound();
 
   const allStores = await getAllV3Stores();
   const otherStores = allStores.filter(s => s.store_id !== storeId);
