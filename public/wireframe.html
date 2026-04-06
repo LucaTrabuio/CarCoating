@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V3 Store Page — CSV Field Wireframe</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f0f0; color: #333; }
+  .page { max-width: 900px; margin: 20px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .section { padding: 30px 20px; border-bottom: 2px dashed #ddd; position: relative; }
+  .section-label { position: absolute; top: 8px; right: 12px; font-size: 10px; background: #0f1c2e; color: #f59e0b; padding: 2px 8px; border-radius: 4px; }
+  h1 { font-size: 22px; margin-bottom: 16px; color: #0f1c2e; }
+  h2 { font-size: 16px; margin-bottom: 12px; color: #0f1c2e; }
+  h3 { font-size: 13px; margin-bottom: 8px; color: #555; }
+  .var { display: inline-block; background: #FEF3C7; border: 2px solid #F59E0B; color: #92400E; padding: 4px 10px; border-radius: 6px; font-family: 'Monaco', 'Consolas', monospace; font-size: 12px; font-weight: bold; margin: 2px; }
+  .var-img { background: #DBEAFE; border-color: #3B82F6; color: #1E40AF; }
+  .var-json { background: #E0E7FF; border-color: #6366F1; color: #3730A3; }
+  .var-bool { background: #D1FAE5; border-color: #10B981; color: #065F46; }
+  .var-num { background: #FCE7F3; border-color: #EC4899; color: #9D174D; }
+  .placeholder { background: #f5f5f5; border: 2px dashed #ccc; border-radius: 8px; padding: 40px 20px; text-align: center; color: #999; margin: 8px 0; }
+  .placeholder-img { background: #EFF6FF; border-color: #93C5FD; }
+  .grid { display: grid; gap: 12px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .info-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .legend { background: #0f1c2e; color: white; padding: 20px; }
+  .legend h2 { color: #f59e0b; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
+  .legend-item { font-size: 11px; padding: 4px 0; }
+  .legend-item .var { font-size: 10px; margin-right: 4px; }
+  .nav-bar { background: #0f1c2e; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .nav-bar span { color: white; font-size: 13px; }
+  .banner { padding: 10px 20px; text-align: center; font-size: 12px; font-weight: bold; color: white; }
+  .dark-section { background: #0f1c2e; color: white; }
+  .dark-section h2 { color: white; }
+  .dark-section .var { border-color: #f59e0b; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+  th { background: #f5f5f5; font-weight: bold; }
+  .page-label { background: #f59e0b; color: white; padding: 8px 20px; font-weight: bold; font-size: 14px; }
+  .note { font-size: 11px; color: #888; margin-top: 4px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- LEGEND -->
+<div class="page">
+  <div class="legend">
+    <h2>V3 CSV Field Wireframe — 全変数マップ</h2>
+    <p style="font-size:12px; opacity:0.6; margin-top:4px">各セクションで使用されるCSV列名を色分けで表示</p>
+    <div style="display:flex; gap:12px; margin-top:12px; flex-wrap:wrap">
+      <span class="var">text_field</span>
+      <span class="var var-img">image_url_field</span>
+      <span class="var var-num">number_field</span>
+      <span class="var var-bool">boolean_field</span>
+      <span class="var var-json">json_field</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ HEADER (layout.tsx) ═══════════ -->
+  <div class="page-label">HEADER — layout.tsx</div>
+  <div class="nav-bar">
+    <div>
+      <span style="color:#f59e0b; font-size:11px">K</span>
+      <span> <span class="var">store_name</span></span>
+      <span style="font-size:10px; opacity:0.5"> KeePer PRO SHOP</span>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center">
+      <span style="font-size:11px; color:white/60">LINE → <span class="var">line_url</span></span>
+      <span style="font-size:11px; background:#f59e0b; padding:4px 8px; border-radius:4px">☎ <span class="var">tel</span></span>
+    </div>
+  </div>
+
+  <!-- ═══════════ CAMPAIGN BANNER (layout.tsx) ═══════════ -->
+  <div class="banner" style="background: linear-gradient(135deg, #c49a2a, #c49a2aaa)">
+    <span class="var">campaign_title</span> ｜ 最大<span class="var var-num">discount_rate</span>%OFF
+    <br><span style="font-size:10px; opacity:0.8">〜 <span class="var">campaign_deadline</span> まで</span>
+    <br><span style="font-size:10px; opacity:0.6">カラー: <span class="var">campaign_color_code</span></span>
+    <br><span style="font-size:10px; opacity:0.6">バナー画像: <span class="var var-img">campaign_banner_url</span></span>
+  </div>
+
+  <!-- ═══════════ HERO (page.tsx) ═══════════ -->
+  <div class="page-label">STORE HOME — page.tsx</div>
+  <div class="section dark-section" style="min-height:200px; text-align:center">
+    <div class="section-label">Hero Section</div>
+    <div class="placeholder placeholder-img" style="background:#1a2d4a; border-color:#3B82F6; color:#93C5FD">
+      背景画像: <span class="var var-img">hero_image_url</span>
+      <div class="note">未設定の場合はグラデーション背景</div>
+    </div>
+    <div style="margin-top:16px">
+      <div style="font-size:20px; font-weight:bold; color:white"><span class="var">hero_title</span></div>
+      <div class="note">fallback: 「洗車だけで、この輝きが続く。」</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:8px"><span class="var">hero_subtitle</span></div>
+      <div class="note">fallback: store_name ｜ KeePer PRO SHOP認定 ｜ 特許技術のガラスコーティング</div>
+    </div>
+    <div style="margin-top:12px; display:flex; gap:6px; justify-content:center; flex-wrap:wrap">
+      <span class="var var-bool">has_booth</span>
+      <span class="var var-num">level1_staff_count</span>
+      <span class="var var-num">level2_staff_count</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ STORE INTRO ═══════════ -->
+  <div class="section">
+    <div class="section-label">Store Intro</div>
+    <h2><span class="var">store_name</span>について</h2>
+    <p style="font-size:12px; color:#666"><span class="var">description</span></p>
+    <div class="grid grid-2" style="margin-top:12px">
+      <div class="placeholder placeholder-img">
+        <span class="var var-img">store_exterior_url</span>
+        <div class="note">店舗外観写真</div>
+      </div>
+      <div class="placeholder placeholder-img">
+        <span class="var var-img">store_interior_url</span>
+        <div class="note">施工ブース・店内写真</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ STAFF PHOTO ═══════════ -->
+  <div class="section" style="background:#f8f8f8">
+    <div class="section-label">Staff</div>
+    <h2>スタッフ紹介</h2>
+    <div class="placeholder placeholder-img" style="max-width:500px; margin:0 auto">
+      <span class="var var-img">staff_photo_url</span>
+      <div class="note">スタッフ集合写真</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ BEFORE / AFTER ═══════════ -->
+  <div class="section">
+    <div class="section-label">Before/After</div>
+    <h2>施工ビフォーアフター</h2>
+    <div class="placeholder placeholder-img" style="max-width:600px; margin:0 auto">
+      <span class="var var-img">before_after_url</span>
+      <div class="note">施工前後の比較写真</div>
+    </div>
+  </div>
+
+  <!-- ═══════════ GALLERY ═══════════ -->
+  <div class="section" style="background:#f8f8f8">
+    <div class="section-label">Gallery</div>
+    <h2>ギャラリー</h2>
+    <div class="grid grid-4">
+      <div class="placeholder placeholder-img" style="padding:20px"><span class="var var-json">gallery_images</span><div class="note">[0]</div></div>
+      <div class="placeholder placeholder-img" style="padding:20px"><span class="var var-json">gallery_images</span><div class="note">[1]</div></div>
+      <div class="placeholder placeholder-img" style="padding:20px"><span class="var var-json">gallery_images</span><div class="note">[2]</div></div>
+      <div class="placeholder placeholder-img" style="padding:20px"><span class="var var-json">gallery_images</span><div class="note">[3]</div></div>
+    </div>
+    <div class="note">JSON配列: ["url1","url2","url3","url4"]</div>
+  </div>
+
+  <!-- ═══════════ PRICING ═══════════ -->
+  <div class="section">
+    <div class="section-label">Pricing</div>
+    <h2>コーティング料金</h2>
+    <p style="font-size:12px; color:#888">Web予約限定 最大<span class="var var-num">discount_rate</span>%OFF</p>
+    <div class="note">料金 = 標準価格 × <span class="var var-num">price_multiplier</span></div>
+  </div>
+
+  <!-- ═══════════ STORE ACCESS ═══════════ -->
+  <div class="section" style="background:#f8f8f8">
+    <div class="section-label">Access</div>
+    <h2>店舗アクセス</h2>
+    <div class="grid grid-2">
+      <div class="placeholder" style="padding:60px 20px">
+        Google Maps<br>
+        <span class="var var-num">lat</span> , <span class="var var-num">lng</span>
+      </div>
+      <div>
+        <h3><span class="var">store_name</span></h3>
+        <div class="info-row"><span style="font-size:11px; color:#999">住所:</span> <span class="var">postal_code</span> <span class="var">address</span></div>
+        <div class="info-row"><span style="font-size:11px; color:#999">営業:</span> <span class="var">business_hours</span></div>
+        <div class="info-row"><span style="font-size:11px; color:#999">定休:</span> <span class="var">regular_holiday</span></div>
+        <div class="info-row"><span style="font-size:11px; color:#999">電話:</span> <span class="var">tel</span></div>
+        <div class="info-row"><span style="font-size:11px; color:#999">駐車場:</span> <span class="var var-num">parking_spaces</span>台</div>
+        <div class="info-row"><span style="font-size:11px; color:#999">最寄り:</span> <span class="var var-json">nearby_stations</span></div>
+        <div class="note">JSON配列: [{"name":"渋谷駅","time":"徒歩5分"}]</div>
+        <div class="info-row"><span style="font-size:11px; color:#999">目印:</span> <span class="var">landmark</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ FINAL CTA ═══════════ -->
+  <div class="section dark-section" style="text-align:center">
+    <div class="section-label">CTA</div>
+    <p style="font-size:14px; font-weight:bold">ご予約・お見積もりはお気軽に</p>
+    <div style="font-size:24px; font-weight:bold; color:#f59e0b; margin:8px 0"><span class="var">tel</span></div>
+    <div style="font-size:11px; opacity:0.5"><span class="var">business_hours</span></div>
+    <div style="margin-top:8px"><span class="var">line_url</span></div>
+  </div>
+
+  <!-- ═══════════ FOOTER (layout.tsx) ═══════════ -->
+  <div class="page-label">FOOTER — layout.tsx</div>
+  <div class="section" style="background:#111; color:white; font-size:12px">
+    <span class="var">store_name</span> ｜ <span class="var">address</span> ｜ <span class="var">tel</span> ｜ <span class="var">business_hours</span>
+  </div>
+
+  <!-- ═══════════ OTHER PAGES ═══════════ -->
+  <div class="page-label">OTHER PAGES</div>
+  <div class="section">
+    <h2>SEO / Metadata</h2>
+    <div class="info-row"><span class="var">meta_description</span> — ページのmeta description</div>
+    <div class="info-row"><span class="var">seo_keywords</span> — SEOキーワード</div>
+    <div class="info-row"><span class="var var-img">logo_url</span> — ブランドロゴ（将来使用）</div>
+    <div class="info-row"><span class="var">google_place_id</span> — Googleレビュー取得用</div>
+    <div class="info-row"><span class="var">email</span> — アクセス・プライバシーページ</div>
+    <div class="info-row"><span class="var var-json">custom_services</span> — 店舗独自サービス（将来使用）</div>
+    <div class="info-row"><span class="var var-num">min_price_limit</span> — 最低価格制限</div>
+    <div class="info-row"><span class="var">access_map_url</span> — Google Mapsリンク</div>
+    <div class="info-row"><span class="var var-bool">is_active</span> — false=非公開（404）</div>
+    <div class="info-row"><span class="var">prefecture</span> / <span class="var">city</span> — 店舗一覧での地域表示</div>
+  </div>
+
+  <!-- ═══════════ FULL FIELD TABLE ═══════════ -->
+  <div class="page-label">COMPLETE CSV COLUMN REFERENCE</div>
+  <div class="section" style="padding:20px; overflow-x:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>CSV Column</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><span class="var">store_id</span></td><td>text</td><td>YES</td><td>店舗ID（URL用）</td><td>tokyo-shinjuku</td></tr>
+        <tr><td>2</td><td><span class="var">store_name</span></td><td>text</td><td>YES</td><td>店舗名</td><td>新宿高島屋前店</td></tr>
+        <tr><td>3</td><td><span class="var var-bool">is_active</span></td><td>bool</td><td>no</td><td>公開フラグ</td><td>TRUE</td></tr>
+        <tr><td>4</td><td><span class="var">address</span></td><td>text</td><td>YES</td><td>住所</td><td>東京都渋谷区千駄ヶ谷5-28-6</td></tr>
+        <tr><td>5</td><td><span class="var">postal_code</span></td><td>text</td><td>no</td><td>郵便番号</td><td>151-0051</td></tr>
+        <tr><td>6</td><td><span class="var">prefecture</span></td><td>text</td><td>YES</td><td>都道府県</td><td>東京都</td></tr>
+        <tr><td>7</td><td><span class="var">city</span></td><td>text</td><td>YES</td><td>市区町村</td><td>渋谷区</td></tr>
+        <tr><td>8</td><td><span class="var">tel</span></td><td>text</td><td>no</td><td>電話番号</td><td>0800-812-7792</td></tr>
+        <tr><td>9</td><td><span class="var">business_hours</span></td><td>text</td><td>no</td><td>営業時間</td><td>9:00〜18:00</td></tr>
+        <tr><td>10</td><td><span class="var">regular_holiday</span></td><td>text</td><td>no</td><td>定休日</td><td>年中無休</td></tr>
+        <tr><td>11</td><td><span class="var">email</span></td><td>text</td><td>no</td><td>メール</td><td>shop@example.com</td></tr>
+        <tr><td>12</td><td><span class="var">line_url</span></td><td>text</td><td>no</td><td>LINE URL</td><td>https://line.me/R/ti/p/@xxx</td></tr>
+        <tr><td>13</td><td><span class="var var-num">lat</span></td><td>number</td><td>YES</td><td>緯度</td><td>35.684865</td></tr>
+        <tr><td>14</td><td><span class="var var-num">lng</span></td><td>number</td><td>YES</td><td>経度</td><td>139.703883</td></tr>
+        <tr><td>15</td><td><span class="var var-num">parking_spaces</span></td><td>number</td><td>no</td><td>駐車場台数</td><td>3</td></tr>
+        <tr><td>16</td><td><span class="var">landmark</span></td><td>text</td><td>no</td><td>目印</td><td>服部栄養専門学校の向かい</td></tr>
+        <tr><td>17</td><td><span class="var var-json">nearby_stations</span></td><td>JSON</td><td>no</td><td>最寄り駅</td><td>[{"name":"渋谷駅","time":"徒歩5分"}]</td></tr>
+        <tr><td>18</td><td><span class="var">access_map_url</span></td><td>text</td><td>no</td><td>Google Maps URL</td><td>https://maps.google.com/...</td></tr>
+        <tr><td>19</td><td><span class="var">campaign_title</span></td><td>text</td><td>no</td><td>キャンペーン名</td><td>春の新生活キャンペーン</td></tr>
+        <tr><td>20</td><td><span class="var">campaign_deadline</span></td><td>text</td><td>no</td><td>キャンペーン期限</td><td>2026-04-30</td></tr>
+        <tr><td>21</td><td><span class="var var-num">discount_rate</span></td><td>number</td><td>no</td><td>割引率(%)</td><td>20</td></tr>
+        <tr><td>22</td><td><span class="var">campaign_color_code</span></td><td>text</td><td>no</td><td>バナー色</td><td>#c49a2a</td></tr>
+        <tr><td>23</td><td><span class="var">hero_title</span></td><td>text</td><td>no</td><td>ヒーロー見出し</td><td>洗車だけで、この輝きが続く。</td></tr>
+        <tr><td>24</td><td><span class="var">hero_subtitle</span></td><td>text</td><td>no</td><td>ヒーローサブ</td><td>KeePer PRO SHOP認定...</td></tr>
+        <tr><td>25</td><td><span class="var">description</span></td><td>text</td><td>no</td><td>店舗紹介文</td><td>渋谷区の認定プロショップ...</td></tr>
+        <tr><td>26</td><td><span class="var">meta_description</span></td><td>text</td><td>no</td><td>SEO説明</td><td>渋谷区のKeePer認定...</td></tr>
+        <tr><td>27</td><td><span class="var">seo_keywords</span></td><td>text</td><td>no</td><td>SEOキーワード</td><td>カーコーティング 渋谷</td></tr>
+        <tr><td>28</td><td><span class="var var-img">hero_image_url</span></td><td>URL</td><td>no</td><td>ヒーロー背景画像</td><td>https://storage.googleapis.com/...</td></tr>
+        <tr><td>29</td><td><span class="var var-img">logo_url</span></td><td>URL</td><td>no</td><td>店舗ロゴ</td><td>https://storage.googleapis.com/...</td></tr>
+        <tr><td>30</td><td><span class="var var-img">staff_photo_url</span></td><td>URL</td><td>no</td><td>スタッフ写真</td><td>https://storage.googleapis.com/...</td></tr>
+        <tr><td>31</td><td><span class="var var-img">store_exterior_url</span></td><td>URL</td><td>no</td><td>店舗外観写真</td><td>https://storage.googleapis.com/...</td></tr>
+        <tr><td>32</td><td><span class="var var-img">store_interior_url</span></td><td>URL</td><td>no</td><td>店内・ブース写真</td><td>https://storage.googleapis.com/...</td></tr>
+        <tr><td>33</td><td><span class="var var-img">before_after_url</span></td><td>URL</td><td>no</td><td>ビフォーアフター写真</td><td>https://storage.googleapis.com/...</td></tr>
+        <tr><td>34</td><td><span class="var var-img">campaign_banner_url</span></td><td>URL</td><td>no</td><td>キャンペーンバナー</td><td>https://storage.googleapis.com/...</td></tr>
+        <tr><td>35</td><td><span class="var var-json">gallery_images</span></td><td>JSON</td><td>no</td><td>ギャラリー画像配列</td><td>["url1","url2","url3"]</td></tr>
+        <tr><td>36</td><td><span class="var var-json">custom_services</span></td><td>JSON</td><td>no</td><td>独自サービス</td><td>[{"name":"...","price":1000}]</td></tr>
+        <tr><td>37</td><td><span class="var var-num">price_multiplier</span></td><td>number</td><td>no</td><td>価格倍率</td><td>1.0</td></tr>
+        <tr><td>38</td><td><span class="var var-num">min_price_limit</span></td><td>number</td><td>no</td><td>最低価格</td><td>14560</td></tr>
+        <tr><td>39</td><td><span class="var var-bool">has_booth</span></td><td>bool</td><td>no</td><td>認定ブース有無</td><td>TRUE</td></tr>
+        <tr><td>40</td><td><span class="var var-num">level1_staff_count</span></td><td>number</td><td>no</td><td>1級資格者数</td><td>2</td></tr>
+        <tr><td>41</td><td><span class="var var-num">level2_staff_count</span></td><td>number</td><td>no</td><td>2級資格者数</td><td>1</td></tr>
+        <tr><td>42</td><td><span class="var">google_place_id</span></td><td>text</td><td>no</td><td>Google Place ID</td><td>ChIJ_xxxxx</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

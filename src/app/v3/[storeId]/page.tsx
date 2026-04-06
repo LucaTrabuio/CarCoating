@@ -64,6 +64,87 @@ export default async function V3StoreHomePage({
         </div>
       </section>
 
+      {/* STORE INTRO — description + exterior/interior photos */}
+      {(store.description || store.store_exterior_url || store.store_interior_url) && (
+        <section className="py-14 px-5 bg-white">
+          <div className="max-w-[1100px] mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+                {store.store_name}について
+              </h2>
+            </div>
+            {store.description && (
+              <p className="text-sm text-gray-600 leading-relaxed max-w-[700px] mx-auto text-center mb-8">{store.description}</p>
+            )}
+            <div className={`grid ${store.store_exterior_url && store.store_interior_url ? 'md:grid-cols-2' : ''} gap-4 max-w-[800px] mx-auto`}>
+              {store.store_exterior_url && (
+                <figure className="rounded-xl overflow-hidden border border-gray-200">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={store.store_exterior_url} alt={`${store.store_name} 外観`} className="w-full aspect-[4/3] object-cover" />
+                  <figcaption className="text-center text-xs text-gray-400 py-2 bg-gray-50">店舗外観</figcaption>
+                </figure>
+              )}
+              {store.store_interior_url && (
+                <figure className="rounded-xl overflow-hidden border border-gray-200">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={store.store_interior_url} alt={`${store.store_name} 店内`} className="w-full aspect-[4/3] object-cover" />
+                  <figcaption className="text-center text-xs text-gray-400 py-2 bg-gray-50">施工ブース・店内</figcaption>
+                </figure>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STAFF PHOTO */}
+      {store.staff_photo_url && (
+        <section className="py-10 px-5 bg-slate-50">
+          <div className="max-w-[600px] mx-auto text-center">
+            <h2 className="text-lg font-bold text-[#0f1c2e] mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>スタッフ紹介</h2>
+            <figure className="rounded-xl overflow-hidden border border-gray-200">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={store.staff_photo_url} alt={`${store.store_name} スタッフ`} className="w-full object-cover" />
+            </figure>
+          </div>
+        </section>
+      )}
+
+      {/* BEFORE/AFTER FEATURED */}
+      {store.before_after_url && (
+        <section className="py-10 px-5 bg-white">
+          <div className="max-w-[700px] mx-auto text-center">
+            <h2 className="text-lg font-bold text-[#0f1c2e] mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>施工ビフォーアフター</h2>
+            <figure className="rounded-xl overflow-hidden border border-gray-200">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={store.before_after_url} alt="施工ビフォーアフター" className="w-full object-cover" />
+            </figure>
+            <Link href={`${base}/cases`} className="inline-block mt-4 text-sm text-amber-600 font-semibold hover:underline">もっと見る →</Link>
+          </div>
+        </section>
+      )}
+
+      {/* GALLERY */}
+      {(() => {
+        let galleryUrls: string[] = [];
+        try { galleryUrls = JSON.parse(store.gallery_images || '[]'); } catch { /* empty */ }
+        if (galleryUrls.length === 0) return null;
+        return (
+          <section className="py-10 px-5 bg-slate-50">
+            <div className="max-w-[1100px] mx-auto">
+              <h2 className="text-lg font-bold text-[#0f1c2e] text-center mb-6" style={{ fontFamily: '"Noto Serif JP", serif' }}>ギャラリー</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {galleryUrls.map((url, i) => (
+                  <figure key={i} className="rounded-lg overflow-hidden border border-gray-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} alt={`${store.store_name} ギャラリー ${i + 1}`} className="w-full aspect-square object-cover" />
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
       <USPSection />
       <ConcernSection />
       <RecommendationQuiz />
