@@ -67,7 +67,7 @@ export default function BlockRenderer({ block, store, basePath, discountRate }: 
     case 'concerns':
       return <ConcernsBlock config={block.config as ConcernsConfig} />;
     case 'quiz':
-      return <QuizBlock />;
+      return <QuizBlock storeId={store.store_id} basePath={basePath} />;
     case 'simulator':
       return <SimulatorBlock store={store} basePath={basePath} />;
     case 'cases':

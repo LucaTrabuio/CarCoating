@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { PricingConfig } from '@/lib/block-types';
 import type { V3StoreData } from '@/lib/v3-types';
+import TrackedLink from '@/components/TrackedLink';
 import { coatingTiers } from '@/data/coating-tiers';
 import { getWebPrice, formatPrice } from '@/lib/pricing';
 import { isBlurred } from '@/lib/blur-utils';
@@ -12,7 +13,7 @@ interface PricingBlockProps {
   discountRate: number;
 }
 
-function PriceBlurOverlay({ children, basePath }: { children: React.ReactNode; basePath: string }) {
+function PriceBlurOverlay({ children, basePath, storeId }: { children: React.ReactNode; basePath: string; storeId: string }) {
   return (
     <div className="relative">
       <div style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">
@@ -22,12 +23,15 @@ function PriceBlurOverlay({ children, basePath }: { children: React.ReactNode; b
         <p className="text-xs text-slate-600 font-semibold mb-2 text-center px-4">
           料金の詳細はお問い合わせください
         </p>
-        <Link
+        <TrackedLink
           href={`${basePath}/booking?mode=inquiry`}
+          storeId={storeId}
+          event="cta_inquiry"
+          meta={{ source: 'pricing_blur' }}
           className="px-5 py-2 bg-amber-500 text-white font-bold rounded-lg text-xs hover:bg-amber-600 transition-colors shadow-lg"
         >
           お問い合わせ →
-        </Link>
+        </TrackedLink>
       </div>
     </div>
   );
@@ -94,7 +98,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
         </div>
 
         {anyBlurred ? (
-          <PriceBlurOverlay basePath={basePath}>
+          <PriceBlurOverlay basePath={basePath} storeId={store.store_id}>
             {pricingContent}
           </PriceBlurOverlay>
         ) : (

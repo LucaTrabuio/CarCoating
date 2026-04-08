@@ -12,16 +12,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing storeId or event' }, { status: 400 });
     }
 
-    const validEvents = ['phone_call', 'inquiry', 'booking'];
-    if (!validEvents.includes(event)) {
-      return NextResponse.json({ error: 'Invalid event type' }, { status: 400 });
-    }
-
     const fieldMap: Record<string, string> = {
       phone_call: 'phone_calls',
       inquiry: 'inquiries',
       booking: 'bookings',
+      page_view: 'page_views',
+      cta_booking: 'cta_booking_clicks',
+      cta_inquiry: 'cta_inquiry_clicks',
+      line_click: 'line_clicks',
+      quiz_complete: 'quiz_completions',
+      plan_select: 'plan_selections',
     };
+
+    if (!fieldMap[event]) {
+      return NextResponse.json({ error: 'Invalid event type' }, { status: 400 });
+    }
 
     const today = new Date().toISOString().slice(0, 10);
     const db = getAdminDb();

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getV3StoreById, getV3CampaignDefaults } from '@/lib/firebase-stores';
 import { parsePageLayout } from '@/lib/block-types';
 import BlockRenderer from '@/components/blocks/BlockRenderer';
+import PageViewTracker from '@/components/PageViewTracker';
 
 export default async function V3StoreHomePage({
   params,
@@ -20,6 +21,7 @@ export default async function V3StoreHomePage({
 
   return (
     <main>
+      <PageViewTracker storeId={storeId} />
       {layout.blocks
         .filter(b => b.visible)
         .sort((a, b) => a.order - b.order)

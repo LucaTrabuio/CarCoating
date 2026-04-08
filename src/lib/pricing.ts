@@ -6,9 +6,8 @@ export function getPriceForSize(tier: CoatingTier, size: CarSize): number {
 }
 
 export function getWebPrice(tier: CoatingTier, size: CarSize, discountRate: number): number {
-  const tierDiscount = Math.min(tier.discount_tier, discountRate);
   const regular = tier.prices[size];
-  return Math.round(regular * (1 - tierDiscount / 100));
+  return Math.round(regular * (1 - discountRate / 100));
 }
 
 export function getMaintenancePrice(tier: CoatingTier, size: CarSize): number | null {

@@ -123,6 +123,7 @@ function V3BookingContent() {
               <p className="text-xs text-gray-400 mt-1">{store.business_hours}</p>
               {store.line_url && (
                 <a href={store.line_url} target="_blank" rel="noopener noreferrer"
+                  onClick={() => trackEvent(storeId, 'line_click')}
                   className="inline-block mt-3 px-5 py-2 bg-[#06c755] text-white font-bold rounded-lg text-sm">
                   LINEで相談
                 </a>

@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
-import { getV3StoreById } from '@/lib/firebase-stores';
+import { getV3StoreById, getV3CampaignDefaults } from '@/lib/firebase-stores';
 import { formatPrice } from '@/lib/pricing';
 import { getBlurFieldsFromLayout } from '@/lib/blur-utils';
+import { parsePageLayout } from '@/lib/block-types';
+import type { PricingConfig } from '@/lib/block-types';
 import Link from 'next/link';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -48,8 +50,19 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ stor
   if (!store || !store.is_active) notFound();
 
   const base = `/v3/${storeId}`;
-  const optionDiscount = 10;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);
+
+  // Resolve option discount from pricing block config
+  const defaults = await getV3CampaignDefaults();
+  const storeDiscount = store.discount_rate || defaults.discount;
+  const layout = parsePageLayout(store.page_layout, store);
+  const pricingBlock = layout.blocks.find(b => b.type === 'pricing');
+  const pricingConfig = pricingBlock?.config as PricingConfig | undefined;
+  const syncWithStore = pricingConfig?.option_discount_sync ?? true;
+  // When synced: discount is applied to prices but banner is hidden (already shown on main pricing pages)
+  // When custom: show banner with custom rate
+  const optionDiscount = syncWithStore ? storeDiscount : (pricingConfig?.option_discount_rate ?? 10);
+  const showOptionBanner = !syncWithStore && optionDiscount > 0;
   // If store-level pricing blur is on (all:web_price), blur all option prices too
   const globalPriceBlur = blurFields.includes('all:web_price') || blurFields.includes('web_price');
 
@@ -68,14 +81,18 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ stor
     <main>
       <section className="bg-[#0f1c2e] py-12 px-5 text-center">
         <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>オプションメニュー</h1>
-        <p className="text-white/40 text-sm mt-1">コーティングと同時施工で{optionDiscount}%OFF</p>
+        {showOptionBanner && (
+          <p className="text-white/40 text-sm mt-1">コーティングと同時施工で{optionDiscount}%OFF</p>
+        )}
       </section>
 
-      <section className="py-3 px-5 bg-emerald-50 border-b border-emerald-200">
-        <div className="max-w-[800px] mx-auto text-center text-emerald-700 text-sm font-semibold">
-          Web予約特典: オプション全メニュー{optionDiscount}%OFF適用中
-        </div>
-      </section>
+      {showOptionBanner && (
+        <section className="py-3 px-5 bg-emerald-50 border-b border-emerald-200">
+          <div className="max-w-[800px] mx-auto text-center text-emerald-700 text-sm font-semibold">
+            Web予約特典: オプション全メニュー{optionDiscount}%OFF適用中
+          </div>
+        </section>
+      )}
 
       <section className="py-10 px-5">
         <div className="max-w-[800px] mx-auto">
@@ -98,18 +115,20 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ stor
                       {(opt.blur_price || globalPriceBlur) ? (
                         <div className="relative">
                           <div style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">
-                            <div className="text-[10px] text-gray-400 line-through">{formatPrice(opt.price)}</div>
-                            <div className="text-sm font-semibold text-amber-700">{formatPrice(Math.round(opt.price * (1 - optionDiscount / 100)))}</div>
+                            {optionDiscount > 0 && <div className="text-[10px] text-gray-400 line-through">{formatPrice(opt.price)}</div>}
+                            <div className="text-sm font-semibold text-amber-700">{formatPrice(optionDiscount > 0 ? Math.round(opt.price * (1 - optionDiscount / 100)) : opt.price)}</div>
                           </div>
                           <div className="absolute inset-0 flex items-center justify-center">
                             <span className="text-[9px] text-slate-500 font-semibold bg-white/80 px-1.5 py-0.5 rounded">要問合せ</span>
                           </div>
                         </div>
-                      ) : (
+                      ) : optionDiscount > 0 ? (
                         <>
                           <div className="text-[10px] text-gray-400 line-through">{formatPrice(opt.price)}</div>
                           <div className="text-sm font-semibold text-amber-700">{formatPrice(Math.round(opt.price * (1 - optionDiscount / 100)))}</div>
                         </>
+                      ) : (
+                        <div className="text-sm font-semibold text-[#0f1c2e]">{formatPrice(opt.price)}</div>
                       )}
                     </div>
                   </div>

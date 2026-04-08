@@ -23,6 +23,7 @@ export default function MobileCTA({ tel, lineUrl, storeId }: MobileCTAProps) {
           href={lineUrl}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => storeId && trackEvent(storeId, 'line_click')}
           className="flex-1 flex items-center justify-center gap-1.5 py-3 bg-[#06c755] text-white text-[13px] font-bold"
         >
           LINE相談
@@ -30,6 +31,7 @@ export default function MobileCTA({ tel, lineUrl, storeId }: MobileCTAProps) {
       ) : (
         <a
           href="#booking"
+          onClick={() => storeId && trackEvent(storeId, 'cta_booking')}
           className="flex-1 flex items-center justify-center gap-1.5 py-3 bg-amber-600 text-white text-[13px] font-bold"
         >
           Web予約

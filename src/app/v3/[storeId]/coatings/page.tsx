@@ -4,11 +4,12 @@
 
 import { notFound } from 'next/navigation';
 import { coatingTiers } from '@/data/coating-tiers';
-import { formatPrice } from '@/lib/pricing';
+import { formatPrice, getWebPrice } from '@/lib/pricing';
 import Link from 'next/link';
-import { getV3StoreById } from '@/lib/firebase-stores';
+import { getV3StoreById, getV3CampaignDefaults } from '@/lib/firebase-stores';
 import { getBlurFieldsFromLayout, isBlurred } from '@/lib/blur-utils';
 import type { Metadata } from 'next';
+import type { CarSize } from '@/lib/types';
 
 const KEEPER_BASE = 'https://www.keepercoating.jp';
 
@@ -36,8 +37,11 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
   const store = await getV3StoreById(storeId);
   if (!store || !store.is_active) notFound();
 
+  const defaults = await getV3CampaignDefaults();
+  const discountRate = store.discount_rate || defaults.discount;
   const base = `/v3/${storeId}`;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);
+  const ALL_SIZES: CarSize[] = ['SS', 'S', 'M', 'L', 'LL', 'XL'];
 
   return (
     <main>
@@ -80,7 +84,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
                   <p className="text-[13px] text-slate-500 mt-1">{tier.tagline}</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-[10px] text-slate-400">SSサイズ〜（税込）</div>
+                  <div className="text-[10px] text-slate-400">SSサイズ〜・Web割後（税込）</div>
                   {isBlurred(tier.id, 'web_price', blurFields) ? (
                     <div className="relative inline-block">
                       <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">{formatPrice(tier.prices.SS)}</div>
@@ -89,7 +93,10 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
                       </div>
                     </div>
                   ) : (
-                    <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(tier.prices.SS)}</div>
+                    <div>
+                      <div className="text-xs text-slate-400 line-through">{formatPrice(tier.prices.SS)}</div>
+                      <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(getWebPrice(tier, 'SS', discountRate))}</div>
+                    </div>
                   )}
                 </div>
               </div>
@@ -109,7 +116,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
                       <td className="px-4 py-2 bg-slate-100 font-semibold text-[11px] text-slate-500">メンテ</td>
                       <td className="px-4 py-2">{tier.maintenance_interval}</td>
                       <td className="px-4 py-2 bg-slate-100 font-semibold text-[11px] text-slate-500">Web割引</td>
-                      <td className="px-4 py-2 text-amber-700 font-bold">{tier.discount_tier}%OFF</td>
+                      <td className="px-4 py-2 text-amber-700 font-bold">{discountRate}%OFF</td>
                     </tr>
                     <tr className="border-b border-slate-100">
                       <td className="px-4 py-2 bg-slate-100 font-semibold text-[11px] text-slate-500">艶</td>
@@ -130,16 +137,16 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
                   <thead>
                     <tr className="bg-[#0f1c2e] text-white">
                       <th className="px-2.5 py-2 text-left font-medium text-[10px]"></th>
-                      {(['SS', 'S', 'M', 'L', 'LL', 'XL'] as const).map(size => (
+                      {ALL_SIZES.map(size => (
                         <th key={size} className="px-2.5 py-2 text-center font-medium text-[10px]">{size}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="bg-white">
-                      <td className="px-2.5 py-2 font-semibold text-[11px] text-slate-600">施工料金</td>
-                      {(['SS', 'S', 'M', 'L', 'LL', 'XL'] as const).map(size => (
-                        <td key={size} className="px-2.5 py-2 text-center font-bold text-[11px]">
+                    <tr className="bg-white border-b border-slate-100">
+                      <td className="px-2.5 py-2 font-semibold text-[11px] text-slate-400">通常価格</td>
+                      {ALL_SIZES.map(size => (
+                        <td key={size} className="px-2.5 py-2 text-center text-[11px] text-slate-400 line-through">
                           {isBlurred(tier.id, 'web_price', blurFields) ? (
                             <div className="relative inline-block">
                               <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(tier.prices[size])}</span>
@@ -149,10 +156,23 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
                         </td>
                       ))}
                     </tr>
+                    <tr className="bg-white">
+                      <td className="px-2.5 py-2 font-semibold text-[11px] text-amber-700">Web割価格</td>
+                      {ALL_SIZES.map(size => (
+                        <td key={size} className="px-2.5 py-2 text-center font-bold text-[11px] text-amber-700">
+                          {isBlurred(tier.id, 'web_price', blurFields) ? (
+                            <div className="relative inline-block">
+                              <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(getWebPrice(tier, size, discountRate))}</span>
+                              <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
+                            </div>
+                          ) : formatPrice(getWebPrice(tier, size, discountRate))}
+                        </td>
+                      ))}
+                    </tr>
                     {tier.maintenance_prices && (
                       <tr className="bg-slate-50 border-t border-slate-100">
                         <td className="px-2.5 py-2 font-semibold text-[11px] text-slate-400">メンテナンス</td>
-                        {(['SS', 'S', 'M', 'L', 'LL', 'XL'] as const).map(size => (
+                        {ALL_SIZES.map(size => (
                           <td key={size} className="px-2.5 py-2 text-center text-[11px] text-slate-400">
                             {isBlurred(tier.id, 'maintenance_price', blurFields) ? (
                               <div className="relative inline-block">

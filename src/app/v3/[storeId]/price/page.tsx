@@ -11,6 +11,9 @@ import { coatingTiers } from '@/data/coating-tiers';
 import { getWebPrice, formatPrice, sizeLabels, getTotalCostOverYears } from '@/lib/pricing';
 import { getBlurFieldsFromLayout, isBlurred } from '@/lib/blur-utils';
 import Link from 'next/link';
+import { trackEvent } from '@/lib/track';
+import { parsePageLayout } from '@/lib/block-types';
+import type { PricingConfig } from '@/lib/block-types';
 
 const ALL_SIZES: CarSize[] = ['SS', 'S', 'M', 'L', 'LL', 'XL'];
 
@@ -34,13 +37,23 @@ function V3StorePricePageContent() {
   const [selectedModel, setSelectedModel] = useState('');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [sizeMode, setSizeMode] = useState<'car' | 'size'>('car');
+  const [optionDiscountRate, setOptionDiscountRate] = useState(10);
+  const [optionDiscountSync, setOptionDiscountSync] = useState(true);
 
   useEffect(() => {
     fetch(`/api/v3/stores/${storeId}`)
       .then(res => res.json())
       .then(store => {
         if (store?.discount_rate) setDiscountRate(store.discount_rate);
-        if (store?.page_layout) setBlurFields(getBlurFieldsFromLayout(store.page_layout));
+        if (store?.page_layout) {
+          setBlurFields(getBlurFieldsFromLayout(store.page_layout));
+          const layout = parsePageLayout(store.page_layout, store);
+          const pricingBlock = layout.blocks.find(b => b.type === 'pricing');
+          const pc = pricingBlock?.config as PricingConfig | undefined;
+          const sync = pc?.option_discount_sync ?? true;
+          setOptionDiscountSync(sync);
+          setOptionDiscountRate(sync ? (store.discount_rate || 20) : (pc?.option_discount_rate ?? 10));
+        }
       })
       .catch((err) => console.error('Failed to fetch store:', err));
   }, [storeId]);
@@ -132,7 +145,7 @@ function V3StorePricePageContent() {
                   const web = getWebPrice(tier, selectedSize, discountRate);
                   const isCenter = i === 1;
                   return (
-                    <button key={tier.id} onClick={() => setSelectedPlan(tier.id)}
+                    <button key={tier.id} onClick={() => { setSelectedPlan(tier.id); trackEvent(storeId, 'plan_select', { plan: tier.id }); }}
                       className={`bg-white rounded-xl p-6 text-center border-2 transition-all cursor-pointer hover:shadow-lg ${selectedPlan === tier.id ? 'border-amber-500 shadow-lg ring-2 ring-amber-200' : isCenter ? 'border-amber-500 relative' : 'border-gray-200'}`}>
                       {isCenter && !selectedPlan && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-600 to-amber-400 text-white text-xs font-bold px-3 py-0.5 rounded-full">★ 一番人気</span>}
                       <div className="text-xs text-gray-400 mb-1">{label}</div>
@@ -228,9 +241,10 @@ function V3StorePricePageContent() {
                   <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>オプション追加</h2>
                   <p className="text-sm text-gray-500 mt-1">チェックすると合計額がリアルタイムで更新されます</p>
                 </div>
-                <OptionCalculator basePlanPrice={getWebPrice(selectedTier, selectedSize, discountRate)} basePlanName={`${selectedTier.name}（${selectedSize}サイズ）`} />
+                <OptionCalculator basePlanPrice={getWebPrice(selectedTier, selectedSize, discountRate)} basePlanName={`${selectedTier.name}（${selectedSize}サイズ）`} optionDiscountRate={optionDiscountRate} showDiscountBanner={!optionDiscountSync && optionDiscountRate > 0} />
                 <div className="mt-6 text-center">
                   <Link href={`${base}/booking?plan=${selectedTier.id}&size=${selectedSize}&make=${encodeURIComponent(selectedMake)}&model=${encodeURIComponent(selectedModel)}`}
+                    onClick={() => trackEvent(storeId, 'cta_booking', { source: 'price', plan: selectedTier.id })}
                     className="inline-block w-full max-w-md px-8 py-4 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-700 text-white font-bold rounded-xl text-base hover:opacity-90 transition-opacity">
                     この内容で空き状況を確認する（仮予約）→
                   </Link>
@@ -244,8 +258,8 @@ function V3StorePricePageContent() {
               <h3 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>コース選びに迷ったら</h3>
               <p className="text-sm opacity-60 mb-4">お車の状態を見て最適なコースをご提案します</p>
               <div className="flex gap-3 justify-center flex-wrap">
-                <a href="#" className="px-5 py-2.5 bg-[#06c755] text-white font-bold rounded-lg text-sm">LINEで相談</a>
-                <a href="#" className="px-5 py-2.5 bg-white/10 border border-white/20 text-white font-bold rounded-lg text-sm">&#9742; 電話で相談</a>
+                <a href="#" onClick={() => trackEvent(storeId, 'line_click')} className="px-5 py-2.5 bg-[#06c755] text-white font-bold rounded-lg text-sm">LINEで相談</a>
+                <a href="#" onClick={() => trackEvent(storeId, 'cta_inquiry', { source: 'price' })} className="px-5 py-2.5 bg-white/10 border border-white/20 text-white font-bold rounded-lg text-sm">&#9742; 電話で相談</a>
               </div>
             </div>
           </section>

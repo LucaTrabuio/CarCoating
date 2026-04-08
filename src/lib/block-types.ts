@@ -93,6 +93,8 @@ export interface PricingConfig {
   blur_fields: string[]; // per-tier blur: ['crystal-keeper:web_price', 'diamond-keeper:maintenance_price', 'all:web_price'] or legacy ['web_price']
   show_discount_badge: boolean;
   show_size_chart: boolean;
+  option_discount_sync: boolean; // true = use store's discount_rate for options too
+  option_discount_rate: number;  // custom rate when sync is off (0 = no discount shown)
 }
 
 export interface StoreNewsItem {
@@ -287,7 +289,7 @@ export const BLOCK_META: BlockMeta[] = [
   { type: 'quiz', label: 'Recommendation Quiz', labelJa: 'おすすめ診断', icon: '🧪', maxInstances: 1, defaultConfig: {} },
   { type: 'simulator', label: 'Price Simulator', labelJa: 'かんたん見積もり', icon: '🧮', maxInstances: 1, defaultConfig: {} },
   { type: 'cases', label: 'Case Studies', labelJa: '施工事例', icon: '📋', maxInstances: 1, defaultConfig: { max_cases: 4, show_link_to_all: true } },
-  { type: 'pricing', label: 'Pricing Menu', labelJa: '料金メニュー', icon: '💰', maxInstances: 1, defaultConfig: { featured_tier_ids: ['crystal', 'diamond', 'dia2'], blur_fields: [], show_discount_badge: true, show_size_chart: true } },
+  { type: 'pricing', label: 'Pricing Menu', labelJa: '料金メニュー', icon: '💰', maxInstances: 1, defaultConfig: { featured_tier_ids: ['crystal', 'diamond', 'dia2'], blur_fields: [], show_discount_badge: true, show_size_chart: true, option_discount_sync: true, option_discount_rate: 10 } },
   { type: 'news', label: 'Store News', labelJa: 'お知らせ', icon: '📰', maxInstances: 1, defaultConfig: { max_items: 5 } },
   { type: 'process', label: 'Process Flow', labelJa: 'ご利用の流れ', icon: '📝', maxInstances: 1, defaultConfig: { steps: DEFAULT_PROCESS_STEPS } },
   { type: 'benefits', label: 'Benefits CTA', labelJa: '5つの特典', icon: '🎁', maxInstances: 1, defaultConfig: { items: DEFAULT_BENEFIT_ITEMS, show_booking_cta: true, show_inquiry_cta: true } },

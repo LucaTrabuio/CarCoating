@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 interface Store {
   store_id: string;
@@ -22,6 +22,12 @@ interface KpiEntry {
   phone_calls: number;
   inquiries: number;
   bookings: number;
+  page_views: number;
+  cta_booking_clicks: number;
+  cta_inquiry_clicks: number;
+  line_clicks: number;
+  quiz_completions: number;
+  plan_selections: number;
 }
 
 interface StoreGroup {
@@ -43,6 +49,7 @@ export default function KpiPage() {
   const [endDate, setEndDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [entries, setEntries] = useState<KpiEntry[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -55,12 +62,11 @@ export default function KpiPage() {
     }).catch(() => {});
   }, []);
 
-  // Build hierarchy groups
-  const groups: StoreGroup[] = (() => {
+  // Build hierarchy groups (memoized to avoid infinite re-render loop)
+  const groups: StoreGroup[] = useMemo(() => {
     const result: StoreGroup[] = [];
     const grouped = new Set<string>();
 
-    // Sub-company groups
     for (const sc of subCompanies) {
       const memberIds = sc.stores || [];
       if (memberIds.length > 0) {
@@ -74,7 +80,6 @@ export default function KpiPage() {
       }
     }
 
-    // Standalone stores
     for (const s of stores) {
       if (!grouped.has(s.store_id)) {
         result.push({
@@ -87,66 +92,97 @@ export default function KpiPage() {
     }
 
     return result;
-  })();
+  }, [stores, subCompanies]);
 
-  const selectedGroupData = groups.find(g => g.id === selectedGroup);
+  const selectedGroupData = useMemo(
+    () => groups.find(g => g.id === selectedGroup),
+    [groups, selectedGroup],
+  );
 
-  const fetchKpi = useCallback(async () => {
+  const fetchKpi = useCallback(async (signal: AbortSignal) => {
     if (!selectedGroupData) return;
     setLoading(true);
+    setError(null);
     try {
-      // Fetch KPI for all stores in the group
       const allEntries: KpiEntry[] = [];
-      await Promise.all(
-        selectedGroupData.storeIds.map(async (storeId) => {
-          const params = new URLSearchParams({ storeId, startDate, endDate });
-          const res = await fetch(`/api/admin/kpi?${params}`);
-          const data = await res.json();
-          const list = data.records ?? data.entries ?? data ?? [];
+      const storeIds = selectedGroupData.storeIds;
+      const BATCH_SIZE = 5;
+      const TIMEOUT_MS = 15000;
+
+      for (let i = 0; i < storeIds.length; i += BATCH_SIZE) {
+        if (signal.aborted) return;
+        const batch = storeIds.slice(i, i + BATCH_SIZE);
+        const results = await Promise.all(
+          batch.map(async (storeId) => {
+            const params = new URLSearchParams({ storeId, startDate, endDate });
+            const res = await fetch(`/api/admin/kpi?${params}`, {
+              signal: AbortSignal.any([signal, AbortSignal.timeout(TIMEOUT_MS)]),
+            });
+            if (!res.ok) throw new Error(`Store ${storeId}: ${res.status}`);
+            const data = await res.json();
+            return data.records ?? data.entries ?? data ?? [];
+          })
+        );
+        for (const list of results) {
           if (Array.isArray(list)) allEntries.push(...list);
-        })
-      );
+        }
+      }
+
+      if (signal.aborted) return;
 
       // Aggregate by date
       const byDate = new Map<string, KpiEntry>();
+      const numFields = ['phone_calls', 'inquiries', 'bookings', 'page_views', 'cta_booking_clicks', 'cta_inquiry_clicks', 'line_clicks', 'quiz_completions', 'plan_selections'] as const;
       for (const e of allEntries) {
         const existing = byDate.get(e.date);
         if (existing) {
-          existing.phone_calls += (e.phone_calls || 0);
-          existing.inquiries += (e.inquiries || 0);
-          existing.bookings += (e.bookings || 0);
+          for (const f of numFields) existing[f] += ((e as unknown as Record<string, number>)[f] || 0);
         } else {
-          byDate.set(e.date, {
-            date: e.date,
-            store_id: 'aggregate',
-            phone_calls: e.phone_calls || 0,
-            inquiries: e.inquiries || 0,
-            bookings: e.bookings || 0,
-          });
+          const entry = { date: e.date, store_id: 'aggregate' } as KpiEntry;
+          for (const f of numFields) entry[f] = ((e as unknown as Record<string, number>)[f] || 0);
+          byDate.set(e.date, entry);
         }
       }
 
       const sorted = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
       setEntries(sorted);
-    } catch {
+    } catch (err) {
+      if (signal.aborted) return;
+      const msg = err instanceof Error ? err.message : '不明なエラー';
+      setError(msg.includes('TimeoutError') || msg.includes('timeout')
+        ? 'リクエストがタイムアウトしました。後でもう一度お試しください。'
+        : `KPIの取得に失敗しました: ${msg}`);
       setEntries([]);
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   }, [selectedGroupData, startDate, endDate]);
 
   useEffect(() => {
-    if (selectedGroupData) fetchKpi();
-    else setEntries([]);
+    if (!selectedGroupData) {
+      setEntries([]);
+      setError(null);
+      return;
+    }
+    const controller = new AbortController();
+    fetchKpi(controller.signal);
+    return () => controller.abort();
   }, [selectedGroup, startDate, endDate, fetchKpi, selectedGroupData]);
 
   const totals = entries.reduce(
-    (acc, e) => ({
-      phone_calls: acc.phone_calls + (e.phone_calls || 0),
-      inquiries: acc.inquiries + (e.inquiries || 0),
-      bookings: acc.bookings + (e.bookings || 0),
-    }),
-    { phone_calls: 0, inquiries: 0, bookings: 0 },
+    (acc, e) => {
+      acc.phone_calls += (e.phone_calls || 0);
+      acc.inquiries += (e.inquiries || 0);
+      acc.bookings += (e.bookings || 0);
+      acc.page_views += (e.page_views || 0);
+      acc.cta_booking_clicks += (e.cta_booking_clicks || 0);
+      acc.cta_inquiry_clicks += (e.cta_inquiry_clicks || 0);
+      acc.line_clicks += (e.line_clicks || 0);
+      acc.quiz_completions += (e.quiz_completions || 0);
+      acc.plan_selections += (e.plan_selections || 0);
+      return acc;
+    },
+    { phone_calls: 0, inquiries: 0, bookings: 0, page_views: 0, cta_booking_clicks: 0, cta_inquiry_clicks: 0, line_clicks: 0, quiz_completions: 0, plan_selections: 0 },
   );
 
   function handleExportCsv() {
@@ -237,45 +273,63 @@ export default function KpiPage() {
               CSV出力
             </button>
           </div>
-          {loading ? (
-            <p className="text-sm text-gray-500">読み込み中...</p>
+          {error ? (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+              <p className="text-sm text-red-700">{error}</p>
+              <button
+                onClick={() => { const c = new AbortController(); fetchKpi(c.signal); }}
+                className="mt-2 rounded-md bg-red-100 px-3 py-1 text-xs font-medium text-red-800 hover:bg-red-200"
+              >
+                再試行
+              </button>
+            </div>
+          ) : loading ? (
+            <p className="text-sm text-gray-500">読み込み中...（{selectedGroupData.storeIds.length}店舗）</p>
           ) : entries.length === 0 ? (
             <p className="text-sm text-gray-500">データがありません</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm whitespace-nowrap">
                 <thead>
-                  <tr className="border-b border-gray-200 text-left text-xs font-medium uppercase text-gray-500">
-                    <th className="pb-2 pr-4">日付</th>
-                    <th className="pb-2 pr-4 text-right">電話</th>
-                    <th className="pb-2 pr-4 text-right">問い合わせ</th>
-                    <th className="pb-2 text-right">予約</th>
+                  <tr className="border-b border-gray-200 text-left text-xs font-medium text-gray-500">
+                    <th className="pb-2 pr-3 sticky left-0 bg-white">日付</th>
+                    <th className="pb-2 px-2 text-right">PV</th>
+                    <th className="pb-2 px-2 text-right">電話</th>
+                    <th className="pb-2 px-2 text-right">問合せ</th>
+                    <th className="pb-2 px-2 text-right">予約</th>
+                    <th className="pb-2 px-2 text-right">予約CTA</th>
+                    <th className="pb-2 px-2 text-right">問合CTA</th>
+                    <th className="pb-2 px-2 text-right">LINE</th>
+                    <th className="pb-2 px-2 text-right">診断</th>
+                    <th className="pb-2 px-2 text-right">プラン選択</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {entries.map((e, i) => (
                     <tr key={e.id ?? i}>
-                      <td className="py-2 pr-4 text-gray-700">{e.date}</td>
-                      <td className="py-2 pr-4 text-right tabular-nums text-gray-700">
-                        {e.phone_calls}
-                      </td>
-                      <td className="py-2 pr-4 text-right tabular-nums text-gray-700">
-                        {e.inquiries}
-                      </td>
-                      <td className="py-2 text-right tabular-nums text-gray-700">{e.bookings}</td>
+                      <td className="py-2 pr-3 text-gray-700 sticky left-0 bg-white">{e.date}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-400">{e.page_views || 0}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-700">{e.phone_calls}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-700">{e.inquiries}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-700">{e.bookings}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-400">{e.cta_booking_clicks || 0}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-400">{e.cta_inquiry_clicks || 0}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-400">{e.line_clicks || 0}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-400">{e.quiz_completions || 0}</td>
+                      <td className="py-2 px-2 text-right tabular-nums text-gray-400">{e.plan_selections || 0}</td>
                     </tr>
                   ))}
                   <tr className="border-t-2 border-gray-300 font-medium">
-                    <td className="py-2 pr-4 text-gray-900">合計</td>
-                    <td className="py-2 pr-4 text-right tabular-nums text-gray-900">
-                      {totals.phone_calls}
-                    </td>
-                    <td className="py-2 pr-4 text-right tabular-nums text-gray-900">
-                      {totals.inquiries}
-                    </td>
-                    <td className="py-2 text-right tabular-nums text-gray-900">
-                      {totals.bookings}
-                    </td>
+                    <td className="py-2 pr-3 text-gray-900 sticky left-0 bg-white">合計</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-500">{totals.page_views}</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-900">{totals.phone_calls}</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-900">{totals.inquiries}</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-900">{totals.bookings}</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-500">{totals.cta_booking_clicks}</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-500">{totals.cta_inquiry_clicks}</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-500">{totals.line_clicks}</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-500">{totals.quiz_completions}</td>
+                    <td className="py-2 px-2 text-right tabular-nums text-gray-500">{totals.plan_selections}</td>
                   </tr>
                 </tbody>
               </table>

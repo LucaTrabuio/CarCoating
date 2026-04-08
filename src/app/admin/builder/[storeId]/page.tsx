@@ -292,6 +292,32 @@ export default function BuilderPage() {
     }
   }
 
+  // ─── Option discount helpers ───
+
+  function getOptionDiscountSync(): boolean {
+    const pb = getPricingBlock();
+    if (!pb) return true;
+    return (pb.config as PricingConfig).option_discount_sync ?? true;
+  }
+
+  function getOptionDiscountRate(): number {
+    const pb = getPricingBlock();
+    if (!pb) return 10;
+    return (pb.config as PricingConfig).option_discount_rate ?? 10;
+  }
+
+  function updateOptionDiscountSync(sync: boolean) {
+    updateBlocks(prev => prev.map(b =>
+      b.type === 'pricing' ? { ...b, config: { ...b.config, option_discount_sync: sync } } : b
+    ));
+  }
+
+  function updateOptionDiscountRate(rate: number) {
+    updateBlocks(prev => prev.map(b =>
+      b.type === 'pricing' ? { ...b, config: { ...b.config, option_discount_rate: rate } } : b
+    ));
+  }
+
   // ─── Options tab helpers ───
 
   function updateServiceOptions(next: ServiceOption[]) {
@@ -775,6 +801,41 @@ export default function BuilderPage() {
           {/* Tab content: Options */}
           {activeTab === 'options' && (
             <div className="space-y-4">
+              {/* Option discount settings */}
+              <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+                <h3 className="text-sm font-bold text-gray-800">オプション割引</h3>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={getOptionDiscountSync()}
+                    onChange={e => updateOptionDiscountSync(e.target.checked)}
+                    className="rounded border-gray-300"
+                  />
+                  コーティング割引率と同期する
+                </label>
+                {!getOptionDiscountSync() && (
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-gray-500">カスタム割引率:</label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={getOptionDiscountRate()}
+                      onChange={e => updateOptionDiscountRate(Number(e.target.value))}
+                      className="w-20 rounded border border-gray-300 px-2 py-1 text-sm"
+                    />
+                    <span className="text-xs text-gray-400">%</span>
+                  </div>
+                )}
+                <p className="text-[10px] text-gray-400">
+                  {getOptionDiscountSync()
+                    ? '店舗のWeb割引率がオプションにも適用されます（バナー非表示）'
+                    : getOptionDiscountRate() === 0
+                      ? 'オプション割引なし（バナー非表示）'
+                      : `オプションページに${getOptionDiscountRate()}%OFFバナーが表示されます`}
+                </p>
+              </div>
+
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-gray-800">カスタムサービス一覧</h3>
                 <button

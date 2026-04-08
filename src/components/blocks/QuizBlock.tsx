@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
+import { trackEvent } from '@/lib/track';
 
 type Tier = 'standard' | 'premium' | 'flagship';
 
@@ -91,7 +92,12 @@ function computeResult(answers: Tier[]): Tier {
   return 'standard';
 }
 
-export default function QuizBlock() {
+interface QuizBlockProps {
+  storeId?: string;
+  basePath?: string;
+}
+
+export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
   const [step, setStep] = useState(-1); // -1 = intro, 0..3 = questions, 4 = result
   const [answers, setAnswers] = useState<Tier[]>([]);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
@@ -106,9 +112,14 @@ export default function QuizBlock() {
       const next = [...answers, tier];
       setAnswers(next);
       setDirection('forward');
-      setStep(next.length >= 4 ? 4 : next.length);
+      const nextStep = next.length >= 4 ? 4 : next.length;
+      setStep(nextStep);
+      if (nextStep === 4 && storeId) {
+        const result = computeResult(next);
+        trackEvent(storeId, 'quiz_complete', { tier: result });
+      }
     },
-    [answers],
+    [answers, storeId],
   );
 
   const handleBack = useCallback(() => {
@@ -233,13 +244,15 @@ export default function QuizBlock() {
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Link
-                href="/booking"
+                href={`${basePath}/booking`}
+                onClick={() => storeId && trackEvent(storeId, 'cta_booking', { source: 'quiz' })}
                 className="px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors"
               >
                 このコースで予約する
               </Link>
               <Link
-                href="/booking?mode=inquiry"
+                href={`${basePath}/booking?mode=inquiry`}
+                onClick={() => storeId && trackEvent(storeId, 'cta_inquiry', { source: 'quiz' })}
                 className="px-6 py-3 bg-white/10 border border-white/20 text-white font-semibold rounded-lg text-sm hover:bg-white/20 transition-colors"
               >
                 まずは相談する

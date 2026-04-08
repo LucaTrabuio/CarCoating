@@ -49,11 +49,12 @@ interface OptionCalculatorProps {
   basePlanPrice: number;
   basePlanName: string;
   optionDiscountRate?: number;
+  showDiscountBanner?: boolean;
   blurPrices?: boolean;
   onTotalChange?: (total: number, selectedOptions: string[]) => void;
 }
 
-export default function OptionCalculator({ basePlanPrice, basePlanName, optionDiscountRate = 10, blurPrices = false, onTotalChange }: OptionCalculatorProps) {
+export default function OptionCalculator({ basePlanPrice, basePlanName, optionDiscountRate = 10, showDiscountBanner = true, blurPrices = false, onTotalChange }: OptionCalculatorProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showAll, setShowAll] = useState(false);
 
@@ -83,9 +84,11 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
       <p className="text-sm font-semibold mb-1">
         選択中のプラン: <span className="text-amber-600">{basePlanName}</span>
       </p>
-      <p className="text-xs text-emerald-600 font-semibold mb-3">
-        Web予約特典: オプション全メニュー{optionDiscountRate}%OFF適用中
-      </p>
+      {showDiscountBanner && optionDiscountRate > 0 && (
+        <p className="text-xs text-emerald-600 font-semibold mb-3">
+          Web予約特典: オプション全メニュー{optionDiscountRate}%OFF適用中
+        </p>
+      )}
 
       {!showAll ? (
         <div className="space-y-0">
