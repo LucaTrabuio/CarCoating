@@ -1,13 +1,62 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Stores: public read, admin write
     match /stores/{storeId} {
       allow read: if true;
-      allow write: if false;
+      allow create, delete: if request.auth != null && request.auth.token.role == 'super_admin';
+      allow update: if request.auth != null && (
+        request.auth.token.role == 'super_admin' ||
+        (request.auth.token.role == 'store_admin' && storeId in request.auth.token.managed_stores)
+      );
     }
+
+    // Sub-companies: public read, super admin write
+    match /sub_companies/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.role == 'super_admin';
+    }
+
+    // Campaigns: public read, admin write
     match /campaigns/{docId} {
       allow read: if true;
-      allow write: if false;
+      allow write: if request.auth != null && request.auth.token.role in ['super_admin', 'store_admin'];
+    }
+
+    // Users: self-read or super admin
+    match /users/{userId} {
+      allow read: if request.auth != null && (
+        request.auth.token.role == 'super_admin' || request.auth.uid == userId
+      );
+      allow write: if request.auth != null && request.auth.token.role == 'super_admin';
+    }
+
+    // Master data: public read, super admin write
+    match /master_data/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.role == 'super_admin';
+    }
+
+    // Blog posts: public read, super admin write
+    match /blog_posts/{postId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.role == 'super_admin';
+    }
+
+    // KPI: admin read/write for their stores
+    match /kpi/{storeId}/{subcol}/{docId} {
+      allow read, write: if request.auth != null && (
+        request.auth.token.role == 'super_admin' ||
+        storeId in request.auth.token.managed_stores
+      );
+    }
+
+    // Inquiries: anyone can create (customers), read by token or admin
+    match /inquiries/{inquiryId} {
+      allow create: if true;
+      allow read: if true;
+      allow update, delete: if request.auth != null && request.auth.token.role in ['super_admin', 'store_admin'];
     }
   }
 }

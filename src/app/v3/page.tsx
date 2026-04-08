@@ -77,6 +77,7 @@ export default function V3HomePage() {
   const [geoStatus, setGeoStatus] = useState<'idle' | 'detecting' | 'done' | 'denied'>('idle');
   const [selectedStore, setSelectedStore] = useState<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
+  const [subCompanyMap, setSubCompanyMap] = useState<Record<string, { name: string; slug: string; storeIds: string[] }>>({});
 
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
@@ -85,15 +86,37 @@ export default function V3HomePage() {
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   const mapSectionRef = useRef<HTMLDivElement>(null);
 
-  // Fetch stores
+  // Fetch stores + sub-companies
   useEffect(() => {
-    fetch('/api/v3/stores')
-      .then(res => res.json())
-      .then((data: V3StoreData[]) => {
-        setStores(data.map(s => ({ ...s, distance: null })));
-        setStoresLoading(false);
-      })
-      .catch((err) => { console.error('Failed to fetch stores:', err); setStoresLoading(false); });
+    Promise.all([
+      fetch('/api/v3/stores').then(r => r.json()),
+      fetch('/api/v3/sub-companies').then(r => r.ok ? r.json() : []).catch(() => []),
+    ]).then(([storeData, scData]: [V3StoreData[], { id: string; name: string; slug: string; stores: string[] }[]]) => {
+      // Build sub-company lookup
+      const scMap: Record<string, { name: string; slug: string; storeIds: string[] }> = {};
+      for (const sc of (Array.isArray(scData) ? scData : [])) {
+        scMap[sc.id] = { name: sc.name, slug: sc.slug, storeIds: sc.stores || [] };
+      }
+      setSubCompanyMap(scMap);
+
+      // For grouped stores, keep only the first one as representative
+      const seen = new Set<string>();
+      const filtered: V3StoreData[] = [];
+      for (const s of storeData) {
+        const scId = (s as V3StoreData & { sub_company_id?: string }).sub_company_id;
+        if (scId && scMap[scId]) {
+          if (!seen.has(scId)) {
+            seen.add(scId);
+            // Use sub-company name as store name for the grouped entry
+            filtered.push({ ...s, store_name: scMap[scId].name });
+          }
+        } else {
+          filtered.push(s);
+        }
+      }
+      setStores(filtered.map(s => ({ ...s, distance: null })));
+      setStoresLoading(false);
+    }).catch((err) => { console.error('Failed to fetch stores:', err); setStoresLoading(false); });
   }, []);
 
   // Init map when section is visible
@@ -142,7 +165,7 @@ export default function V3HomePage() {
               <div style="font-weight:bold;font-size:14px;margin-bottom:4px">${store.store_name}</div>
               <div style="font-size:11px;color:#666;margin-bottom:4px">${store.address}</div>
               <div style="font-size:11px;color:#666">${store.tel || ''}</div>
-              <a href="/v3/${store.store_id}/" style="display:inline-block;margin-top:8px;padding:6px 16px;background:#f59e0b;color:white;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">この店舗を見る →</a>
+              <a href="${(() => { const scId = (store as V3StoreData & { sub_company_id?: string }).sub_company_id; return scId && subCompanyMap[scId] ? '/' + subCompanyMap[scId].slug : '/v3/' + store.store_id + '/'; })()}" style="display:inline-block;margin-top:8px;padding:6px 16px;background:#f59e0b;color:white;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">この店舗を見る →</a>
             </div>
           `);
           infoWindowRef.current?.open(map, marker);
@@ -410,7 +433,7 @@ export default function V3HomePage() {
                           {store.distance < 1 ? `${Math.round(store.distance * 1000)}m` : `${store.distance.toFixed(1)}km`}
                         </span>
                       )}
-                      <Link href={`/v3/${store.store_id}/`}
+                      <Link href={(() => { const scId = (store as V3StoreData & { sub_company_id?: string }).sub_company_id; return scId && subCompanyMap[scId] ? `/${subCompanyMap[scId].slug}` : `/v3/${store.store_id}/`; })()}
                         className="px-3 py-1.5 bg-amber-500 text-white text-[11px] font-bold rounded-md hover:bg-amber-600 transition-colors"
                         onClick={e => e.stopPropagation()}>
                         詳細 →

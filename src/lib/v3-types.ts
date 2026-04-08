@@ -56,6 +56,19 @@ export interface V3StoreData {
   level1_staff_count: number;
   level2_staff_count: number;
   google_place_id: string;
+
+  // ─── CMS (optional, added for block builder) ───
+  page_layout?: string;         // JSON string: PageLayout
+  blur_config?: string;         // JSON string: BlurConfig
+  appeal_points?: string;       // JSON string: string[] of selected appeal point IDs
+  certifications?: string;      // JSON string: Certification[]
+  store_news?: string;          // JSON string: StoreNewsItem[]
+  banners?: string;             // JSON string: Banner[]
+  sub_company_id?: string;      // reference to sub_companies collection
+  store_slug?: string;          // URL-friendly slug for new routing
+  custom_css?: string;          // per-store custom CSS
+  estimate_enabled?: boolean;
+  qr_code_enabled?: boolean;
 }
 
 /** All CSV columns in order */
@@ -70,6 +83,10 @@ export const V3_CSV_COLUMNS: (keyof V3StoreData)[] = [
   'before_after_url', 'campaign_banner_url', 'gallery_images',
   'custom_services', 'price_multiplier', 'min_price_limit',
   'has_booth', 'level1_staff_count', 'level2_staff_count', 'google_place_id',
+  // CMS fields (optional in CSV)
+  'page_layout', 'blur_config', 'appeal_points', 'certifications',
+  'store_news', 'banners', 'sub_company_id', 'store_slug', 'custom_css',
+  'estimate_enabled', 'qr_code_enabled',
 ];
 
 /** Default values for a new V3 store */

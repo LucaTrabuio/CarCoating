@@ -226,3 +226,58 @@ export async function saveV3CampaignDefaults(data: CampaignDefaults): Promise<vo
     .doc(CAMPAIGN_DOC_ID)
     .set(data);
 }
+
+// ─── Sub-company functions ─────────────────────────────────
+
+export interface SubCompany {
+  id: string;
+  name: string;
+  slug: string;
+  stores: string[];
+  logo_url: string;
+  description: string;
+}
+
+export async function getAllSubCompanies(): Promise<SubCompany[]> {
+  const db = getAdminDb();
+  const snapshot = await db.collection('sub_companies').get();
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SubCompany));
+}
+
+export async function getSubCompanyBySlug(slug: string): Promise<SubCompany | null> {
+  const db = getAdminDb();
+  const snapshot = await db.collection('sub_companies').where('slug', '==', slug).limit(1).get();
+  if (snapshot.empty) return null;
+  const doc = snapshot.docs[0];
+  return { id: doc.id, ...doc.data() } as SubCompany;
+}
+
+export async function getStoreBySlug(subCompanySlug: string, storeSlug: string): Promise<V3StoreData | null> {
+  const subCompany = await getSubCompanyBySlug(subCompanySlug);
+  if (!subCompany) return null;
+
+  const db = getAdminDb();
+  const snapshot = await db.collection('stores')
+    .where('sub_company_id', '==', subCompany.id)
+    .where('store_slug', '==', storeSlug)
+    .where('is_active', '==', true)
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) return null;
+  return normalizeStore(snapshot.docs[0].data());
+}
+
+export async function getStoresBySubCompany(subCompanyId: string): Promise<V3StoreData[]> {
+  const db = getAdminDb();
+  const snapshot = await db.collection('stores')
+    .where('sub_company_id', '==', subCompanyId)
+    .where('is_active', '==', true)
+    .get();
+  return snapshot.docs.map(doc => normalizeStore(doc.data()));
+}
+
+export async function upsertSubCompany(subCompany: SubCompany): Promise<void> {
+  const db = getAdminDb();
+  await db.collection('sub_companies').doc(subCompany.id).set(subCompany, { merge: true });
+}

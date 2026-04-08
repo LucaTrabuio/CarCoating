@@ -5,6 +5,7 @@ import {
   type ServiceAccount,
 } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
+import { getAuth as _getAuth, type Auth } from "firebase-admin/auth";
 
 function getPrivateKey(): string | undefined {
   const key = process.env.FIREBASE_PRIVATE_KEY;
@@ -14,13 +15,13 @@ function getPrivateKey(): string | undefined {
 
 let _adminDb: Firestore | null = null;
 
-function getAdminDb(): Firestore {
-  if (_adminDb) return _adminDb;
-
+function ensureApp() {
   const projectId = process.env.FIREBASE_PROJECT_ID;
   if (!projectId) {
     throw new Error('Firebase not configured: FIREBASE_PROJECT_ID is missing. Set Firebase env vars to use V3 features.');
   }
+
+  if (getApps().length > 0) return getApps()[0];
 
   const serviceAccount: ServiceAccount = {
     projectId,
@@ -28,13 +29,19 @@ function getAdminDb(): Firestore {
     privateKey: getPrivateKey(),
   };
 
-  const app =
-    getApps().length === 0
-      ? initializeApp({ credential: cert(serviceAccount) })
-      : getApps()[0];
+  return initializeApp({ credential: cert(serviceAccount) });
+}
 
+function getAdminDb(): Firestore {
+  if (_adminDb) return _adminDb;
+  const app = ensureApp();
   _adminDb = getFirestore(app);
   return _adminDb;
 }
 
-export { getAdminDb };
+function getAdminAuth(): Auth {
+  const app = ensureApp();
+  return _getAuth(app);
+}
+
+export { getAdminDb, getAdminAuth };

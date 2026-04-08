@@ -1,803 +1,106 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { StoreData } from '@/lib/types';
-import { stores as hardcodedStores } from '@/data/stores';
+import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
 
-type Tab = 'bookings' | 'stores' | 'cases' | 'campaigns' | 'v3firebase';
-
-const STATUS_LABELS: Record<number, { label: string; color: string }> = {
-  1: { label: '受付済み', color: 'bg-yellow-100 text-yellow-800' },
-  2: { label: '確定', color: 'bg-green-100 text-green-800' },
-  3: { label: 'キャンセル', color: 'bg-red-100 text-red-800' },
-  4: { label: '施工完了', color: 'bg-blue-100 text-blue-800' },
-};
-
-const SAMPLE_BOOKINGS = [
-  { id: '#1024', status: 1, name: '山田 太郎', car: 'ハリアー (L)', plan: 'ダイヤモンド', price: '¥67,600', c1: '4/10 9:00', c2: '4/12 10:00', c3: '4/16 13:00' },
-  { id: '#1023', status: 1, name: '佐藤 花子', car: 'N-BOX (SS)', plan: 'クリスタル', price: '¥14,560', c1: '4/11 14:00', c2: '4/14 9:00', c3: '—' },
-  { id: '#1022', status: 2, name: '鈴木 一郎', car: 'アルファード (LL)', plan: 'EXキーパー', price: '¥163,400', c1: '4/8 9:00 ✓', c2: '', c3: '' },
-  { id: '#1021', status: 4, name: '田中 次郎', car: 'プリウス (M)', plan: 'ダイヤⅡ', price: '¥74,400', c1: '4/5 完了', c2: '', c3: '' },
-];
-
-const STORE_FIELDS: { key: keyof StoreData; label: string; required: boolean }[] = [
-  { key: 'store_id', label: '店舗ID', required: true },
-  { key: 'store_name', label: '店舗名', required: true },
-  { key: 'address', label: '住所', required: true },
-  { key: 'postal_code', label: '〒', required: false },
-  { key: 'prefecture', label: '都道府県', required: true },
-  { key: 'city', label: '市区町村', required: true },
-  { key: 'tel', label: '電話番号', required: false },
-  { key: 'business_hours', label: '営業時間', required: false },
-  { key: 'regular_holiday', label: '定休日', required: false },
-  { key: 'discount_rate', label: '割引率', required: false },
-  { key: 'campaign_title', label: 'キャンペーン', required: false },
-  { key: 'email', label: 'メール', required: false },
-];
-
-function parseCSVLine(line: string): string[] {
-  const result: string[] = [];
-  let current = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    if (char === '"') {
-      if (inQuotes && i + 1 < line.length && line[i + 1] === '"') {
-        current += '"';
-        i++;
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (char === ',' && !inQuotes) {
-      result.push(current.trim());
-      current = '';
-    } else {
-      current += char;
-    }
-  }
-  result.push(current.trim());
-  return result;
+interface StoreInfo {
+  store_id: string;
+  store_name: string;
+  prefecture: string;
+  city: string;
+  is_active: boolean;
+  sub_company_id?: string;
 }
 
-function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
-  const lines = text.split(/\r?\n/).filter(l => l.trim());
-  if (lines.length < 1) return { headers: [], rows: [] };
-  const rawHeaders = parseCSVLine(lines[0]).map(h => h.replace(/^\uFEFF/, '').trim());
-  // Keep track of which indices have real headers (to handle trailing commas)
-  const validIndices = rawHeaders.map((h, i) => h ? i : -1).filter(i => i >= 0);
-  const headers = validIndices.map(i => rawHeaders[i]);
-  const rows = lines.slice(1).map(line => {
-    const values = parseCSVLine(line);
-    const row: Record<string, string> = {};
-    validIndices.forEach((origIdx, newIdx) => { row[headers[newIdx]] = values[origIdx] || ''; });
-    return row;
-  });
-  return { headers, rows };
-}
-
-function csvRowToStore(row: Record<string, string>): StoreData {
-  return {
-    store_id: row.store_id || '',
-    store_name: row.store_name || '',
-    address: row.address || '',
-    postal_code: row.postal_code || '',
-    prefecture: row.prefecture || '',
-    city: row.city || '',
-    tel: row.tel || '',
-    business_hours: row.business_hours || '',
-    regular_holiday: row.regular_holiday || '',
-    access_map_url: row.access_map_url || '',
-    lat: parseFloat(row.lat) || 0,
-    lng: parseFloat(row.lng) || 0,
-    has_booth: row.has_booth?.toUpperCase() === 'TRUE',
-    level1_staff_count: parseInt(row.level1_staff_count) || 0,
-    level2_staff_count: parseInt(row.level2_staff_count) || 0,
-    seo_keywords: row.seo_keywords || '',
-    meta_description: row.meta_description || '',
-    campaign_title: row.campaign_title || '',
-    campaign_deadline: row.campaign_deadline || '',
-    discount_rate: parseInt(row.discount_rate) || 0,
-    campaign_color_code: row.campaign_color_code || '#c49a2a',
-    min_price_limit: parseInt(row.min_price_limit) || 0,
-    google_place_id: row.google_place_id || '',
-    line_url: row.line_url || '',
-    email: row.email || '',
-    parking_spaces: parseInt(row.parking_spaces) || 0,
-    landmark: row.landmark || '',
-    nearby_stations: row.nearby_stations || '[]',
-  };
-}
-
-export default function AdminPage() {
-  const [tab, setTab] = useState<Tab>('bookings');
-
-  // CSV import state
-  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
-  const [csvRows, setCsvRows] = useState<Record<string, string>[]>([]);
-  const [csvFileName, setCsvFileName] = useState('');
-  const [csvErrors, setCsvErrors] = useState<string[]>([]);
-  const [savedStores, setSavedStores] = useState<StoreData[]>(() => {
-    const localStores: StoreData[] = [];
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('admin_stores');
-      if (saved) localStores.push(...JSON.parse(saved));
-    }
-    const mergedMap = new Map<string, StoreData>();
-    hardcodedStores.forEach(s => mergedMap.set(s.store_id, s));
-    localStores.forEach(s => mergedMap.set(s.store_id, s));
-    return Array.from(mergedMap.values());
-  });
-  const [saveSuccess, setSaveSuccess] = useState(false);
-
-  // Campaign settings — restore from Blob API on mount
-  const [campaignTitle, setCampaignTitle] = useState('春の新生活キャンペーン');
-  const [bannerColor, setBannerColor] = useState('#c49a2a');
-  const [campaignStart, setCampaignStart] = useState('2026-04-01');
-  const [campaignEnd, setCampaignEnd] = useState('2026-04-30');
-  const [campaignDiscount, setCampaignDiscount] = useState('20');
-  const [campaignSaved, setCampaignSaved] = useState(false);
-  const [campaignLoaded, setCampaignLoaded] = useState(false);
+export default function AdminDashboard() {
+  const user = useAdminAuth();
+  const [stores, setStores] = useState<StoreInfo[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/campaign')
-      .then(r => r.json())
-      .then(data => {
-        if (data.title) setCampaignTitle(data.title);
-        if (data.color) setBannerColor(data.color);
-        if (data.start) setCampaignStart(data.start);
-        if (data.end) setCampaignEnd(data.end);
-        if (data.discount !== undefined) setCampaignDiscount(String(data.discount));
-        setCampaignLoaded(true);
-      })
-      .catch(() => setCampaignLoaded(true));
+    fetch('/api/v3/stores?all=true')
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setStores(Array.isArray(data) ? data : []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
-  async function handleCampaignSave() {
-    const data = { title: campaignTitle, color: bannerColor, start: campaignStart, end: campaignEnd, discount: parseInt(campaignDiscount) || 20 };
-    try {
-      const res = await fetch('/api/campaign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-      if (!res.ok) throw new Error('Failed');
-    } catch {
-      // fallback to localStorage
-    }
-    localStorage.setItem('admin_campaign', JSON.stringify(data));
-    setCampaignSaved(true);
-    setTimeout(() => setCampaignSaved(false), 3000);
-  }
-
-  function handleCSVTemplateDownload() {
-    const headers = [
-      'store_id', 'store_name', 'address', 'postal_code', 'prefecture', 'city',
-      'tel', 'business_hours', 'regular_holiday', 'access_map_url', 'lat', 'lng',
-      'has_booth', 'level1_staff_count', 'level2_staff_count',
-      'seo_keywords', 'meta_description',
-      'campaign_title', 'campaign_deadline', 'discount_rate', 'campaign_color_code', 'min_price_limit',
-      'google_place_id', 'line_url', 'email', 'parking_spaces', 'landmark', 'nearby_stations'
-    ];
-    const example = [
-      'tokyo-shinjuku', 'KeePer PRO SHOP 新宿高島屋店', '東京都新宿区千駄ヶ谷5-24-2', '151-0051', '東京都', '新宿区',
-      '03-1234-5678', '9:00〜18:00', '年中無休', '', '35.6896', '139.7006',
-      'TRUE', '2', '1',
-      'コーティング 新宿', 'KeePer PRO SHOP 新宿店',
-      '春の新生活キャンペーン', '2026-04-30', '20', '#c49a2a', '14560',
-      'ChIJ...', 'https://line.me/...', 'store@example.com', '3', '高島屋タイムズスクエア隣', '"[{""name"":""新宿駅"",""time"":""徒歩5分""}]"'
-    ];
-    const csv = headers.join(',') + '\n' + example.join(',');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'store_template.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function handleCSVUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    e.target.value = '';
-    setCsvFileName(file.name);
-    setSaveSuccess(false);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const text = ev.target?.result as string;
-      const { headers, rows } = parseCSV(text);
-
-      // Validate
-      const errors: string[] = [];
-      if (!headers.includes('store_id')) errors.push('store_id カラムが見つかりません');
-      if (!headers.includes('store_name')) errors.push('store_name カラムが見つかりません');
-      rows.forEach((row, i) => {
-        if (!row.store_id) errors.push(`行 ${i + 2}: store_id が空です`);
-        if (!row.store_name) errors.push(`行 ${i + 2}: store_name が空です`);
-      });
-
-      setCsvHeaders(headers);
-      setCsvRows(rows);
-      setCsvErrors(errors);
-    };
-    reader.readAsText(file);
-  }
-
-  async function handleCSVSave() {
-    const importedStores = csvRows.map(csvRowToStore).filter(s => s.store_id);
-    try {
-      const res = await fetch('/api/stores', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(importedStores),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Unknown error' }));
-        setCsvErrors(prev => [...prev, `サーバー保存エラー: ${err.error || res.statusText}（ローカルには保存済み）`]);
-      }
-    } catch {
-      setCsvErrors(prev => [...prev, 'サーバーに接続できません（ローカルには保存済み）']);
-    }
-    localStorage.setItem('admin_stores', JSON.stringify(importedStores));
-    const mergedMap = new Map<string, StoreData>();
-    hardcodedStores.forEach(s => mergedMap.set(s.store_id, s));
-    importedStores.forEach(s => mergedMap.set(s.store_id, s));
-    setSavedStores(Array.from(mergedMap.values()));
-    setSaveSuccess(true);
-    setCsvHeaders([]);
-    setCsvRows([]);
-    setCsvFileName('');
-  }
-
-  function handleCSVCancel() {
-    setCsvHeaders([]);
-    setCsvRows([]);
-    setCsvErrors([]);
-    setCsvFileName('');
-  }
-
-  function handleExportCSV() {
-    const allHeaders = [
-      'store_id', 'store_name', 'address', 'postal_code', 'prefecture', 'city',
-      'tel', 'business_hours', 'regular_holiday', 'access_map_url', 'lat', 'lng',
-      'has_booth', 'level1_staff_count', 'level2_staff_count',
-      'seo_keywords', 'meta_description',
-      'campaign_title', 'campaign_deadline', 'discount_rate', 'campaign_color_code', 'min_price_limit',
-      'google_place_id', 'line_url', 'email', 'parking_spaces', 'landmark', 'nearby_stations'
-    ];
-    const rows = savedStores.map(store =>
-      allHeaders.map(h => {
-        const val = String(store[h as keyof StoreData] ?? '');
-        return val.includes(',') || val.includes('"') ? `"${val.replace(/"/g, '""')}"` : val;
-      }).join(',')
-    );
-    const csv = allHeaders.join(',') + '\n' + rows.join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'stores_export.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+  const activeStores = stores.filter(s => s.is_active);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Admin header */}
-      <div className="bg-gray-900 text-white px-5 py-3 flex items-center justify-between">
-        <div className="font-bold text-sm">KeePer PRO SHOP 管理パネル</div>
-        <Link href="/" className="text-gray-400 text-xs hover:text-white">← サイトに戻る</Link>
+    <div className="max-w-5xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">ダッシュボード</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          ようこそ、{user.email} さん（{user.role === 'super_admin' ? 'スーパー管理者' : '店舗管理者'}）
+        </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b-2 border-gray-200 bg-white">
-        {[
-          { key: 'bookings' as Tab, label: '予約管理' },
-          { key: 'stores' as Tab, label: '店舗マスター' },
-          { key: 'cases' as Tab, label: '施工事例投稿' },
-          { key: 'campaigns' as Tab, label: 'キャンペーン設定' },
-          { key: 'v3firebase' as Tab, label: 'V3 Firebase管理' },
-        ].map(t => (
-          <button key={t.key} onClick={() => setTab(t.key)}
-            className={`px-6 py-3 text-sm font-semibold border-b-2 -mb-0.5 transition-colors ${
-              tab === t.key ? 'text-[#0f1c2e] border-amber-500' : 'text-gray-400 border-transparent hover:text-gray-600'}`}>
-            {t.label}
-          </button>
-        ))}
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <StatCard label="登録店舗" value={loading ? '...' : String(stores.length)} />
+        <StatCard label="アクティブ" value={loading ? '...' : String(activeStores.length)} />
+        <StatCard label="グループ" value={loading ? '...' : String(new Set(stores.map(s => s.sub_company_id).filter(Boolean)).size)} />
+        <StatCard label="ロール" value={user.role === 'super_admin' ? '管理者' : '店舗'} />
       </div>
 
-      <div className="max-w-[1200px] mx-auto p-5">
-
-        {/* BOOKINGS TAB */}
-        {tab === 'bookings' && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="font-bold text-lg">予約リクエスト一覧</h2>
-              <div className="flex gap-2 text-xs">
-                {Object.entries(STATUS_LABELS).map(([code, { label, color }]) => (
-                  <span key={code} className={`px-2 py-0.5 rounded-full font-bold ${color}`}>{label}</span>
-                ))}
-              </div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs border-collapse">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="px-3 py-2 text-left font-semibold">ID</th>
-                    <th className="px-3 py-2 text-left font-semibold">ステータス</th>
-                    <th className="px-3 py-2 text-left font-semibold">お客様</th>
-                    <th className="px-3 py-2 text-left font-semibold">車種</th>
-                    <th className="px-3 py-2 text-left font-semibold">プラン</th>
-                    <th className="px-3 py-2 text-left font-semibold">見積額</th>
-                    <th className="px-3 py-2 text-left font-semibold">第1希望</th>
-                    <th className="px-3 py-2 text-left font-semibold">第2希望</th>
-                    <th className="px-3 py-2 text-left font-semibold">第3希望</th>
-                    <th className="px-3 py-2 text-left font-semibold">操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {SAMPLE_BOOKINGS.map(b => (
-                    <tr key={b.id} className="border-b border-gray-100">
-                      <td className="px-3 py-2.5">{b.id}</td>
-                      <td className="px-3 py-2.5">
-                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${STATUS_LABELS[b.status].color}`}>
-                          {STATUS_LABELS[b.status].label}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2.5 font-semibold">{b.name}</td>
-                      <td className="px-3 py-2.5">{b.car}</td>
-                      <td className="px-3 py-2.5">{b.plan}</td>
-                      <td className="px-3 py-2.5">{b.price}</td>
-                      <td className="px-3 py-2.5">
-                        {b.status === 1 && b.c1 ? <>{b.c1} <button className="ml-1 px-1.5 py-0.5 bg-green-100 text-green-800 rounded text-[10px] font-bold">〇</button></> : b.c1}
-                      </td>
-                      <td className="px-3 py-2.5">
-                        {b.status === 1 && b.c2 ? <>{b.c2} <button className="ml-1 px-1.5 py-0.5 bg-green-100 text-green-800 rounded text-[10px] font-bold">〇</button></> : b.c2}
-                      </td>
-                      <td className="px-3 py-2.5">
-                        {b.status === 1 && b.c3 && b.c3 !== '—' ? <>{b.c3} <button className="ml-1 px-1.5 py-0.5 bg-green-100 text-green-800 rounded text-[10px] font-bold">〇</button></> : b.c3}
-                      </td>
-                      <td className="px-3 py-2.5">
-                        {b.status === 1 && <button className="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-[10px] font-bold">代替提案</button>}
-                        {b.status === 2 && <button className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-[10px] font-bold">施工完了</button>}
-                        {b.status === 4 && <span className="text-gray-400">インセンティブ対象</span>}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      {/* Quick actions */}
+      <div className="grid md:grid-cols-3 gap-4 mb-8">
+        <QuickAction href="/admin/stores" icon="🏪" title="店舗管理" desc="店舗データの確認・CSV管理" />
+        <QuickAction href="/admin/builder" icon="🎨" title="ページビルダー" desc="店舗ページの編集・ブロック管理" />
+        <QuickAction href="/admin/news" icon="📰" title="お知らせ管理" desc="店舗ごとのお知らせを管理" />
+        <QuickAction href="/admin/campaigns" icon="🏷️" title="キャンペーン" desc="キャンペーン設定の変更" />
+        <QuickAction href="/admin/bookings" icon="📅" title="予約管理" desc="予約リクエストの確認" />
+        {user.role === 'super_admin' && (
+          <>
+            <QuickAction href="/admin/kpi" icon="📊" title="KPIダッシュボード" desc="電話・問い合わせ・予約の集計" />
+            <QuickAction href="/admin/users" icon="👥" title="ユーザー管理" desc="管理者アカウントの管理" />
+            <QuickAction href="/admin/blog" icon="✍️" title="ブログ管理" desc="ブログ記事の作成・編集" />
+            <QuickAction href="/admin/master" icon="⚙️" title="マスターデータ" desc="アピールポイント・テンプレート管理" />
+          </>
         )}
+      </div>
 
-        {/* STORES TAB */}
-        {tab === 'stores' && (
-          <div className="space-y-4">
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold text-lg">店舗マスターCSV管理</h2>
-                <div className="flex gap-2">
-                  <button onClick={handleCSVTemplateDownload} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📋 テンプレート</button>
-                  <button onClick={handleExportCSV} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📤 CSVエクスポート</button>
-                  <label className="px-3 py-1.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
-                    📥 CSVインポート
-                    <input type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
-                  </label>
-                </div>
-              </div>
-
-              {csvRows.length > 0 ? (
+      {/* Recent stores */}
+      {!loading && activeStores.length > 0 && (
+        <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-bold text-sm text-gray-900">アクティブ店舗</h2>
+            <Link href="/admin/stores" className="text-xs text-amber-600 font-semibold hover:underline">全て見る →</Link>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {activeStores.slice(0, 8).map(s => (
+              <div key={s.store_id} className="flex items-center justify-between py-2">
                 <div>
-                  <p className="text-xs text-green-600 font-semibold mb-1">✓ {csvFileName} を読み込みました（{csvRows.length}店舗）</p>
-
-                  {csvErrors.length > 0 && (
-                    <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <p className="text-xs font-semibold text-red-700 mb-1">エラー:</p>
-                      {csvErrors.map((err, i) => (
-                        <p key={i} className="text-xs text-red-600">{err}</p>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="overflow-x-auto mb-3">
-                    <table className="w-full text-[10px] border-collapse">
-                      <thead>
-                        <tr className="bg-gray-50">
-                          {STORE_FIELDS.map(f => (
-                            <th key={f.key} className="px-2 py-1.5 text-left font-semibold border-b border-gray-200 whitespace-nowrap">
-                              {f.label} {f.required && <span className="text-red-500">*</span>}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {csvRows.map((row, ri) => (
-                          <tr key={ri} className="border-b border-gray-100">
-                            {STORE_FIELDS.map(f => (
-                              <td key={f.key} className="px-2 py-1.5 whitespace-nowrap max-w-[150px] truncate">
-                                {row[f.key] || <span className="text-gray-300">—</span>}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {csvHeaders.length > STORE_FIELDS.length && (
-                    <p className="text-xs text-gray-400 mb-3">+ {csvHeaders.length - STORE_FIELDS.length}カラム（{csvHeaders.filter(h => !STORE_FIELDS.find(f => f.key === h)).join(', ')}）</p>
-                  )}
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleCSVSave}
-                      disabled={csvErrors.some(e => e.includes('store_id カラム'))}
-                      className="px-4 py-2 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold disabled:opacity-40"
-                    >
-                      保存して反映する（{csvRows.length}店舗）
-                    </button>
-                    <button onClick={handleCSVCancel} className="px-4 py-2 border border-gray-300 rounded-lg text-sm">キャンセル</button>
-                  </div>
+                  <span className="text-sm font-medium text-gray-900">{s.store_name}</span>
+                  <span className="text-xs text-gray-400 ml-2">{s.prefecture} {s.city}</span>
                 </div>
-              ) : (
-                <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center">
-                  <p className="text-gray-400 text-sm mb-2">CSVファイルをアップロードして店舗データを一括更新</p>
-                  <p className="text-gray-300 text-xs">📋 テンプレートをダウンロードして記入してください</p>
-                </div>
-              )}
-
-              {saveSuccess && (
-                <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-xs text-green-700 font-semibold">✓ {savedStores.length}店舗のデータを保存しました</p>
-                  <p className="text-xs text-green-600 mt-1">※ この変更はブラウザのローカルストレージに保存されています。本番反映するにはデプロイが必要です。</p>
-                </div>
-              )}
-            </div>
-
-            {/* Saved stores display */}
-            {savedStores.length > 0 && (
-              <div className="bg-white border border-gray-200 rounded-xl p-5">
-                <h3 className="font-bold text-sm mb-3">保存済み店舗データ（{savedStores.length}件）</h3>
-                <div className="grid gap-3">
-                  {savedStores.map(store => (
-                    <div key={store.store_id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-bold text-sm">{store.store_name}</div>
-                        <div className="text-xs text-gray-500">{store.store_id} ｜ {store.prefecture} {store.city} ｜ {store.tel || '電話未設定'}</div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {store.has_booth && <span className="text-[9px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-semibold">ブース</span>}
-                        {store.discount_rate > 0 && <span className="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-semibold">{store.discount_rate}%OFF</span>}
-                        <Link href={`/${store.store_id}`} className="text-xs text-amber-600 font-semibold hover:underline">プレビュー →</Link>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  onClick={() => { localStorage.removeItem('admin_stores'); setSavedStores([...hardcodedStores]); setSaveSuccess(false); }}
-                  className="mt-3 text-xs text-red-500 hover:text-red-700"
-                >
-                  保存データをクリア
-                </button>
+                <Link href={`/admin/builder/${s.store_id}`} className="text-xs text-blue-600 hover:underline">編集 →</Link>
               </div>
-            )}
+            ))}
           </div>
-        )}
-
-        {/* CASE STUDY UPLOAD */}
-        {tab === 'cases' && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5 max-w-[700px]">
-            <h2 className="font-bold text-lg mb-4">施工事例を投稿</h2>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="block text-xs font-semibold mb-1">車種名</label>
-                <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" placeholder="トヨタ ハリアー" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold mb-1">施工プラン</label>
-                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                  <option>ダイヤモンドキーパー</option>
-                  <option>クリスタルキーパー</option>
-                  <option>EXキーパー</option>
-                </select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="block text-xs font-semibold mb-1">BEFORE写真</label>
-                <div className="aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-amber-500">
-                  📷 ドラッグ&ドロップ
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold mb-1">AFTER写真</label>
-                <div className="aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm cursor-pointer hover:border-amber-500">
-                  📷 ドラッグ&ドロップ
-                </div>
-              </div>
-            </div>
-            <div className="mb-3">
-              <label className="block text-xs font-semibold mb-1">スタッフコメント</label>
-              <textarea className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm min-h-[80px]" placeholder="施工のポイントやお客様の反応など" />
-            </div>
-            <button className="px-6 py-2.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold">投稿する</button>
-          </div>
-        )}
-
-        {/* CAMPAIGNS TAB */}
-        {tab === 'campaigns' && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5 max-w-[700px]">
-            <h2 className="font-bold text-lg mb-4">キャンペーン設定（HQデフォルト）</h2>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="block text-xs font-semibold mb-1">キャンペーンタイトル</label>
-                <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" value={campaignTitle} onChange={e => setCampaignTitle(e.target.value)} />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold mb-1">バナーカラーコード</label>
-                <div className="flex gap-2">
-                  <input className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm" value={bannerColor} onChange={e => setBannerColor(e.target.value)} />
-                  <input type="color" value={bannerColor} onChange={e => setBannerColor(e.target.value)} className="w-10 h-10 rounded cursor-pointer border border-gray-300" />
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="block text-xs font-semibold mb-1">適用期間</label>
-                <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" value={campaignStart} onChange={e => setCampaignStart(e.target.value)} />
-                <span className="text-xs text-gray-400">〜</span>
-                <input type="date" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mt-1" value={campaignEnd} onChange={e => setCampaignEnd(e.target.value)} />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold mb-1">デフォルト割引率</label>
-                <input className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" value={campaignDiscount} onChange={e => setCampaignDiscount(e.target.value)} />
-                <p className="text-xs text-gray-400 mt-1">店舗個別設定がある場合はそちらが優先</p>
-              </div>
-            </div>
-
-            {/* Live Preview */}
-            <div className="mt-4 mb-4">
-              <p className="text-xs text-gray-400 mb-2">プレビュー（リアルタイム）:</p>
-              <div className="text-white text-center py-3 px-5 font-bold text-sm rounded-lg" style={{ background: `linear-gradient(135deg, ${bannerColor}, ${bannerColor}88 40%, ${bannerColor} 60%, ${bannerColor}cc)` }}>
-                {campaignTitle || 'キャンペーンタイトル'} ｜ 最大{campaignDiscount || '0%'}OFF
-                <div className="text-[11px] font-normal opacity-80 mt-0.5">Web予約限定 ｜ {campaignEnd ? new Date(campaignEnd + 'T00:00:00').toLocaleDateString('ja-JP') : '—'}まで</div>
-              </div>
-            </div>
-
-            <button onClick={handleCampaignSave} className="px-6 py-2.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold">保存して全店舗に反映</button>
-            {campaignSaved && (
-              <p className="text-xs text-green-600 font-semibold mt-2">✓ キャンペーン設定を保存しました</p>
-            )}
-            <p className="text-xs text-gray-400 mt-2">※ 店舗個別のcampaign_titleが設定されている店舗にはHQデフォルトは適用されません</p>
-          </div>
-        )}
-
-        {/* V3 FIREBASE TAB */}
-        {tab === 'v3firebase' && (
-          <V3FirebaseTab />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
 
-/* ─── V3 Firebase Admin Tab ─── */
-
-function V3FirebaseTab() {
-  const [v3Stores, setV3Stores] = useState<Record<string, string>[]>([]);
-  const [v3Loading, setV3Loading] = useState(false);
-  const [v3Message, setV3Message] = useState('');
-  const [v3CsvPreview, setV3CsvPreview] = useState<Record<string, string>[]>([]);
-  const [v3CsvHeaders, setV3CsvHeaders] = useState<string[]>([]);
-
-  const V3_TEMPLATE_COLUMNS = [
-    'store_id','store_name','is_active','address','postal_code','prefecture','city',
-    'tel','business_hours','regular_holiday','email','line_url',
-    'lat','lng','parking_spaces','landmark','nearby_stations','access_map_url',
-    'campaign_title','campaign_deadline','discount_rate','campaign_color_code',
-    'hero_title','hero_subtitle','description','meta_description','seo_keywords',
-    'hero_image_url','logo_url','staff_photo_url','gallery_images',
-    'custom_services','price_multiplier','min_price_limit',
-    'has_booth','level1_staff_count','level2_staff_count','google_place_id',
-  ];
-
-  useEffect(() => {
-    fetchV3Stores();
-  }, []);
-
-  async function fetchV3Stores() {
-    setV3Loading(true);
-    try {
-      const res = await fetch('/api/v3/stores?all=true');
-      if (res.ok) {
-        const data = await res.json();
-        setV3Stores(data);
-      } else {
-        setV3Message('Firebase未設定またはエラー。環境変数を確認してください。');
-      }
-    } catch {
-      setV3Message('Firebase未設定またはエラー。環境変数を確認してください。');
-    }
-    setV3Loading(false);
-  }
-
-  function handleV3TemplateDownload() {
-    const bom = '\uFEFF';
-    const csv = bom + V3_TEMPLATE_COLUMNS.join(',') + '\n' + V3_TEMPLATE_COLUMNS.map(c => {
-      if (c === 'is_active') return 'TRUE';
-      if (c === 'discount_rate') return '20';
-      if (c === 'price_multiplier') return '1.0';
-      if (c === 'lat' || c === 'lng') return '0';
-      return '';
-    }).join(',');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'v3-stores-template.csv'; a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  async function handleV3Export() {
-    try {
-      const res = await fetch('/api/v3/stores/export');
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'v3-stores-export.csv'; a.click();
-      URL.revokeObjectURL(url);
-    } catch {
-      setV3Message('エクスポートに失敗しました');
-    }
-  }
-
-  function handleV3FileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const text = (reader.result as string).replace(/^\uFEFF/, '');
-      const lines = text.split(/\r?\n/).filter(l => l.trim());
-      if (lines.length < 2) { setV3Message('CSVにデータがありません'); return; }
-
-      const headers = parseCSVLineSimple(lines[0]);
-      const rows: Record<string, string>[] = [];
-      for (let i = 1; i < lines.length; i++) {
-        const vals = parseCSVLineSimple(lines[i]);
-        const row: Record<string, string> = {};
-        headers.forEach((h, idx) => { if (h) row[h.trim()] = (vals[idx] || '').trim(); });
-        if (row.store_id && row.store_name) rows.push(row);
-      }
-      setV3CsvHeaders(headers.filter(h => h));
-      setV3CsvPreview(rows);
-      setV3Message(`${rows.length}件の店舗データを読み込みました。`);
-    };
-    reader.readAsText(file, 'utf-8');
-  }
-
-  async function handleV3Import() {
-    if (v3CsvPreview.length === 0) return;
-    setV3Loading(true);
-    try {
-      const res = await fetch('/api/v3/stores', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(v3CsvPreview),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setV3Message(`✓ ${data.count}件をFirestoreに保存しました`);
-        setV3CsvPreview([]);
-        setV3CsvHeaders([]);
-        fetchV3Stores();
-      } else {
-        setV3Message('保存に失敗しました');
-      }
-    } catch {
-      setV3Message('保存に失敗しました');
-    }
-    setV3Loading(false);
-  }
-
-  function parseCSVLineSimple(line: string): string[] {
-    const result: string[] = [];
-    let current = '';
-    let inQuotes = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (inQuotes) {
-        if (ch === '"') { if (i + 1 < line.length && line[i + 1] === '"') { current += '"'; i++; } else { inQuotes = false; } }
-        else { current += ch; }
-      } else {
-        if (ch === '"') { inQuotes = true; } else if (ch === ',') { result.push(current); current = ''; } else { current += ch; }
-      }
-    }
-    result.push(current);
-    return result;
-  }
-
+function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-6">
-      {/* CSV Actions */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5">
-        <h2 className="font-bold text-lg mb-4">V3 店舗データ管理（Firebase）</h2>
-        <div className="flex gap-3 flex-wrap mb-4">
-          <button onClick={handleV3TemplateDownload}
-            className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-semibold hover:bg-gray-200">
-            CSVテンプレートDL
-          </button>
-          <button onClick={handleV3Export}
-            className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-semibold hover:bg-gray-200">
-            CSVエクスポート
-          </button>
-          <label className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-600">
-            CSVインポート
-            <input type="file" accept=".csv" onChange={handleV3FileSelect} className="hidden" />
-          </label>
-        </div>
-
-        {v3Message && (
-          <p className={`text-sm font-semibold mb-3 ${v3Message.includes('✓') ? 'text-green-600' : v3Message.includes('エラー') || v3Message.includes('失敗') ? 'text-red-600' : 'text-blue-600'}`}>
-            {v3Message}
-          </p>
-        )}
-
-        {/* CSV Preview */}
-        {v3CsvPreview.length > 0 && (
-          <div className="mb-4">
-            <h3 className="text-sm font-bold mb-2">プレビュー（{v3CsvPreview.length}件）</h3>
-            <div className="overflow-x-auto max-h-[300px] overflow-y-auto border border-gray-200 rounded-lg">
-              <table className="text-xs border-collapse min-w-full">
-                <thead>
-                  <tr className="bg-gray-50">
-                    {v3CsvHeaders.slice(0, 8).map(h => (
-                      <th key={h} className="px-3 py-2 text-left font-semibold border-b border-gray-200">{h}</th>
-                    ))}
-                    {v3CsvHeaders.length > 8 && <th className="px-3 py-2 text-gray-400 border-b border-gray-200">+{v3CsvHeaders.length - 8}列</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {v3CsvPreview.slice(0, 10).map((row, i) => (
-                    <tr key={i} className="border-b border-gray-100">
-                      {v3CsvHeaders.slice(0, 8).map(h => (
-                        <td key={h} className="px-3 py-1.5 max-w-[150px] truncate">{row[h] || ''}</td>
-                      ))}
-                      {v3CsvHeaders.length > 8 && <td className="px-3 py-1.5 text-gray-400">...</td>}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <button onClick={handleV3Import} disabled={v3Loading}
-              className="mt-3 px-6 py-2.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold disabled:opacity-50">
-              {v3Loading ? '保存中...' : `Firestoreに保存（${v3CsvPreview.length}件）`}
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Store List */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5">
-        <h2 className="font-bold text-lg mb-4">Firestore登録済み店舗（{v3Stores.length}件）</h2>
-        {v3Loading && <p className="text-sm text-gray-400">読み込み中...</p>}
-        {!v3Loading && v3Stores.length === 0 && (
-          <p className="text-sm text-gray-400">店舗データがありません。CSVをインポートしてください。</p>
-        )}
-        <div className="grid md:grid-cols-3 gap-3">
-          {(v3Stores as Record<string, unknown>[]).map((s) => (
-            <div key={String(s.store_id)} className={`border rounded-lg p-4 ${s.is_active === false ? 'bg-gray-50 border-gray-200 opacity-50' : 'border-gray-200'}`}>
-              <div className="flex items-center justify-between mb-1">
-                <div className="font-bold text-sm text-[#0f1c2e]">{String(s.store_name || '')}</div>
-                {s.is_active === false && <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">無効</span>}
-              </div>
-              <p className="text-xs text-gray-500">{String(s.prefecture || '')} {String(s.city || '')}</p>
-              <p className="text-xs text-gray-400 mt-1">{String(s.address || '')}</p>
-              {s.discount_rate ? <p className="text-xs text-amber-600 font-semibold mt-1">割引率: {String(s.discount_rate)}%</p> : null}
-              <Link href={`/v3/${String(s.store_id)}/`} target="_blank"
-                className="text-xs text-amber-600 font-semibold mt-2 inline-block hover:underline">
-                V3プレビュー →
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+      <div className="text-2xl font-bold text-[#0f1c2e]">{value}</div>
+      <div className="text-xs text-gray-500 mt-1">{label}</div>
     </div>
+  );
+}
+
+function QuickAction({ href, icon, title, desc }: { href: string; icon: string; title: string; desc: string }) {
+  return (
+    <Link href={href} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-amber-500 transition-colors">
+      <div className="text-xl mb-1">{icon}</div>
+      <div className="font-bold text-sm text-[#0f1c2e]">{title}</div>
+      <div className="text-xs text-gray-500 mt-0.5">{desc}</div>
+    </Link>
   );
 }
