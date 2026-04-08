@@ -99,22 +99,8 @@ export default function V3HomePage() {
       }
       setSubCompanyMap(scMap);
 
-      // For grouped stores, keep only the first one as representative
-      const seen = new Set<string>();
-      const filtered: V3StoreData[] = [];
-      for (const s of storeData) {
-        const scId = (s as V3StoreData & { sub_company_id?: string }).sub_company_id;
-        if (scId && scMap[scId]) {
-          if (!seen.has(scId)) {
-            seen.add(scId);
-            // Use sub-company name as store name for the grouped entry
-            filtered.push({ ...s, store_name: scMap[scId].name });
-          }
-        } else {
-          filtered.push(s);
-        }
-      }
-      setStores(filtered.map(s => ({ ...s, distance: null })));
+      // Show ALL stores individually, sorted by distance
+      setStores(storeData.map((s: V3StoreData) => ({ ...s, distance: null })));
       setStoresLoading(false);
     }).catch((err) => { console.error('Failed to fetch stores:', err); setStoresLoading(false); });
   }, []);
@@ -422,9 +408,10 @@ export default function V3HomePage() {
                       <h3 className="text-white font-bold text-sm">{store.store_name}</h3>
                       <p className="text-white/40 text-xs mt-0.5">{store.prefecture} {store.city}</p>
                       <p className="text-white/30 text-xs mt-1 truncate">{store.address}</p>
-                      <div className="flex items-center gap-3 mt-1.5">
+                      <div className="flex items-center gap-3 mt-1.5 flex-wrap">
                         {store.tel && <span className="text-white/40 text-xs">{store.tel}</span>}
                         {store.has_booth && <span className="text-[9px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded font-semibold">ブース</span>}
+                        {(() => { const scId = (store as V3StoreData & { sub_company_id?: string }).sub_company_id; return scId && subCompanyMap[scId] ? <span className="text-[9px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded font-semibold">{subCompanyMap[scId].name}</span> : null; })()}
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-2 flex-shrink-0">
