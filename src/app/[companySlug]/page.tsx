@@ -8,6 +8,7 @@ import DynamicBanner from '@/components/DynamicBanner';
 import BlockRenderer from '@/components/blocks/BlockRenderer';
 import { getSubCompanyBySlug, getStoresBySubCompany, getV3CampaignDefaults } from '@/lib/firebase-stores';
 import { parsePageLayout } from '@/lib/block-types';
+import SubCompanyStoreMap from '@/components/SubCompanyStoreMap';
 
 export default async function SubCompanySitePage({
   params,
@@ -68,74 +69,24 @@ export default async function SubCompanySitePage({
               />
             ))}
 
-          {/* Multi-store map section — shows ALL locations in this group */}
-          <section className="py-14 px-5 bg-slate-50">
-            <div className="max-w-[1100px] mx-auto">
-              <div className="text-center mb-8">
-                <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
-                  店舗一覧・アクセス
-                </h2>
-                <p className="text-sm text-gray-500 mt-1">{subCompany.name} — {stores.length}店舗</p>
-              </div>
-
-              {/* Map */}
-              <div className="rounded-xl overflow-hidden border border-gray-200 mb-8">
-                <iframe
-                  src={`https://maps.google.com/maps?q=${primaryStore.lat},${primaryStore.lng}&z=${stores.length > 3 ? 9 : 11}&output=embed`}
-                  width="100%" height="400" style={{ border: 0 }} loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title={`${subCompany.name} 店舗マップ`}
-                />
-              </div>
-
-              {/* Store cards */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {stores.map(store => {
-                  let stations: { name: string; time: string }[] = [];
-                  try { stations = JSON.parse(store.nearby_stations || '[]'); } catch { /* */ }
-                  return (
-                    <div key={store.store_id} className="bg-white border border-gray-200 rounded-xl p-5">
-                      <h3 className="font-bold text-[#0f1c2e] mb-2">{store.store_name}</h3>
-                      <div className="space-y-1.5 text-sm">
-                        <p className="text-gray-600">{store.address}</p>
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div>
-                            <span className="text-gray-400">営業時間: </span>
-                            <span className="text-gray-700">{store.business_hours}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-400">定休日: </span>
-                            <span className="text-gray-700">{store.regular_holiday}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-400">駐車場: </span>
-                            <span className="text-gray-700">{store.parking_spaces}台</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-400">電話: </span>
-                            <a href={`tel:${store.tel}`} className="text-amber-600 font-semibold">{store.tel}</a>
-                          </div>
-                        </div>
-                        {stations.length > 0 && (
-                          <p className="text-xs text-gray-500">
-                            最寄り: {stations.map(s => `${s.name}（${s.time}）`).join('、')}
-                          </p>
-                        )}
-                        {store.landmark && (
-                          <p className="text-xs text-gray-500">目印: {store.landmark}</p>
-                        )}
-                        {store.has_booth && (
-                          <span className="inline-block text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-semibold">
-                            専用ブース完備
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
+          {/* Interactive store map — all locations with distance calculation */}
+          <SubCompanyStoreMap
+            stores={stores.map(s => ({
+              store_id: s.store_id,
+              store_name: s.store_name,
+              address: s.address,
+              tel: s.tel,
+              business_hours: s.business_hours,
+              regular_holiday: s.regular_holiday,
+              parking_spaces: s.parking_spaces,
+              landmark: s.landmark,
+              nearby_stations: s.nearby_stations,
+              has_booth: s.has_booth,
+              lat: s.lat,
+              lng: s.lng,
+            }))}
+            groupName={subCompany.name}
+          />
 
           {/* Booking CTA with store selector */}
           <section className="bg-gray-900 text-white py-10 text-center">

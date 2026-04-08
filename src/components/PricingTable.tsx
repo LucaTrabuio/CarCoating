@@ -3,15 +3,17 @@
 import { coatingTiers } from '@/data/coating-tiers';
 import { CarSize, CoatingTier } from '@/lib/types';
 import { formatPrice, getWebPrice, getMaintenancePrice } from '@/lib/pricing';
+import { isBlurred } from '@/lib/blur-utils';
 import Link from 'next/link';
 
 interface PricingTableProps {
   size: CarSize;
   discountRate: number;
   storeId: string;
+  blurFields?: string[];
 }
 
-export default function PricingTable({ size, discountRate, storeId }: PricingTableProps) {
+export default function PricingTable({ size, discountRate, storeId, blurFields = [] }: PricingTableProps) {
   return (
     <div className="overflow-x-auto border border-gray-200 rounded-xl">
       <table className="w-full text-sm border-collapse">
@@ -42,11 +44,38 @@ export default function PricingTable({ size, discountRate, storeId }: PricingTab
                   <div className="text-xs text-gray-400">{tier.application_time}</div>
                 </td>
                 <td className="px-3 py-3 text-xs text-gray-500">{tier.durability_years}</td>
-                <td className="px-3 py-3 text-xs text-gray-400 line-through">{formatPrice(regular)}</td>
-                <td className="px-3 py-3 font-bold text-amber-700">{formatPrice(web)}</td>
-                <td className="px-3 py-3 text-xs text-gray-500">
-                  {maint ? `${formatPrice(maint)}/${tier.maintenance_interval.includes('2年') ? '2年' : '年'}` : '—'}
-                </td>
+                {isBlurred(tier.id, 'web_price', blurFields) ? (
+                  <>
+                    <td className="px-3 py-3">
+                      <div className="relative inline-block">
+                        <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none text-xs text-gray-400" aria-hidden="true">{formatPrice(regular)}</span>
+                        <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400">—</span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="relative inline-block">
+                        <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none font-bold text-amber-700" aria-hidden="true">{formatPrice(web)}</span>
+                        <span className="absolute inset-0 flex items-center justify-center text-[9px] text-slate-500 font-semibold">要問合せ</span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-3">
+                      {maint ? (
+                        <div className="relative inline-block">
+                          <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none text-xs text-gray-500" aria-hidden="true">{formatPrice(maint)}</span>
+                          <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400">—</span>
+                        </div>
+                      ) : '—'}
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-3 py-3 text-xs text-gray-400 line-through">{formatPrice(regular)}</td>
+                    <td className="px-3 py-3 font-bold text-amber-700">{formatPrice(web)}</td>
+                    <td className="px-3 py-3 text-xs text-gray-500">
+                      {maint ? `${formatPrice(maint)}/${tier.maintenance_interval.includes('2年') ? '2年' : '年'}` : '—'}
+                    </td>
+                  </>
+                )}
                 <td className="px-3 py-3">
                   <Link
                     href={`/${storeId}/booking?plan=${tier.id}&size=${size}`}

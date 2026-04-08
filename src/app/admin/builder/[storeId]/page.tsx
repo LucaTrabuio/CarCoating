@@ -37,7 +37,29 @@ interface ServiceOption {
   description: string;
   price: number;
   category: string;
+  time?: string;
+  popular?: boolean;
+  blur_price?: boolean;
 }
+
+const DEFAULT_SERVICE_OPTIONS: ServiceOption[] = [
+  { id: 'window-full', name: '超撥水ウィンドウコーティング（全面）', description: '雨の日の視界を良好に', price: 8270, time: '15分', popular: true, category: 'window' },
+  { id: 'wheel-single', name: 'ホイールコーティング（シングル）', description: 'ガラス被膜でホイールを保護', price: 10700, time: '30分', popular: true, category: 'coating' },
+  { id: 'lens', name: 'レンズコーティング', description: '専用ガラス被膜でライトレンズを保護', price: 6810, time: '30分', popular: true, category: 'coating' },
+  { id: 'headlight', name: 'ヘッドライトクリーン＆コーティング', description: '黄ばみ・くすみを除去しコーティング', price: 11630, time: '45分', popular: false, category: 'coating' },
+  { id: 'wheel-double', name: 'ホイールコーティング（ダブル）', description: 'より艶と水弾きを長期間キープ', price: 15900, time: '90分', popular: false, category: 'coating' },
+  { id: 'fender', name: '樹脂フェンダーキーパー', description: '無塗装樹脂パーツの色褪せを防止', price: 6280, time: '30分', popular: false, category: 'coating' },
+  { id: 'window-front', name: '超撥水ウィンドウコーティング（フロント）', description: 'フロントガラスのみ施工', price: 3720, time: '15分', popular: false, category: 'window' },
+  { id: 'window-scale', name: 'ウィンドウウロコ取り（サイド）', description: '窓ガラスの水垢・ウロコを除去', price: 6480, time: '10分/枚', popular: false, category: 'window' },
+  { id: 'window-scale-full', name: 'ウィンドウウロコ取り（全面）', description: 'フロント・リア・ルーフ含む全面', price: 12970, time: '10分/枚', popular: false, category: 'window' },
+  { id: 'polish', name: '細密研磨', description: '塗装表面のキズのエッジを細密に磨き取る', price: 18600, time: '60分', popular: false, category: 'body' },
+  { id: 'oil-film-full', name: '油膜取り（全面）', description: 'ギラギラの油膜を特殊ケミカルで除去', price: 4750, time: '15分', popular: false, category: 'chemical' },
+  { id: 'oil-film-front', name: '油膜取り（フロント）', description: 'フロントガラスのみ', price: 1690, time: '10分', popular: false, category: 'chemical' },
+  { id: 'iron', name: '鉄粉取り（上面）', description: 'ボディのザラザラ鉄粉をすっきり除去', price: 2830, time: '15分', popular: false, category: 'chemical' },
+  { id: 'sap', name: '樹液取り', description: '松ヤニ等を専用ケミカルで安全に除去', price: 2750, time: '15分', popular: false, category: 'chemical' },
+  { id: 'wheel-clean', name: 'ホイールクリーニング', description: 'ブレーキダスト・油汚れを専用道具で除去', price: 2270, time: '10分', popular: false, category: 'chemical' },
+  { id: 'disinfect', name: '車内除菌抗菌「オールクリア」', description: '車内清掃＋除菌・抗菌処理', price: 4650, time: '30分', popular: false, category: 'interior' },
+];
 
 // ─── Inline helper: settings field ───
 
@@ -120,6 +142,7 @@ export default function BuilderPage() {
   const [dirty, setDirty] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [showAddPalette, setShowAddPalette] = useState(false);
 
   // Tab & preview state
@@ -152,12 +175,13 @@ export default function BuilderPage() {
         setStoreName(fetchedStoreData.store_name || storeId);
         setStoreData(fetchedStoreData);
 
-        // Parse custom_services
+        // Parse custom_services — use defaults if empty
         try {
           const parsed = JSON.parse(fetchedStoreData.custom_services || '[]');
-          setServiceOptions(Array.isArray(parsed) ? parsed : []);
+          const opts = Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_SERVICE_OPTIONS;
+          setServiceOptions(opts);
         } catch {
-          setServiceOptions([]);
+          setServiceOptions(DEFAULT_SERVICE_OPTIONS);
         }
 
         // Parse store_news
@@ -235,7 +259,12 @@ export default function BuilderPage() {
   function getPricingBlurFields(): string[] {
     const pb = getPricingBlock();
     if (!pb) return [];
-    return (pb.config as PricingConfig).blur_fields ?? [];
+    const raw = (pb.config as PricingConfig).blur_fields ?? [];
+    // Normalize legacy format: 'web_price' → 'all:web_price'
+    return raw.map(f => {
+      if (!f.includes(':')) return `all:${f}`;
+      return f;
+    });
   }
 
   function updatePricingBlur(blurFields: string[]) {
@@ -282,7 +311,7 @@ export default function BuilderPage() {
     updateServiceOptions([...serviceOptions, newOpt]);
   }
 
-  function updateServiceOption(id: string, field: keyof ServiceOption, value: string | number) {
+  function updateServiceOption(id: string, field: keyof ServiceOption, value: string | number | boolean) {
     updateServiceOptions(serviceOptions.map(s =>
       s.id === id ? { ...s, [field]: value } : s
     ));
@@ -376,8 +405,10 @@ export default function BuilderPage() {
     setSaving(true);
     setError(null);
     try {
+      // Strip page_layout from storeData to avoid overwriting the layout save
+      const { page_layout: _discardLayout, ...storeDataWithoutLayout } = storeData;
       const results = await Promise.all([
-        // Save layout
+        // Save layout (includes blur_fields in pricing block config)
         fetch(`/api/admin/stores/${storeId}/layout`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -385,11 +416,11 @@ export default function BuilderPage() {
             layout: serializePageLayout({ version: 2, blocks }),
           }),
         }),
-        // Save store data (includes custom_services, store_news from storeData)
+        // Save store data (custom_services, store_news, etc. — NOT page_layout)
         fetch(`/api/v3/stores/${storeId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(storeData),
+          body: JSON.stringify(storeDataWithoutLayout),
         }),
       ]);
 
@@ -401,7 +432,16 @@ export default function BuilderPage() {
       }
 
       setDirty(false);
-      // Refresh preview
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+      // Revalidate the cached page so iframe shows fresh data
+      await fetch('/api/admin/revalidate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: `/v3/${storeId}` }),
+      }).catch(() => {});
+      // Small delay to let revalidation complete, then refresh preview
+      await new Promise(r => setTimeout(r, 500));
       setIframeKey((k) => k + 1);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Save failed');
@@ -459,6 +499,11 @@ export default function BuilderPage() {
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
           {error}
+        </div>
+      )}
+      {saveSuccess && (
+        <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
+          ✓ 保存しました。プレビューを更新中...
         </div>
       )}
 
@@ -783,6 +828,16 @@ export default function BuilderPage() {
                         className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
                       />
                     </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">時間</label>
+                      <input
+                        type="text"
+                        value={opt.time || ''}
+                        onChange={e => updateServiceOption(opt.id, 'time', e.target.value)}
+                        className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
+                        placeholder="15分"
+                      />
+                    </div>
                     <div className="col-span-2">
                       <label className="block text-xs font-medium text-gray-600 mb-1">説明</label>
                       <textarea
@@ -791,6 +846,26 @@ export default function BuilderPage() {
                         rows={2}
                         className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
                       />
+                    </div>
+                    <div className="col-span-2 flex gap-4">
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={!!opt.popular}
+                          onChange={e => updateServiceOption(opt.id, 'popular', e.target.checked)}
+                          className="rounded border-gray-300"
+                        />
+                        人気
+                      </label>
+                      <label className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={!!opt.blur_price}
+                          onChange={e => updateServiceOption(opt.id, 'blur_price', e.target.checked)}
+                          className="rounded border-gray-300"
+                        />
+                        価格ブラー
+                      </label>
                     </div>
                   </div>
                 </div>

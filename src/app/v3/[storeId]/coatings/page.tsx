@@ -1,6 +1,5 @@
 /*
- * V3 Coatings page — store-specific, fully visible pricing (no blur)
- * Adapted from V1 [storeId]/coatings/page.tsx with V3 Firebase data
+ * V3 Coatings page — store-specific, with per-tier price blur support
  */
 
 import { notFound } from 'next/navigation';
@@ -8,6 +7,7 @@ import { coatingTiers } from '@/data/coating-tiers';
 import { formatPrice } from '@/lib/pricing';
 import Link from 'next/link';
 import { getV3StoreById } from '@/lib/firebase-stores';
+import { getBlurFieldsFromLayout, isBlurred } from '@/lib/blur-utils';
 import type { Metadata } from 'next';
 
 const KEEPER_BASE = 'https://www.keepercoating.jp';
@@ -37,6 +37,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
   if (!store || !store.is_active) notFound();
 
   const base = `/v3/${storeId}`;
+  const blurFields = getBlurFieldsFromLayout(store.page_layout);
 
   return (
     <main>
@@ -80,7 +81,16 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
                 </div>
                 <div className="text-right">
                   <div className="text-[10px] text-slate-400">SSサイズ〜（税込）</div>
-                  <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(tier.prices.SS)}</div>
+                  {isBlurred(tier.id, 'web_price', blurFields) ? (
+                    <div className="relative inline-block">
+                      <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">{formatPrice(tier.prices.SS)}</div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-[9px] text-slate-500 font-semibold bg-white/80 px-1.5 py-0.5 rounded">要問合せ</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(tier.prices.SS)}</div>
+                  )}
                 </div>
               </div>
 
@@ -129,14 +139,28 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ sto
                     <tr className="bg-white">
                       <td className="px-2.5 py-2 font-semibold text-[11px] text-slate-600">施工料金</td>
                       {(['SS', 'S', 'M', 'L', 'LL', 'XL'] as const).map(size => (
-                        <td key={size} className="px-2.5 py-2 text-center font-bold text-[11px]">{formatPrice(tier.prices[size])}</td>
+                        <td key={size} className="px-2.5 py-2 text-center font-bold text-[11px]">
+                          {isBlurred(tier.id, 'web_price', blurFields) ? (
+                            <div className="relative inline-block">
+                              <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(tier.prices[size])}</span>
+                              <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
+                            </div>
+                          ) : formatPrice(tier.prices[size])}
+                        </td>
                       ))}
                     </tr>
                     {tier.maintenance_prices && (
                       <tr className="bg-slate-50 border-t border-slate-100">
                         <td className="px-2.5 py-2 font-semibold text-[11px] text-slate-400">メンテナンス</td>
                         {(['SS', 'S', 'M', 'L', 'LL', 'XL'] as const).map(size => (
-                          <td key={size} className="px-2.5 py-2 text-center text-[11px] text-slate-400">{formatPrice(tier.maintenance_prices![size])}</td>
+                          <td key={size} className="px-2.5 py-2 text-center text-[11px] text-slate-400">
+                            {isBlurred(tier.id, 'maintenance_price', blurFields) ? (
+                              <div className="relative inline-block">
+                                <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(tier.maintenance_prices![size])}</span>
+                                <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
+                              </div>
+                            ) : formatPrice(tier.maintenance_prices![size])}
+                          </td>
                         ))}
                       </tr>
                     )}

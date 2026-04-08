@@ -3,10 +3,12 @@
 import { coatingTiers } from '@/data/coating-tiers';
 import { CarSize } from '@/lib/types';
 import { formatPrice, getWebPrice, getTotalCostOverYears } from '@/lib/pricing';
+import { isBlurred } from '@/lib/blur-utils';
 
 interface ComparisonMatrixProps {
   size: CarSize;
   discountRate: number;
+  blurFields?: string[];
 }
 
 function Stars({ count }: { count: number }) {
@@ -17,7 +19,7 @@ function Stars({ count }: { count: number }) {
   );
 }
 
-export default function ComparisonMatrix({ size, discountRate }: ComparisonMatrixProps) {
+export default function ComparisonMatrix({ size, discountRate, blurFields = [] }: ComparisonMatrixProps) {
   const tiers = coatingTiers.filter(t => ['crystal', 'fresh', 'diamond', 'dia2', 'ex', 'ex-premium'].includes(t.id));
 
   return (
@@ -63,9 +65,15 @@ export default function ComparisonMatrix({ size, discountRate }: ComparisonMatri
             <td className="px-3 py-2.5 font-semibold sticky left-0 bg-white z-10 border-r border-gray-200">Web割価格</td>
             {tiers.map(t => {
               const web = getWebPrice(t, size, discountRate);
+              const blurred = isBlurred(t.id, 'web_price', blurFields);
               return (
                 <td key={t.id} className={`px-3 py-2.5 text-center font-bold ${t.id === 'diamond' ? 'bg-amber-50/30 text-amber-700' : ''}`}>
-                  {formatPrice(web)}
+                  {blurred ? (
+                    <div className="relative inline-block">
+                      <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(web)}</span>
+                      <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
+                    </div>
+                  ) : formatPrice(web)}
                 </td>
               );
             })}
@@ -74,9 +82,15 @@ export default function ComparisonMatrix({ size, discountRate }: ComparisonMatri
             <td className="px-3 py-2.5 font-semibold sticky left-0 bg-white z-10 border-r border-gray-200">5年総額</td>
             {tiers.map(t => {
               const total = getTotalCostOverYears(t, size, 5, discountRate);
+              const blurred = isBlurred(t.id, 'web_price', blurFields);
               return (
                 <td key={t.id} className={`px-3 py-2.5 text-center font-bold ${t.id === 'diamond' ? 'bg-amber-50/30 text-amber-700' : ''}`}>
-                  {formatPrice(total)}
+                  {blurred ? (
+                    <div className="relative inline-block">
+                      <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(total)}</span>
+                      <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
+                    </div>
+                  ) : formatPrice(total)}
                 </td>
               );
             })}

@@ -9,6 +9,7 @@ import OptionCalculator from '@/components/OptionCalculator';
 import { CarSize } from '@/lib/types';
 import { coatingTiers } from '@/data/coating-tiers';
 import { getWebPrice, formatPrice, sizeLabels, getTotalCostOverYears } from '@/lib/pricing';
+import { getBlurFieldsFromLayout, isBlurred } from '@/lib/blur-utils';
 import Link from 'next/link';
 
 const ALL_SIZES: CarSize[] = ['SS', 'S', 'M', 'L', 'LL', 'XL'];
@@ -27,6 +28,7 @@ function V3StorePricePageContent() {
   const base = `/v3/${storeId}`;
 
   const [discountRate, setDiscountRate] = useState(20);
+  const [blurFields, setBlurFields] = useState<string[]>([]);
   const [selectedSize, setSelectedSize] = useState<CarSize | null>(null);
   const [selectedMake, setSelectedMake] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
@@ -38,6 +40,7 @@ function V3StorePricePageContent() {
       .then(res => res.json())
       .then(store => {
         if (store?.discount_rate) setDiscountRate(store.discount_rate);
+        if (store?.page_layout) setBlurFields(getBlurFieldsFromLayout(store.page_layout));
       })
       .catch((err) => console.error('Failed to fetch store:', err));
   }, [storeId]);
@@ -111,7 +114,7 @@ function V3StorePricePageContent() {
                 <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>{sizeHeading}</h2>
                 <p className="text-sm text-gray-500 mt-1">Web予約限定割引 ｜ 税込価格</p>
               </div>
-              <PricingTable size={selectedSize} discountRate={discountRate} storeId={storeId} />
+              <PricingTable size={selectedSize} discountRate={discountRate} storeId={storeId} blurFields={blurFields} />
             </div>
           </section>
 
@@ -135,7 +138,16 @@ function V3StorePricePageContent() {
                       <div className="text-xs text-gray-400 mb-1">{label}</div>
                       <h3 className="font-bold text-lg text-[#0f1c2e] mb-1">{tier.name}</h3>
                       <p className="text-xs text-gray-500 mb-3">{tier.durability_years}持続 ｜ {tier.application_time}</p>
-                      <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(web)}</div>
+                      {isBlurred(tier.id, 'web_price', blurFields) ? (
+                        <div className="relative inline-block">
+                          <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">{formatPrice(web)}</div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-[10px] text-slate-500 font-semibold bg-white/80 px-2 py-0.5 rounded">要問合せ</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(web)}</div>
+                      )}
                       <p className="text-xs text-gray-400 mb-2">{selectedSize}サイズ・Web割後</p>
                       {selectedPlan === tier.id && <div className="text-xs text-amber-600 font-bold mt-2">✓ 選択中</div>}
                     </button>
@@ -151,7 +163,7 @@ function V3StorePricePageContent() {
                 <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>プラン比較マトリクス</h2>
                 <p className="text-sm text-gray-500 mt-1">横スクロールで全プランを比較 ｜ {selectedSize}サイズの場合</p>
               </div>
-              <ComparisonMatrix size={selectedSize} discountRate={discountRate} />
+              <ComparisonMatrix size={selectedSize} discountRate={discountRate} blurFields={blurFields} />
             </div>
           </section>
 
@@ -181,10 +193,25 @@ function V3StorePricePageContent() {
                       return (
                         <tr key={id} className={`border-b border-gray-100 ${isDiamond ? 'bg-amber-50/30' : ''}`}>
                           <td className="px-4 py-3 font-bold text-[#0f1c2e]">{isDiamond && '★ '}{tier.name}</td>
-                          <td className="px-3 py-3 text-center">{formatPrice(web)}</td>
-                          <td className="px-3 py-3 text-center text-xs text-gray-500">{maint ? `${formatPrice(maint)}/年` : '毎年再施工'}</td>
-                          <td className={`px-3 py-3 text-center font-bold ${isDiamond ? 'text-amber-700' : ''}`}>{formatPrice(total3)}</td>
-                          <td className={`px-3 py-3 text-center font-bold ${isDiamond ? 'text-amber-700' : ''}`}>{formatPrice(total5)}</td>
+                          {isBlurred(id, 'web_price', blurFields) ? (
+                            <>
+                              {[web, maint ? `${formatPrice(maint)}/年` : '毎年再施工', total3, total5].map((val, ci) => (
+                                <td key={ci} className={`px-3 py-3 text-center ${ci === 0 || ci >= 2 ? 'font-bold' : 'text-xs text-gray-500'} ${isDiamond && ci >= 2 ? 'text-amber-700' : ''}`}>
+                                  <div className="relative inline-block">
+                                    <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{typeof val === 'number' ? formatPrice(val) : val}</span>
+                                    <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
+                                  </div>
+                                </td>
+                              ))}
+                            </>
+                          ) : (
+                            <>
+                              <td className="px-3 py-3 text-center">{formatPrice(web)}</td>
+                              <td className="px-3 py-3 text-center text-xs text-gray-500">{maint ? `${formatPrice(maint)}/年` : '毎年再施工'}</td>
+                              <td className={`px-3 py-3 text-center font-bold ${isDiamond ? 'text-amber-700' : ''}`}>{formatPrice(total3)}</td>
+                              <td className={`px-3 py-3 text-center font-bold ${isDiamond ? 'text-amber-700' : ''}`}>{formatPrice(total5)}</td>
+                            </>
+                          )}
                         </tr>
                       );
                     })}

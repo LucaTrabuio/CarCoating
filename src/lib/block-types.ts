@@ -287,7 +287,7 @@ export const BLOCK_META: BlockMeta[] = [
   { type: 'quiz', label: 'Recommendation Quiz', labelJa: 'おすすめ診断', icon: '🧪', maxInstances: 1, defaultConfig: {} },
   { type: 'simulator', label: 'Price Simulator', labelJa: 'かんたん見積もり', icon: '🧮', maxInstances: 1, defaultConfig: {} },
   { type: 'cases', label: 'Case Studies', labelJa: '施工事例', icon: '📋', maxInstances: 1, defaultConfig: { max_cases: 4, show_link_to_all: true } },
-  { type: 'pricing', label: 'Pricing Menu', labelJa: '料金メニュー', icon: '💰', maxInstances: 1, defaultConfig: { featured_tier_ids: ['crystal-keeper', 'diamond-keeper', 'diamond-keeper-double'], blur_fields: [], show_discount_badge: true, show_size_chart: true } },
+  { type: 'pricing', label: 'Pricing Menu', labelJa: '料金メニュー', icon: '💰', maxInstances: 1, defaultConfig: { featured_tier_ids: ['crystal', 'diamond', 'dia2'], blur_fields: [], show_discount_badge: true, show_size_chart: true } },
   { type: 'news', label: 'Store News', labelJa: 'お知らせ', icon: '📰', maxInstances: 1, defaultConfig: { max_items: 5 } },
   { type: 'process', label: 'Process Flow', labelJa: 'ご利用の流れ', icon: '📝', maxInstances: 1, defaultConfig: { steps: DEFAULT_PROCESS_STEPS } },
   { type: 'benefits', label: 'Benefits CTA', labelJa: '5つの特典', icon: '🎁', maxInstances: 1, defaultConfig: { items: DEFAULT_BENEFIT_ITEMS, show_booking_cta: true, show_inquiry_cta: true } },
@@ -373,13 +373,39 @@ export function generateDefaultLayout(store?: {
  * Parse a page_layout JSON string from Firestore.
  * Returns the parsed layout, or generates a default if the string is empty/invalid.
  */
+// Fix stale tier IDs from old default config
+const TIER_ID_FIXES: Record<string, string> = {
+  'crystal-keeper': 'crystal',
+  'diamond-keeper': 'diamond',
+  'diamond-keeper-double': 'dia2',
+};
+
+function migrateLayout(layout: PageLayout): PageLayout {
+  return {
+    ...layout,
+    blocks: layout.blocks.map(block => {
+      if (block.type === 'pricing') {
+        const config = block.config as PricingConfig;
+        const fixedTierIds = config.featured_tier_ids.map(id => TIER_ID_FIXES[id] || id);
+        const fixedBlurFields = config.blur_fields.map(f => {
+          const [tierId, field] = f.split(':');
+          if (field && TIER_ID_FIXES[tierId]) return `${TIER_ID_FIXES[tierId]}:${field}`;
+          return f;
+        });
+        return { ...block, config: { ...config, featured_tier_ids: fixedTierIds, blur_fields: fixedBlurFields } };
+      }
+      return block;
+    }),
+  };
+}
+
 export function parsePageLayout(json?: string, store?: Parameters<typeof generateDefaultLayout>[0]): PageLayout {
   if (!json) return generateDefaultLayout(store);
 
   try {
     const parsed = JSON.parse(json);
     if (parsed && parsed.version === 2 && Array.isArray(parsed.blocks)) {
-      return parsed as PageLayout;
+      return migrateLayout(parsed as PageLayout);
     }
     return generateDefaultLayout(store);
   } catch {

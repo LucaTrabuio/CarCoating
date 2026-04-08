@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getV3StoreById } from '@/lib/firebase-stores';
 import { formatPrice } from '@/lib/pricing';
+import { getBlurFieldsFromLayout } from '@/lib/blur-utils';
 import Link from 'next/link';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -11,7 +12,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   interior: '車内系',
 };
 
-const OPTIONS = [
+const DEFAULT_OPTIONS = [
   { id: 'window-full', name: '超撥水ウィンドウコーティング（全面）', description: '雨の日の視界を良好に', price: 8270, time: '15分', popular: true, category: 'window' },
   { id: 'wheel-single', name: 'ホイールコーティング（シングル）', description: 'ガラス被膜でホイールを保護', price: 10700, time: '30分', popular: true, category: 'coating' },
   { id: 'lens', name: 'レンズコーティング', description: '専用ガラス被膜でライトレンズを保護', price: 6810, time: '30分', popular: true, category: 'coating' },
@@ -30,6 +31,17 @@ const OPTIONS = [
   { id: 'disinfect', name: '車内除菌抗菌「オールクリア」', description: '車内清掃＋除菌・抗菌処理', price: 4650, time: '30分', popular: false, category: 'interior' },
 ];
 
+interface ServiceOption {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  time?: string;
+  popular?: boolean;
+  category?: string;
+  blur_price?: boolean;
+}
+
 export default async function V3OptionsPage({ params }: { params: Promise<{ storeId: string }> }) {
   const { storeId } = await params;
   const store = await getV3StoreById(storeId);
@@ -37,7 +49,20 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ stor
 
   const base = `/v3/${storeId}`;
   const optionDiscount = 10;
-  const categories = [...new Set(OPTIONS.map(o => o.category))];
+  const blurFields = getBlurFieldsFromLayout(store.page_layout);
+  // If store-level pricing blur is on (all:web_price), blur all option prices too
+  const globalPriceBlur = blurFields.includes('all:web_price') || blurFields.includes('web_price');
+
+  // Use custom options from Firebase if available, otherwise defaults
+  let options: ServiceOption[] = DEFAULT_OPTIONS;
+  try {
+    const parsed = JSON.parse(store.custom_services || '[]');
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      options = parsed;
+    }
+  } catch { /* use defaults */ }
+
+  const categories = [...new Set(options.map(o => o.category || 'other'))];
 
   return (
     <main>
@@ -57,21 +82,35 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ stor
           {categories.map(cat => (
             <div key={cat} className="mb-8">
               <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider px-1 py-2 bg-slate-50 rounded mb-2">
-                {CATEGORY_LABELS[cat]}
+                {CATEGORY_LABELS[cat] || cat}
               </h2>
               <div className="space-y-0">
-                {OPTIONS.filter(o => o.category === cat).map(opt => (
+                {options.filter(o => (o.category || 'other') === cat).map(opt => (
                   <div key={opt.id} className="flex items-center justify-between py-3 px-2 border-b border-gray-100">
                     <div>
                       <span className="text-sm font-semibold text-[#0f1c2e]">
                         {opt.name}
                         {opt.popular && <span className="text-[10px] text-amber-600 font-bold ml-1">★人気</span>}
                       </span>
-                      <div className="text-[11px] text-gray-400">{opt.description} ｜ {opt.time}</div>
+                      <div className="text-[11px] text-gray-400">{opt.description}{opt.time ? ` ｜ ${opt.time}` : ''}</div>
                     </div>
                     <div className="text-right whitespace-nowrap">
-                      <div className="text-[10px] text-gray-400 line-through">{formatPrice(opt.price)}</div>
-                      <div className="text-sm font-semibold text-amber-700">{formatPrice(Math.round(opt.price * (1 - optionDiscount / 100)))}</div>
+                      {(opt.blur_price || globalPriceBlur) ? (
+                        <div className="relative">
+                          <div style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">
+                            <div className="text-[10px] text-gray-400 line-through">{formatPrice(opt.price)}</div>
+                            <div className="text-sm font-semibold text-amber-700">{formatPrice(Math.round(opt.price * (1 - optionDiscount / 100)))}</div>
+                          </div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-[9px] text-slate-500 font-semibold bg-white/80 px-1.5 py-0.5 rounded">要問合せ</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-[10px] text-gray-400 line-through">{formatPrice(opt.price)}</div>
+                          <div className="text-sm font-semibold text-amber-700">{formatPrice(Math.round(opt.price * (1 - optionDiscount / 100)))}</div>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}

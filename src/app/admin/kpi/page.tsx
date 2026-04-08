@@ -56,7 +56,8 @@ export default function KpiPage() {
       });
       const res = await fetch(`/api/admin/kpi?${params}`);
       const data = await res.json();
-      setEntries(data.entries ?? data ?? []);
+      const list = data.records ?? data.entries ?? data ?? [];
+      setEntries(Array.isArray(list) ? list : []);
     } catch {
       setEntries([]);
     } finally {
@@ -89,7 +90,13 @@ export default function KpiPage() {
       await fetch('/api/admin/kpi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          storeId: form.store_id,
+          date: form.date,
+          phone_calls: form.phone_calls,
+          inquiries: form.inquiries,
+          bookings: form.bookings,
+        }),
       });
       setForm({ ...form, phone_calls: 0, inquiries: 0, bookings: 0 });
       if (selectedStore) fetchKpi();
