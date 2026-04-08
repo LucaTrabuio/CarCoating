@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase-client';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -8,6 +8,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 const googleProvider = new GoogleAuthProvider();
 
 export default function AdminLoginPage() {
+  return (
+    <Suspense>
+      <AdminLoginPageContent />
+    </Suspense>
+  );
+}
+
+function AdminLoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawRedirect = searchParams.get('redirect') || '/admin';

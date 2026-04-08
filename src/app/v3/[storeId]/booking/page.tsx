@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import BookingCalendar from '@/components/BookingCalendar';
 import type { V3StoreData } from '@/lib/v3-types';
+import { trackEvent } from '@/lib/track';
 
 export default function V3BookingPage() {
   return (
@@ -35,6 +36,7 @@ function V3BookingContent() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    trackEvent(storeId, isInquiry ? 'inquiry' : 'booking');
     setSubmitted(true);
   }
 
@@ -68,7 +70,7 @@ function V3BookingContent() {
               <div className="font-bold text-[#0f1c2e] text-sm">{store.store_name}</div>
               <div className="text-xs text-gray-500">{store.address}</div>
             </div>
-            <a href={`tel:${store.tel}`} className="text-amber-600 font-bold text-sm">{store.tel}</a>
+            <a href={`tel:${store.tel}`} onClick={() => trackEvent(storeId, 'phone_call')} className="text-amber-600 font-bold text-sm">{store.tel}</a>
           </div>
         </section>
       )}
@@ -117,7 +119,7 @@ function V3BookingContent() {
           {store && (
             <div className="mt-8 p-6 bg-gray-50 rounded-xl text-center">
               <p className="text-sm text-gray-500 mb-3">お電話でもお気軽にどうぞ</p>
-              <a href={`tel:${store.tel}`} className="text-2xl font-bold text-amber-600">{store.tel}</a>
+              <a href={`tel:${store.tel}`} onClick={() => trackEvent(storeId, 'phone_call')} className="text-2xl font-bold text-amber-600">{store.tel}</a>
               <p className="text-xs text-gray-400 mt-1">{store.business_hours}</p>
               {store.line_url && (
                 <a href={store.line_url} target="_blank" rel="noopener noreferrer"

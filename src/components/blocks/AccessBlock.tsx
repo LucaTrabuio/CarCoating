@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { AccessConfig } from '@/lib/block-types';
 import type { V3StoreData } from '@/lib/v3-types';
+import TrackedPhoneLink from '@/components/TrackedPhoneLink';
 
 interface AccessBlockProps {
   config: AccessConfig;
@@ -55,9 +56,9 @@ export default function AccessBlock({ config, store, basePath }: AccessBlockProp
           <InfoRow label="営業時間" value={store.business_hours} />
           <InfoRow label="定休日" value={store.regular_holiday} />
           <InfoRow label="電話番号">
-            <a href={`tel:${store.tel}`} className="text-amber-600 hover:underline">
+            <TrackedPhoneLink tel={store.tel} storeId={store.store_id} className="text-amber-600 hover:underline">
               {store.tel}
-            </a>
+            </TrackedPhoneLink>
           </InfoRow>
           {store.parking_spaces > 0 && (
             <InfoRow label="駐車場" value={`${store.parking_spaces}台`} />

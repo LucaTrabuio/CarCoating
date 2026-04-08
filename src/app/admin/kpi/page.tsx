@@ -28,16 +28,6 @@ export default function KpiPage() {
   const [entries, setEntries] = useState<KpiEntry[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Add entry form
-  const [form, setForm] = useState<KpiEntry>({
-    date: new Date().toISOString().slice(0, 10),
-    store_id: '',
-    phone_calls: 0,
-    inquiries: 0,
-    bookings: 0,
-  });
-  const [saving, setSaving] = useState(false);
-
   useEffect(() => {
     fetch('/api/v3/stores?all=true')
       .then((r) => r.json())
@@ -79,33 +69,6 @@ export default function KpiPage() {
     }),
     { phone_calls: 0, inquiries: 0, bookings: 0 },
   );
-
-  async function handleAddEntry() {
-    if (!form.store_id) {
-      alert('店舗を選択してください');
-      return;
-    }
-    setSaving(true);
-    try {
-      await fetch('/api/admin/kpi', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          storeId: form.store_id,
-          date: form.date,
-          phone_calls: form.phone_calls,
-          inquiries: form.inquiries,
-          bookings: form.bookings,
-        }),
-      });
-      setForm({ ...form, phone_calls: 0, inquiries: 0, bookings: 0 });
-      if (selectedStore) fetchKpi();
-    } catch {
-      alert('保存に失敗しました');
-    } finally {
-      setSaving(false);
-    }
-  }
 
   function handleExportCsv() {
     if (!selectedStore) return;
@@ -220,72 +183,11 @@ export default function KpiPage() {
         </div>
       )}
 
-      {/* Add entry form */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
-        <h2 className="text-sm font-bold text-gray-900">KPIエントリー追加</h2>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">日付</label>
-            <input
-              type="date"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">店舗</label>
-            <select
-              value={form.store_id}
-              onChange={(e) => setForm({ ...form, store_id: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            >
-              <option value="">-- 選択 --</option>
-              {stores.map((s) => (
-                <option key={s.store_id} value={s.store_id}>
-                  {s.store_name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">電話</label>
-            <input
-              type="number"
-              min={0}
-              value={form.phone_calls}
-              onChange={(e) => setForm({ ...form, phone_calls: Number(e.target.value) })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">問い合わせ</label>
-            <input
-              type="number"
-              min={0}
-              value={form.inquiries}
-              onChange={(e) => setForm({ ...form, inquiries: Number(e.target.value) })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">予約</label>
-            <input
-              type="number"
-              min={0}
-              value={form.bookings}
-              onChange={(e) => setForm({ ...form, bookings: Number(e.target.value) })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-        </div>
-        <button
-          onClick={handleAddEntry}
-          disabled={saving}
-          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-50"
-        >
-          {saving ? '保存中...' : '追加'}
-        </button>
+      {/* Info */}
+      <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <p className="text-xs text-gray-500">
+          KPIは自動で記録されます。電話リンクのクリック、お問い合わせフォーム送信、予約フォーム送信が自動的にカウントされます。
+        </p>
       </div>
     </div>
   );

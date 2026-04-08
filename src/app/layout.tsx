@@ -13,6 +13,9 @@ const notoSerif = Noto_Serif_JP({
 export const metadata: Metadata = {
   title: "KeePer PRO SHOP｜カーコーティング専門店",
   description: "全国91店舗のKeePer認定カーコーティング専門店。Web予約限定割引あり。",
+  openGraph: {
+    images: [{ url: '/images/keeper-logo.png', width: 1200, height: 630 }],
+  },
 };
 
 export default function RootLayout({

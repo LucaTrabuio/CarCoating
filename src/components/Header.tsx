@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { trackEvent } from '@/lib/track';
 
 interface HeaderProps {
   storeId: string;
@@ -20,10 +21,10 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0f1c2e]/97 backdrop-blur-md border-b border-white/[.06]">
       <div className="max-w-[1100px] mx-auto px-5 flex items-center justify-between h-14">
         <Link href={base} className="flex items-center gap-2.5 text-white">
-          <div className="w-7 h-7 rounded bg-amber-600/20 border border-dashed border-amber-600 flex items-center justify-center text-[10px] text-amber-600 font-bold">K</div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/keeper-logo.png" alt="KeePer" className="h-7" />
           <span className="text-[13px] font-bold leading-tight">
             {storeName}
-            <small className="block text-[10px] font-normal opacity-60">KeePer PRO SHOP</small>
           </span>
         </Link>
 
@@ -76,6 +77,7 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
             </a>
           )}
           <a href={`tel:${tel}`}
+            onClick={() => trackEvent(storeId, 'phone_call')}
             className="text-white text-[11px] font-bold px-3 py-1.5 rounded-md bg-gradient-to-br from-amber-600 via-amber-400 to-amber-700">
             &#9742; {tel}
           </a>
