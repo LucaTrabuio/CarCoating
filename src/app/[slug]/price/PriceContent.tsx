@@ -8,7 +8,7 @@ import ComparisonMatrix from '@/components/ComparisonMatrix';
 import OptionCalculator from '@/components/OptionCalculator';
 import { CarSize } from '@/lib/types';
 import { coatingTiers } from '@/data/coating-tiers';
-import { getWebPrice, formatPrice, sizeLabels, getTotalCostOverYears } from '@/lib/pricing';
+import { getWebPrice, formatPrice, sizeLabels, getTotalCostOverYears, parsePriceOverrides } from '@/lib/pricing';
 import { getBlurFieldsFromLayout, isBlurred } from '@/lib/blur-utils';
 import Link from 'next/link';
 import { trackEvent } from '@/lib/track';
@@ -26,6 +26,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
   // Derive from store prop instead of useEffect fetch
   const discountRate = store.discount_rate || 20;
   const blurFields = store.page_layout ? getBlurFieldsFromLayout(store.page_layout) : [];
+  const priceOverrides = parsePriceOverrides(store.price_overrides);
 
   const layout = store.page_layout ? parsePageLayout(store.page_layout, store) : null;
   const pricingBlock = layout?.blocks.find(b => b.type === 'pricing');
@@ -108,7 +109,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
                 <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>{sizeHeading}</h2>
                 <p className="text-sm text-gray-500 mt-1">Web予約限定割引 ｜ 税込価格</p>
               </div>
-              <PricingTable size={selectedSize} discountRate={discountRate} storeId={storeId} blurFields={blurFields} />
+              <PricingTable size={selectedSize} discountRate={discountRate} storeId={storeId} blurFields={blurFields} priceOverrides={priceOverrides} />
             </div>
           </section>
 
@@ -123,7 +124,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
                   { tier: coatingTiers.find(t => t.id === 'diamond')!, label: 'ベストバリュー' },
                   { tier: coatingTiers.find(t => t.id === 'ex')!, label: 'プレミアム' },
                 ].map(({ tier, label }, i) => {
-                  const web = getWebPrice(tier, selectedSize, discountRate);
+                  const web = getWebPrice(tier, selectedSize, discountRate, priceOverrides);
                   const isCenter = i === 1;
                   return (
                     <button key={tier.id} onClick={() => { setSelectedPlan(tier.id); trackEvent(storeId, 'plan_select', { plan: tier.id }); }}
@@ -157,7 +158,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
                 <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>プラン比較マトリクス</h2>
                 <p className="text-sm text-gray-500 mt-1">横スクロールで全プランを比較 ｜ {selectedSize}サイズの場合</p>
               </div>
-              <ComparisonMatrix size={selectedSize} discountRate={discountRate} blurFields={blurFields} />
+              <ComparisonMatrix size={selectedSize} discountRate={discountRate} blurFields={blurFields} priceOverrides={priceOverrides} />
             </div>
           </section>
 
@@ -179,9 +180,9 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
                   <tbody>
                     {['crystal', 'diamond', 'ex'].map(id => {
                       const tier = coatingTiers.find(t => t.id === id)!;
-                      const web = getWebPrice(tier, selectedSize, discountRate);
-                      const total3 = getTotalCostOverYears(tier, selectedSize, 3, discountRate);
-                      const total5 = getTotalCostOverYears(tier, selectedSize, 5, discountRate);
+                      const web = getWebPrice(tier, selectedSize, discountRate, priceOverrides);
+                      const total3 = getTotalCostOverYears(tier, selectedSize, 3, discountRate, priceOverrides);
+                      const total5 = getTotalCostOverYears(tier, selectedSize, 5, discountRate, priceOverrides);
                       const maint = tier.maintenance_prices ? tier.maintenance_prices[selectedSize] : null;
                       const isDiamond = id === 'diamond';
                       return (

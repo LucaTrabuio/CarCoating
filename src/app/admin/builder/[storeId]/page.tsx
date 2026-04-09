@@ -130,6 +130,112 @@ function SettingsField({ label, value, onChange, type = 'text', rows }: {
   );
 }
 
+// ─── Price overrides grid (per-tier per-size price editor) ───
+
+const SIZES = ['SS', 'S', 'M', 'L', 'LL', 'XL'] as const;
+
+function PriceOverridesGrid({
+  storeData,
+  updateStoreField,
+}: {
+  storeData: Partial<V3StoreData>;
+  updateStoreField: (field: keyof V3StoreData, value: string) => void;
+}) {
+  // Parse existing overrides
+  let overrides: Record<string, Record<string, number>> = {};
+  try {
+    if (storeData.price_overrides) {
+      const parsed = JSON.parse(storeData.price_overrides);
+      if (typeof parsed === 'object' && parsed !== null) overrides = parsed;
+    }
+  } catch { /* invalid JSON */ }
+
+  function updateOverride(tierId: string, size: string, raw: string) {
+    const next = { ...overrides };
+    if (!next[tierId]) next[tierId] = {};
+
+    if (raw === '' || raw === '0') {
+      delete next[tierId][size];
+      if (Object.keys(next[tierId]).length === 0) delete next[tierId];
+    } else {
+      const val = parseInt(raw, 10);
+      if (!isNaN(val) && val > 0) {
+        next[tierId] = { ...next[tierId], [size]: val };
+      }
+    }
+
+    updateStoreField('price_overrides', JSON.stringify(next));
+  }
+
+  function resetAll() {
+    if (!confirm('すべての個別価格をリセットしますか？')) return;
+    updateStoreField('price_overrides', '');
+  }
+
+  const hasAnyOverride = Object.keys(overrides).length > 0;
+
+  return (
+    <div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs border-collapse">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="text-left py-2 pr-3 font-semibold">コース</th>
+              {SIZES.map(size => (
+                <th key={size} className="text-center py-2 px-2 font-semibold min-w-[80px]">{size}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {coatingTiers.map(tier => (
+              <tr key={tier.id} className="border-b border-gray-100">
+                <td className="py-2 pr-3">
+                  <div className="font-bold text-[#0f1c2e] text-[11px]">{tier.name}</div>
+                  <div className="text-[9px] text-gray-400">{tier.id}</div>
+                </td>
+                {SIZES.map(size => {
+                  const globalPrice = tier.prices[size];
+                  const override = overrides[tier.id]?.[size];
+                  return (
+                    <td key={size} className="py-1 px-1 text-center">
+                      <input
+                        type="number"
+                        min={0}
+                        placeholder={String(globalPrice)}
+                        value={override ?? ''}
+                        onChange={e => updateOverride(tier.id, size, e.target.value)}
+                        className={`w-full px-1 py-1 border rounded text-[10px] text-center ${
+                          override !== undefined
+                            ? 'border-amber-400 bg-amber-50 font-bold text-amber-700'
+                            : 'border-gray-200 text-gray-400'
+                        }`}
+                      />
+                      <div className="text-[8px] text-gray-400 mt-0.5">¥{globalPrice.toLocaleString()}</div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {hasAnyOverride && (
+        <div className="mt-3 flex items-center justify-between">
+          <p className="text-[10px] text-amber-700">
+            {Object.values(overrides).reduce((sum, tier) => sum + Object.keys(tier).length, 0)} 件の個別価格が設定されています
+          </p>
+          <button
+            onClick={resetAll}
+            className="text-[10px] text-red-500 hover:text-red-700 underline"
+          >
+            すべてリセット
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main page component ───
 
 export default function BuilderPage() {
@@ -716,6 +822,16 @@ export default function BuilderPage() {
                   <SettingsField label="価格倍率" value={storeData.price_multiplier} onChange={v => updateStoreField('price_multiplier', v)} type="number" />
                   <SettingsField label="最低価格制限" value={storeData.min_price_limit} onChange={v => updateStoreField('min_price_limit', v)} type="number" />
                 </div>
+              </div>
+
+              {/* Per-tier per-size price overrides */}
+              <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <h3 className="text-sm font-bold text-gray-800 mb-1">コース別個別価格設定</h3>
+                <p className="text-[10px] text-gray-400 mb-3">各コース × 車サイズごとに価格を上書きできます。空欄の場合は全国統一価格（下の数字）が適用されます。</p>
+                <PriceOverridesGrid
+                  storeData={storeData}
+                  updateStoreField={updateStoreField}
+                />
               </div>
 
               {/* Campaign settings */}

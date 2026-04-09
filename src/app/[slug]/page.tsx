@@ -3,10 +3,6 @@ import { getV3StoreById, getV3CampaignDefaults, getSubCompanyBySlug, getStoresBy
 import { parsePageLayout } from '@/lib/block-types';
 import BlockRenderer from '@/components/blocks/BlockRenderer';
 import PageViewTracker from '@/components/PageViewTracker';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import MobileCTA from '@/components/MobileCTA';
-import DynamicBanner from '@/components/DynamicBanner';
 import SubCompanyStoreMap from '@/components/SubCompanyStoreMap';
 
 export default async function SlugPage({
@@ -63,83 +59,38 @@ export default async function SlugPage({
     const layout = parsePageLayout(primaryStore.page_layout, primaryStore);
 
     return (
-      <>
-        <Header
-          storeId={primaryStore.store_id}
-          storeName={subCompany.name}
-          tel={primaryStore.tel}
-          lineUrl={primaryStore.line_url}
-          basePath={basePath}
-        />
-        <div className="pt-14">
-          <DynamicBanner
-            title={campaign.title}
-            discountRate={campaign.discount_rate}
-            deadline={campaign.deadline}
-            colorCode={campaign.color}
-          />
-          <main>
-            {layout.blocks
-              .filter(b => b.visible)
-              .sort((a, b) => a.order - b.order)
-              .map(block => (
-                <BlockRenderer
-                  key={block.id}
-                  block={block}
-                  store={primaryStore}
-                  basePath={basePath}
-                  discountRate={campaign.discount_rate}
-                />
-              ))}
-            <SubCompanyStoreMap
-              stores={stores.map(s => ({
-                store_id: s.store_id,
-                store_name: s.store_name,
-                address: s.address,
-                tel: s.tel,
-                business_hours: s.business_hours,
-                regular_holiday: s.regular_holiday,
-                parking_spaces: s.parking_spaces,
-                landmark: s.landmark,
-                nearby_stations: s.nearby_stations,
-                has_booth: s.has_booth,
-                lat: s.lat,
-                lng: s.lng,
-              }))}
-              groupName={subCompany.name}
+      <main>
+        {layout.blocks
+          .filter(b => b.visible)
+          .filter(b => b.type !== 'access') // Skip single-store access — SubCompanyStoreMap handles it
+          .sort((a, b) => a.order - b.order)
+          .map(block => (
+            <BlockRenderer
+              key={block.id}
+              block={block}
+              store={primaryStore}
+              basePath={basePath}
+              discountRate={campaign.discount_rate}
             />
-            <section className="bg-gray-900 text-white py-10 text-center">
-              <div className="max-w-[1100px] mx-auto px-5">
-                <div className="text-lg font-bold mb-1">ご予約・お見積もりはお気軽に</div>
-                <div className="text-sm opacity-50 mb-4">ご希望の店舗をお選びください</div>
-                <div className="flex flex-wrap gap-3 justify-center mb-4">
-                  {stores.map(s => (
-                    <a key={s.store_id} href={s.tel ? `tel:${s.tel}` : '#'}
-                      className="px-4 py-2 bg-amber-500/20 border border-amber-500/40 rounded-lg text-sm hover:bg-amber-500/30 transition-colors">
-                      <div className="font-bold text-amber-400">{s.store_name.replace('キーパープロショップ ', '')}</div>
-                      {s.tel && <div className="text-xs text-amber-300/70">{s.tel}</div>}
-                    </a>
-                  ))}
-                </div>
-                {primaryStore.line_url && (
-                  <a href={primaryStore.line_url} target="_blank" rel="noopener noreferrer"
-                    className="inline-block px-6 py-2.5 bg-[#06c755] text-white font-bold rounded-lg text-sm">
-                    LINEで相談する
-                  </a>
-                )}
-              </div>
-            </section>
-          </main>
-        </div>
-        <Footer
-          storeId={primaryStore.store_id}
-          storeName={subCompany.name}
-          tel={primaryStore.tel}
-          address={primaryStore.address}
-          businessHours={primaryStore.business_hours}
+          ))}
+        <SubCompanyStoreMap
+          stores={stores.map(s => ({
+            store_id: s.store_id,
+            store_name: s.store_name,
+            address: s.address,
+            tel: s.tel,
+            business_hours: s.business_hours,
+            regular_holiday: s.regular_holiday,
+            parking_spaces: s.parking_spaces,
+            landmark: s.landmark,
+            nearby_stations: s.nearby_stations,
+            has_booth: s.has_booth,
+            lat: s.lat,
+            lng: s.lng,
+          }))}
+          groupName={subCompany.name}
         />
-        <MobileCTA tel={primaryStore.tel} lineUrl={primaryStore.line_url} />
-      </>
+      </main>
     );
   }
 

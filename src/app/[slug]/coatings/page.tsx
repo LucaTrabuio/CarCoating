@@ -4,7 +4,7 @@
 
 import { notFound } from 'next/navigation';
 import { coatingTiers } from '@/data/coating-tiers';
-import { formatPrice, getWebPrice } from '@/lib/pricing';
+import { formatPrice, getWebPrice, getPriceForSize, parsePriceOverrides } from '@/lib/pricing';
 import Link from 'next/link';
 import { getV3StoreById, getV3CampaignDefaults } from '@/lib/firebase-stores';
 import { getBlurFieldsFromLayout, isBlurred } from '@/lib/blur-utils';
@@ -41,6 +41,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
   const discountRate = store.discount_rate || defaults.discount;
   const base = `/${storeId}`;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);
+  const priceOverrides = parsePriceOverrides(store.price_overrides);
   const ALL_SIZES: CarSize[] = ['SS', 'S', 'M', 'L', 'LL', 'XL'];
 
   return (
@@ -87,15 +88,15 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                   <div className="text-[10px] text-slate-400">SSサイズ〜・Web割後（税込）</div>
                   {isBlurred(tier.id, 'web_price', blurFields) ? (
                     <div className="relative inline-block">
-                      <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">{formatPrice(tier.prices.SS)}</div>
+                      <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">{formatPrice(getPriceForSize(tier, 'SS', priceOverrides))}</div>
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-[9px] text-slate-500 font-semibold bg-white/80 px-1.5 py-0.5 rounded">要問合せ</span>
                       </div>
                     </div>
                   ) : (
                     <div>
-                      <div className="text-xs text-slate-400 line-through">{formatPrice(tier.prices.SS)}</div>
-                      <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(getWebPrice(tier, 'SS', discountRate))}</div>
+                      <div className="text-xs text-slate-400 line-through">{formatPrice(getPriceForSize(tier, 'SS', priceOverrides))}</div>
+                      <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(getWebPrice(tier, 'SS', discountRate, priceOverrides))}</div>
                     </div>
                   )}
                 </div>
@@ -149,10 +150,10 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                         <td key={size} className="px-2.5 py-2 text-center text-[11px] text-slate-400 line-through">
                           {isBlurred(tier.id, 'web_price', blurFields) ? (
                             <div className="relative inline-block">
-                              <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(tier.prices[size])}</span>
+                              <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(getPriceForSize(tier, size, priceOverrides))}</span>
                               <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
                             </div>
-                          ) : formatPrice(tier.prices[size])}
+                          ) : formatPrice(getPriceForSize(tier, size, priceOverrides))}
                         </td>
                       ))}
                     </tr>
@@ -162,10 +163,10 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                         <td key={size} className="px-2.5 py-2 text-center font-bold text-[11px] text-amber-700">
                           {isBlurred(tier.id, 'web_price', blurFields) ? (
                             <div className="relative inline-block">
-                              <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(getWebPrice(tier, size, discountRate))}</span>
+                              <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(getWebPrice(tier, size, discountRate, priceOverrides))}</span>
                               <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
                             </div>
-                          ) : formatPrice(getWebPrice(tier, size, discountRate))}
+                          ) : formatPrice(getWebPrice(tier, size, discountRate, priceOverrides))}
                         </td>
                       ))}
                     </tr>

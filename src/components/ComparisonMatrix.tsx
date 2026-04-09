@@ -2,13 +2,14 @@
 
 import { coatingTiers } from '@/data/coating-tiers';
 import { CarSize } from '@/lib/types';
-import { formatPrice, getWebPrice, getTotalCostOverYears } from '@/lib/pricing';
+import { formatPrice, getWebPrice, getTotalCostOverYears, type PriceOverrides } from '@/lib/pricing';
 import { isBlurred } from '@/lib/blur-utils';
 
 interface ComparisonMatrixProps {
   size: CarSize;
   discountRate: number;
   blurFields?: string[];
+  priceOverrides?: PriceOverrides;
 }
 
 function Stars({ count }: { count: number }) {
@@ -19,7 +20,7 @@ function Stars({ count }: { count: number }) {
   );
 }
 
-export default function ComparisonMatrix({ size, discountRate, blurFields = [] }: ComparisonMatrixProps) {
+export default function ComparisonMatrix({ size, discountRate, blurFields = [], priceOverrides }: ComparisonMatrixProps) {
   const tiers = coatingTiers.filter(t => ['crystal', 'fresh', 'diamond', 'dia2', 'ex', 'ex-premium'].includes(t.id));
 
   return (
@@ -64,7 +65,7 @@ export default function ComparisonMatrix({ size, discountRate, blurFields = [] }
           <tr className="border-b border-gray-100">
             <td className="px-3 py-2.5 font-semibold sticky left-0 bg-white z-10 border-r border-gray-200">Web割価格</td>
             {tiers.map(t => {
-              const web = getWebPrice(t, size, discountRate);
+              const web = getWebPrice(t, size, discountRate, priceOverrides);
               const blurred = isBlurred(t.id, 'web_price', blurFields);
               return (
                 <td key={t.id} className={`px-3 py-2.5 text-center font-bold ${t.id === 'diamond' ? 'bg-amber-50/30 text-amber-700' : ''}`}>
@@ -81,7 +82,7 @@ export default function ComparisonMatrix({ size, discountRate, blurFields = [] }
           <tr className="border-b border-gray-100">
             <td className="px-3 py-2.5 font-semibold sticky left-0 bg-white z-10 border-r border-gray-200">5年総額</td>
             {tiers.map(t => {
-              const total = getTotalCostOverYears(t, size, 5, discountRate);
+              const total = getTotalCostOverYears(t, size, 5, discountRate, priceOverrides);
               const blurred = isBlurred(t.id, 'web_price', blurFields);
               return (
                 <td key={t.id} className={`px-3 py-2.5 text-center font-bold ${t.id === 'diamond' ? 'bg-amber-50/30 text-amber-700' : ''}`}>

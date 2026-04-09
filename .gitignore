@@ -27,6 +27,9 @@
 # firebase service account key (sensitive)
 firebase-service-account.json
 
+# oauth tokens
+scripts/.oauth-token.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*

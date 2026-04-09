@@ -18,7 +18,8 @@ interface NewsItem {
   id?: string;
   title: string;
   date: string;
-  category: string;
+  category?: string;
+  content?: string;
   body?: string;
   visible?: boolean;
 }
@@ -54,13 +55,13 @@ export default async function V3NewsPage({ params }: { params: Promise<{ slug: s
           {sortedNews.map((item, i) => (
             <div key={i} className="bg-white border border-gray-200 rounded-lg p-5 hover:border-amber-300 transition-colors">
               <div className="flex items-center gap-2 mb-2">
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${categoryColors[item.category] || 'bg-gray-100 text-gray-600'}`}>
-                  {categoryLabels[item.category] || item.category}
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${categoryColors[item.category || ''] || 'bg-gray-100 text-gray-600'}`}>
+                  {categoryLabels[item.category || ''] || item.category}
                 </span>
                 <span className="text-[10px] text-gray-400">{item.date}</span>
               </div>
               <h2 className="text-sm font-bold text-[#0f1c2e]">{item.title}</h2>
-              {item.body && <p className="text-xs text-gray-500 mt-1">{item.body}</p>}
+              {(item.content || item.body) && <p className="text-xs text-gray-500 mt-1">{item.content || item.body}</p>}
             </div>
           ))}
         </div>

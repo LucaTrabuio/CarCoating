@@ -2,7 +2,7 @@
 
 import { coatingTiers } from '@/data/coating-tiers';
 import { CarSize, CoatingTier } from '@/lib/types';
-import { formatPrice, getWebPrice, getMaintenancePrice } from '@/lib/pricing';
+import { formatPrice, getWebPrice, getMaintenancePrice, getPriceForSize, type PriceOverrides } from '@/lib/pricing';
 import { isBlurred } from '@/lib/blur-utils';
 import Link from 'next/link';
 
@@ -11,9 +11,10 @@ interface PricingTableProps {
   discountRate: number;
   storeId: string;
   blurFields?: string[];
+  priceOverrides?: PriceOverrides;
 }
 
-export default function PricingTable({ size, discountRate, storeId, blurFields = [] }: PricingTableProps) {
+export default function PricingTable({ size, discountRate, storeId, blurFields = [], priceOverrides }: PricingTableProps) {
   return (
     <div className="overflow-x-auto border border-gray-200 rounded-xl">
       <table className="w-full text-sm border-collapse">
@@ -29,8 +30,8 @@ export default function PricingTable({ size, discountRate, storeId, blurFields =
         </thead>
         <tbody>
           {coatingTiers.map(tier => {
-            const regular = tier.prices[size];
-            const web = getWebPrice(tier, size, discountRate);
+            const regular = getPriceForSize(tier, size, priceOverrides);
+            const web = getWebPrice(tier, size, discountRate, priceOverrides);
             const maint = getMaintenancePrice(tier, size);
             const isPopular = tier.id === 'diamond';
 

@@ -1,0 +1,163 @@
+/**
+ * Seed hardcoded blog articles and news to Firestore.
+ * - Blogs go to blog_posts collection (global)
+ * - News goes to each store's store_news field (per-store JSON array)
+ *
+ * Run: npx dotenv -e .env.local -- npx tsx scripts/seed-blog-news.ts
+ */
+
+import { cert, getApps, initializeApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+
+// Hardcoded blog articles (from src/data/blog-articles.ts)
+const BLOG_ARTICLES = [
+  {
+    slug: 'what-is-coating',
+    title: 'カーコーティングとは？どんな車に必要？',
+    summary: 'コーティングの仕組み、効果、向いている車を解説します。',
+    category: 'educational',
+    publishDate: '2026-03-01',
+    metaTitle: 'カーコーティングとは？仕組み・効果・必要な車を解説｜KeePer PRO SHOP',
+    metaDescription: 'カーコーティングの基本的な仕組み、塗装保護の効果、どんな車にコーティングが必要かをプロが解説。紫外線・酸性雨・鳥のフンから愛車を守る方法。',
+    sections: [
+      { heading: 'コーティングの基本', text: 'カーコーティングとは、車のボディ表面にガラスやレジンの透明被膜を形成し、塗装を外部の攻撃から守る施工です。紫外線、酸性雨、鳥のフン、花粉、黄砂、鉄粉など、日常的に車の塗装を劣化させる要因は多く、コーティングはこれらの攻撃に対する「盾」の役割を果たします。' },
+      { heading: 'ワックスとの違い', text: 'ワックスは油脂系の薄い膜を塗装面に乗せるだけなので、雨や洗車で数週間〜1ヶ月で流れ落ちます。一方、ガラスコーティングは塗装面と化学結合するため、1年〜6年の長期間にわたり保護力を維持。施工後は洗車だけで輝きが続き、ワックスがけが不要になります。' },
+      { heading: 'こんな方におすすめ', text: '「新車の輝きを長く保ちたい」「洗車の回数を減らしたい」「青空駐車で汚れが気になる」「下取り査定額を上げたい」という方に特におすすめです。新車はもちろん、経年車でも研磨＋コーティングで新車以上の仕上がりが可能です。' },
+    ],
+  },
+  {
+    slug: 'wax-vs-coating',
+    title: 'ワックス vs コーティング — 本当の違い',
+    summary: '持続期間、施工の手間、コスト、仕上がりを徹底比較。',
+    category: 'comparison',
+    publishDate: '2026-03-05',
+    metaTitle: 'ワックス vs コーティング｜持続期間・コスト・仕上がりを徹底比較',
+    metaDescription: 'ワックスとガラスコーティングの違いを持続期間・仕上がり・手間・年間コストの4軸で徹底比較。どちらがお得かプロが解説。',
+    sections: [
+      { heading: '持続期間の違い', text: 'ワックスの持続期間は約2週間〜1ヶ月。カーシャンプーや雨で簡単に流れ落ちるため、月1〜2回の再施工が必要です。ガラスコーティングは1回の施工で1年（クリスタルキーパー）〜6年（EXキーパー）持続。年間のメンテナンスコストを考えると、実はコーティングの方がお得になるケースがほとんどです。' },
+      { heading: '仕上がりの違い', text: 'ワックスは油脂系の「ぬめり感」のある艶。ガラスコーティングは透明度の高い「ガラスのような透明感」が特徴です。特にダイヤモンドキーパー以上のコースでは、通常のガラスコーティングの約50倍の膜厚により、深い奥行きのある輝きが生まれます。' },
+      { heading: '手間とコスト比較', text: 'ワックス：月2回 × 30分 × 12ヶ月 = 年間12時間の作業時間。材料費を含めると年間1〜2万円。クリスタルキーパー：年1回・約2時間の施工で¥18,200〜。プロの仕上がりで、自分の時間を有効活用できます。' },
+    ],
+  },
+  {
+    slug: 'glass-vs-ceramic',
+    title: 'ガラスコーティング vs セラミックコーティング',
+    summary: '素材の違い、メリット・デメリット、選び方を解説。',
+    category: 'comparison',
+    publishDate: '2026-03-10',
+    metaTitle: 'ガラス vs セラミックコーティング｜違い・メリット・選び方を解説',
+    metaDescription: 'ガラスコーティングとセラミックコーティングの違いをプロが解説。素材・硬度・価格・施工リスクの比較と、おすすめの選び方。',
+    sections: [
+      { heading: 'ガラスコーティングとは', text: 'ケイ素（シリカ）を主成分とした被膜。塗装面と化学結合し、透明度の高い硬い被膜を形成します。KeePer のコーティングはすべてこのガラス系をベースにしています。特徴は透明感のある美しい艶、比較的リーズナブルな価格、そして信頼性の高い実績です。' },
+      { heading: 'セラミックコーティングとは', text: '酸化チタンなどのセラミック素材を使用した被膜。硬度が非常に高く（9H以上を謳う製品も）、耐薬品性に優れます。ただし、施工に高い技術が必要で価格も高額（10万円〜50万円以上）。施工ミスがあると修正が難しいというリスクもあります。' },
+      { heading: 'どちらを選ぶべき？', text: '日常使いの車には、コストパフォーマンスと信頼性に優れたガラスコーティングがおすすめです。KeePer のEXキーパーは有機ガラス被膜VP326を採用し、ガラスの保護力とセラミックに匹敵する撥水・防汚性能を両立。特許技術によりミネラルの固着も防止します。' },
+    ],
+  },
+  {
+    slug: 'after-care',
+    title: 'コーティング施工後のお手入れ方法',
+    summary: '正しい洗車方法、やってはいけないこと、メンテナンスのタイミング。',
+    category: 'educational',
+    publishDate: '2026-03-15',
+    metaTitle: 'コーティング施工後のお手入れ方法｜洗車・メンテナンス完全ガイド',
+    metaDescription: 'コーティング施工後の正しい洗車方法、やってはいけないNG行為、メンテナンスの最適タイミングをKeePer技術者が解説。',
+    sections: [
+      { heading: '施工後の洗車', text: 'コーティング施工後は、水洗いまたはカーシャンプーでの手洗い洗車が基本です。コーティング被膜が汚れの固着を防いでいるので、軽い水洗いだけで十分キレイになります。洗車機は使用可能ですが、ブラシタイプよりもノンブラシ（ノータッチ）タイプを推奨します。' },
+      { heading: 'やってはいけないこと', text: 'ワックスやコンパウンド（研磨剤）入りのカーシャンプーは使用しないでください。コーティング被膜を削ってしまいます。また、鳥のフンや虫の死骸は酸性が強いため、見つけたらなるべく早く水で洗い流してください。' },
+      { heading: 'メンテナンスのタイミング', text: 'クリスタルキーパー・フレッシュキーパー：年1回の再施工で輝きを維持。ダイヤモンドキーパー：年1回のメンテナンスで5年間持続。ダイヤⅡキーパー：2年ごとのメンテで最長6年。EXキーパー：1〜2年ごとのメンテで最長6年。' },
+    ],
+  },
+  {
+    slug: 'new-car-vs-used',
+    title: '新車と経年車、どちらにもコーティングは必要？',
+    summary: '新車に施工するメリット、経年車でも間に合う理由を解説。',
+    category: 'educational',
+    publishDate: '2026-03-20',
+    metaTitle: '新車・経年車のコーティング｜どちらにも必要な理由をプロが解説',
+    metaDescription: '新車にコーティングすべき理由と、経年車でも手遅れではない理由を解説。下取り査定への影響も。',
+    sections: [
+      { heading: '新車こそコーティング', text: '「新車だからキレイ」は事実ですが、塗装が無防備な状態であることも事実。紫外線や酸性雨は納車日から塗装を攻撃し始めます。新車のうちにコーティングすれば、塗装が劣化する前に保護できるため、最も効率的。研磨が不要なのでコストも抑えられます。' },
+      { heading: '経年車でも大丈夫', text: '「もう3年乗ったから手遅れ」ということはありません。プレミアムコース（研磨付き）なら、経年によるくすみ、小傷、水垢を研磨で除去してからコーティング。新車時以上の仕上がりになるケースも珍しくありません。' },
+      { heading: '下取り・売却への影響', text: 'コーティングで塗装の状態を保つと、数年後の下取り査定額に好影響。特に濃色車（ブラック、ダークブルー等）は塗装劣化が査定に直結するため、コーティングの費用対効果が最も高いカテゴリです。' },
+    ],
+  },
+];
+
+// Hardcoded news items (from src/data/news.ts)
+const NEWS_ITEMS = [
+  { id: 'news-1', date: '2026-04-01', category: 'campaign', title: '春の新生活キャンペーン開始', body: 'クリスタル〜ダイヤⅡまで最大20%OFF。新車のお引き渡しに合わせてご予約ください。', link: '/booking', visible: true },
+  { id: 'news-2', date: '2026-04-01', category: 'case_study', title: 'テスラ モデル3 ダイヤⅡキーパー施工事例', body: 'オーナー様のこだわりと丁寧な施工の記録をアップしました。', link: '/cases', visible: true },
+  { id: 'news-3', date: '2026-03-25', category: 'store_update', title: 'GW期間中も通常営業', body: '4/29〜5/5も通常通り営業いたします。ご予約はお早めに。', link: '', visible: true },
+  { id: 'news-4', date: '2026-03-18', category: 'case_study', title: 'トヨタ86 EXキーパー施工', body: '濃色車の深い艶と耐久性、お客様からの声も掲載。', link: '/cases', visible: true },
+  { id: 'news-5', date: '2026-03-10', category: 'store_update', title: 'コーティングガイド記事を5本公開', body: '初めての方向けの基礎知識・ワックス比較・施工後のお手入れまで。', link: '/blog', visible: true },
+];
+
+async function main() {
+  if (getApps().length === 0) {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+    });
+  }
+  const db = getFirestore();
+
+  // Seed blog posts
+  console.log('Seeding blog posts...');
+  let blogCreated = 0, blogSkipped = 0;
+  for (const article of BLOG_ARTICLES) {
+    const existing = await db.collection('blog_posts').where('slug', '==', article.slug).limit(1).get();
+    if (!existing.empty) {
+      blogSkipped++;
+      continue;
+    }
+    const now = new Date().toISOString();
+    await db.collection('blog_posts').add({
+      title: article.title,
+      slug: article.slug,
+      content: article.sections.map(s => `## ${s.heading}\n\n${s.text}`).join('\n\n'),
+      summary: article.summary,
+      category: article.category,
+      publishDate: article.publishDate,
+      metaTitle: article.metaTitle,
+      metaDescription: article.metaDescription,
+      sections: article.sections,
+      published: true,
+      author_uid: 'system',
+      created_at: new Date(article.publishDate).toISOString(),
+      updated_at: now,
+    });
+    blogCreated++;
+  }
+  console.log(`  Blog posts: created ${blogCreated}, skipped ${blogSkipped}`);
+
+  // Seed news items into each store's store_news field
+  console.log('\nSeeding news to all stores...');
+  const storesSnap = await db.collection('stores').get();
+  let newsSeeded = 0, newsSkipped = 0;
+
+  for (const doc of storesSnap.docs) {
+    const data = doc.data();
+    // Skip if store already has news
+    if (data.store_news && data.store_news !== '[]' && data.store_news !== '') {
+      try {
+        const existing = JSON.parse(data.store_news);
+        if (Array.isArray(existing) && existing.length > 0) {
+          newsSkipped++;
+          continue;
+        }
+      } catch { /* continue with seed */ }
+    }
+    await db.collection('stores').doc(doc.id).update({
+      store_news: JSON.stringify(NEWS_ITEMS),
+    });
+    newsSeeded++;
+  }
+  console.log(`  Stores with news seeded: ${newsSeeded}, skipped (already had news): ${newsSkipped}`);
+
+  console.log('\nDone!');
+}
+
+main().catch(console.error);

@@ -6,7 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MobileCTA from '@/components/MobileCTA';
 import DynamicBanner from '@/components/DynamicBanner';
-import { getV3StoreById, getAllV3StoreIds, getV3CampaignDefaults, getSubCompanyBySlug } from '@/lib/firebase-stores';
+import { getV3StoreById, getAllV3StoreIds, getV3CampaignDefaults, getSubCompanyBySlug, getStoresBySubCompany } from '@/lib/firebase-stores';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   try {
@@ -86,16 +86,53 @@ export default async function SlugLayout({
             tel={store.tel}
             address={store.address}
             businessHours={store.business_hours}
+            regularHoliday={store.regular_holiday}
           />
           <MobileCTA tel={store.tel} lineUrl={store.line_url} />
         </>
       );
     }
 
-    // Check if this is a sub-company (layout handled inline by page.tsx)
+    // Check if this is a sub-company — wrap with Header/Footer using primary store's contact info
     const subCompany = await getSubCompanyBySlug(slug);
     if (subCompany) {
-      return <>{children}</>;
+      const scStores = await getStoresBySubCompany(subCompany.id);
+      if (scStores.length === 0) notFound();
+      const primaryStore = scStores[0];
+      const defaults = await getV3CampaignDefaults();
+      const campaign = mergeCampaign(primaryStore, defaults);
+
+      return (
+        <>
+          <Header
+            storeId={slug}
+            storeName={subCompany.name}
+            tel={primaryStore.tel}
+            lineUrl={primaryStore.line_url}
+            basePath={`/${slug}`}
+          />
+          <div className="pt-14">
+            <DynamicBanner
+              title={campaign.title}
+              discountRate={campaign.discount_rate}
+              deadline={campaign.deadline}
+              colorCode={campaign.color}
+              fontId={campaign.font}
+            />
+            {children}
+          </div>
+          <Footer
+            storeId={slug}
+            storeName={subCompany.name}
+            tel={primaryStore.tel}
+            address={primaryStore.address}
+            businessHours={primaryStore.business_hours}
+            regularHoliday={primaryStore.regular_holiday}
+            isMultiStore={scStores.length > 1}
+          />
+          <MobileCTA tel={primaryStore.tel} lineUrl={primaryStore.line_url} />
+        </>
+      );
     }
   } catch (error) {
     console.error(`[slug] layout error for "${slug}":`, error);
