@@ -3,7 +3,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { V3StoreData } from '@/lib/v3-types';
 import type { ReservationChoice, SlotAvailability } from '@/lib/reservation-types';
+import { coatingTiers } from '@/data/coating-tiers';
 import { trackEvent } from '@/lib/track';
+
+const DEFAULT_OPTIONS = [
+  { id: 'hydrophilic-wheel', name: 'ホイール親水ガラスコーティング' },
+  { id: 'iron-remover', name: 'アイアンバスター' },
+  { id: 'polymer-wheel', name: 'ポリマーホイールコーティング' },
+  { id: 'under-coat', name: '下廻りコーティング' },
+  { id: 'wheel-clean', name: 'ホイールクリーニング' },
+  { id: 'disinfect', name: '車内除菌抗菌' },
+];
 
 interface Props {
   store: V3StoreData;
@@ -33,6 +43,10 @@ export default function ReservationForm({ store }: Props) {
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  // Selected services
+  const [coatings, setCoatings] = useState<string[]>(['']);
+  const [options, setOptions] = useState<string[]>([]);
 
   // Fetch available dates for the month
   const fetchDates = useCallback(async () => {
@@ -87,6 +101,21 @@ export default function ReservationForm({ store }: Props) {
     setSubmitting(true);
     setError('');
 
+    // Build service summary to include in notes
+    const selectedCoatings = coatings.filter(Boolean).map(id => {
+      const t = coatingTiers.find(t => t.id === id);
+      return t ? t.name : id;
+    });
+    const selectedOptions = options.map(id => {
+      const o = DEFAULT_OPTIONS.find(o => o.id === id);
+      return o ? o.name : id;
+    });
+    const serviceSummary = [
+      selectedCoatings.length > 0 ? `【コース】${selectedCoatings.join(', ')}` : '',
+      selectedOptions.length > 0 ? `【オプション】${selectedOptions.join(', ')}` : '',
+    ].filter(Boolean).join('\n');
+    const fullNotes = [serviceSummary, notes].filter(Boolean).join('\n\n');
+
     try {
       const res = await fetch('/api/reservation', {
         method: 'POST',
@@ -95,7 +124,8 @@ export default function ReservationForm({ store }: Props) {
           type: 'visit',
           storeId,
           choices: choices.filter(Boolean),
-          name, phone, email, notes,
+          name, phone, email,
+          notes: fullNotes,
         }),
       });
       if (!res.ok) throw new Error('Failed');
@@ -240,6 +270,69 @@ export default function ReservationForm({ store }: Props) {
 
         {step === 'info' && (
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Service selection */}
+            <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-4">
+              <h2 className="text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>ご希望のサービス</h2>
+
+              {/* Coatings */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-2">コーティングコース</label>
+                <div className="space-y-2">
+                  {coatings.map((coatingId, i) => (
+                    <div key={i} className="flex gap-2">
+                      <select
+                        value={coatingId}
+                        onChange={e => setCoatings(prev => prev.map((v, idx) => idx === i ? e.target.value : v))}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                      >
+                        <option value="">-- コースを選択 --</option>
+                        {coatingTiers.map(t => (
+                          <option key={t.id} value={t.id}>{t.name}</option>
+                        ))}
+                      </select>
+                      {coatings.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setCoatings(prev => prev.filter((_, idx) => idx !== i))}
+                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded-lg text-sm cursor-pointer"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setCoatings(prev => [...prev, ''])}
+                    className="text-xs text-amber-600 hover:text-amber-700 font-semibold cursor-pointer"
+                  >
+                    + コースを追加
+                  </button>
+                </div>
+              </div>
+
+              {/* Options */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-2">オプション（複数選択可）</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {DEFAULT_OPTIONS.map(opt => (
+                    <label key={opt.id} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1.5 border border-gray-200 rounded-lg hover:border-amber-300">
+                      <input
+                        type="checkbox"
+                        checked={options.includes(opt.id)}
+                        onChange={e => {
+                          if (e.target.checked) setOptions(prev => [...prev, opt.id]);
+                          else setOptions(prev => prev.filter(o => o !== opt.id));
+                        }}
+                        className="rounded"
+                      />
+                      <span className="text-gray-700">{opt.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             <h2 className="text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>お客様情報</h2>
             <div>
               <label className="block text-xs text-gray-500 mb-1">お名前 *</label>
