@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
 import type { WeeklyTemplate, SlotCapacity } from '@/lib/reservation-types';
 
@@ -139,14 +140,22 @@ export default function BookingSettingsPage() {
           <h1 className="text-xl font-bold text-gray-900">予約時間枠設定</h1>
           <p className="text-xs text-gray-500 mt-1">曜日ごとに受付時間と同時予約数を設定できます</p>
         </div>
-        <select
-          value={selectedStore}
-          onChange={e => setSelectedStore(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
-        >
-          <option value="">店舗を選択</option>
-          {stores.map(s => <option key={s.store_id} value={s.store_id}>{s.store_name}</option>)}
-        </select>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/admin/bookings/settings/store"
+            className="text-xs text-amber-600 hover:text-amber-700 border border-amber-300 rounded px-3 py-2 hover:bg-amber-50"
+          >
+            📧 通知メール設定
+          </Link>
+          <select
+            value={selectedStore}
+            onChange={e => setSelectedStore(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          >
+            <option value="">店舗を選択</option>
+            {stores.map(s => <option key={s.store_id} value={s.store_id}>{s.store_name}</option>)}
+          </select>
+        </div>
       </div>
 
       {!selectedStore && (

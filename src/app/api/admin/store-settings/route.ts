@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     }
 
     const settings = await getStoreSettings(storeId);
-    return NextResponse.json({ settings });
+    return NextResponse.json(settings);
   } catch (error) {
     console.error('Error fetching store settings:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

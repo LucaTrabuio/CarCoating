@@ -11,6 +11,8 @@ const transporter = nodemailer.createTransport({
 
 const DAY_LABELS = ['日', '月', '火', '水', '木', '金', '土'];
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:8080';
+
 function formatChoiceDate(date: string, time: string): string {
   const d = new Date(date + 'T00:00:00+09:00');
   const dayLabel = DAY_LABELS[d.getDay()];
@@ -97,8 +99,13 @@ export async function sendConfirmationEmail(opts: {
           ${opts.locationAddress}<br>
           TEL: ${opts.locationPhone}
         </div>
-        <p style="font-size:12px;color:#999;margin-top:20px">
-          キャンセルをご希望の場合はお電話にてご連絡ください。
+        <div style="text-align:center;margin:24px 0 16px">
+          <a href="${siteUrl}/cancel/${opts.reservationId}" style="display:inline-block;padding:10px 20px;background:#f5f5f5;color:#666;border:1px solid #ddd;border-radius:6px;font-size:12px;text-decoration:none">
+            予約をキャンセル
+          </a>
+        </div>
+        <p style="font-size:11px;color:#999;margin-top:20px;text-align:center">
+          キャンセルや変更のご相談はお電話でも承ります。
         </p>
       </div>
     </div>
