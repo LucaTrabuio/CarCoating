@@ -311,6 +311,29 @@ export async function getStoresBySubCompany(subCompanyId: string): Promise<V3Sto
   return snapshot.docs.map(doc => normalizeStore(doc.data()));
 }
 
+/**
+ * Resolve a URL slug to a store. Accepts either a direct store ID or a
+ * sub-company slug. For sub-companies, returns the primary (first) active store.
+ * Used by shared pages (coatings, options, price, etc.) so they work for both.
+ */
+export async function resolveSlugToStore(slug: string): Promise<{
+  store: V3StoreData;
+  isSubCompany: boolean;
+  subCompanyName?: string;
+} | null> {
+  const store = await getV3StoreById(slug);
+  if (store && store.is_active) {
+    return { store, isSubCompany: false };
+  }
+  const subCompany = await getSubCompanyBySlug(slug);
+  if (subCompany) {
+    const stores = await getStoresBySubCompany(subCompany.id);
+    if (stores.length === 0) return null;
+    return { store: stores[0], isSubCompany: true, subCompanyName: subCompany.name };
+  }
+  return null;
+}
+
 export async function upsertSubCompany(subCompany: SubCompany): Promise<void> {
   const db = getAdminDb();
   await db.collection('sub_companies').doc(subCompany.id).set(subCompany, { merge: true });

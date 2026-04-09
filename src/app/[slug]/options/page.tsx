@@ -1,38 +1,14 @@
 import { notFound } from 'next/navigation';
-import { getV3StoreById, getV3CampaignDefaults } from '@/lib/firebase-stores';
-import { formatPrice } from '@/lib/pricing';
+import { resolveSlugToStore, getV3CampaignDefaults } from '@/lib/firebase-stores';
+import { formatPrice, applyDiscount } from '@/lib/pricing';
 import { getBlurFieldsFromLayout } from '@/lib/blur-utils';
 import { parsePageLayout } from '@/lib/block-types';
 import type { PricingConfig } from '@/lib/block-types';
+import { DEFAULT_SERVICE_OPTIONS, CATEGORY_LABELS, type ServiceOption as DefaultServiceOption } from '@/data/service-options';
 import Link from 'next/link';
 
-const CATEGORY_LABELS: Record<string, string> = {
-  coating: 'コーティング系',
-  window: 'ウィンドウ系',
-  body: 'ボディ系',
-  chemical: 'ケミカル系',
-  interior: '車内系',
-};
-
-const DEFAULT_OPTIONS = [
-  { id: 'window-full', name: '超撥水ウィンドウコーティング（全面）', description: '雨の日の視界を良好に', price: 8270, time: '15分', popular: true, category: 'window' },
-  { id: 'wheel-single', name: 'ホイールコーティング（シングル）', description: 'ガラス被膜でホイールを保護', price: 10700, time: '30分', popular: true, category: 'coating' },
-  { id: 'lens', name: 'レンズコーティング', description: '専用ガラス被膜でライトレンズを保護', price: 6810, time: '30分', popular: true, category: 'coating' },
-  { id: 'headlight', name: 'ヘッドライトクリーン＆コーティング', description: '黄ばみ・くすみを除去しコーティング', price: 11630, time: '45分', popular: false, category: 'coating' },
-  { id: 'wheel-double', name: 'ホイールコーティング（ダブル）', description: 'より艶と水弾きを長期間キープ', price: 15900, time: '90分', popular: false, category: 'coating' },
-  { id: 'fender', name: '樹脂フェンダーキーパー', description: '無塗装樹脂パーツの色褪せを防止', price: 6280, time: '30分', popular: false, category: 'coating' },
-  { id: 'window-front', name: '超撥水ウィンドウコーティング（フロント）', description: 'フロントガラスのみ施工', price: 3720, time: '15分', popular: false, category: 'window' },
-  { id: 'window-scale', name: 'ウィンドウウロコ取り（サイド）', description: '窓ガラスの水垢・ウロコを除去', price: 6480, time: '10分/枚', popular: false, category: 'window' },
-  { id: 'window-scale-full', name: 'ウィンドウウロコ取り（全面）', description: 'フロント・リア・ルーフ含む全面', price: 12970, time: '10分/枚', popular: false, category: 'window' },
-  { id: 'polish', name: '細密研磨', description: '塗装表面のキズのエッジを細密に磨き取る', price: 18600, time: '60分', popular: false, category: 'body' },
-  { id: 'oil-film-full', name: '油膜取り（全面）', description: 'ギラギラの油膜を特殊ケミカルで除去', price: 4750, time: '15分', popular: false, category: 'chemical' },
-  { id: 'oil-film-front', name: '油膜取り（フロント）', description: 'フロントガラスのみ', price: 1690, time: '10分', popular: false, category: 'chemical' },
-  { id: 'iron', name: '鉄粉取り（上面）', description: 'ボディのザラザラ鉄粉をすっきり除去', price: 2830, time: '15分', popular: false, category: 'chemical' },
-  { id: 'sap', name: '樹液取り', description: '松ヤニ等を専用ケミカルで安全に除去', price: 2750, time: '15分', popular: false, category: 'chemical' },
-  { id: 'wheel-clean', name: 'ホイールクリーニング', description: 'ブレーキダスト・油汚れを専用道具で除去', price: 2270, time: '10分', popular: false, category: 'chemical' },
-  { id: 'disinfect', name: '車内除菌抗菌「オールクリア」', description: '車内清掃＋除菌・抗菌処理', price: 4650, time: '30分', popular: false, category: 'interior' },
-];
-
+// Store-level options may include blur_price and can omit/override fields,
+// so we accept a looser shape here.
 interface ServiceOption {
   id: string;
   name: string;
@@ -44,12 +20,15 @@ interface ServiceOption {
   blur_price?: boolean;
 }
 
-export default async function V3OptionsPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug: storeId } = await params;
-  const store = await getV3StoreById(storeId);
-  if (!store || !store.is_active) notFound();
+const DEFAULT_OPTIONS: DefaultServiceOption[] = DEFAULT_SERVICE_OPTIONS;
 
-  const base = `/${storeId}`;
+export default async function V3OptionsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const resolved = await resolveSlugToStore(slug);
+  if (!resolved) notFound();
+  const { store } = resolved;
+
+  const base = `/${slug}`;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);
 
   // Resolve option discount from pricing block config
@@ -116,7 +95,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
                         <div className="relative">
                           <div style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">
                             {optionDiscount > 0 && <div className="text-[10px] text-gray-400 line-through">{formatPrice(opt.price)}</div>}
-                            <div className="text-sm font-semibold text-amber-700">{formatPrice(optionDiscount > 0 ? Math.round(opt.price * (1 - optionDiscount / 100)) : opt.price)}</div>
+                            <div className="text-sm font-semibold text-amber-700">{formatPrice(optionDiscount > 0 ? applyDiscount(opt.price, optionDiscount) : opt.price)}</div>
                           </div>
                           <div className="absolute inset-0 flex items-center justify-center">
                             <span className="text-[9px] text-slate-500 font-semibold bg-white/80 px-1.5 py-0.5 rounded">要問合せ</span>
@@ -125,7 +104,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
                       ) : optionDiscount > 0 ? (
                         <>
                           <div className="text-[10px] text-gray-400 line-through">{formatPrice(opt.price)}</div>
-                          <div className="text-sm font-semibold text-amber-700">{formatPrice(Math.round(opt.price * (1 - optionDiscount / 100)))}</div>
+                          <div className="text-sm font-semibold text-amber-700">{formatPrice(applyDiscount(opt.price, optionDiscount))}</div>
                         </>
                       ) : (
                         <div className="text-sm font-semibold text-[#0f1c2e]">{formatPrice(opt.price)}</div>

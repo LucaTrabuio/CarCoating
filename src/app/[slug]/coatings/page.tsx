@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { coatingTiers } from '@/data/coating-tiers';
 import { formatPrice, getWebPrice, getPriceForSize, parsePriceOverrides } from '@/lib/pricing';
 import Link from 'next/link';
-import { getV3StoreById, getV3CampaignDefaults } from '@/lib/firebase-stores';
+import { resolveSlugToStore, getV3CampaignDefaults } from '@/lib/firebase-stores';
 import { getBlurFieldsFromLayout, isBlurred } from '@/lib/blur-utils';
 import type { Metadata } from 'next';
 import type { CarSize } from '@/lib/types';
@@ -14,9 +14,9 @@ import Image from 'next/image';
 import { KEEPER_BASE } from '@/lib/constants';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug: storeId } = await params;
-  const store = await getV3StoreById(storeId);
-  const storeName = store?.store_name ?? 'KeePer PRO SHOP';
+  const { slug } = await params;
+  const resolved = await resolveSlugToStore(slug);
+  const storeName = resolved?.subCompanyName ?? resolved?.store.store_name ?? 'KeePer PRO SHOP';
   return {
     title: `コーティングメニュー一覧｜${storeName}`,
     description: `${storeName}のカーコーティング全8メニューを詳しく解説。各コースの特徴・構造・耐久年数・価格を比較できます。`,
@@ -33,13 +33,14 @@ function Stars({ rating }: { rating: number }) {
 }
 
 export default async function V3CoatingsPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug: storeId } = await params;
-  const store = await getV3StoreById(storeId);
-  if (!store || !store.is_active) notFound();
+  const { slug } = await params;
+  const resolved = await resolveSlugToStore(slug);
+  if (!resolved) notFound();
+  const { store } = resolved;
 
   const defaults = await getV3CampaignDefaults();
   const discountRate = store.discount_rate || defaults.discount;
-  const base = `/${storeId}`;
+  const base = `/${slug}`;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);
   const priceOverrides = parsePriceOverrides(store.price_overrides);
   const ALL_SIZES: CarSize[] = ['SS', 'S', 'M', 'L', 'LL', 'XL'];

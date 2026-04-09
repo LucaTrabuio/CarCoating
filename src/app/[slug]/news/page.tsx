@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { news as hardcodedNews } from '@/data/news';
-import { getV3StoreById } from '@/lib/firebase-stores';
+import { resolveSlugToStore } from '@/lib/firebase-stores';
 
 const categoryLabels: Record<string, string> = {
   campaign: 'キャンペーン',
@@ -24,24 +25,24 @@ interface NewsItem {
   visible?: boolean;
 }
 
-async function getNews(storeId: string): Promise<NewsItem[]> {
+function parseStoreNews(storeNews: string | undefined): NewsItem[] {
   try {
-    const store = await getV3StoreById(storeId);
-    if (store?.store_news) {
-      const parsed = JSON.parse(store.store_news);
+    if (storeNews) {
+      const parsed = JSON.parse(storeNews);
       if (Array.isArray(parsed) && parsed.length > 0) {
         return parsed.filter((n: NewsItem) => n.visible !== false);
       }
     }
   } catch { /* fall through */ }
-  // Fallback to hardcoded data
   return hardcodedNews;
 }
 
 export default async function V3NewsPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug: storeId } = await params;
-  const base = `/${storeId}`;
-  const newsItems = await getNews(storeId);
+  const { slug } = await params;
+  const resolved = await resolveSlugToStore(slug);
+  if (!resolved) notFound();
+  const base = `/${slug}`;
+  const newsItems = parseStoreNews(resolved.store.store_news);
   const sortedNews = [...newsItems].sort((a, b) => b.date.localeCompare(a.date));
 
   return (

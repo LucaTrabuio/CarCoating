@@ -1,13 +1,17 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getV3StoreById } from '@/lib/firebase-stores';
+import { resolveSlugToStore } from '@/lib/firebase-stores';
 
 export default async function V3PrivacyPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug: storeId } = await params;
-  const store = await getV3StoreById(storeId);
-  if (!store || !store.is_active) notFound();
+  const { slug } = await params;
+  const resolved = await resolveSlugToStore(slug);
+  if (!resolved) notFound();
+  // For sub-companies, display the group name in the privacy text instead of primary store name
+  const store = resolved.subCompanyName
+    ? { ...resolved.store, store_name: resolved.subCompanyName }
+    : resolved.store;
 
-  const base = `/${storeId}`;
+  const base = `/${slug}`;
 
   return (
     <main className="py-14 px-5">

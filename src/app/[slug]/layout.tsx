@@ -88,7 +88,7 @@ export default async function SlugLayout({
             businessHours={store.business_hours}
             regularHoliday={store.regular_holiday}
           />
-          <MobileCTA tel={store.tel} lineUrl={store.line_url} />
+          <MobileCTA tel={store.tel} lineUrl={store.line_url} storeId={store.store_id} basePath={`/${slug}`} />
         </>
       );
     }
@@ -130,7 +130,7 @@ export default async function SlugLayout({
             regularHoliday={primaryStore.regular_holiday}
             isMultiStore={scStores.length > 1}
           />
-          <MobileCTA tel={primaryStore.tel} lineUrl={primaryStore.line_url} />
+          <MobileCTA tel={primaryStore.tel} lineUrl={primaryStore.line_url} storeId={primaryStore.store_id} basePath={`/${slug}`} />
         </>
       );
     }

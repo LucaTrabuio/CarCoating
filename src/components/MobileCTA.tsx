@@ -6,9 +6,10 @@ interface MobileCTAProps {
   tel: string;
   lineUrl?: string;
   storeId?: string;
+  basePath?: string;
 }
 
-export default function MobileCTA({ tel, lineUrl, storeId }: MobileCTAProps) {
+export default function MobileCTA({ tel, lineUrl, storeId, basePath = '' }: MobileCTAProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden shadow-[0_-2px_12px_rgba(0,0,0,0.15)]">
       {tel && (
@@ -32,7 +33,7 @@ export default function MobileCTA({ tel, lineUrl, storeId }: MobileCTAProps) {
         </a>
       ) : (
         <a
-          href="#booking"
+          href={`${basePath}/booking`}
           onClick={() => storeId && trackEvent(storeId, 'cta_booking')}
           className="flex-1 flex items-center justify-center gap-1.5 py-3 bg-amber-500 text-white text-[13px] font-bold"
         >
