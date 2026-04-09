@@ -1,0 +1,2426 @@
+{
+  "eniwa-coating.com": {
+    "domain": "eniwa-coating.com",
+    "url": "https://eniwa-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "コーティングステーション恵庭店",
+        "postalCode": "〒061-1406",
+        "address": "北海道恵庭市和光町１丁目８番１号",
+        "phone": "0800-812-8203",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 42.87147090176113,
+          "lng": 141.58715756706331
+        },
+        "access": [
+          "恵庭駅から車で5分",
+          "千歳駅から車で13分",
+          "北広島駅から車で20分",
+          "三井アウトレットパーク札幌北広島から車で25分",
+          "家具の中西さんの隣",
+          "江別恵庭線沿い"
+        ],
+        "appealPoints": [
+          "年間1万台以上の施工実績",
+          "KeePer認定技術者複数在籍",
+          "専用コーティングブース完備",
+          "最短2時間仕上げ",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "asahikawa-coating.com": {
+    "domain": "asahikawa-coating.com",
+    "url": "https://asahikawa-coating.com/",
+    "company": "出光リテール販売株式会社 東北カンパニー",
+    "stores": [
+      {
+        "storeName": "旭川忠和店",
+        "postalCode": "〒070-8045",
+        "address": "北海道旭川市忠和５条7丁目６番１９号",
+        "phone": "0800-816-6724",
+        "phoneLocal": "0166-61-5665",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 43.772461,
+          "lng": 142.324399
+        },
+        "access": [
+          "近文駅から車で8分",
+          "旭川駅から車で9分",
+          "焼肉まるます家の隣"
+        ],
+        "appealPoints": [
+          "年間1万台以上の施工実績",
+          "KeePer認定技術者複数在籍",
+          "専用防塵コーティングブース完備",
+          "最短2時間仕上げ",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "sendai-iwanuma-coating.com": {
+    "domain": "sendai-iwanuma-coating.com",
+    "url": "https://sendai-iwanuma-coating.com/",
+    "company": "出光リテール販売株式会社 東北カンパニー",
+    "stores": [
+      {
+        "storeName": "仙台名取北店",
+        "postalCode": "〒981-1221",
+        "address": "宮城県名取市田高清水370-1",
+        "phone": "0800-812-7915",
+        "businessHours": "9:00〜19:00",
+        "holidays": "水曜日",
+        "coordinates": {
+          "lat": 38.186265775946644,
+          "lng": 140.8743917800926
+        },
+        "access": [
+          "名取駅から車で12分",
+          "イオンモール名取から車で13分",
+          "仙台館腰線沿い"
+        ],
+        "appealPoints": [
+          "技術資格者6名在籍",
+          "EXキーパー1級3名、キーパー1級3名"
+        ]
+      },
+      {
+        "storeName": "あすと長町店",
+        "postalCode": "〒982-0007",
+        "address": "宮城県仙台市太白区あすと長町４-２-４",
+        "phone": "0800-812-7983",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 38.22487496399144,
+          "lng": 140.88759887415642
+        },
+        "access": [
+          "JR長町駅から東に徒歩6分",
+          "IKEA仙台横",
+          "仙台市太白区文化センターから東に車で4分",
+          "太白区役所から東に車で5分"
+        ],
+        "appealPoints": [
+          "技術資格者10名在籍",
+          "EXキーパー1級4名、キーパー1級5名、2級1名"
+        ]
+      },
+      {
+        "storeName": "仙台ニュー泉店",
+        "postalCode": "〒981-3133",
+        "address": "宮城県仙台市泉区泉中央2-14-5",
+        "phone": "0800-812-8025",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 38.32990301192314,
+          "lng": 140.87879774762143
+        },
+        "access": [
+          "ユアテックスタジアム仙台から車で北へ4分",
+          "イオンモール富田から車で南へ10分",
+          "利府駅から車で西へ24分"
+        ],
+        "appealPoints": [
+          "技術資格者3名在籍",
+          "キーパー1級2名、2級1名"
+        ]
+      },
+      {
+        "storeName": "仙台一番町店",
+        "postalCode": null,
+        "address": null,
+        "phone": null,
+        "businessHours": null,
+        "holidays": null,
+        "coordinates": null,
+        "access": [],
+        "appealPoints": [],
+        "notes": "店舗改装中（2025年3月29日より）"
+      }
+    ]
+  },
+  "morioka-coating.com": {
+    "domain": "morioka-coating.com",
+    "url": "https://morioka-coating.com/",
+    "company": "出光リテール販売株式会社 東北カンパニー",
+    "stores": [
+      {
+        "storeName": "盛岡イオン前店",
+        "postalCode": "〒020-0148",
+        "address": "岩手県盛岡市前潟1-1-16",
+        "phone": "0800-812-8021",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 39.70979682191401,
+          "lng": 141.10748113648998
+        },
+        "access": [
+          "ぴょんぴょん舎稲荷町本店から西に車で3分（900m）",
+          "滝沢市役所から北西に車で10分（6km）"
+        ],
+        "appealPoints": [
+          "1級技術者3名、2級技術者3名在籍",
+          "最短2時間・当日仕上げ可能",
+          "クリスタルキーパー以上で代車無料",
+          "全天候・防塵施工環境",
+          "年間1,500台以上の施工実績"
+        ]
+      },
+      {
+        "storeName": "盛岡バイパス店",
+        "postalCode": "〒020-0061",
+        "address": "岩手県盛岡市北山2丁目18-10",
+        "phone": "0800-812-8022",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 39.717199875949504,
+          "lng": 141.1462307921581
+        },
+        "access": [
+          "盛岡駅から北東に車で7分（2.5km）",
+          "岩手県立中央病院から北に車で4分（800m）",
+          "岩手県立博物館から南に車で10分（6km）"
+        ],
+        "appealPoints": [
+          "1級技術者4名在籍",
+          "KeePer認定プロショップ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "morioka-kitakami-coating.com": {
+    "domain": "morioka-kitakami-coating.com",
+    "url": "https://morioka-kitakami-coating.com/",
+    "company": null,
+    "stores": [],
+    "error": "ECONNREFUSED - サイト接続不可"
+  },
+  "akita-coating.com": {
+    "domain": "akita-coating.com",
+    "url": "https://akita-coating.com/",
+    "company": "出光リテール販売株式会社 東北カンパニー",
+    "stores": [
+      {
+        "storeName": "秋田ジョイフル臨海店",
+        "postalCode": "〒010-0944",
+        "address": "秋田県秋田市川尻若葉町5番26号",
+        "phone": "0800-812-8109",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 39.707784006923774,
+          "lng": 140.0937957285871
+        },
+        "access": [
+          "秋田駅から車で南西に約10分（約3km）",
+          "秋田市役所から川尻方面へ車で約7分（2.2km）",
+          "イオンモール秋田から車で北西に14分（9.7km）",
+          "秋田県立博物館から車で南に24分（14km）",
+          "潟上市役所から車で南に約25分（19km）"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "KeePer認定技術者複数在籍",
+          "最大20％引き",
+          "最短2時間仕上げ",
+          "全天候・防塵施工環境"
+        ]
+      },
+      {
+        "storeName": "本荘東店",
+        "postalCode": "〒015-0852",
+        "address": "秋田県由利本荘市一番堰187-1",
+        "phone": "0800-812-8350",
+        "businessHours": "8:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 39.37899233851878,
+          "lng": 140.05990089976788
+        },
+        "access": [
+          "由利本荘市役所、本荘公園から車で南東に3分",
+          "JR羽後本荘駅から車で南東に5分",
+          "由利本荘市総合体育館から車で南に15分",
+          "道の駅にしめから車で北東に15分",
+          "由利高原鉄道 矢島駅から車で北西に28分",
+          "道の駅 岩城から車で南に30分"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "KeePer認定技術者在籍"
+        ]
+      }
+    ]
+  },
+  "sakata-coating.com": {
+    "domain": "sakata-coating.com",
+    "url": "https://sakata-coating.com/",
+    "company": "出光リテール販売株式会社 東北カンパニー",
+    "stores": [
+      {
+        "storeName": "酒田みずほ店",
+        "postalCode": "〒998-0842",
+        "address": "山形県酒田市亀ヶ崎5丁目8-66",
+        "phone": "0800-812-8110",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 38.901299762705094,
+          "lng": 139.84984502558999
+        },
+        "access": [
+          "スターバックスコーヒー酒田みずほ店の近く（220m）",
+          "JR酒田駅から南西に車で約8分（2.8km）",
+          "庄内空港から北東に車で約18分（13.4km）",
+          "JR鶴岡駅から北に車で約26分（20km）",
+          "道の駅 鳥海フラットから南に車で約25分（20km）"
+        ],
+        "appealPoints": [
+          "年間1,500台以上の施工実績",
+          "1級認定技術者2名在籍",
+          "最短2時間施工",
+          "クリスタルキーパー以上で代車無料",
+          "全天候・防塵施工環境"
+        ]
+      }
+    ]
+  },
+  "ogawamachi-fukaya-coating.com": {
+    "domain": "ogawamachi-fukaya-coating.com",
+    "url": "https://ogawamachi-fukaya-coating.com/",
+    "company": "出光リテール販売株式会社 北関東カンパニー",
+    "stores": [
+      {
+        "storeName": "小川町店",
+        "postalCode": "〒335-0315",
+        "address": "埼玉県比企郡小川町みどりが丘2-1-1",
+        "phone": "0800-812-7890",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.06796388074644,
+          "lng": 139.26187542209098
+        },
+        "access": [
+          "小川町駅から車で6分",
+          "竹沢駅から車で7分"
+        ],
+        "appealPoints": [
+          "最短2時間仕上げ",
+          "代車無料",
+          "HP割20%",
+          "施工証明書発行"
+        ]
+      },
+      {
+        "storeName": "深谷店",
+        "postalCode": "〒366-0801",
+        "address": "埼玉県深谷市上野台2856-5",
+        "phone": "0800-812-7891",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.18289466012436,
+          "lng": 139.28068256301322
+        },
+        "access": [
+          "深谷駅から車で7分",
+          "アリオ深谷から車で7分"
+        ],
+        "appealPoints": [
+          "最短2時間仕上げ",
+          "代車無料",
+          "HP割20%",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "sayama-kawagoe-coating.com": {
+    "domain": "sayama-kawagoe-coating.com",
+    "url": "https://sayama-kawagoe-coating.com/",
+    "company": "出光リテール販売株式会社 北関東カンパニー",
+    "stores": [
+      {
+        "storeName": "川越インター店",
+        "postalCode": "〒350-1117",
+        "address": "埼玉県川越市広栄町5-4",
+        "phone": "0800-812-7893",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.901156013895445,
+          "lng": 139.46772879209547
+        },
+        "access": [
+          "川越インターから北東に車で5分"
+        ],
+        "appealPoints": [
+          "累計1,000台以上の施工実績",
+          "KeePer認定店",
+          "HP割20%",
+          "オプション10%割引",
+          "最短2時間完了",
+          "代車無料",
+          "コーティングブース完備"
+        ]
+      },
+      {
+        "storeName": "狭山台店",
+        "postalCode": "〒350-1304",
+        "address": "埼玉県狭山市狭山台1-10-3",
+        "phone": "0800-812-7892",
+        "businessHours": "9:00〜17:30",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.86221640814742,
+          "lng": 139.43259995301264
+        },
+        "access": [
+          "新狭山駅から車で6分",
+          "狭山駅から車で10分"
+        ],
+        "appealPoints": [
+          "1級認定技術者3名在籍",
+          "累計1,000台以上の施工実績",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "ashikaga-coating.com": {
+    "domain": "ashikaga-coating.com",
+    "url": "https://ashikaga-coating.com/",
+    "company": "出光リテール販売株式会社 北関東カンパニー",
+    "stores": [
+      {
+        "storeName": "東武えきまえ店",
+        "postalCode": "〒326-0822",
+        "address": "栃木県足利市田中町921-1",
+        "phone": "0800-812-7982",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.3286785007638,
+          "lng": 139.44742970471745
+        },
+        "access": [
+          "足利市駅から車で2分"
+        ],
+        "appealPoints": [
+          "1級認定技術者1名、2級認定技術者2名在籍",
+          "全メニュー20%割引",
+          "代車無料",
+          "最短2時間仕上げ"
+        ]
+      },
+      {
+        "storeName": "足利ウエスト店",
+        "postalCode": "〒326-0143",
+        "address": "栃木県足利市葉鹿町2丁目22-5",
+        "phone": "0800-812-8108",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.36868521306759,
+          "lng": 139.38545044579598
+        },
+        "access": [
+          "JR小俣駅から車で4分"
+        ],
+        "appealPoints": [
+          "全メニュー20%割引",
+          "代車無料",
+          "PayPay対応"
+        ]
+      }
+    ]
+  },
+  "saitama-nishiomiya-coating.com": {
+    "domain": "saitama-nishiomiya-coating.com",
+    "url": "https://saitama-nishiomiya-coating.com/",
+    "company": "出光リテール販売株式会社 北関東カンパニー",
+    "stores": [
+      {
+        "storeName": "三橋店",
+        "postalCode": "〒331-0052",
+        "address": "埼玉県さいたま市西区三橋６丁目７４８−１",
+        "phone": "0800-812-7895",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.918068463724545,
+          "lng": 139.59348944625648
+        },
+        "access": [
+          "宮前ICから車で4分",
+          "指扇病院から車で13分",
+          "西遊馬公園から車で15分",
+          "鉄道博物館から車で10分"
+        ],
+        "appealPoints": [
+          "年間2,000台以上の施工実績",
+          "KeePer認定技術者複数在籍",
+          "最短2時間仕上げ",
+          "代車無料",
+          "全メニュー20%割引"
+        ]
+      },
+      {
+        "storeName": "西大宮店",
+        "postalCode": "〒331-0046",
+        "address": "埼玉県さいたま市西区宮前町729-1",
+        "phone": "0800-812-7894",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.924937,
+          "lng": 139.582494
+        },
+        "access": [
+          "さいたま市西区役所から車で2分",
+          "西大宮駅から車で5分",
+          "宮前ICから車で5分",
+          "上尾市役所から国道17号（中仙道）経由で車で15分",
+          "蓮田駅から国道16号経由で車で20分"
+        ],
+        "appealPoints": [
+          "年間2,000台以上の施工実績",
+          "KeePer認定技術者複数在籍",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "hanyuu-coating.com": {
+    "domain": "hanyuu-coating.com",
+    "url": "https://hanyuu-coating.com/",
+    "company": "出光リテール販売株式会社 北関東カンパニー",
+    "stores": [
+      {
+        "storeName": "羽生東店",
+        "postalCode": "〒348-0052",
+        "address": "埼玉県羽生市東7-12-1",
+        "phone": "0800-812-7896",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.171569503156505,
+          "lng": 139.54894295476402
+        },
+        "access": [
+          "羽生駅から車で5分",
+          "羽生ICから車で8分",
+          "道の駅 はにゅうから車で10分",
+          "加須ICから車で20分",
+          "持田ICから車で27分",
+          "鴻巣駅から車で35分"
+        ],
+        "appealPoints": [
+          "HP割20%",
+          "最短2時間仕上げ",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "utsunomiya-coating.com": {
+    "domain": "utsunomiya-coating.com",
+    "url": "https://utsunomiya-coating.com/",
+    "company": "出光リテール販売株式会社 北関東カンパニー",
+    "stores": [
+      {
+        "storeName": "鶴田店",
+        "postalCode": "〒320-0851",
+        "address": "栃木県宇都宮市鶴田町3414-11",
+        "phone": "0800-812-7897",
+        "businessHours": "10:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.54812854648614,
+          "lng": 139.86474164785358
+        },
+        "access": [
+          "アピタ宇都宮から車で5分",
+          "鹿沼ICから車で11分",
+          "宇都宮ICから車で16分",
+          "壬生ICから車で17分"
+        ],
+        "appealPoints": [
+          "HP割20%",
+          "施工証明書発行",
+          "最短2時間仕上げ",
+          "代車無料",
+          "待合室完備"
+        ]
+      },
+      {
+        "storeName": "テクノポリス店",
+        "postalCode": "〒321-3226",
+        "address": "栃木県宇都宮市ゆいの杜4-1-32",
+        "phone": "0800-812-7898",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.568159082440815,
+          "lng": 139.98938617645064
+        },
+        "access": [
+          "カインズ宇都宮テクノ店から車で4分",
+          "ホンダカーズ栃木中央高砂店から車で9分",
+          "芳賀赤十字病院から車で20分",
+          "関東国際カントリークラブから車で23分"
+        ],
+        "appealPoints": [
+          "HP割20%",
+          "施工証明書発行",
+          "最短2時間仕上げ",
+          "代車無料",
+          "待合室完備"
+        ]
+      }
+    ]
+  },
+  "takasaki-maebashi-coating.com": {
+    "domain": "takasaki-maebashi-coating.com",
+    "url": "https://www.takasaki-maebashi-coating.com/",
+    "company": "出光リテール販売株式会社 北関東カンパニー",
+    "stores": [
+      {
+        "storeName": "高崎飯塚店",
+        "postalCode": "〒370-0069",
+        "address": "群馬県高崎市飯塚町３７０−１",
+        "phone": "0800-812-7899",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.34239314197214,
+          "lng": 139.00842490959204
+        },
+        "access": [
+          "高崎駅から北へ車で10分"
+        ],
+        "appealPoints": [
+          "累計1,000台以上の施工実績",
+          "KeePer認定店",
+          "HP割20%",
+          "オプション10%割引",
+          "最短2時間完了",
+          "代車無料",
+          "コーティングブース完備"
+        ]
+      },
+      {
+        "storeName": "前橋文京店",
+        "postalCode": "〒371-0801",
+        "address": "群馬県前橋市文京町2-3-3",
+        "phone": "0800-812-7900",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.3803148291589,
+          "lng": 139.08158431341556
+        },
+        "access": [
+          "前橋駅から東に車で4分"
+        ],
+        "appealPoints": [
+          "累計1,000台以上の施工実績",
+          "KeePer認定店",
+          "HP割20%",
+          "オプション10%割引",
+          "最短2時間完了",
+          "代車無料",
+          "コーティングブース完備"
+        ]
+      }
+    ]
+  },
+  "ichihara-coating.com": {
+    "domain": "ichihara-coating.com",
+    "url": "https://ichihara-coating.com/",
+    "company": "出光リテール販売株式会社 南関東カンパニー",
+    "stores": [
+      {
+        "storeName": "姉崎店",
+        "postalCode": "〒299-0107",
+        "address": "千葉県市原市姉崎海岸25-6",
+        "phone": "0800-812-8027",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.486977,
+          "lng": 140.040989
+        },
+        "access": [
+          "姉ヶ崎駅から車で5分",
+          "市原市役所から車で15分"
+        ],
+        "appealPoints": [
+          "年間2,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "専用防塵コーティングブース完備",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "ちはら台店",
+        "postalCode": "〒290-0142",
+        "address": "千葉県市原市ちはら台南2-21-12",
+        "phone": "0800-812-8209",
+        "businessHours": "9:00〜18:00",
+        "holidays": "水曜日",
+        "coordinates": {
+          "lat": 35.526089976694486,
+          "lng": 140.1806669959704
+        },
+        "access": [
+          "ちはら台駅から車で5分",
+          "誉田駅から車で10分"
+        ],
+        "appealPoints": [
+          "年間2,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "tsukuba-coating.com": {
+    "domain": "tsukuba-coating.com",
+    "url": "https://tsukuba-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "みらい平店",
+        "postalCode": "〒300-2358",
+        "address": "茨城県つくばみらい市陽光台2-17-3",
+        "phone": "0800-812-8217",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.999448,
+          "lng": 140.042144
+        },
+        "access": [
+          "みらい平駅から車で4分",
+          "ひたち野うしく駅から車で20分"
+        ],
+        "appealPoints": [
+          "年間2,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "メインメニュー20%割引、オプション15%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "yachiyo-hanamigawa-coating.com": {
+    "domain": "yachiyo-hanamigawa-coating.com",
+    "url": "https://yachiyo-hanamigawa-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "花見川店",
+        "postalCode": "〒262-0041",
+        "address": "千葉県千葉市花見川区柏井町1598-1",
+        "phone": null,
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.698032037635386,
+          "lng": 140.10156917114986
+        },
+        "access": [
+          "八千代台駅から東に車で8分"
+        ],
+        "appealPoints": [
+          "年間2,000台以上の施工実績",
+          "EXキーパー1級1名、1級2名、2級2名在籍",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ],
+        "notes": "電話番号は準備中（店舗改装中の可能性）"
+      }
+    ]
+  },
+  "narita-coating.com": {
+    "domain": "narita-coating.com",
+    "url": "https://narita-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "成田美郷台店",
+        "postalCode": "〒286-0014",
+        "address": "千葉県成田市郷部1437",
+        "phone": "0800-812-8275",
+        "businessHours": "9:00〜18:00",
+        "holidays": "水曜日",
+        "coordinates": {
+          "lat": 35.78846392175561,
+          "lng": 140.3074345945974
+        },
+        "access": [
+          "中台小学校から東に車で5分",
+          "成田市役所から西に車で10分",
+          "イオンモール成田から南に車で5分",
+          "成田駅から北に車で6分"
+        ],
+        "appealPoints": [
+          "年間2,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料",
+          "専用コーティングブース完備"
+        ]
+      }
+    ]
+  },
+  "fussa-coating.com": {
+    "domain": "fussa-coating.com",
+    "url": "https://fussa-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "武蔵村山大南店",
+        "postalCode": "〒208-0013",
+        "address": "東京都武蔵村山市大南2-44-2",
+        "phone": "0800-812-7903",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.741309,
+          "lng": 139.403994
+        },
+        "access": [
+          "イオンモール武蔵村山から車で6分",
+          "東大和市役所から車で9分",
+          "牛角武蔵村山店様の向かい",
+          "江戸街道沿い"
+        ],
+        "appealPoints": [
+          "年間3,500台以上の施工実績",
+          "EXキーパー・1級技術資格者在籍",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "福生店",
+        "postalCode": "〒197-0003",
+        "address": "東京都福生市熊川350",
+        "phone": "0800-812-7902",
+        "businessHours": "8:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.720588,
+          "lng": 139.335793
+        },
+        "access": [
+          "福生駅から車で7分",
+          "羽村駅から車で11分",
+          "河辺駅から車で20分",
+          "ステーキガスト福生熊川店様の2軒隣",
+          "奥多摩街道沿い"
+        ],
+        "appealPoints": [
+          "年間3,500台以上の施工実績",
+          "EXキーパー・1級技術資格者在籍",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "hachiouji-fussa-coating.com": {
+    "domain": "hachiouji-fussa-coating.com",
+    "url": "https://hachiouji-fussa-coating.com/",
+    "company": null,
+    "stores": [],
+    "error": "ECONNREFUSED - サイト接続不可"
+  },
+  "kawasaki-machida-coating.com": {
+    "domain": "kawasaki-machida-coating.com",
+    "url": "https://kawasaki-machida-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "成瀬店",
+        "postalCode": "〒194-0027",
+        "address": "東京都町田市小川2-25-6",
+        "phone": "0800-812-8111",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.53096,
+          "lng": 139.47176
+        },
+        "access": [
+          "成瀬駅から南へ車で3分",
+          "つくし野駅から西へ車で5分",
+          "長津田駅から西へ車で8分"
+        ],
+        "appealPoints": [
+          "年間1万台施工実績",
+          "1級資格者4名在籍",
+          "防塵コーティングブース完備",
+          "最短2時間施工",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "町田森野店",
+        "postalCode": "〒194-0022",
+        "address": "東京都町田市森野6-4-3",
+        "phone": "0800-812-8112",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.553338,
+          "lng": 139.427819
+        },
+        "access": [
+          "町田市役所から西に車で3分",
+          "古淵駅から東に車で6分",
+          "町田消防署から南に車で7分"
+        ],
+        "appealPoints": [
+          "年間1万台施工実績",
+          "1級資格者3名在籍",
+          "最大20%割引・ネット割15%オフ",
+          "PayPay・楽天ペイ・auペイ対応"
+        ]
+      }
+    ]
+  },
+  "yokosuka-coating.com": {
+    "domain": "yokosuka-coating.com",
+    "url": "https://yokosuka-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "横須賀店",
+        "postalCode": "〒239-0844",
+        "address": "神奈川県横須賀市岩戸1-2-8",
+        "phone": "0800-812-8114",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": null,
+        "access": [
+          "佐原ICから車で3分",
+          "北久里浜駅から車で5分",
+          "衣笠駅から車で10分",
+          "久里浜駅から車で10分"
+        ],
+        "appealPoints": [
+          "年間1万台施工実績",
+          "KeePer認定技術者在籍",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "coating-yokohama.com": {
+    "domain": "coating-yokohama.com",
+    "url": "https://coating-yokohama.com/",
+    "company": "アクティブコレクション",
+    "stores": [
+      {
+        "storeName": "横浜本店",
+        "postalCode": "〒224-0041",
+        "address": "神奈川県横浜市都筑区仲町台4-8-20",
+        "phone": "0800-812-7757",
+        "businessHours": "10:00〜18:30",
+        "holidays": "水曜日（祝日を除く）",
+        "coordinates": {
+          "lat": 35.5304,
+          "lng": 139.592494
+        },
+        "access": [
+          "IKEA港北から車で1分",
+          "仲町台駅から徒歩5分",
+          "港北ICから車で2分",
+          "都筑ICから車で5分",
+          "新横浜駅から車で5分"
+        ],
+        "appealPoints": [
+          "年間1,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引+1,000円引き",
+          "最短2時間仕上げ",
+          "代車50台以上完備",
+          "無料ドリンク・キッズスペース・漫画・Wi-Fi完備"
+        ]
+      },
+      {
+        "storeName": "大和店",
+        "postalCode": "〒242-0001",
+        "address": "神奈川県大和市下鶴間2752",
+        "phone": "0800-812-8293",
+        "businessHours": "10:00〜18:00",
+        "holidays": "水曜日",
+        "coordinates": {
+          "lat": 35.490451890036375,
+          "lng": 139.4639953282153
+        },
+        "access": [
+          "大和駅から車で10分",
+          "イオンモール大和から車で5分"
+        ],
+        "appealPoints": [
+          "年間1,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引+1,000円引き",
+          "最短2時間仕上げ",
+          "代車50台以上完備"
+        ]
+      }
+    ]
+  },
+  "coating-nagoyashi.com": {
+    "domain": "coating-nagoyashi.com",
+    "url": "https://coating-nagoyashi.com/",
+    "company": "出光リテール販売株式会社 中部カンパニー",
+    "stores": [
+      {
+        "storeName": "アポロドーム名古屋店",
+        "postalCode": "〒461-0005",
+        "address": "愛知県名古屋市東区東桜2-23-28",
+        "phone": "0800-812-8127",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.170159,
+          "lng": 136.914939
+        },
+        "access": [
+          "新栄駅から車で2分",
+          "千種駅から車で3分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "専用防塵コーティングブース完備",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "一社店",
+        "postalCode": "〒465-0095",
+        "address": "愛知県名古屋市名東区高社2-120",
+        "phone": "0800-812-8125",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.168655,
+          "lng": 136.996975
+        },
+        "access": [
+          "一社駅前",
+          "名東区役所から車で3分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "荒子店",
+        "postalCode": "〒454-0911",
+        "address": "愛知県名古屋市中川区高畑2-100",
+        "phone": "0800-812-8126",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.140165,
+          "lng": 136.855374
+        },
+        "access": [
+          "高畑駅から車で1分",
+          "中川区役所から車で2分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "天白島田店",
+        "postalCode": "〒468-0024",
+        "address": "名古屋市天白区大根町69",
+        "phone": "0800-812-8128",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.11047040511199,
+          "lng": 136.9903010823972
+        },
+        "access": [
+          "天白区役所から車で7分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "如意店",
+        "postalCode": "〒462-0009",
+        "address": "愛知県名古屋市北区苗田町138",
+        "phone": "0800-812-8129",
+        "businessHours": "9:00〜18:00",
+        "holidays": "元日のみ",
+        "coordinates": {
+          "lat": 35.237413204528366,
+          "lng": 136.92005635015047
+        },
+        "access": [
+          "楠ICから車で3分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "toukai-toyoake-coating.com": {
+    "domain": "toukai-toyoake-coating.com",
+    "url": "https://toukai-toyoake-coating.com/",
+    "company": "出光リテール販売株式会社 中部カンパニー",
+    "stores": [
+      {
+        "storeName": "豊明新栄店",
+        "postalCode": "〒470-1154",
+        "address": "愛知県豊明市新栄町３丁目409-2",
+        "phone": "0800-812-8130",
+        "businessHours": "9:00〜19:00",
+        "holidays": "1/1〜1/3",
+        "coordinates": {
+          "lat": 35.052196,
+          "lng": 136.985051
+        },
+        "access": [
+          "前後駅から車で3分",
+          "中京競馬場前駅から車で3分",
+          "豊明駅から車で6分"
+        ],
+        "appealPoints": [
+          "年間5,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "知立店",
+        "postalCode": "〒472-0012",
+        "address": "愛知県知立市八ツ田町門前20-4",
+        "phone": "0800-812-8131",
+        "businessHours": "9:00〜19:00",
+        "holidays": "1/1〜1/3",
+        "coordinates": {
+          "lat": 34.99248919733744,
+          "lng": 137.05816563556698
+        },
+        "access": [
+          "知立市役所から車で5分",
+          "東刈谷駅から車で8分",
+          "新安城駅から車で10分",
+          "生駒ICから車で12分"
+        ],
+        "appealPoints": [
+          "年間5,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "刈谷店",
+        "postalCode": "〒448-0011",
+        "address": "愛知県刈谷市築地町3-1-5",
+        "phone": "0800-812-8283",
+        "businessHours": "9:00〜18:00",
+        "holidays": "1/1〜1/3",
+        "coordinates": {
+          "lat": 35.01445236570497,
+          "lng": 137.0140469613729
+        },
+        "access": [
+          "刈谷総合運動公園から車で1分"
+        ],
+        "appealPoints": [
+          "年間5,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "toyota-coating.com": {
+    "domain": "toyota-coating.com",
+    "url": "https://toyota-coating.com/",
+    "company": "出光リテール販売株式会社 中部カンパニー",
+    "stores": [
+      {
+        "storeName": "リバーサイド豊田店",
+        "postalCode": "〒471-0015",
+        "address": "愛知県豊田市上野町8丁目168番地1",
+        "phone": "0800-812-8132",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 35.086872,
+          "lng": 137.178889
+        },
+        "access": [
+          "豊田スタジアムから車で1分",
+          "豊田市駅から車で5分",
+          "豊田市役所から車で7分",
+          "新豊田駅から車で8分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "1級認定技術者4名在籍",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "awaza-namba-coating.com": {
+    "domain": "awaza-namba-coating.com",
+    "url": "https://awaza-namba-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "心斎橋店",
+        "postalCode": "〒542-0081",
+        "address": "大阪市中央区南船場3丁目4-26出光ナガホリビル",
+        "phone": null,
+        "businessHours": "10:00〜18:00",
+        "holidays": "火曜日",
+        "coordinates": {
+          "lat": 34.675747,
+          "lng": 135.503176
+        },
+        "access": [
+          "心斎橋駅すぐ",
+          "梅田駅から車で8分",
+          "天王寺駅から車で8分",
+          "大阪城から車で7分"
+        ],
+        "appealPoints": [
+          "累計20,000台の施工実績",
+          "KeePer認定技術者在籍",
+          "ネット割20%オフ",
+          "最短2時間施工",
+          "代車無料"
+        ],
+        "notes": "電話番号は準備中"
+      }
+    ]
+  },
+  "ichinomiya-hashima-coating.com": {
+    "domain": "ichinomiya-hashima-coating.com",
+    "url": "https://ichinomiya-hashima-coating.com/",
+    "company": "出光リテール販売株式会社 中部カンパニー",
+    "stores": [
+      {
+        "storeName": "一宮西成店",
+        "postalCode": "〒491-0012",
+        "address": "愛知県一宮市小赤見字石田20-1",
+        "phone": "0800-812-8133",
+        "businessHours": "9:00〜19:00",
+        "holidays": "1/1〜1/3",
+        "coordinates": {
+          "lat": 35.308856,
+          "lng": 136.833344
+        },
+        "access": [
+          "ニトリ一宮店から車で6分",
+          "布袋駅から車で10分",
+          "一宮ICから車で12分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "KeePer認定技術者在籍",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "清須古城店",
+        "postalCode": "〒452-0011",
+        "address": "愛知県清須市西枇杷島町城並2-17",
+        "phone": "0800-812-8134",
+        "businessHours": "9:00〜19:00",
+        "holidays": "1/1〜1/4",
+        "coordinates": {
+          "lat": 35.206382,
+          "lng": 136.869242
+        },
+        "access": [
+          "スシロー清須古城店すぐ",
+          "古城小学校から車で1分",
+          "清洲城から車で10分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "KeePer認定技術者在籍",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "kasugai-coating.com": {
+    "domain": "kasugai-coating.com",
+    "url": "https://kasugai-coating.com/",
+    "company": "出光リテール販売株式会社 中部カンパニー",
+    "stores": [
+      {
+        "storeName": "高蔵寺店",
+        "postalCode": "〒487-0034",
+        "address": "愛知県春日井市白山町5-22-3",
+        "phone": "0800-812-8135",
+        "businessHours": "9:00〜18:00",
+        "holidays": "元日のみ",
+        "coordinates": {
+          "lat": 35.27580886072996,
+          "lng": 137.0289748873703
+        },
+        "access": [
+          "高蔵寺駅から車で5分"
+        ],
+        "appealPoints": [
+          "年間5,000台以上の施工実績",
+          "KeePer認定店・施工証明書発行",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "kanazawa-coating.com": {
+    "domain": "kanazawa-coating.com",
+    "url": "https://kanazawa-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "泉本町店",
+        "postalCode": "〒921-8042",
+        "address": "石川県金沢市泉本町７丁目１−１",
+        "phone": "0800-812-8117",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.551686,
+          "lng": 136.633215
+        },
+        "access": [
+          "金沢市役所から車で10分",
+          "西金沢駅から車で3分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "KeePer認定技術者在籍",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "御経塚店",
+        "postalCode": "〒921-8065",
+        "address": "石川県金沢市上荒屋1-397",
+        "phone": "0800-812-8118",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 36.54656746131221,
+          "lng": 136.59381995544086
+        },
+        "access": [
+          "白山イオンから車で3分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "KeePer認定技術者在籍",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "金沢南店",
+        "postalCode": "〒921-8064",
+        "address": "石川県金沢市八日市1-774",
+        "phone": "0800-812-8119",
+        "businessHours": "9:00〜18:00",
+        "holidays": "日曜日",
+        "coordinates": {
+          "lat": 36.54180493859523,
+          "lng": 136.6095245964742
+        },
+        "access": [
+          "野々市駅から車で5分"
+        ],
+        "appealPoints": [
+          "年間5,000台の施工実績",
+          "KeePer認定技術者在籍",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "yokkaichi-coating.com": {
+    "domain": "yokkaichi-coating.com",
+    "url": "https://yokkaichi-coating.com/",
+    "company": "出光リテール販売株式会社 中部カンパニー",
+    "stores": [
+      {
+        "storeName": "久保田店",
+        "postalCode": "〒510-0821",
+        "address": "三重県四日市市久保田1-4-36",
+        "phone": "0800-812-8120",
+        "businessHours": "9:00〜17:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.97359360285485,
+          "lng": 136.60988356912574
+        },
+        "access": [
+          "近鉄四日市駅から車で5分",
+          "四日市市役所から車で7分"
+        ],
+        "appealPoints": [
+          "年間5,000台以上の施工実績",
+          "KeePer認定店",
+          "コーティングブース完備・純水システム",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "四日市店",
+        "postalCode": "〒510-0064",
+        "address": "三重県四日市市新正4丁目1-15",
+        "phone": "0800-812-8121",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.956331,
+          "lng": 136.615913
+        },
+        "access": [
+          "四日市市役所から車で5分",
+          "近鉄四日市駅から車で5分",
+          "大治田ICから車で10分"
+        ],
+        "appealPoints": [
+          "年間5,000台以上の施工実績",
+          "KeePer認定店",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "鈴鹿店",
+        "postalCode": "〒519-0323",
+        "address": "三重県鈴鹿市伊船町字中下ノ割2215-2",
+        "phone": "0800-812-8122",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.916191785244386,
+          "lng": 136.4935168970031
+        },
+        "access": [
+          "鈴鹿ICから車で5分",
+          "加佐登駅から車で10分"
+        ],
+        "appealPoints": [
+          "年間5,000台以上の施工実績",
+          "KeePer認定店",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ],
+        "notes": "4月13日より予約受付開始"
+      },
+      {
+        "storeName": "ミルクロード店",
+        "postalCode": "〒510-1311",
+        "address": "三重郡菰野町永井南前野3095-216",
+        "phone": "0800-812-8123",
+        "businessHours": "9:00〜21:00",
+        "holidays": "毎週木曜日",
+        "coordinates": {
+          "lat": 35.03840936538101,
+          "lng": 136.53119025455183
+        },
+        "access": [
+          "ピアゴ菰野店すぐ近く",
+          "菰野ICから車で9分"
+        ],
+        "appealPoints": [
+          "年間5,000台以上の施工実績",
+          "KeePer認定店",
+          "最大20%割引",
+          "最短2時間仕上げ",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "takatsuki-coating.com": {
+    "domain": "takatsuki-coating.com",
+    "url": "https://takatsuki-coating.com/",
+    "company": "出光リテール販売株式会社",
+    "stores": [
+      {
+        "storeName": "高槻五百住店",
+        "postalCode": "〒569-0811",
+        "address": "大阪府高槻市東五百住町3-18-10",
+        "phone": "0800-812-8279",
+        "businessHours": "8:00〜18:45",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.83530749070083,
+          "lng": 135.60263747116477
+        },
+        "access": [
+          "高槻駅から車で6分",
+          "茨木駅から車で12分"
+        ],
+        "appealPoints": [
+          "累計20,000台の施工実績",
+          "ネット割15%割引",
+          "最短2時間施工",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "nawate-coating.com": {
+    "domain": "nawate-coating.com",
+    "url": "https://nawate-coating.com/",
+    "company": "株式会社ENEOSモビリニア",
+    "stores": [
+      {
+        "storeName": "外環なわて店",
+        "postalCode": "〒572-0815",
+        "address": "大阪府寝屋川市河北東町4-3",
+        "phone": "0800-812-8029",
+        "businessHours": "9:00〜18:00（作業受付9:00〜17:00）",
+        "holidays": "土日祝も営業",
+        "coordinates": {
+          "lat": 34.730287,
+          "lng": 135.631722
+        },
+        "access": [
+          "深北緑地公園・四条畷駅側すぐ"
+        ],
+        "appealPoints": [
+          "年間1,000台の施工実績",
+          "KeePer認定店",
+          "コーティングブース完備",
+          "最短2時間施工",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "城東放出店",
+        "postalCode": "〒536-0022",
+        "address": "大阪府大阪市城東区永田2-18-12",
+        "phone": "0800-812-8197",
+        "businessHours": "9:00〜18:00（作業受付9:00〜17:00）",
+        "holidays": "土日祝も営業",
+        "coordinates": {
+          "lat": 34.68435265814942,
+          "lng": 135.55838093578788
+        },
+        "access": [
+          "大阪内環状線沿い"
+        ],
+        "appealPoints": [
+          "年間1,000台の施工実績",
+          "KeePer認定店",
+          "コーティングブース完備",
+          "最短2時間施工",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "都島店",
+        "postalCode": "〒534-0011",
+        "address": "大阪府大阪市都島区高倉町1丁目13-7",
+        "phone": "0800-812-8198",
+        "businessHours": "9:00〜18:00（作業受付9:00〜17:00）",
+        "holidays": "土日祝も営業",
+        "coordinates": {
+          "lat": 34.71468248130911,
+          "lng": 135.53062315105382
+        },
+        "access": [
+          "赤川天王寺線沿い"
+        ],
+        "appealPoints": [
+          "年間1,000台の施工実績",
+          "KeePer認定店",
+          "コーティングブース完備",
+          "最短2時間施工",
+          "代車無料"
+        ]
+      },
+      {
+        "storeName": "花園ラグビー店",
+        "postalCode": "〒578-0924",
+        "address": "大阪府東大阪市吉田4-6-18",
+        "phone": "0800-812-8026",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.670989892983904,
+          "lng": 135.6225988785885
+        },
+        "access": [
+          "府道702号(枚岡奈良線)沿い"
+        ],
+        "appealPoints": [
+          "年間1,000台の施工実績",
+          "KeePer認定店",
+          "コーティングブース完備",
+          "最短2時間施工",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "otake-coating.com": {
+    "domain": "otake-coating.com",
+    "url": "https://otake-coating.com/",
+    "company": "出光リテール販売株式会社 中国カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー大竹店",
+        "postalCode": "〒739-0603",
+        "address": "広島県大竹市西栄町２丁目１６−１２",
+        "phone": "0800-812-7954",
+        "businessHours": "9:00〜19:00",
+        "holidays": "日曜定休",
+        "coordinates": {
+          "lat": 34.2173367250464,
+          "lng": 132.22556080878235
+        },
+        "access": [
+          "大竹駅近く",
+          "岩国駅から車で9分",
+          "玖波駅から車で5分"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "KeePer認定店",
+          "EXキーパー技術認定者1名、1級技術者4名在籍",
+          "最短2時間施工",
+          "ネット割20%OFF",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "okayama-coating.com": {
+    "domain": "okayama-coating.com",
+    "url": "https://okayama-coating.com/",
+    "company": "出光リテール販売株式会社 中国カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー岡山江崎店",
+        "postalCode": "〒702-8005",
+        "address": "岡山県岡山市中区江崎150-1",
+        "phone": "0800-812-7917",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.625908,
+          "lng": 133.961814
+        },
+        "access": [
+          "岡山市役所から車で10分",
+          "備前西市駅から車で9分",
+          "イオンモール岡山から車で15分"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "KeePer認定店",
+          "ネット割20%OFF",
+          "最短2時間施工",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      },
+      {
+        "storeName": "キーパー岡山建部店",
+        "postalCode": "〒709-3122",
+        "address": "岡山県岡山市北区建部町吉田１７３",
+        "phone": "0800-812-7955",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.837744,
+          "lng": 133.906389
+        },
+        "access": [
+          "建部駅からすぐ"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "KeePer認定店",
+          "ネット割20%OFF",
+          "最短2時間施工",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "coating-hiroshima.com": {
+    "domain": "coating-hiroshima.com",
+    "url": "https://coating-hiroshima.com/",
+    "company": "出光リテール販売株式会社 中国カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー広島植物園店",
+        "postalCode": "〒731-5116",
+        "address": "広島県広島市佐伯区八幡２丁目２３ー３",
+        "phone": "0800-812-7953",
+        "businessHours": "9:00〜19:30",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.389876,
+          "lng": 132.355687
+        },
+        "access": [
+          "五日市駅から車で10分",
+          "広島市植物公園から車ですぐ"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "EXキーパー技術認定者2名、1級技術者4名在籍",
+          "専用防塵コーティングブース完備",
+          "最短2時間施工",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      },
+      {
+        "storeName": "キーパー広島緑井店",
+        "postalCode": "〒731-0103",
+        "address": "広島県広島市安佐南区緑井5丁目4-8",
+        "phone": "0800-812-7916",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.46939069641066,
+          "lng": 132.4817087841823
+        },
+        "access": [
+          "緑井駅からすぐ",
+          "安佐北区役所から車で12分",
+          "横川駅から車で12分"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "EXキーパー技術認定者2名、1級技術者5名在籍",
+          "コーティングブース完備",
+          "最短2時間施工",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "sanin-coating.com": {
+    "domain": "sanin-coating.com",
+    "url": "https://sanin-coating.com/",
+    "company": "不明",
+    "stores": [],
+    "_note": "ECONNREFUSED - サイト接続不可"
+  },
+  "izumo-coating.com": {
+    "domain": "izumo-coating.com",
+    "url": "https://izumo-coating.com/",
+    "company": "永瀬石油株式会社",
+    "stores": [
+      {
+        "storeName": "キーパー出雲浜山通り店",
+        "postalCode": "〒693-0004",
+        "address": "島根県出雲市渡橋町1083-1",
+        "phone": "0800-812-7977",
+        "businessHours": "電話受付9:00〜21:00、作業受付9:30〜17:00",
+        "holidays": "1/1・1/2のみ休業",
+        "coordinates": {
+          "lat": 35.3700914424623,
+          "lng": 132.73740486802333
+        },
+        "access": [
+          "イオンモール出雲から車で1分",
+          "出雲ドームから5分",
+          "浜山公園から5分",
+          "出雲市役所から6分",
+          "出雲駅から8分"
+        ],
+        "appealPoints": [
+          "年間1,000台の施工実績",
+          "KeePer認定店",
+          "最短1日で完了",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "tottorishi-coating.com": {
+    "domain": "tottorishi-coating.com",
+    "url": "https://tottorishi-coating.com/",
+    "company": "不明",
+    "stores": [
+      {
+        "storeName": "キーパー鳥取城北店",
+        "postalCode": "〒680-0811",
+        "address": "鳥取県鳥取市西品治829-13",
+        "phone": "0800-812-7920",
+        "businessHours": "電話受付9:30〜17:30、作業受付9:30〜16:00",
+        "holidays": "第1・第3水曜定休、1/1・1/2休業",
+        "coordinates": {
+          "lat": 35.5071398,
+          "lng": 134.2181573
+        },
+        "access": [
+          "城北高校前",
+          "中央病院から車で5分",
+          "鳥取市役所から車で6分",
+          "鳥取駅から車で8分",
+          "湖山駅から車で11分"
+        ],
+        "appealPoints": [
+          "年間1,000台の施工実績",
+          "KeePer認定店",
+          "EXキーパー技術認定者3名、1級技術者3名在籍",
+          "専用防塵コーティングブース完備",
+          "最短1日で完了",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "miki-coating.com": {
+    "domain": "miki-coating.com",
+    "url": "https://miki-coating.com/",
+    "company": "不明",
+    "stores": [
+      {
+        "storeName": "キーパー三木青山店",
+        "postalCode": "〒673-0521",
+        "address": "兵庫県三木市志染町青山3-9-2",
+        "phone": "0800-832-5716",
+        "phoneLocal": "0794-85-9940",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.779925642585106,
+          "lng": 135.03599965767
+        },
+        "access": [
+          "三木北ICから車で5分",
+          "三木駅から車で7分",
+          "稲美中央公園から車で10分"
+        ],
+        "appealPoints": [
+          "累計20,000台以上の施工実績",
+          "KeePer認定店",
+          "最短2時間施工",
+          "代車無料",
+          "ネット割適用"
+        ]
+      },
+      {
+        "storeName": "キーパー三木小林店",
+        "postalCode": "〒673-0434",
+        "address": "兵庫県三木市別所町小林119-19",
+        "phone": "0800-832-5717",
+        "phoneLocal": "0794-82-8011",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.77490490401733,
+          "lng": 134.98595337116498
+        },
+        "access": [
+          "三木東ICから車で5分",
+          "緑が丘駅から車で10分",
+          "三木市役所から車で10分"
+        ],
+        "appealPoints": [
+          "累計20,000台以上の施工実績",
+          "KeePer認定店",
+          "最短2時間施工",
+          "代車無料",
+          "ネット割適用"
+        ]
+      }
+    ]
+  },
+  "kobe-himeji-coating.com": {
+    "domain": "kobe-himeji-coating.com",
+    "url": "https://kobe-himeji-coating.com/",
+    "company": "不明",
+    "stores": [
+      {
+        "storeName": "キーパー カーウォッシュ姫路",
+        "postalCode": "〒670-0842",
+        "address": "姫路市城東町毘沙門１８",
+        "phone": "0800-832-6038",
+        "phoneLocal": "079-280-7347",
+        "businessHours": "9:00〜19:00（最終受付18:00）",
+        "holidays": "水曜定休（祝日の場合は営業、12月は無休）、1/1〜1/3休業",
+        "coordinates": {
+          "lat": 34.83625068893672,
+          "lng": 134.710886366121
+        },
+        "access": [
+          "姫路駅から車で8分",
+          "Joshin姫路東店の向かい",
+          "京口駅から車で3分"
+        ],
+        "appealPoints": [
+          "累計20,000台以上の施工実績",
+          "1級技術認定者3名在籍",
+          "最短2時間施工",
+          "代車無料",
+          "1ヶ月無料手洗いサービス付き",
+          "最大20%+1,000円引き"
+        ]
+      },
+      {
+        "storeName": "キーパー姫路西店",
+        "postalCode": "〒670-0065",
+        "address": "兵庫県姫路市上手野306",
+        "phone": "0800-812-7646",
+        "phoneLocal": "079-292-0562",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.860427,
+          "lng": 134.65962
+        },
+        "access": [
+          "山陽姫路西ICから車で8分",
+          "たつの市役所から車で13分"
+        ],
+        "appealPoints": [
+          "累計20,000台以上の施工実績",
+          "KeePer認定店",
+          "最短2時間施工",
+          "代車無料",
+          "最大20%+1,000円引き"
+        ]
+      }
+    ]
+  },
+  "kobe-coating.com": {
+    "domain": "kobe-coating.com",
+    "url": "https://kobe-coating.com/",
+    "company": "不明",
+    "stores": [
+      {
+        "storeName": "キーパー神戸店",
+        "postalCode": "〒652-0811",
+        "address": "神戸市兵庫区新開地3-2-11",
+        "phone": "0800-816-6540",
+        "phoneLocal": "078-351-1972",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休（1/1〜1/4休業）",
+        "coordinates": {
+          "lat": 34.677547,
+          "lng": 135.172235
+        },
+        "access": [
+          "新開地駅からすぐ",
+          "神戸ハーバーランドから車で3分",
+          "新長田駅から車で8分"
+        ],
+        "appealPoints": [
+          "累計20,000台以上の施工実績",
+          "KeePer認定店",
+          "最短2時間施工",
+          "代車無料",
+          "施工証明書発行",
+          "保険対応可"
+        ]
+      }
+    ]
+  },
+  "takamatsu-coating.com": {
+    "domain": "takamatsu-coating.com",
+    "url": "https://takamatsu-coating.com/",
+    "company": "出光リテール販売株式会社 兵庫四国カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー高松空港通り店",
+        "postalCode": "〒761-1701",
+        "address": "香川県高松市香川町大野3番地1",
+        "phone": "0800-830-3623",
+        "phoneLocal": "087-815-4185",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休（1/1〜1/3休業、1/4通常営業）",
+        "coordinates": {
+          "lat": 34.267026,
+          "lng": 134.0302
+        },
+        "access": [
+          "空港通り駅から南へ車で2分",
+          "高松空港から北へ車で14分",
+          "高松中央ICから南西へ車で14分",
+          "高松駅から南へ車で18分"
+        ],
+        "appealPoints": [
+          "年間1,200台の施工実績",
+          "KeePer認定店",
+          "EXキーパー技術認定者3名、1級3名、2級3名在籍",
+          "専用コーティングブース完備",
+          "最短2時間施工",
+          "代車無料",
+          "ネット割15%OFF"
+        ]
+      }
+    ]
+  },
+  "kochi-coating.com": {
+    "domain": "kochi-coating.com",
+    "url": "https://kochi-coating.com/",
+    "company": "出光リテール販売株式会社 兵庫四国カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー高知はりまや店",
+        "postalCode": "〒780-0822",
+        "address": "高知県高知市はりまや町１丁目１３−２０",
+        "phone": "0800-830-3625",
+        "phoneLocal": "088-882-4105",
+        "businessHours": "10:00〜18:00（コーティング受付9:00〜18:00）",
+        "holidays": "年中無休（1/1のみ休業）",
+        "coordinates": {
+          "lat": 33.55949412862034,
+          "lng": 133.54658560983117
+        },
+        "access": [
+          "はりまや橋駅から車で2分",
+          "高知駅から車で5分",
+          "高知市役所から車で7分"
+        ],
+        "appealPoints": [
+          "年間1,200台の施工実績",
+          "KeePer認定店",
+          "1級技術認定者2名在籍",
+          "専用コーティングブース完備",
+          "最短2時間施工",
+          "代車無料",
+          "最大10%ネット割"
+        ]
+      },
+      {
+        "storeName": "キーパー高知中村店",
+        "postalCode": "〒787-0033",
+        "address": "高知県四万十市中村大橋通6-1-14",
+        "phone": "0800-832-5719",
+        "phoneLocal": "0880-34-4126",
+        "businessHours": "9:00〜18:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 32.99090393657582,
+          "lng": 132.93725505054195
+        },
+        "access": [
+          "四万十市役所から車で2分",
+          "中村駅から車で4分",
+          "四国電力中村営業所の西100m"
+        ],
+        "appealPoints": [
+          "年間1,200台の施工実績",
+          "KeePer認定店",
+          "最短2時間施工",
+          "代車無料",
+          "最大10%ネット割"
+        ]
+      }
+    ]
+  },
+  "tokushima-coating.com": {
+    "domain": "tokushima-coating.com",
+    "url": "https://tokushima-coating.com/",
+    "company": "出光リテール販売株式会社 兵庫四国カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー徳島中洲店",
+        "postalCode": "〒770-0856",
+        "address": "徳島県徳島市中洲町1丁目66番地1",
+        "phone": "0800-830-3624",
+        "phoneLocal": "088-652-2685",
+        "businessHours": "9:00〜18:00（コーティング受付9:00〜17:00）",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 34.068623,
+          "lng": 134.557128
+        },
+        "access": [
+          "徳島県庁から北へ車で2分",
+          "徳島市役所から南へ車で4分",
+          "徳島駅から南東へ車で6分"
+        ],
+        "appealPoints": [
+          "年間1,200台の施工実績",
+          "KeePer認定店",
+          "EX級含む複数技術認定者在籍",
+          "専用防塵コーティングブース完備",
+          "最短2時間施工",
+          "3時間以上の施工で代車無料",
+          "最大20%+1,000円引き"
+        ]
+      }
+    ]
+  },
+  "niihama-coating.com": {
+    "domain": "niihama-coating.com",
+    "url": "https://niihama-coating.com/",
+    "company": "出光リテール販売株式会社 兵庫四国カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパーイオン新居浜店",
+        "postalCode": "〒792-0007",
+        "address": "愛媛県新居浜市前田町4-15",
+        "phone": "0800-830-3736",
+        "phoneLocal": "0897-33-8121",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休（1/1・10/18休業）",
+        "coordinates": {
+          "lat": 33.95596190729799,
+          "lng": 133.26460624645506
+        },
+        "access": [
+          "イオンモール新居浜隣接",
+          "新居浜市役所から車で5分",
+          "新居浜駅から車で6分",
+          "西条市役所から車で18分"
+        ],
+        "appealPoints": [
+          "年間1,200台の施工実績",
+          "KeePer認定店",
+          "1級技術認定者4名、2級1名在籍",
+          "専用コーティングブース完備",
+          "最短2時間施工",
+          "代車無料"
+        ]
+      }
+    ]
+  },
+  "coating-shimonoseki.com": {
+    "domain": "coating-shimonoseki.com",
+    "url": "https://coating-shimonoseki.com/",
+    "company": "出光リテール販売株式会社 九州カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー安岡店",
+        "postalCode": "〒759-6603",
+        "address": "山口県下関市安岡町３-１３-１５",
+        "phone": "0800-812-7918",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休（1/1〜1/3休業）",
+        "coordinates": {
+          "lat": 34.026279,
+          "lng": 130.9192402
+        },
+        "access": [
+          "安岡駅から車で3分"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "KeePer認定店",
+          "EXキーパー1級1名、1級2名在籍",
+          "専用コーティングブース・純水設備完備",
+          "最短2時間施工",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      },
+      {
+        "storeName": "キーパーセルフ三百目店",
+        "postalCode": "〒750-0012",
+        "address": "山口県下関市観音崎町１４−１３",
+        "phone": "0800-812-8277",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 33.951582747206366,
+          "lng": 130.93659885459516
+        },
+        "access": [
+          "下関駅から東へ車で約7分"
+        ],
+        "appealPoints": [
+          "年間1,500台の施工実績",
+          "KeePer認定店",
+          "純水設備完備",
+          "最短2時間施工",
+          "代車無料",
+          "施工証明書発行"
+        ]
+      }
+    ]
+  },
+  "kumamoto-coating.com": {
+    "domain": "kumamoto-coating.com",
+    "url": "https://kumamoto-coating.com/",
+    "company": "出光リテール販売株式会社 九州カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー熊本大津店",
+        "postalCode": "〒869-1235",
+        "address": "熊本県菊池郡大津町室字鑪尻722-1",
+        "phone": "0800-812-8013",
+        "businessHours": "9:00〜19:00（作業受付18:00まで）",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 32.8857649,
+          "lng": 130.8612604
+        },
+        "access": [
+          "肥後大津駅から車で4分",
+          "原水駅から5分"
+        ],
+        "appealPoints": [
+          "累計10,000台以上の施工実績",
+          "KeePer認定店",
+          "専用防塵コーティングブース完備",
+          "純水洗車機完備",
+          "最短2時間施工",
+          "代車無料",
+          "HP割20%OFF"
+        ]
+      },
+      {
+        "storeName": "キーパー熊本市東区桜木店",
+        "postalCode": "〒861-2101",
+        "address": "熊本県熊本市東区桜木4-121-1",
+        "phone": "0800-812-7904",
+        "businessHours": "9:00〜19:00（作業受付18:00まで）",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 32.782375,
+          "lng": 130.783076
+        },
+        "access": [
+          "益城熊本空港ICから車で5分",
+          "熊本市東区役所から車で5分"
+        ],
+        "appealPoints": [
+          "累計10,000台以上の施工実績",
+          "KeePer認定店",
+          "専用防塵コーティングブース完備",
+          "純水洗車機完備",
+          "最短2時間施工",
+          "代車無料",
+          "HP割20%OFF"
+        ]
+      },
+      {
+        "storeName": "キーパー熊本市中央区本山店",
+        "postalCode": "〒860-0822",
+        "address": "熊本県熊本市中央区本山町108-4",
+        "phone": "0800-812-7905",
+        "businessHours": "9:00〜19:00（作業受付18:00まで）",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 32.784489,
+          "lng": 130.7007855
+        },
+        "access": [
+          "熊本駅から車で5分",
+          "熊本大学医学部附属病院から車で5分"
+        ],
+        "appealPoints": [
+          "累計10,000台以上の施工実績",
+          "KeePer認定店",
+          "専用防塵コーティングブース完備",
+          "純水洗車機完備",
+          "最短2時間施工",
+          "代車無料",
+          "HP割20%OFF"
+        ]
+      }
+    ]
+  },
+  "fukuoka-sasebo-coating.com": {
+    "domain": "fukuoka-sasebo-coating.com",
+    "url": "https://fukuoka-sasebo-coating.com/",
+    "company": "出光リテール販売株式会社 九州カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー福岡西長住店",
+        "postalCode": "〒811-1361",
+        "address": "福岡県福岡市南区西長住3-33-3",
+        "phone": "0800-812-8219",
+        "businessHours": "9:00〜19:00",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 33.543204,
+          "lng": 130.391584
+        },
+        "access": [
+          "堤ICから東へ2分",
+          "福重JCTから東へ15分",
+          "野多目ICから西へ5分",
+          "福岡市動植物園から南へ車で7分",
+          "日産プリンス福岡長住の向かい"
+        ],
+        "appealPoints": [
+          "累計10,000台以上の施工実績",
+          "KeePer認定店",
+          "専用防塵コーティングブース完備",
+          "最短2時間施工",
+          "代車無料",
+          "最大20%+3,300円引き"
+        ]
+      }
+    ]
+  },
+  "sasebo-coating.com": {
+    "domain": "sasebo-coating.com",
+    "url": "https://sasebo-coating.com/",
+    "company": "出光リテール販売株式会社 九州カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー佐世保店",
+        "postalCode": "〒859-3244",
+        "address": "長崎県佐世保市江上町952-1",
+        "phone": "0800-812-7912",
+        "businessHours": "9:00〜19:00（作業受付18:00まで）",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 33.099591,
+          "lng": 129.773848
+        },
+        "access": [
+          "ハウステンボス駅から車で7分"
+        ],
+        "appealPoints": [
+          "累計10,000台以上の施工実績",
+          "KeePer認定店",
+          "1級1名、2級2名技術認定者在籍",
+          "専用コーティングブース完備",
+          "純水洗車機完備",
+          "最短2時間施工",
+          "代車無料",
+          "HP割20%OFF"
+        ]
+      }
+    ]
+  },
+  "kitakyushu-coating.com": {
+    "domain": "kitakyushu-coating.com",
+    "url": "https://kitakyushu-coating.com/",
+    "company": "出光リテール販売株式会社 九州カンパニー",
+    "stores": [
+      {
+        "storeName": "キーパー北九州桃園店",
+        "postalCode": "〒806-0012",
+        "address": "福岡県北九州市八幡西区陣山１−２−３１",
+        "phone": "0800-812-7913",
+        "businessHours": "9:00〜19:00（作業受付18:00まで）",
+        "holidays": "年中無休",
+        "coordinates": {
+          "lat": 33.8640123,
+          "lng": 130.7599182
+        },
+        "access": [
+          "黒崎駅から3分",
+          "八幡西区役所から車で4分",
+          "小倉駅から車で15分",
+          "折尾駅・中間駅から車で20分"
+        ],
+        "appealPoints": [
+          "累計10,000台以上の施工実績",
+          "KeePer認定店",
+          "専用防塵コーティングブース完備",
+          "純水洗車機完備",
+          "最短2時間施工",
+          "代車無料",
+          "HP割20%OFF"
+        ]
+      }
+    ]
+  },
+  "_metadata": {
+    "scrapedAt": "2026-04-09",
+    "totalDomains": 51,
+    "totalStores": 86,
+    "failedDomains": [
+      "morioka-kitakami-coating.com",
+      "hachiouji-fussa-coating.com",
+      "sanin-coating.com"
+    ],
+    "skippedDomains": [
+      "sapporo-coating.com"
+    ],
+    "notes": "All phone numbers are toll-free (通話無料) reservation lines. Coordinates extracted from Google Maps links on /map_yutai.html pages or geocoded via Nominatim. Stores operated by various companies: Idemitsu Retail Sales (出光リテール販売株式会社), Active Collection (アクティブコレクション), ENEOS Mobilinear (株式会社ENEOSモビリニア), Nagase Oil (永瀬石油株式会社). Some stores have phone numbers listed as 準備中 (under preparation). sanin-coating.com returned ECONNREFUSED."
+  }
+}

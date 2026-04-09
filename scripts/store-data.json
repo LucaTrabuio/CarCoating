@@ -1,0 +1,2635 @@
+{
+  "stores": [
+    {
+      "no": 1,
+      "company": "北海道",
+      "area": "恵庭",
+      "storeName": "恵庭店",
+      "ssName": "セルフ恵庭計",
+      "url": "https://eniwa-coating.com/",
+      "siteGroup": 1,
+      "storeId": "eniwa",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 10
+      },
+      "newCarBonus": "10%",
+      "optionDiscount": "全メニュー10％",
+      "notes": "最大25％OFF表示あり"
+    },
+    {
+      "no": 2,
+      "company": "北海道",
+      "area": "札幌",
+      "storeName": "札苗店",
+      "ssName": "札苗計",
+      "url": "https://sapporo-coating.com/",
+      "siteGroup": 2,
+      "storeId": "sapporo-sattsunae",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 10
+      },
+      "newCarBonus": "10%",
+      "optionDiscount": "全メニュー10％",
+      "notes": "最大25％OFF表示あり"
+    },
+    {
+      "no": 3,
+      "company": "北海道",
+      "area": "札幌",
+      "storeName": "よんなな店",
+      "ssName": "よんなな",
+      "url": "https://sapporo-coating.com/",
+      "siteGroup": 2,
+      "storeId": "sapporo-yonnana",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 10
+      },
+      "newCarBonus": "10%",
+      "optionDiscount": "全メニュー10％",
+      "notes": "最大25％OFF表示あり"
+    },
+    {
+      "no": 4,
+      "company": "北海道",
+      "area": "札幌",
+      "storeName": "コーティングステーション札幌本店",
+      "ssName": "札幌",
+      "url": "https://sapporo-coating.com/",
+      "siteGroup": 2,
+      "storeId": "sapporo-honten",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 10
+      },
+      "newCarBonus": "10%",
+      "optionDiscount": "全メニュー10％",
+      "notes": "最大25％OFF表示あり"
+    },
+    {
+      "no": 5,
+      "company": "北海道",
+      "area": "札幌",
+      "storeName": "三笠店",
+      "ssName": "三笠中央",
+      "url": "https://sapporo-coating.com/",
+      "siteGroup": 2,
+      "storeId": "sapporo-mikasa",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 10
+      },
+      "newCarBonus": "10%",
+      "optionDiscount": "全メニュー20％",
+      "notes": "最大25％OFF表示あり"
+    },
+    {
+      "no": 6,
+      "company": "北海道",
+      "area": "札幌",
+      "storeName": "札幌南店",
+      "ssName": "セルフ札幌南",
+      "url": "https://sapporo-coating.com/",
+      "siteGroup": 2,
+      "storeId": "sapporo-minami",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 10
+      },
+      "newCarBonus": "10%",
+      "optionDiscount": "全メニュー10％",
+      "notes": "最大25％OFF表示あり"
+    },
+    {
+      "no": 7,
+      "company": "北海道",
+      "area": "札幌",
+      "storeName": "西野5条店",
+      "ssName": "セルフ西野5条SS",
+      "url": "https://sapporo-coating.com/",
+      "siteGroup": 2,
+      "storeId": "sapporo-nishino",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 10
+      },
+      "newCarBonus": "10%",
+      "optionDiscount": "全メニュー10％",
+      "notes": "最大25％OFF表示あり"
+    },
+    {
+      "no": 8,
+      "company": "北海道",
+      "area": "旭川",
+      "storeName": "旭川忠和店",
+      "ssName": "忠和計",
+      "url": "https://asahikawa-coating.com/",
+      "siteGroup": 3,
+      "storeId": "asahikawa-chuwa",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 10
+      },
+      "newCarBonus": "10%",
+      "optionDiscount": "全メニュー10％",
+      "notes": "最大25％OFF表示あり"
+    },
+    {
+      "no": 9,
+      "company": "東北",
+      "area": "仙台・岩沼",
+      "storeName": "一番町店",
+      "ssName": "仙台一番町",
+      "url": "https://sendai-iwanuma-coating.com/",
+      "siteGroup": null,
+      "storeId": "sendai-ichibancho",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 10,
+      "company": "東北",
+      "area": "仙台",
+      "storeName": "仙台ニュー泉店",
+      "ssName": "セルフニュー泉SS",
+      "url": "https://sendai-iwanuma-coating.com/",
+      "siteGroup": null,
+      "storeId": "sendai-new-izumi",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 11,
+      "company": "東北",
+      "area": "仙台・岩沼",
+      "storeName": "名取北店",
+      "ssName": "名取北",
+      "url": "https://sendai-iwanuma-coating.com/",
+      "siteGroup": null,
+      "storeId": "natori-kita",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 12,
+      "company": "東北",
+      "area": "仙台市",
+      "storeName": "あすと長町店",
+      "ssName": "セルフあすと長町",
+      "url": "https://sendai-iwanuma-coating.com/",
+      "siteGroup": null,
+      "storeId": "asuto-nagamachi",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 13,
+      "company": "東北",
+      "area": "盛岡",
+      "storeName": "盛岡イオン前店",
+      "ssName": "セルフイオン前",
+      "url": "https://morioka-coating.com/",
+      "siteGroup": null,
+      "storeId": "morioka-aeon-mae",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 14,
+      "company": "東北",
+      "area": "盛岡",
+      "storeName": "盛岡バイパス店",
+      "ssName": "セルフ盛岡バイパス",
+      "url": "https://morioka-coating.com/",
+      "siteGroup": null,
+      "storeId": "morioka-bypass",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 15,
+      "company": "東北",
+      "area": "北上",
+      "storeName": "北上インターチェンジ店",
+      "ssName": "セルフ北上インターチェンジSS",
+      "url": "https://morioka-kitakami-coating.com/",
+      "siteGroup": null,
+      "storeId": "kitakami-ic",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 16,
+      "company": "東北",
+      "area": "奥州",
+      "storeName": "奥州さくらかわ店",
+      "ssName": "セルフさくらかわSS",
+      "url": "https://morioka-kitakami-coating.com/",
+      "siteGroup": null,
+      "storeId": "oshu-sakurakawa",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 17,
+      "company": "東北",
+      "area": "秋田",
+      "storeName": "秋田ジョイフル臨海店",
+      "ssName": "ジョイフル臨海セルフＳＳ",
+      "url": "https://akita-coating.com/",
+      "siteGroup": null,
+      "storeId": "akita-joyful-rinkai",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 18,
+      "company": "東北",
+      "area": "酒田",
+      "storeName": "酒田みずほ店",
+      "ssName": "スマイルみずほＳＳ",
+      "url": "https://sakata-coating.com/",
+      "siteGroup": null,
+      "storeId": "sakata-mizuho",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 19,
+      "company": "北関東",
+      "area": "小川町・深谷",
+      "storeName": "小川町店",
+      "ssName": "セルフ小川町みどりが丘",
+      "url": "https://ogawamachi-fukaya-coating.com/",
+      "siteGroup": null,
+      "storeId": "ogawamachi",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 20,
+      "company": "北関東",
+      "area": "小川町・深谷",
+      "storeName": "深谷店",
+      "ssName": "セルフ深谷上野台",
+      "url": "https://ogawamachi-fukaya-coating.com/",
+      "siteGroup": null,
+      "storeId": "fukaya",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 21,
+      "company": "北関東",
+      "area": "狭山エリア",
+      "storeName": "狭山台店",
+      "ssName": "狭山台",
+      "url": "https://sayama-kawagoe-coating.com/",
+      "siteGroup": null,
+      "storeId": "sayamadai",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 22,
+      "company": "北関東",
+      "area": "川越エリア",
+      "storeName": "川越インター店",
+      "ssName": "川越インターSS",
+      "url": "https://sayama-kawagoe-coating.com/",
+      "siteGroup": null,
+      "storeId": "kawagoe-inter",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 23,
+      "company": "北関東",
+      "area": "足利",
+      "storeName": "東武えきまえ店",
+      "ssName": "東武えきまえSS",
+      "url": "https://ashikaga-coating.com/",
+      "siteGroup": null,
+      "storeId": "ashikaga-tobu-ekimae",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 24,
+      "company": "北関東",
+      "area": "足利",
+      "storeName": "足利ウエスト店",
+      "ssName": "足利ウエストＳＳ",
+      "url": "https://ashikaga-coating.com/",
+      "siteGroup": null,
+      "storeId": "ashikaga-west",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 25,
+      "company": "北関東",
+      "area": "さいたまエリア",
+      "storeName": "西大宮店",
+      "ssName": "西大宮",
+      "url": "https://saitama-nishiomiya-coating.com/",
+      "siteGroup": null,
+      "storeId": "nishi-omiya",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 26,
+      "company": "北関東",
+      "area": "さいたまエリア",
+      "storeName": "三橋店",
+      "ssName": "セルフ三橋SS",
+      "url": "https://saitama-nishiomiya-coating.com/",
+      "siteGroup": null,
+      "storeId": "mitsuhashi",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 27,
+      "company": "北関東",
+      "area": "羽生",
+      "storeName": "羽生東店",
+      "ssName": "羽生東",
+      "url": "https://hanyuu-coating.com/",
+      "siteGroup": null,
+      "storeId": "hanyu-higashi",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 28,
+      "company": "北関東",
+      "area": "宇都宮",
+      "storeName": "鶴田店",
+      "ssName": "宇都宮鶴田",
+      "url": "https://utsunomiya-coating.com/",
+      "siteGroup": null,
+      "storeId": "utsunomiya-tsuruta",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 29,
+      "company": "北関東",
+      "area": "宇都宮",
+      "storeName": "テクノポリス店",
+      "ssName": "テクノポリス",
+      "url": "https://utsunomiya-coating.com/",
+      "siteGroup": null,
+      "storeId": "utsunomiya-technopolis",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 30,
+      "company": "北関東",
+      "area": "高崎・前橋",
+      "storeName": "高崎飯塚店",
+      "ssName": "セルフ高崎飯塚",
+      "url": "https://takasaki-maebashi-coating.com/",
+      "siteGroup": null,
+      "storeId": "takasaki-iizuka",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 31,
+      "company": "北関東",
+      "area": "高崎・前橋",
+      "storeName": "前橋文京店",
+      "ssName": "セルフ文京",
+      "url": "https://takasaki-maebashi-coating.com/",
+      "siteGroup": null,
+      "storeId": "maebashi-bunkyo",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "無料アップグレードor20%引+アラカルト1つ無料",
+      "optionDiscount": "4オプションセット20％",
+      "notes": ""
+    },
+    {
+      "no": 32,
+      "company": "南関東",
+      "area": "千葉市原エリア",
+      "storeName": "姉崎店",
+      "ssName": "セルフ姉崎",
+      "url": "https://ichihara-coating.com/",
+      "siteGroup": null,
+      "storeId": "ichihara-anesaki",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 33,
+      "company": "南関東",
+      "area": "千葉エリア",
+      "storeName": "青葉台店",
+      "ssName": "市原青葉台",
+      "url": "https://ichihara-coating.com/",
+      "siteGroup": null,
+      "storeId": "ichihara-aobadai",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 34,
+      "company": "南関東",
+      "area": "千葉エリア",
+      "storeName": "ちはら台店",
+      "ssName": "ちはら台",
+      "url": "https://ichihara-coating.com/",
+      "siteGroup": null,
+      "storeId": "chiharadai",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 35,
+      "company": "南関東",
+      "area": "水戸・ひたちなかエリア",
+      "storeName": "双葉台店",
+      "ssName": "ＭＳ双葉台",
+      "url": "https://ichihara-coating.com/",
+      "siteGroup": null,
+      "storeId": "futabadai",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 36,
+      "company": "南関東",
+      "area": "つくば",
+      "storeName": "みらい平店",
+      "ssName": "みらい平",
+      "url": "https://tsukuba-coating.com/",
+      "siteGroup": null,
+      "storeId": "tsukuba-miraihira",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 37,
+      "company": "南関東",
+      "area": "八千代",
+      "storeName": "花見川店",
+      "ssName": "花見川",
+      "url": "https://yachiyo-hanamigawa-coating.com/",
+      "siteGroup": null,
+      "storeId": "hanamigawa",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 38,
+      "company": "南関東",
+      "area": "成田",
+      "storeName": "美郷台店",
+      "ssName": "成田美郷台",
+      "url": "https://narita-coating.com/",
+      "siteGroup": null,
+      "storeId": "narita-misatodai",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 39,
+      "company": "東京",
+      "area": "八王子",
+      "storeName": "散田店",
+      "ssName": "散田",
+      "url": "https://fussa-coating.com/",
+      "siteGroup": null,
+      "storeId": "hachioji-sanda",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "値引きなし"
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "値引きなし",
+      "notes": ""
+    },
+    {
+      "no": 40,
+      "company": "東京",
+      "area": "文京・板橋区エリア",
+      "storeName": "本郷店",
+      "ssName": "セルフ本郷",
+      "url": "https://hachiouji-fussa-coating.com/",
+      "siteGroup": null,
+      "storeId": "bunkyo-hongo",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "値引きなし"
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "値引きなし",
+      "notes": ""
+    },
+    {
+      "no": 41,
+      "company": "東京",
+      "area": "福生",
+      "storeName": "福生店",
+      "ssName": "福生",
+      "url": "https://fussa-coating.com/",
+      "siteGroup": null,
+      "storeId": "fussa",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "値引きなし"
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "値引きなし",
+      "notes": ""
+    },
+    {
+      "no": 42,
+      "company": "東京",
+      "area": "福生",
+      "storeName": "武蔵村山大南店",
+      "ssName": "大南",
+      "url": "https://fussa-coating.com/",
+      "siteGroup": null,
+      "storeId": "musashimurayama-ominami",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "値引きなし"
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "値引きなし",
+      "notes": ""
+    },
+    {
+      "no": 43,
+      "company": "神奈川",
+      "area": "川崎・町田",
+      "storeName": "成瀬店",
+      "ssName": "セルフ成瀬",
+      "url": "https://kawasaki-machida-coating.com/",
+      "siteGroup": null,
+      "storeId": "machida-naruse",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 0,
+        "ex": 0,
+        "exRaw": "なし"
+      },
+      "newCarBonus": "ダブルダイヤが20%オフ",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 44,
+      "company": "神奈川",
+      "area": "町田",
+      "storeName": "町田森野店",
+      "ssName": "セルフ町田森野",
+      "url": "https://kawasaki-machida-coating.com/",
+      "siteGroup": null,
+      "storeId": "machida-morino",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 0,
+        "ex": 0,
+        "exRaw": "なし"
+      },
+      "newCarBonus": "ダブルダイヤが20%オフ",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 45,
+      "company": "神奈川",
+      "area": "横須賀",
+      "storeName": "横須賀店",
+      "ssName": "セルフ佐原インター",
+      "url": "https://yokosuka-coating.com/",
+      "siteGroup": null,
+      "storeId": "yokosuka",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 0,
+        "ex": 5
+      },
+      "newCarBonus": "ダブルダイヤが20%オフ",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 46,
+      "company": "神奈川",
+      "area": "葉山",
+      "storeName": "葉山店",
+      "ssName": "セルフ葉山",
+      "url": "https://yokosuka-coating.com/",
+      "siteGroup": null,
+      "storeId": "hayama",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 0,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "ダブルダイヤが20%オフ",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 47,
+      "company": "神奈川",
+      "area": "港南",
+      "storeName": "横浜ベース店",
+      "ssName": "横浜ベース",
+      "url": "https://coating-yokohama.com/",
+      "siteGroup": null,
+      "storeId": "yokohama-base",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "なし",
+      "notes": ""
+    },
+    {
+      "no": 48,
+      "company": "中部",
+      "area": "名古屋",
+      "storeName": "名東店",
+      "ssName": "プリテール香久山",
+      "url": "https://coating-nagoyashi.com/",
+      "siteGroup": null,
+      "storeId": "nagoya-meito",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 0,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 0,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 49,
+      "company": "中部",
+      "area": "名古屋",
+      "storeName": "一社店",
+      "ssName": "一社計",
+      "url": "https://coating-nagoyashi.com/",
+      "siteGroup": null,
+      "storeId": "nagoya-issha",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 0,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 0,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 50,
+      "company": "中部",
+      "area": "名古屋",
+      "storeName": "荒子店",
+      "ssName": "セルフ荒子",
+      "url": "https://coating-nagoyashi.com/",
+      "siteGroup": null,
+      "storeId": "nagoya-arako",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 0,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 0,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 51,
+      "company": "中部",
+      "area": "名古屋",
+      "storeName": "アポロドーム名古屋店",
+      "ssName": "アポロドーム名古屋",
+      "url": "https://coating-nagoyashi.com/",
+      "siteGroup": null,
+      "storeId": "nagoya-apollo-dome",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 0,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 0,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 52,
+      "company": "中部",
+      "area": "名古屋",
+      "storeName": "天白島田店",
+      "ssName": "天白島田",
+      "url": "https://coating-nagoyashi.com/",
+      "siteGroup": null,
+      "storeId": "nagoya-tenpaku-shimada",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 0,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 0,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 53,
+      "company": "中部",
+      "area": "名古屋",
+      "storeName": "如意店",
+      "ssName": "セルフ如意",
+      "url": "https://coating-nagoyashi.com/",
+      "siteGroup": null,
+      "storeId": "nagoya-nyoi",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 0,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 0,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 54,
+      "company": "中部",
+      "area": "豊明",
+      "storeName": "豊明新栄店",
+      "ssName": "豊明新栄計",
+      "url": "https://toukai-toyoake-coating.com/",
+      "siteGroup": null,
+      "storeId": "toyoake-shinsakae",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 55,
+      "company": "中部",
+      "area": "東海・豊明",
+      "storeName": "知立店",
+      "ssName": "セルフ知立",
+      "url": "https://toukai-toyoake-coating.com/",
+      "siteGroup": null,
+      "storeId": "chiryu",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 56,
+      "company": "中部",
+      "area": "東海・豊明",
+      "storeName": "刈谷店",
+      "ssName": "セルフ刈谷",
+      "url": "https://toukai-toyoake-coating.com/",
+      "siteGroup": null,
+      "storeId": "kariya",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 57,
+      "company": "中部",
+      "area": "豊田",
+      "storeName": "リバーサイド豊田店",
+      "ssName": "セルフリバーサイド豊田",
+      "url": "https://toyota-coating.com/",
+      "siteGroup": null,
+      "storeId": "toyota-riverside",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 58,
+      "company": "中部",
+      "area": "一宮・羽島",
+      "storeName": "カードック西成店",
+      "ssName": "カードック西成",
+      "url": "https://awaza-namba-coating.com/",
+      "siteGroup": null,
+      "storeId": "cardock-nishinari",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 59,
+      "company": "中部",
+      "area": "一宮・羽島",
+      "storeName": "清須古城店",
+      "ssName": "清須古城計",
+      "url": "https://ichinomiya-hashima-coating.com/",
+      "siteGroup": null,
+      "storeId": "kiyosu-kojo",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 60,
+      "company": "中部",
+      "area": "春日井",
+      "storeName": "高蔵寺店",
+      "ssName": "セルフ高蔵寺",
+      "url": "https://kasugai-coating.com/",
+      "siteGroup": null,
+      "storeId": "kasugai-kozoji",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 61,
+      "company": "中部",
+      "area": "犬山",
+      "storeName": "犬山店",
+      "ssName": "セルフ犬山",
+      "url": "https://kasugai-coating.com/",
+      "siteGroup": null,
+      "storeId": "inuyama",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 62,
+      "company": "東海北陸",
+      "area": "金沢",
+      "storeName": "泉本町店",
+      "ssName": "泉本町計",
+      "url": "https://kanazawa-coating.com/",
+      "siteGroup": null,
+      "storeId": "kanazawa-izumihonmachi",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 63,
+      "company": "東海北陸",
+      "area": "金沢",
+      "storeName": "御経塚店",
+      "ssName": "プリテール御経塚",
+      "url": "https://kanazawa-coating.com/",
+      "siteGroup": null,
+      "storeId": "kanazawa-okyozuka",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 64,
+      "company": "東海北陸",
+      "area": "金沢",
+      "storeName": "金沢南店",
+      "ssName": "金沢南",
+      "url": "https://kanazawa-coating.com/",
+      "siteGroup": null,
+      "storeId": "kanazawa-minami",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 65,
+      "company": "東海北陸",
+      "area": "四日市",
+      "storeName": "久保田店",
+      "ssName": "セルフ久保田",
+      "url": "https://yokkaichi-coating.com/",
+      "siteGroup": null,
+      "storeId": "yokkaichi-kubota",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 66,
+      "company": "東海北陸",
+      "area": "四日市",
+      "storeName": "四日市店",
+      "ssName": "セルフ四日市",
+      "url": "https://yokkaichi-coating.com/",
+      "siteGroup": null,
+      "storeId": "yokkaichi",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 67,
+      "company": "東海北陸",
+      "area": "四日市",
+      "storeName": "ミルクロード店",
+      "ssName": "ミルクロード",
+      "url": "https://yokkaichi-coating.com/",
+      "siteGroup": null,
+      "storeId": "yokkaichi-milkroad",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 68,
+      "company": "関西",
+      "area": "高槻",
+      "storeName": "高槻五百住店",
+      "ssName": "セルフ高槻五百住SS",
+      "url": "https://takatsuki-coating.com/",
+      "siteGroup": null,
+      "storeId": "takatsuki-iozumi",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 15,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 0,
+        "exRaw": "なし"
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "撥水ｶﾞﾗｽ・Wﾎｲｰﾙｺｰﾃｨﾝｸﾞ30％",
+      "notes": ""
+    },
+    {
+      "no": 69,
+      "company": "関西",
+      "area": "羽曳野・枚方",
+      "storeName": "寝屋川東香里店",
+      "ssName": "東香里計",
+      "url": "https://nawate-coating.com/",
+      "siteGroup": null,
+      "storeId": "neyagawa-higashikori",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 15,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 15,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "人気メニュー30%",
+      "notes": ""
+    },
+    {
+      "no": 70,
+      "company": "中国",
+      "area": "大竹",
+      "storeName": "大竹店",
+      "ssName": "大竹",
+      "url": "https://otake-coating.com/",
+      "siteGroup": null,
+      "storeId": "otake",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 15,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "なし"
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー20％（細密研磨のみ15％OFF）",
+      "notes": ""
+    },
+    {
+      "no": 71,
+      "company": "中国",
+      "area": "岡山",
+      "storeName": "岡山江崎店",
+      "ssName": "江崎",
+      "url": "https://okayama-coating.com/",
+      "siteGroup": null,
+      "storeId": "okayama-ezaki",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 72,
+      "company": "中国",
+      "area": "岡山",
+      "storeName": "たけべ店",
+      "ssName": "たけべ",
+      "url": "https://okayama-coating.com/",
+      "siteGroup": null,
+      "storeId": "okayama-takebe",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー15％",
+      "notes": ""
+    },
+    {
+      "no": 73,
+      "company": "中国",
+      "area": "広島緑井",
+      "storeName": "広島緑井店",
+      "ssName": "緑井",
+      "url": "https://coating-hiroshima.com/",
+      "siteGroup": null,
+      "storeId": "hiroshima-midorii",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 74,
+      "company": "中国",
+      "area": "広島緑井",
+      "storeName": "植物園店",
+      "ssName": "セルフ植物園計",
+      "url": "https://coating-hiroshima.com/",
+      "siteGroup": null,
+      "storeId": "hiroshima-shokubutsuen",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 75,
+      "company": "中国",
+      "area": "鳥取",
+      "storeName": "城北店",
+      "ssName": "パートナー城北",
+      "url": "https://sanin-coating.com/",
+      "siteGroup": null,
+      "storeId": "tottori-johoku",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 76,
+      "company": "中国",
+      "area": "山陰",
+      "storeName": "大庭店",
+      "ssName": "カーライフ松江大庭",
+      "url": "https://sanin-coating.com/",
+      "siteGroup": null,
+      "storeId": "matsue-oba",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 77,
+      "company": "中国",
+      "area": "出雲",
+      "storeName": "出雲浜山通り店",
+      "ssName": "カーライフサポート出雲浜山通り",
+      "url": "https://izumo-coating.com/",
+      "siteGroup": null,
+      "storeId": "izumo-hamayamadori",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 78,
+      "company": "中国",
+      "area": "米子",
+      "storeName": "角盤町店",
+      "ssName": "カーライフ角盤町",
+      "url": "https://tottorishi-coating.com/",
+      "siteGroup": null,
+      "storeId": "yonago-kaibancho",
+      "discounts": {
+        "crystal": 20,
+        "fresh": 20,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 79,
+      "company": "兵庫四国",
+      "area": "三木",
+      "storeName": "三木小林店",
+      "ssName": "三木小林",
+      "url": "https://miki-coating.com/",
+      "siteGroup": null,
+      "storeId": "miki-kobayashi",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 15,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "10％、15％"
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "なし",
+      "notes": ""
+    },
+    {
+      "no": 80,
+      "company": "兵庫四国",
+      "area": "三木",
+      "storeName": "青山店",
+      "ssName": "セルフ青山",
+      "url": "https://miki-coating.com/",
+      "siteGroup": null,
+      "storeId": "miki-aoyama",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 15,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "10％、15％"
+      },
+      "newCarBonus": "アラカルト１つ無料",
+      "optionDiscount": "なし",
+      "notes": ""
+    },
+    {
+      "no": 81,
+      "company": "兵庫四国",
+      "area": "兵庫",
+      "storeName": "姫路西(夢前台)店",
+      "ssName": "夢前台",
+      "url": "https://kobe-himeji-coating.com/",
+      "siteGroup": null,
+      "storeId": "himeji-yumedai",
+      "discounts": {
+        "crystal": 5,
+        "fresh": 10,
+        "diamond": 10,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 5
+      },
+      "newCarBonus": "5％引き",
+      "optionDiscount": "なし",
+      "notes": ""
+    },
+    {
+      "no": 82,
+      "company": "兵庫四国",
+      "area": "兵庫",
+      "storeName": "カーウォッシュ姫路店",
+      "ssName": "カーウォッシュ姫路",
+      "url": "https://kobe-himeji-coating.com/",
+      "siteGroup": null,
+      "storeId": "himeji-carwash",
+      "discounts": {
+        "crystal": 5,
+        "fresh": 10,
+        "diamond": 10,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 5
+      },
+      "newCarBonus": "5％引き",
+      "optionDiscount": "なし",
+      "notes": ""
+    },
+    {
+      "no": 83,
+      "company": "兵庫四国",
+      "area": "神戸",
+      "storeName": "神戸新開地店",
+      "ssName": "神戸",
+      "url": "https://kobe-coating.com/",
+      "siteGroup": null,
+      "storeId": "kobe-shinkaichi",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 15,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 20,
+        "ecoPlus": 20,
+        "ex": 0,
+        "exRaw": "10％、15％"
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "超撥水ガラスコーティング（全面）50％",
+      "notes": ""
+    },
+    {
+      "no": 84,
+      "company": "兵庫四国",
+      "area": "神戸",
+      "storeName": "神戸北町店",
+      "ssName": "神戸北町（全面改造中）",
+      "url": "https://kobe-coating.com/",
+      "siteGroup": null,
+      "storeId": "kobe-kitamachi",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 0,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 0,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "なし",
+      "optionDiscount": "超撥水ガラスコーティング（全面）50％",
+      "notes": ""
+    },
+    {
+      "no": 85,
+      "company": "兵庫四国",
+      "area": "高松",
+      "storeName": "高松空港通り店",
+      "ssName": "空港通",
+      "url": "https://takamatsu-coating.com/",
+      "siteGroup": null,
+      "storeId": "takamatsu-kukodori",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 10,
+        "wDiamond": 10,
+        "dia2": 10,
+        "ecoPlus": 10,
+        "ex": 5
+      },
+      "newCarBonus": "5％引き、平日1,000円引き",
+      "optionDiscount": "なし",
+      "notes": ""
+    },
+    {
+      "no": 86,
+      "company": "兵庫四国",
+      "area": "高知",
+      "storeName": "高知はりまや店",
+      "ssName": "高知はりまや",
+      "url": "https://kochi-coating.com/",
+      "siteGroup": null,
+      "storeId": "kochi-harimaya",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 10,
+        "wDiamond": 10,
+        "dia2": 10,
+        "ecoPlus": 10,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード、平日1,000円引き",
+      "optionDiscount": "全メニュー5%",
+      "notes": ""
+    },
+    {
+      "no": 87,
+      "company": "兵庫四国",
+      "area": "四万十",
+      "storeName": "高知中村店",
+      "ssName": "高知中村",
+      "url": "https://kochi-coating.com/",
+      "siteGroup": null,
+      "storeId": "kochi-nakamura",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 10,
+        "wDiamond": 10,
+        "dia2": 10,
+        "ecoPlus": 10,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード、平日1,000円引き",
+      "optionDiscount": "全メニュー5%",
+      "notes": ""
+    },
+    {
+      "no": 88,
+      "company": "兵庫四国",
+      "area": "徳島",
+      "storeName": "徳島中洲店",
+      "ssName": "セルフ中洲",
+      "url": "https://tokushima-coating.com/",
+      "siteGroup": null,
+      "storeId": "tokushima-nakasu",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 15,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 5
+      },
+      "newCarBonus": "アラカルト１つ無料、平日5％引き",
+      "optionDiscount": "全メニュー10%",
+      "notes": ""
+    },
+    {
+      "no": 89,
+      "company": "兵庫四国",
+      "area": "新居浜エリア",
+      "storeName": "イオン新居浜店",
+      "ssName": "イオン新居浜",
+      "url": "https://niihama-coating.com/",
+      "siteGroup": null,
+      "storeId": "niihama-aeon",
+      "discounts": {
+        "crystal": 15,
+        "fresh": 15,
+        "diamond": 15,
+        "wDiamond": 15,
+        "dia2": 15,
+        "ecoPlus": 15,
+        "ex": 0,
+        "exRaw": "非掲載"
+      },
+      "newCarBonus": "アップグレード、平日1,000円引き",
+      "optionDiscount": "全メニュー10%",
+      "notes": ""
+    },
+    {
+      "no": 90,
+      "company": "九州",
+      "area": "下関",
+      "storeName": "安岡店",
+      "ssName": "安岡SS",
+      "url": "https://coating-shimonoseki.com/",
+      "siteGroup": null,
+      "storeId": "shimonoseki-yasuoka",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 10,
+        "wDiamond": 10,
+        "dia2": 10,
+        "ecoPlus": 10,
+        "ex": 0,
+        "exRaw": "なし"
+      },
+      "newCarBonus": "平日10％引き、アラカルト1つ無料",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 91,
+      "company": "九州",
+      "area": "下関",
+      "storeName": "セルフ三百目店",
+      "ssName": "セルフ三百目SS",
+      "url": "https://coating-shimonoseki.com/",
+      "siteGroup": null,
+      "storeId": "shimonoseki-sanbyakume",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 10,
+        "wDiamond": 10,
+        "dia2": 10,
+        "ecoPlus": 10,
+        "ex": 0,
+        "exRaw": "なし"
+      },
+      "newCarBonus": "オプションプレゼント",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 92,
+      "company": "九州",
+      "area": "熊本",
+      "storeName": "桜木店",
+      "ssName": "セルフ桜木",
+      "url": "https://kumamoto-coating.com/",
+      "siteGroup": null,
+      "storeId": "kumamoto-sakuragi",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 93,
+      "company": "九州",
+      "area": "熊本",
+      "storeName": "大津店",
+      "ssName": "セルフ大津",
+      "url": "https://kumamoto-coating.com/",
+      "siteGroup": null,
+      "storeId": "kumamoto-otsu",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 94,
+      "company": "九州",
+      "area": "熊本",
+      "storeName": "本山店",
+      "ssName": "セルフ本山",
+      "url": "https://kumamoto-coating.com/",
+      "siteGroup": null,
+      "storeId": "kumamoto-motoyama",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 95,
+      "company": "九州",
+      "area": "福岡西",
+      "storeName": "福岡西長住店",
+      "ssName": "福岡西長住店",
+      "url": "https://fukuoka-sasebo-coating.com/",
+      "siteGroup": null,
+      "storeId": "fukuoka-nishi-nagasumi",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 96,
+      "company": "九州",
+      "area": "佐世保",
+      "storeName": "佐世保店",
+      "ssName": "江上計",
+      "url": "https://sasebo-coating.com/",
+      "siteGroup": null,
+      "storeId": "sasebo",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 20,
+        "wDiamond": 20,
+        "dia2": 10,
+        "ecoPlus": 20,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    },
+    {
+      "no": 97,
+      "company": "九州",
+      "area": "北九州",
+      "storeName": "北九州桃園店",
+      "ssName": "桃園計",
+      "url": "https://kitakyushu-coating.com/",
+      "siteGroup": null,
+      "storeId": "kitakyushu-momozono",
+      "discounts": {
+        "crystal": 10,
+        "fresh": 10,
+        "diamond": 10,
+        "wDiamond": 10,
+        "dia2": 10,
+        "ecoPlus": 10,
+        "ex": 5
+      },
+      "newCarBonus": "アップグレード、平日10％引き",
+      "optionDiscount": "全メニュー10％",
+      "notes": ""
+    }
+  ],
+  "subCompanies": [
+    {
+      "slug": "eniwa",
+      "name": "恵庭エリア",
+      "url": "https://eniwa-coating.com/",
+      "storeIds": [
+        "eniwa"
+      ]
+    },
+    {
+      "slug": "sapporo",
+      "name": "札幌エリア",
+      "url": "https://sapporo-coating.com/",
+      "storeIds": [
+        "sapporo-sattsunae",
+        "sapporo-yonnana",
+        "sapporo-honten",
+        "sapporo-mikasa",
+        "sapporo-minami",
+        "sapporo-nishino"
+      ]
+    },
+    {
+      "slug": "asahikawa",
+      "name": "旭川エリア",
+      "url": "https://asahikawa-coating.com/",
+      "storeIds": [
+        "asahikawa-chuwa"
+      ]
+    },
+    {
+      "slug": "sendai-iwanuma",
+      "name": "仙台・岩沼・仙台市エリア",
+      "url": "https://sendai-iwanuma-coating.com/",
+      "storeIds": [
+        "sendai-ichibancho",
+        "sendai-new-izumi",
+        "natori-kita",
+        "asuto-nagamachi"
+      ]
+    },
+    {
+      "slug": "morioka",
+      "name": "盛岡エリア",
+      "url": "https://morioka-coating.com/",
+      "storeIds": [
+        "morioka-aeon-mae",
+        "morioka-bypass"
+      ]
+    },
+    {
+      "slug": "morioka-kitakami",
+      "name": "北上・奥州エリア",
+      "url": "https://morioka-kitakami-coating.com/",
+      "storeIds": [
+        "kitakami-ic",
+        "oshu-sakurakawa"
+      ]
+    },
+    {
+      "slug": "akita",
+      "name": "秋田エリア",
+      "url": "https://akita-coating.com/",
+      "storeIds": [
+        "akita-joyful-rinkai"
+      ]
+    },
+    {
+      "slug": "sakata",
+      "name": "酒田エリア",
+      "url": "https://sakata-coating.com/",
+      "storeIds": [
+        "sakata-mizuho"
+      ]
+    },
+    {
+      "slug": "ogawamachi-fukaya",
+      "name": "小川町・深谷エリア",
+      "url": "https://ogawamachi-fukaya-coating.com/",
+      "storeIds": [
+        "ogawamachi",
+        "fukaya"
+      ]
+    },
+    {
+      "slug": "sayama-kawagoe",
+      "name": "狭山・川越エリア",
+      "url": "https://sayama-kawagoe-coating.com/",
+      "storeIds": [
+        "sayamadai",
+        "kawagoe-inter"
+      ]
+    },
+    {
+      "slug": "ashikaga",
+      "name": "足利エリア",
+      "url": "https://ashikaga-coating.com/",
+      "storeIds": [
+        "ashikaga-tobu-ekimae",
+        "ashikaga-west"
+      ]
+    },
+    {
+      "slug": "saitama-nishiomiya",
+      "name": "さいたまエリア",
+      "url": "https://saitama-nishiomiya-coating.com/",
+      "storeIds": [
+        "nishi-omiya",
+        "mitsuhashi"
+      ]
+    },
+    {
+      "slug": "hanyuu",
+      "name": "羽生エリア",
+      "url": "https://hanyuu-coating.com/",
+      "storeIds": [
+        "hanyu-higashi"
+      ]
+    },
+    {
+      "slug": "utsunomiya",
+      "name": "宇都宮エリア",
+      "url": "https://utsunomiya-coating.com/",
+      "storeIds": [
+        "utsunomiya-tsuruta",
+        "utsunomiya-technopolis"
+      ]
+    },
+    {
+      "slug": "takasaki-maebashi",
+      "name": "高崎・前橋エリア",
+      "url": "https://takasaki-maebashi-coating.com/",
+      "storeIds": [
+        "takasaki-iizuka",
+        "maebashi-bunkyo"
+      ]
+    },
+    {
+      "slug": "ichihara",
+      "name": "千葉市原・千葉・水戸・ひたちなかエリア",
+      "url": "https://ichihara-coating.com/",
+      "storeIds": [
+        "ichihara-anesaki",
+        "ichihara-aobadai",
+        "chiharadai",
+        "futabadai"
+      ]
+    },
+    {
+      "slug": "tsukuba",
+      "name": "つくばエリア",
+      "url": "https://tsukuba-coating.com/",
+      "storeIds": [
+        "tsukuba-miraihira"
+      ]
+    },
+    {
+      "slug": "yachiyo-hanamigawa",
+      "name": "八千代エリア",
+      "url": "https://yachiyo-hanamigawa-coating.com/",
+      "storeIds": [
+        "hanamigawa"
+      ]
+    },
+    {
+      "slug": "narita",
+      "name": "成田エリア",
+      "url": "https://narita-coating.com/",
+      "storeIds": [
+        "narita-misatodai"
+      ]
+    },
+    {
+      "slug": "fussa",
+      "name": "八王子・福生エリア",
+      "url": "https://fussa-coating.com/",
+      "storeIds": [
+        "hachioji-sanda",
+        "fussa",
+        "musashimurayama-ominami"
+      ]
+    },
+    {
+      "slug": "hachiouji-fussa",
+      "name": "文京・板橋区エリア",
+      "url": "https://hachiouji-fussa-coating.com/",
+      "storeIds": [
+        "bunkyo-hongo"
+      ]
+    },
+    {
+      "slug": "kawasaki-machida",
+      "name": "川崎・町田エリア",
+      "url": "https://kawasaki-machida-coating.com/",
+      "storeIds": [
+        "machida-naruse",
+        "machida-morino"
+      ]
+    },
+    {
+      "slug": "yokosuka",
+      "name": "横須賀・葉山エリア",
+      "url": "https://yokosuka-coating.com/",
+      "storeIds": [
+        "yokosuka",
+        "hayama"
+      ]
+    },
+    {
+      "slug": "yokohama",
+      "name": "港南エリア",
+      "url": "https://coating-yokohama.com/",
+      "storeIds": [
+        "yokohama-base"
+      ]
+    },
+    {
+      "slug": "nagoyashi",
+      "name": "名古屋エリア",
+      "url": "https://coating-nagoyashi.com/",
+      "storeIds": [
+        "nagoya-meito",
+        "nagoya-issha",
+        "nagoya-arako",
+        "nagoya-apollo-dome",
+        "nagoya-tenpaku-shimada",
+        "nagoya-nyoi"
+      ]
+    },
+    {
+      "slug": "toukai-toyoake",
+      "name": "豊明・東海エリア",
+      "url": "https://toukai-toyoake-coating.com/",
+      "storeIds": [
+        "toyoake-shinsakae",
+        "chiryu",
+        "kariya"
+      ]
+    },
+    {
+      "slug": "toyota",
+      "name": "豊田エリア",
+      "url": "https://toyota-coating.com/",
+      "storeIds": [
+        "toyota-riverside"
+      ]
+    },
+    {
+      "slug": "awaza-namba",
+      "name": "一宮・羽島エリア",
+      "url": "https://awaza-namba-coating.com/",
+      "storeIds": [
+        "cardock-nishinari"
+      ]
+    },
+    {
+      "slug": "ichinomiya-hashima",
+      "name": "一宮・羽島エリア",
+      "url": "https://ichinomiya-hashima-coating.com/",
+      "storeIds": [
+        "kiyosu-kojo"
+      ]
+    },
+    {
+      "slug": "kasugai",
+      "name": "春日井・犬山エリア",
+      "url": "https://kasugai-coating.com/",
+      "storeIds": [
+        "kasugai-kozoji",
+        "inuyama"
+      ]
+    },
+    {
+      "slug": "kanazawa",
+      "name": "金沢エリア",
+      "url": "https://kanazawa-coating.com/",
+      "storeIds": [
+        "kanazawa-izumihonmachi",
+        "kanazawa-okyozuka",
+        "kanazawa-minami"
+      ]
+    },
+    {
+      "slug": "yokkaichi",
+      "name": "四日市エリア",
+      "url": "https://yokkaichi-coating.com/",
+      "storeIds": [
+        "yokkaichi-kubota",
+        "yokkaichi",
+        "yokkaichi-milkroad"
+      ]
+    },
+    {
+      "slug": "takatsuki",
+      "name": "高槻エリア",
+      "url": "https://takatsuki-coating.com/",
+      "storeIds": [
+        "takatsuki-iozumi"
+      ]
+    },
+    {
+      "slug": "nawate",
+      "name": "羽曳野・枚方エリア",
+      "url": "https://nawate-coating.com/",
+      "storeIds": [
+        "neyagawa-higashikori"
+      ]
+    },
+    {
+      "slug": "otake",
+      "name": "大竹エリア",
+      "url": "https://otake-coating.com/",
+      "storeIds": [
+        "otake"
+      ]
+    },
+    {
+      "slug": "okayama",
+      "name": "岡山エリア",
+      "url": "https://okayama-coating.com/",
+      "storeIds": [
+        "okayama-ezaki",
+        "okayama-takebe"
+      ]
+    },
+    {
+      "slug": "hiroshima",
+      "name": "広島緑井エリア",
+      "url": "https://coating-hiroshima.com/",
+      "storeIds": [
+        "hiroshima-midorii",
+        "hiroshima-shokubutsuen"
+      ]
+    },
+    {
+      "slug": "sanin",
+      "name": "鳥取・山陰エリア",
+      "url": "https://sanin-coating.com/",
+      "storeIds": [
+        "tottori-johoku",
+        "matsue-oba"
+      ]
+    },
+    {
+      "slug": "izumo",
+      "name": "出雲エリア",
+      "url": "https://izumo-coating.com/",
+      "storeIds": [
+        "izumo-hamayamadori"
+      ]
+    },
+    {
+      "slug": "tottorishi",
+      "name": "米子エリア",
+      "url": "https://tottorishi-coating.com/",
+      "storeIds": [
+        "yonago-kaibancho"
+      ]
+    },
+    {
+      "slug": "miki",
+      "name": "三木エリア",
+      "url": "https://miki-coating.com/",
+      "storeIds": [
+        "miki-kobayashi",
+        "miki-aoyama"
+      ]
+    },
+    {
+      "slug": "kobe-himeji",
+      "name": "兵庫エリア",
+      "url": "https://kobe-himeji-coating.com/",
+      "storeIds": [
+        "himeji-yumedai",
+        "himeji-carwash"
+      ]
+    },
+    {
+      "slug": "kobe",
+      "name": "神戸エリア",
+      "url": "https://kobe-coating.com/",
+      "storeIds": [
+        "kobe-shinkaichi",
+        "kobe-kitamachi"
+      ]
+    },
+    {
+      "slug": "takamatsu",
+      "name": "高松エリア",
+      "url": "https://takamatsu-coating.com/",
+      "storeIds": [
+        "takamatsu-kukodori"
+      ]
+    },
+    {
+      "slug": "kochi",
+      "name": "高知・四万十エリア",
+      "url": "https://kochi-coating.com/",
+      "storeIds": [
+        "kochi-harimaya",
+        "kochi-nakamura"
+      ]
+    },
+    {
+      "slug": "tokushima",
+      "name": "徳島エリア",
+      "url": "https://tokushima-coating.com/",
+      "storeIds": [
+        "tokushima-nakasu"
+      ]
+    },
+    {
+      "slug": "niihama",
+      "name": "新居浜エリア",
+      "url": "https://niihama-coating.com/",
+      "storeIds": [
+        "niihama-aeon"
+      ]
+    },
+    {
+      "slug": "shimonoseki",
+      "name": "下関エリア",
+      "url": "https://coating-shimonoseki.com/",
+      "storeIds": [
+        "shimonoseki-yasuoka",
+        "shimonoseki-sanbyakume"
+      ]
+    },
+    {
+      "slug": "kumamoto",
+      "name": "熊本エリア",
+      "url": "https://kumamoto-coating.com/",
+      "storeIds": [
+        "kumamoto-sakuragi",
+        "kumamoto-otsu",
+        "kumamoto-motoyama"
+      ]
+    },
+    {
+      "slug": "fukuoka-sasebo",
+      "name": "福岡西エリア",
+      "url": "https://fukuoka-sasebo-coating.com/",
+      "storeIds": [
+        "fukuoka-nishi-nagasumi"
+      ]
+    },
+    {
+      "slug": "sasebo",
+      "name": "佐世保エリア",
+      "url": "https://sasebo-coating.com/",
+      "storeIds": [
+        "sasebo"
+      ]
+    },
+    {
+      "slug": "kitakyushu",
+      "name": "北九州エリア",
+      "url": "https://kitakyushu-coating.com/",
+      "storeIds": [
+        "kitakyushu-momozono"
+      ]
+    }
+  ]
+}
