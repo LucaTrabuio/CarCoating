@@ -65,6 +65,7 @@ export async function sendConfirmationEmail(opts: {
   locationAddress: string;
   type: string;
   reservationId: string;
+  cancelToken?: string;
   isConfirmed?: boolean;
   adminMessage?: string;
 }): Promise<void> {
@@ -100,7 +101,7 @@ export async function sendConfirmationEmail(opts: {
           TEL: ${opts.locationPhone}
         </div>
         <div style="text-align:center;margin:24px 0 16px">
-          <a href="${siteUrl}/cancel/${opts.reservationId}" style="display:inline-block;padding:10px 20px;background:#f5f5f5;color:#666;border:1px solid #ddd;border-radius:6px;font-size:12px;text-decoration:none">
+          <a href="${siteUrl}/cancel/${opts.reservationId}${opts.cancelToken ? `?token=${opts.cancelToken}` : ''}" style="display:inline-block;padding:10px 20px;background:#f5f5f5;color:#666;border:1px solid #ddd;border-radius:6px;font-size:12px;text-decoration:none">
             予約をキャンセル
           </a>
         </div>

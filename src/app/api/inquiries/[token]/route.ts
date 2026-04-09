@@ -1,12 +1,25 @@
 import { NextResponse } from 'next/server';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ token: string }> },
 ) {
+  // Rate limit: 30 requests/min per IP (defense-in-depth against token brute force)
+  const ip = getClientIp(request);
+  const { allowed } = rateLimit(`inquiry:${ip}`, 30);
+  if (!allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   try {
     const { token } = await params;
+
+    // Reject obviously malformed tokens before hitting Firestore
+    if (!token || token.length < 16 || token.length > 128) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 400 });
+    }
 
     const db = getAdminDb();
     const snapshot = await db

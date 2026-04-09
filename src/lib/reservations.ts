@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { getAdminDb } from './firebase-admin';
 import type { ReservationChoice } from './reservation-types';
 
@@ -11,9 +12,15 @@ export interface CreateReservationInput {
   notes: string;
 }
 
-export async function createReservation(input: CreateReservationInput): Promise<string> {
+export interface CreateReservationResult {
+  id: string;
+  cancelToken: string;
+}
+
+export async function createReservation(input: CreateReservationInput): Promise<CreateReservationResult> {
   const db = getAdminDb();
   const now = new Date().toISOString();
+  const cancelToken = randomUUID();
 
   const data = {
     type: input.type,
@@ -26,6 +33,7 @@ export async function createReservation(input: CreateReservationInput): Promise<
     email: input.email,
     notes: input.notes,
     status: 'pending',
+    cancelToken,
     googleCalendarEventId: null,
     googleCalendarId: null,
     createdAt: now,
@@ -33,5 +41,5 @@ export async function createReservation(input: CreateReservationInput): Promise<
   };
 
   const docRef = await db.collection('reservations').add(data);
-  return docRef.id;
+  return { id: docRef.id, cancelToken };
 }

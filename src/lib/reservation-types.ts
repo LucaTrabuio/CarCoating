@@ -30,6 +30,7 @@ export interface Reservation {
   email: string;
   notes: string;
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
+  cancelToken?: string;
   googleCalendarEventId?: string | null;
   googleCalendarId?: string | null;
   createdAt: string | null;

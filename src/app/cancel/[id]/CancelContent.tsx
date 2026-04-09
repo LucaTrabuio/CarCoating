@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function CancelContent({ reservationId }: { reservationId: string }) {
+export default function CancelContent({ reservationId, token }: { reservationId: string; token?: string }) {
   const [cancelling, setCancelling] = useState(false);
   const [cancelled, setCancelled] = useState(false);
   const [error, setError] = useState('');
@@ -12,7 +12,8 @@ export default function CancelContent({ reservationId }: { reservationId: string
     setCancelling(true);
     setError('');
     try {
-      const res = await fetch(`/api/cancel/${reservationId}`, { method: 'POST' });
+      const url = token ? `/api/cancel/${reservationId}?token=${token}` : `/api/cancel/${reservationId}`;
+      const res = await fetch(url, { method: 'POST' });
       if (!res.ok) throw new Error();
       setCancelled(true);
     } catch {

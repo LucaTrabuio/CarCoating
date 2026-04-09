@@ -6,6 +6,9 @@ const COLLECTION = 'site_config';
 const DOC_ID = 'homepage';
 
 export async function GET() {
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
+
   try {
     const db = getAdminDb();
     const doc = await db.collection(COLLECTION).doc(DOC_ID).get();

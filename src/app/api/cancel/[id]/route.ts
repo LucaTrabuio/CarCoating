@@ -5,8 +5,10 @@ import { getStoreSettings } from '@/lib/store-settings';
 import { deleteCalendarEvent } from '@/lib/google-calendar';
 import { sendCancellationConfirmationEmail, sendCancellationNotificationEmail } from '@/lib/email';
 
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const { searchParams } = new URL(request.url);
+  const token = searchParams.get('token');
 
   try {
     const db = getAdminDb();
@@ -15,6 +17,15 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     if (!doc.exists) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
     const data = doc.data()!;
+
+    // Require cancel token for reservations that have one (legacy reservations without
+    // cancelToken can still be cancelled without — remove this fallback after the grace period).
+    if (data.cancelToken) {
+      if (!token || token !== data.cancelToken) {
+        return NextResponse.json({ error: 'Invalid or missing token' }, { status: 403 });
+      }
+    }
+
     if (data.status === 'cancelled') return NextResponse.json({ error: 'Already cancelled' }, { status: 409 });
     if (data.status === 'completed') return NextResponse.json({ error: 'Already completed' }, { status: 409 });
 
@@ -33,7 +44,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     const locationName = store?.store_name || data.storeId;
     const settings = await getStoreSettings(data.storeId);
 
-    await Promise.allSettled([
+    const results = await Promise.allSettled([
       sendCancellationConfirmationEmail({
         customerEmail: data.email,
         customerName: data.name,
@@ -52,6 +63,11 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
           })
         : Promise.resolve(),
     ]);
+    results.forEach((result, i) => {
+      if (result.status === 'rejected') {
+        console.error(`[cancel ${id}] email ${i} failed:`, result.reason);
+      }
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

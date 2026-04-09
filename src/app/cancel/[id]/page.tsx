@@ -5,13 +5,27 @@ import CancelContent from './CancelContent';
 
 export const revalidate = 0;
 
-export default async function CancelPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function CancelPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ token?: string }>;
+}) {
   const { id } = await params;
+  const { token } = await searchParams;
   const db = getAdminDb();
   const doc = await db.collection('reservations').doc(id).get();
   if (!doc.exists) notFound();
 
   const data = doc.data()!;
+
+  // Require token for reservations that have one. Legacy reservations without
+  // cancelToken can still be cancelled — remove after grace period.
+  if (data.cancelToken && data.cancelToken !== token) {
+    notFound();
+  }
+
   const store = await getV3StoreById(data.storeId);
 
   return (
@@ -41,7 +55,7 @@ export default async function CancelPage({ params }: { params: Promise<{ id: str
         ) : data.status === 'completed' ? (
           <p className="text-center text-sm text-gray-500">この予約は完了済みのためキャンセルできません。</p>
         ) : (
-          <CancelContent reservationId={id} />
+          <CancelContent reservationId={id} token={token} />
         )}
       </div>
     </main>

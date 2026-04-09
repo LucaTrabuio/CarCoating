@@ -32,9 +32,23 @@ export async function POST(request: Request) {
       if (!Array.isArray(choices) || choices.length !== 3) {
         return NextResponse.json({ error: 'visit type requires exactly 3 date/time choices' }, { status: 400 });
       }
+      const dateRe = /^\d{4}-\d{2}-\d{2}$/;
+      const timeRe = /^\d{2}:\d{2}$/;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
       for (const choice of choices) {
         if (!choice.date || !choice.time) {
           return NextResponse.json({ error: 'Each choice must have date and time' }, { status: 400 });
+        }
+        if (!dateRe.test(choice.date) || !timeRe.test(choice.time)) {
+          return NextResponse.json({ error: 'Invalid date or time format' }, { status: 400 });
+        }
+        const parsed = new Date(`${choice.date}T${choice.time}:00+09:00`);
+        if (isNaN(parsed.getTime())) {
+          return NextResponse.json({ error: 'Invalid date or time value' }, { status: 400 });
+        }
+        if (parsed < today) {
+          return NextResponse.json({ error: 'Choice dates must be in the future' }, { status: 400 });
         }
       }
     }
@@ -44,7 +58,7 @@ export async function POST(request: Request) {
       : [];
 
     // Create the reservation
-    const reservationId = await createReservation({
+    const { id: reservationId, cancelToken } = await createReservation({
       type,
       storeId,
       choices: validChoices,
@@ -78,6 +92,7 @@ export async function POST(request: Request) {
         locationAddress,
         type,
         reservationId,
+        cancelToken,
       })
     );
 
@@ -98,7 +113,12 @@ export async function POST(request: Request) {
       );
     }
 
-    await Promise.allSettled(emailPromises);
+    const emailResults = await Promise.allSettled(emailPromises);
+    emailResults.forEach((result, i) => {
+      if (result.status === 'rejected') {
+        console.error(`[reservation ${reservationId}] email ${i} failed:`, result.reason);
+      }
+    });
 
     return NextResponse.json({ id: reservationId });
   } catch (error) {
