@@ -1,5 +1,5 @@
 import type { BannersConfig } from '@/lib/block-types';
-import { formatPrice } from '@/lib/pricing';
+import { formatPrice, applyDiscount } from '@/lib/pricing';
 
 interface BannersBlockProps {
   config: BannersConfig;
@@ -16,7 +16,7 @@ export default function BannersBlock({ config }: BannersBlockProps) {
         <div className="grid md:grid-cols-2 gap-6">
           {visibleBanners.map(banner => {
             const discountedPrice = banner.original_price > 0 && banner.discount_rate > 0
-              ? Math.round(banner.original_price * (1 - banner.discount_rate / 100))
+              ? applyDiscount(banner.original_price, banner.discount_rate)
               : null;
 
             const content = (

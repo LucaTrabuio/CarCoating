@@ -3,6 +3,11 @@ import { coatingTiers } from '@/data/coating-tiers';
 
 export type PriceOverrides = Record<string, Record<string, number>>;
 
+/** Apply a percentage discount to a price, rounded to the nearest yen. */
+export function applyDiscount(price: number, discountRate: number): number {
+  return Math.round(price * (1 - discountRate / 100));
+}
+
 export function parsePriceOverrides(json?: string): PriceOverrides | undefined {
   if (!json) return undefined;
   try {
@@ -19,8 +24,7 @@ export function getPriceForSize(tier: CoatingTier, size: CarSize, overrides?: Pr
 }
 
 export function getWebPrice(tier: CoatingTier, size: CarSize, discountRate: number, overrides?: PriceOverrides): number {
-  const regular = getPriceForSize(tier, size, overrides);
-  return Math.round(regular * (1 - discountRate / 100));
+  return applyDiscount(getPriceForSize(tier, size, overrides), discountRate);
 }
 
 export function getMaintenancePrice(tier: CoatingTier, size: CarSize): number | null {
