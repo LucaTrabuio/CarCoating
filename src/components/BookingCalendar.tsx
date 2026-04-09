@@ -178,7 +178,7 @@ export default function BookingCalendar({ holidays = [], onChoicesChange }: Book
                   onClick={() => handleTimeClick(time)}
                   disabled={alreadyChosen}
                   className={`py-2.5 text-center text-xs font-semibold rounded-lg border transition-all
-                    ${alreadyChosen ? 'bg-amber-500 text-white border-amber-600' :
+                    ${alreadyChosen ? 'bg-amber-500 text-white border-amber-500' :
                       'border-gray-200 hover:border-amber-500 hover:bg-amber-50 cursor-pointer'}
                   `}
                 >

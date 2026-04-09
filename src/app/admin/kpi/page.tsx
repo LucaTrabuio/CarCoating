@@ -252,7 +252,7 @@ export default function KpiPage() {
           <p className="text-sm text-amber-800 font-medium">
             グループ集計: {selectedGroupData.storeIds.length}店舗のKPIを合算表示
           </p>
-          <p className="text-xs text-amber-600 mt-1">
+          <p className="text-xs text-amber-500 mt-1">
             {selectedGroupData.storeIds.map(id => {
               const s = stores.find(st => st.store_id === id);
               return s?.store_name || id;

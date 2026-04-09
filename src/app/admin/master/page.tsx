@@ -154,7 +154,7 @@ export default function MasterPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-50"
+          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500 disabled:opacity-50"
         >
           {saving ? '保存中...' : '保存'}
         </button>

@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { FONT_PRESETS } from '@/lib/types';
 
 export default function CampaignsPage() {
   const [campaignTitle, setCampaignTitle] = useState('春の新生活キャンペーン');
-  const [bannerColor, setBannerColor] = useState('#c49a2a');
+  const [bannerColor, setBannerColor] = useState('#001AFF');
   const [campaignStart, setCampaignStart] = useState('2026-04-01');
   const [campaignEnd, setCampaignEnd] = useState('2026-04-30');
   const [campaignDiscount, setCampaignDiscount] = useState('20');
+  const [campaignFont, setCampaignFont] = useState('');
   const [campaignSaved, setCampaignSaved] = useState(false);
   const [campaignLoaded, setCampaignLoaded] = useState(false);
 
@@ -20,13 +22,21 @@ export default function CampaignsPage() {
         if (data.start) setCampaignStart(data.start);
         if (data.end) setCampaignEnd(data.end);
         if (data.discount !== undefined) setCampaignDiscount(String(data.discount));
+        if (data.font) setCampaignFont(data.font);
         setCampaignLoaded(true);
       })
       .catch(() => setCampaignLoaded(true));
   }, []);
 
   async function handleCampaignSave() {
-    const data = { title: campaignTitle, color: bannerColor, start: campaignStart, end: campaignEnd, discount: parseInt(campaignDiscount) || 20 };
+    const data = {
+      title: campaignTitle,
+      color: bannerColor,
+      start: campaignStart,
+      end: campaignEnd,
+      discount: parseInt(campaignDiscount) || 20,
+      font: campaignFont || undefined,
+    };
     try {
       const res = await fetch('/api/campaign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       if (!res.ok) throw new Error('Failed');
@@ -37,6 +47,9 @@ export default function CampaignsPage() {
     setCampaignSaved(true);
     setTimeout(() => setCampaignSaved(false), 3000);
   }
+
+  const selectedFont = FONT_PRESETS.find(f => f.id === campaignFont);
+  const previewFontStyle = selectedFont ? { fontFamily: selectedFont.family } : {};
 
   return (
     <div className="max-w-[700px] mx-auto">
@@ -69,17 +82,36 @@ export default function CampaignsPage() {
             <p className="text-xs text-gray-400 mt-1">店舗個別設定がある場合はそちらが優先</p>
           </div>
         </div>
+        <div className="mb-3">
+          <label className="block text-xs font-semibold mb-1">バナーフォント</label>
+          <select
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            value={campaignFont}
+            onChange={e => setCampaignFont(e.target.value)}
+          >
+            <option value="">デフォルト（システムフォント）</option>
+            {FONT_PRESETS.map(f => (
+              <option key={f.id} value={f.id}>{f.label}</option>
+            ))}
+          </select>
+        </div>
 
         {/* Live Preview */}
         <div className="mt-4 mb-4">
           <p className="text-xs text-gray-400 mb-2">プレビュー（リアルタイム）:</p>
-          <div className="text-white text-center py-3 px-5 font-bold text-sm rounded-lg" style={{ background: `linear-gradient(135deg, ${bannerColor}, ${bannerColor}88 40%, ${bannerColor} 60%, ${bannerColor}cc)` }}>
-            {campaignTitle || 'キャンペーンタイトル'} ｜ 最大{campaignDiscount || '0%'}OFF
+          <div
+            className="text-white text-center py-3 px-5 font-bold text-sm rounded-lg"
+            style={{
+              background: `linear-gradient(135deg, ${bannerColor}, ${bannerColor}dd)`,
+              ...previewFontStyle,
+            }}
+          >
+            {campaignTitle || 'キャンペーンタイトル'} ｜ 最大{campaignDiscount || '0'}%OFF
             <div className="text-[11px] font-normal opacity-80 mt-0.5">Web予約限定 ｜ {campaignEnd ? new Date(campaignEnd + 'T00:00:00').toLocaleDateString('ja-JP') : '—'}まで</div>
           </div>
         </div>
 
-        <button onClick={handleCampaignSave} className="px-6 py-2.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold">保存して全店舗に反映</button>
+        <button onClick={handleCampaignSave} className="px-6 py-2.5 bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-lg text-sm font-bold cursor-pointer">保存して全店舗に反映</button>
         {campaignSaved && (
           <p className="text-xs text-green-600 font-semibold mt-2">✓ キャンペーン設定を保存しました</p>
         )}

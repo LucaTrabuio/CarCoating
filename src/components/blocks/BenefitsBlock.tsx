@@ -11,7 +11,7 @@ export default function BenefitsBlock({ config, basePath, discountRate }: Benefi
   if (config.items.length === 0) return null;
 
   return (
-    <section className="py-14 px-5 bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-50">
+    <section className="py-14 px-5 bg-gradient-to-br from-amber-50 via-amber-50 to-amber-50">
       <div className="max-w-[700px] mx-auto">
         <h2
           className="text-xl md:text-2xl font-bold text-[#0f1c2e] text-center mb-2"
@@ -22,7 +22,7 @@ export default function BenefitsBlock({ config, basePath, discountRate }: Benefi
         <p className="text-sm text-slate-400 text-center mb-8">
           最大{discountRate}%OFFの割引をはじめ、特典が充実
         </p>
-        <div className="bg-gradient-to-br from-amber-600 via-yellow-600 to-amber-700 rounded-2xl p-6 md:p-8 shadow-lg">
+        <div className="bg-gradient-to-br from-amber-500 via-amber-700 to-amber-700 rounded-2xl p-6 md:p-8 shadow-lg">
           <ol className="space-y-4">
             {config.items.map((item, i) => (
               <li key={item.id} className="flex items-start gap-3">

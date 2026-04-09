@@ -35,7 +35,7 @@ export default function CasesBlock({ config, basePath }: CasesBlockProps) {
           <div className="text-center mt-8">
             <Link
               href={`${basePath}/cases`}
-              className="inline-block text-amber-500 text-sm font-semibold hover:text-amber-600 transition-colors"
+              className="inline-block text-amber-500 text-sm font-semibold hover:text-amber-500 transition-colors"
             >
               {'\u65BD\u5DE5\u4E8B\u4F8B\u3092\u3059\u3079\u3066\u898B\u308B \u2192'}
             </Link>

@@ -95,7 +95,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
           position: { lat: store.lat, lng: store.lng },
           map,
           title: store.store_name,
-          icon: { path: maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#f59e0b', fillOpacity: 1, strokeColor: '#0f1c2e', strokeWeight: 2 },
+          icon: { path: maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#c49a2a', fillOpacity: 1, strokeColor: '#0f1c2e', strokeWeight: 2 },
         });
 
         marker.addListener('click', () => {
@@ -193,7 +193,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
                 <button
                   onClick={detectLocation}
                   disabled={geoStatus === 'detecting'}
-                  className="text-xs text-amber-600 font-semibold hover:underline disabled:opacity-50"
+                  className="text-xs text-amber-500 font-semibold hover:underline disabled:opacity-50"
                 >
                   {geoStatus === 'detecting' ? '検出中...' : geoStatus === 'done' ? '再検出' : '📍 現在地から探す'}
                 </button>
@@ -237,7 +237,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
                           <p className="text-xs text-gray-500 mt-0.5">{store.address}</p>
                           <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
                             {store.tel && <span>{store.tel}</span>}
-                            {store.has_booth && <span className="text-amber-600 font-semibold">ブース有</span>}
+                            {store.has_booth && <span className="text-amber-500 font-semibold">ブース有</span>}
                           </div>
                           {stations.length > 0 && (
                             <p className="text-[11px] text-gray-400 mt-0.5">
@@ -247,7 +247,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
                         </div>
                         <div className="flex flex-col items-end gap-1 flex-shrink-0">
                           {store.distance !== null && (
-                            <span className="text-amber-600 text-xs font-bold">
+                            <span className="text-amber-500 text-xs font-bold">
                               {store.distance < 1 ? `${Math.round(store.distance * 1000)}m` : `${store.distance.toFixed(1)}km`}
                             </span>
                           )}

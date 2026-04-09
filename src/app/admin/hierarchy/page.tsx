@@ -231,7 +231,7 @@ function StoreNode({
           <div className="text-[11px] text-gray-400 flex items-center gap-2">
             <span>{store.prefecture}{store.city}</span>
             {store.tel && <span>📞 {store.tel}</span>}
-            {store.has_booth && <span className="text-amber-600">ブース有</span>}
+            {store.has_booth && <span className="text-amber-500">ブース有</span>}
             {(store.level1_staff_count || 0) > 0 && (
               <span>L1: {store.level1_staff_count}名</span>
             )}
@@ -252,7 +252,7 @@ function StoreNode({
             </Link>
           )}
           <Link
-            href={`/v3/${store.store_id}`}
+            href={`/${store.store_id}`}
             target="_blank"
             className="text-[10px] bg-gray-100 text-gray-700 px-2 py-1 rounded font-semibold hover:bg-gray-200"
           >

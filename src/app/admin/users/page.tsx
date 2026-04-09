@@ -22,8 +22,9 @@ export default function UsersPage() {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<'super_admin' | 'store_admin'>('store_admin');
-  const [managedStores, setManagedStores] = useState('');
+  const [managedStores, setManagedStores] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [allStores, setAllStores] = useState<{ store_id: string; store_name: string }[]>([]);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -39,7 +40,13 @@ export default function UsersPage() {
   }, []);
 
   useEffect(() => {
-    if (admin.role === 'super_admin') fetchUsers();
+    if (admin.role === 'super_admin') {
+      fetchUsers();
+      fetch('/api/v3/stores?all=true')
+        .then(r => r.json())
+        .then(data => { if (Array.isArray(data)) setAllStores(data.map((s: { store_id: string; store_name: string }) => ({ store_id: s.store_id, store_name: s.store_name }))); })
+        .catch(() => {});
+    }
   }, [admin.role, fetchUsers]);
 
   if (admin.role !== 'super_admin') {
@@ -67,10 +74,7 @@ export default function UsersPage() {
           password,
           displayName,
           role,
-          managed_stores: managedStores
-            .split(',')
-            .map((s) => s.trim())
-            .filter(Boolean),
+          managed_stores: managedStores,
         }),
       });
       if (!res.ok) {
@@ -81,7 +85,7 @@ export default function UsersPage() {
       setPassword('');
       setDisplayName('');
       setRole('store_admin');
-      setManagedStores('');
+      setManagedStores([]);
       fetchUsers();
     } catch (e) {
       alert(e instanceof Error ? e.message : '作成に失敗しました');
@@ -151,23 +155,40 @@ export default function UsersPage() {
               <option value="super_admin">super_admin</option>
             </select>
           </div>
-          <div className="sm:col-span-2">
-            <label className="mb-1 block text-sm text-gray-700">
-              管理店舗 (カンマ区切りの店舗ID)
-            </label>
-            <input
-              type="text"
-              value={managedStores}
-              onChange={(e) => setManagedStores(e.target.value)}
-              placeholder="例: store_001, store_002"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
+          {role === 'store_admin' && (
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm text-gray-700">管理店舗</label>
+              <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-300 p-2 space-y-1">
+                {allStores.length === 0 ? (
+                  <p className="text-xs text-gray-400 p-1">店舗を読み込み中...</p>
+                ) : (
+                  allStores.map(s => (
+                    <label key={s.store_id} className="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50 cursor-pointer text-sm">
+                      <input
+                        type="checkbox"
+                        checked={managedStores.includes(s.store_id)}
+                        onChange={(e) => {
+                          if (e.target.checked) setManagedStores(prev => [...prev, s.store_id]);
+                          else setManagedStores(prev => prev.filter(id => id !== s.store_id));
+                        }}
+                        className="rounded"
+                      />
+                      <span className="text-gray-700">{s.store_name}</span>
+                      <span className="text-xs text-gray-400">({s.store_id})</span>
+                    </label>
+                  ))
+                )}
+              </div>
+              {managedStores.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">{managedStores.length}店舗選択中</p>
+              )}
+            </div>
+          )}
         </div>
         <button
           onClick={handleCreate}
           disabled={saving}
-          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-50"
+          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500 disabled:opacity-50"
         >
           {saving ? '作成中...' : 'ユーザーを作成'}
         </button>

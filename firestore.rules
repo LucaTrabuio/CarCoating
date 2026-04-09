@@ -21,7 +21,7 @@ service cloud.firestore {
     // Campaigns: public read, admin write
     match /campaigns/{docId} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.role in ['super_admin', 'store_admin'];
+      allow write: if request.auth != null && request.auth.token.role == 'super_admin';
     }
 
     // Users: self-read or super admin

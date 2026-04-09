@@ -28,7 +28,7 @@ function PriceBlurOverlay({ children, basePath, storeId }: { children: React.Rea
           storeId={storeId}
           event="cta_inquiry"
           meta={{ source: 'pricing_blur' }}
-          className="px-5 py-2 bg-amber-500 text-white font-bold rounded-lg text-xs hover:bg-amber-600 transition-colors shadow-lg"
+          className="px-5 py-2 bg-amber-500 text-white font-bold rounded-lg text-xs hover:bg-amber-500 transition-colors shadow-lg"
         >
           お問い合わせ →
         </TrackedLink>
@@ -57,7 +57,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
             className={`bg-white rounded-xl p-6 text-center border-2 ${i === 1 ? 'border-amber-500 relative' : 'border-slate-200'}`}
           >
             {i === 1 && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-600 to-amber-400 text-white text-xs font-bold px-3 py-0.5 rounded-full">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-400 text-white text-xs font-bold px-3 py-0.5 rounded-full">
                 一番人気
               </span>
             )}
@@ -106,7 +106,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
         )}
 
         <p className="text-center text-sm mt-4">
-          <Link href={`${basePath}/coatings`} className="text-amber-600 font-semibold hover:underline">
+          <Link href={`${basePath}/coatings`} className="text-amber-500 font-semibold hover:underline">
             全8コースの詳細を見る →
           </Link>
         </p>

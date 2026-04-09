@@ -277,7 +277,7 @@ function LegacyStoresSection() {
           <div className="flex gap-2">
             <button onClick={handleCSVTemplateDownload} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📋 テンプレート</button>
             <button onClick={handleExportCSV} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📤 CSVエクスポート</button>
-            <label className="px-3 py-1.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
+            <label className="px-3 py-1.5 bg-gradient-to-br from-amber-500 to-amber-500 text-white rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
               📥 CSVインポート
               <input type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
             </label>
@@ -330,7 +330,7 @@ function LegacyStoresSection() {
               <button
                 onClick={handleCSVSave}
                 disabled={csvErrors.some(e => e.includes('store_id カラム'))}
-                className="px-4 py-2 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold disabled:opacity-40"
+                className="px-4 py-2 bg-gradient-to-br from-amber-500 to-amber-500 text-white rounded-lg text-sm font-bold disabled:opacity-40"
               >
                 保存して反映する（{csvRows.length}店舗）
               </button>
@@ -366,7 +366,7 @@ function LegacyStoresSection() {
                 <div className="flex items-center gap-2">
                   {store.has_booth && <span className="text-[9px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-semibold">ブース</span>}
                   {store.discount_rate > 0 && <span className="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-semibold">{store.discount_rate}%OFF</span>}
-                  <Link href={`/${store.store_id}`} className="text-xs text-amber-600 font-semibold hover:underline">プレビュー →</Link>
+                  <Link href={`/${store.store_id}`} className="text-xs text-amber-500 font-semibold hover:underline">プレビュー →</Link>
                 </div>
               </div>
             ))}
@@ -515,7 +515,7 @@ function V3FirebaseSection() {
             className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-semibold hover:bg-gray-200">
             CSVエクスポート
           </button>
-          <label className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-600">
+          <label className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-500">
             CSVインポート
             <input type="file" accept=".csv" onChange={handleV3FileSelect} className="hidden" />
           </label>
@@ -554,7 +554,7 @@ function V3FirebaseSection() {
               </table>
             </div>
             <button onClick={handleV3Import} disabled={v3Loading}
-              className="mt-3 px-6 py-2.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white rounded-lg text-sm font-bold disabled:opacity-50">
+              className="mt-3 px-6 py-2.5 bg-gradient-to-br from-amber-500 to-amber-500 text-white rounded-lg text-sm font-bold disabled:opacity-50">
               {v3Loading ? '保存中...' : `Firestoreに保存（${v3CsvPreview.length}件）`}
             </button>
           </div>
@@ -617,8 +617,8 @@ function StoreHierarchy({ stores, loading }: { stores: Record<string, unknown>[]
                 <p className="text-xs text-gray-500">/{sc.slug} — {groupStores.length}店舗（共有サイト）</p>
               </div>
               <div className="flex gap-2">
-                <Link href={`/${sc.slug}`} target="_blank" className="text-xs text-amber-600 font-semibold hover:underline">サイトを見る →</Link>
-                <Link href={`/admin/builder/${String(groupStores[0]?.store_id)}`} className="text-xs bg-amber-500 text-white px-3 py-1 rounded-lg font-semibold hover:bg-amber-600">ビルダー</Link>
+                <Link href={`/${sc.slug}`} target="_blank" className="text-xs text-amber-500 font-semibold hover:underline">サイトを見る →</Link>
+                <Link href={`/admin/builder/${String(groupStores[0]?.store_id)}`} className="text-xs bg-amber-500 text-white px-3 py-1 rounded-lg font-semibold hover:bg-amber-500">ビルダー</Link>
               </div>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -647,7 +647,7 @@ function StoreHierarchy({ stores, loading }: { stores: Record<string, unknown>[]
 
 function StoreCard({ store: s, companySlug }: { store: Record<string, unknown>; companySlug?: string }) {
   const storeId = String(s.store_id);
-  const previewUrl = companySlug ? `/${companySlug}` : `/v3/${storeId}/`;
+  const previewUrl = companySlug ? `/${companySlug}` : `/${storeId}/`;
 
   return (
     <div className={`border rounded-lg p-4 ${s.is_active === false ? 'bg-gray-50 border-gray-200 opacity-50' : 'border-gray-200'}`}>
@@ -660,9 +660,9 @@ function StoreCard({ store: s, companySlug }: { store: Record<string, unknown>; 
       </div>
       <p className="text-xs text-gray-500">{String(s.prefecture || '')} {String(s.city || '')}</p>
       <p className="text-xs text-gray-400 mt-1">{String(s.address || '')}</p>
-      {s.discount_rate ? <p className="text-xs text-amber-600 font-semibold mt-1">割引率: {String(s.discount_rate)}%</p> : null}
+      {s.discount_rate ? <p className="text-xs text-amber-500 font-semibold mt-1">割引率: {String(s.discount_rate)}%</p> : null}
       <div className="flex gap-2 mt-2">
-        <Link href={previewUrl} target="_blank" className="text-xs text-amber-600 font-semibold hover:underline">プレビュー →</Link>
+        <Link href={previewUrl} target="_blank" className="text-xs text-amber-500 font-semibold hover:underline">プレビュー →</Link>
         <Link href={`/admin/builder/${storeId}`} className="text-xs text-blue-600 font-semibold hover:underline">ビルダー →</Link>
       </div>
     </div>

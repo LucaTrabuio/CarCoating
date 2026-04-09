@@ -30,7 +30,7 @@ export default function HomeSimulatorLink({ storeId, basePath }: { storeId: stri
       <CarSimulator onSizeChange={handleSizeChange} />
       <button
         onClick={handleNavigate}
-        className="inline-block mt-6 px-8 py-3 bg-gradient-to-br from-amber-600 via-amber-400 to-amber-700 text-white font-bold rounded-lg text-base hover:opacity-90 transition-opacity cursor-pointer"
+        className="inline-block mt-6 px-8 py-3 bg-gradient-to-br from-amber-500 via-amber-400 to-amber-700 text-white font-bold rounded-lg text-base hover:opacity-90 transition-opacity cursor-pointer"
       >
         見積もりシミュレーターへ →
       </button>

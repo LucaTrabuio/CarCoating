@@ -27,7 +27,7 @@ export default function BeforeAfterBlock({ config, store, basePath }: BeforeAfte
         {config.show_link_to_cases && (
           <Link
             href={`${basePath}/cases`}
-            className="inline-block mt-6 text-amber-500 text-sm font-semibold hover:text-amber-600 transition-colors"
+            className="inline-block mt-6 text-amber-500 text-sm font-semibold hover:text-amber-500 transition-colors"
           >
             {'\u65BD\u5DE5\u4E8B\u4F8B\u3092\u3082\u3063\u3068\u898B\u308B \u2192'}
           </Link>

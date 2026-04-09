@@ -159,7 +159,7 @@ function AdminLoginPageContent() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-amber-500 hover:bg-amber-500 text-white font-bold rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'ログイン中...' : 'メールでログイン'}
             </button>

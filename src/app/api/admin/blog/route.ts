@@ -23,11 +23,17 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { title, slug, content, published } = body as {
+  const { title, slug, content, published, summary, category, publishDate, metaTitle, metaDescription, sections } = body as {
     title: string;
     slug: string;
     content: string;
     published: boolean;
+    summary?: string;
+    category?: string;
+    publishDate?: string;
+    metaTitle?: string;
+    metaDescription?: string;
+    sections?: { heading: string; text: string }[];
   };
 
   if (!title || !slug) {
@@ -41,6 +47,12 @@ export async function POST(req: NextRequest) {
     slug,
     content: content ?? '',
     published: published ?? false,
+    summary: summary ?? '',
+    category: category ?? 'educational',
+    publishDate: publishDate ?? now.slice(0, 10),
+    metaTitle: metaTitle ?? title,
+    metaDescription: metaDescription ?? summary ?? '',
+    sections: sections ?? [],
     author_uid: user.uid,
     created_at: now,
     updated_at: now,

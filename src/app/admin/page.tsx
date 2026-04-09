@@ -67,7 +67,7 @@ export default function AdminDashboard() {
         <div className="bg-white border border-gray-200 rounded-xl p-5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold text-sm text-gray-900">アクティブ店舗</h2>
-            <Link href="/admin/stores" className="text-xs text-amber-600 font-semibold hover:underline">全て見る →</Link>
+            <Link href="/admin/stores" className="text-xs text-amber-500 font-semibold hover:underline">全て見る →</Link>
           </div>
           <div className="divide-y divide-gray-100">
             {activeStores.slice(0, 8).map(s => (

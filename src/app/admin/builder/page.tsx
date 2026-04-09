@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
 
 interface Store {
   store_id: string;
@@ -20,6 +21,7 @@ interface SubCompany {
 }
 
 export default function BuilderPage() {
+  const user = useAdminAuth();
   const [stores, setStores] = useState<Store[]>([]);
   const [subCompanies, setSubCompanies] = useState<SubCompany[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,12 +32,17 @@ export default function BuilderPage() {
       fetch('/api/admin/sub-companies').then(r => r.ok ? r.json() : []),
     ])
       .then(([storeData, scData]) => {
-        setStores(Array.isArray(storeData) ? storeData : []);
+        let storeList: Store[] = Array.isArray(storeData) ? storeData : [];
+        // Store admins only see their managed stores
+        if (user.role === 'store_admin') {
+          storeList = storeList.filter(s => user.managed_stores.includes(s.store_id));
+        }
+        setStores(storeList);
         setSubCompanies(Array.isArray(scData) ? scData : []);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   // Group stores by sub_company_id
   const grouped = new Map<string, Store[]>();
@@ -75,7 +82,7 @@ export default function BuilderPage() {
                 className="group rounded-xl border-2 border-blue-200 bg-white p-5 transition-shadow hover:shadow-md hover:border-amber-400"
               >
                 <div className="flex items-start justify-between">
-                  <h2 className="text-sm font-bold text-gray-900 group-hover:text-amber-600">
+                  <h2 className="text-sm font-bold text-gray-900 group-hover:text-amber-500">
                     {sc.name}
                   </h2>
                   <span className="rounded bg-blue-100 text-blue-700 px-1.5 py-0.5 text-[10px] font-bold">
@@ -92,7 +99,7 @@ export default function BuilderPage() {
                     </span>
                   ))}
                 </div>
-                <p className="mt-3 text-xs font-medium text-amber-500 group-hover:text-amber-600">
+                <p className="mt-3 text-xs font-medium text-amber-500 group-hover:text-amber-500">
                   ビルダーを開く &rarr;
                 </p>
               </Link>
@@ -107,7 +114,7 @@ export default function BuilderPage() {
               className="group rounded-xl border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
             >
               <div className="flex items-start justify-between">
-                <h2 className="text-sm font-bold text-gray-900 group-hover:text-amber-600">
+                <h2 className="text-sm font-bold text-gray-900 group-hover:text-amber-500">
                   {store.store_name}
                 </h2>
                 <span
@@ -121,7 +128,7 @@ export default function BuilderPage() {
               {(store.prefecture || store.city) && (
                 <p className="mt-1 text-xs text-gray-500">{store.prefecture}{store.city}</p>
               )}
-              <p className="mt-3 text-xs font-medium text-amber-500 group-hover:text-amber-600">
+              <p className="mt-3 text-xs font-medium text-amber-500 group-hover:text-amber-500">
                 ビルダーを開く &rarr;
               </p>
             </Link>

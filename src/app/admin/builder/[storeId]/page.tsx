@@ -464,7 +464,7 @@ export default function BuilderPage() {
       await fetch('/api/admin/revalidate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: `/v3/${storeId}` }),
+        body: JSON.stringify({ path: `/${storeId}` }),
       }).catch(() => {});
       // Small delay to let revalidation complete, then refresh preview
       await new Promise(r => setTimeout(r, 500));
@@ -506,7 +506,7 @@ export default function BuilderPage() {
         </div>
         <div className="flex items-center gap-3">
           {dirty && (
-            <span className="text-xs text-amber-600 font-medium">Unsaved changes</span>
+            <span className="text-xs text-amber-500 font-medium">Unsaved changes</span>
           )}
           <button
             onClick={handleSave}
@@ -1037,7 +1037,7 @@ export default function BuilderPage() {
                   Refresh
                 </button>
                 <a
-                  href={`/v3/${storeId}${previewPath}`}
+                  href={`/${storeId}${previewPath}`}
                   target="_blank"
                   rel="noopener"
                   className="text-xs text-blue-600 hover:underline"
@@ -1048,7 +1048,7 @@ export default function BuilderPage() {
             </div>
             <iframe
               key={iframeKey}
-              src={`/v3/${storeId}${previewPath}`}
+              src={`/${storeId}${previewPath}`}
               className="flex-1 w-full border-0"
               title="Store Preview"
             />

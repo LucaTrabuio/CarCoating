@@ -82,7 +82,7 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
   return (
     <div>
       <p className="text-sm font-semibold mb-1">
-        選択中のプラン: <span className="text-amber-600">{basePlanName}</span>
+        選択中のプラン: <span className="text-amber-500">{basePlanName}</span>
       </p>
       {showDiscountBanner && optionDiscountRate > 0 && (
         <p className="text-xs text-emerald-600 font-semibold mb-3">
@@ -95,10 +95,10 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
           {visible.map(opt => (
             <label key={opt.id} className="flex items-center justify-between py-2.5 px-1 border-b border-gray-100 cursor-pointer hover:bg-gray-50">
               <div className="flex items-center gap-2.5">
-                <input type="checkbox" checked={selected.has(opt.id)} onChange={() => toggle(opt.id)} className="accent-amber-600 w-4 h-4" />
+                <input type="checkbox" checked={selected.has(opt.id)} onChange={() => toggle(opt.id)} className="accent-amber-500 w-4 h-4" />
                 <div>
                   <span className="text-sm">{opt.name}</span>
-                  <span className="text-[10px] text-amber-600 font-bold ml-1">★人気</span>
+                  <span className="text-[10px] text-amber-500 font-bold ml-1">★人気</span>
                   <div className="text-[11px] text-gray-400">{opt.description} ｜ {opt.time}</div>
                 </div>
               </div>
@@ -117,11 +117,11 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
               {OPTIONS.filter(o => o.category === cat).map(opt => (
                 <label key={opt.id} className="flex items-center justify-between py-2 px-1 border-b border-gray-100 cursor-pointer hover:bg-gray-50">
                   <div className="flex items-center gap-2.5">
-                    <input type="checkbox" checked={selected.has(opt.id)} onChange={() => toggle(opt.id)} className="accent-amber-600 w-4 h-4" />
+                    <input type="checkbox" checked={selected.has(opt.id)} onChange={() => toggle(opt.id)} className="accent-amber-500 w-4 h-4" />
                     <div>
                       <span className="text-sm">
                         {opt.name}
-                        {opt.popular && <span className="text-[10px] text-amber-600 font-bold ml-1">★人気</span>}
+                        {opt.popular && <span className="text-[10px] text-amber-500 font-bold ml-1">★人気</span>}
                       </span>
                       <div className="text-[11px] text-gray-400">{opt.description} ｜ {opt.time}</div>
                     </div>
@@ -138,7 +138,7 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
       )}
 
       {!showAll && (
-        <button onClick={() => setShowAll(true)} className="text-sm text-amber-600 font-semibold mt-2 hover:underline">
+        <button onClick={() => setShowAll(true)} className="text-sm text-amber-500 font-semibold mt-2 hover:underline">
           ▼ その他のオプションを表示（全{OPTIONS.length}種）
         </button>
       )}

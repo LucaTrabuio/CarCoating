@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const method = request.method;
 
   // Normalize: strip trailing slash for comparison
   const normalizedPath = pathname.endsWith('/') && pathname !== '/'
@@ -18,7 +19,27 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Protect all admin routes
+  // V3 API write endpoints require session cookie
+  if (pathname.startsWith('/api/v3/')) {
+    if (method === 'POST' || method === 'PUT' || method === 'DELETE') {
+      const session = request.cookies.get('__session')?.value;
+      if (!session) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
+    return NextResponse.next();
+  }
+
+  // Admin API routes require session cookie
+  if (pathname.startsWith('/api/admin/')) {
+    const session = request.cookies.get('__session')?.value;
+    if (!session) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    return NextResponse.next();
+  }
+
+  // Protect all admin page routes
   if (pathname.startsWith('/admin')) {
     const session = request.cookies.get('__session')?.value;
     if (!session) {
@@ -32,5 +53,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/v3/:path*', '/api/admin/:path*'],
 };

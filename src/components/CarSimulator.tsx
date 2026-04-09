@@ -41,7 +41,7 @@ export default function CarSimulator({ onSizeChange, compact = false }: CarSimul
           <select
             value={selectedMake}
             onChange={e => handleMakeChange(e.target.value)}
-            className="w-full px-3.5 py-3 text-base rounded-lg border-2 border-gray-200 bg-white focus:border-amber-600 focus:outline-none appearance-none cursor-pointer"
+            className="w-full px-3.5 py-3 text-base rounded-lg border-2 border-gray-200 bg-white focus:border-amber-500 focus:outline-none appearance-none cursor-pointer"
           >
             <option value="">選択してください</option>
             {makes.map(m => (
@@ -54,7 +54,7 @@ export default function CarSimulator({ onSizeChange, compact = false }: CarSimul
           <select
             value={selectedModel}
             onChange={e => handleModelChange(e.target.value)}
-            className="w-full px-3.5 py-3 text-base rounded-lg border-2 border-gray-200 bg-white focus:border-amber-600 focus:outline-none appearance-none cursor-pointer"
+            className="w-full px-3.5 py-3 text-base rounded-lg border-2 border-gray-200 bg-white focus:border-amber-500 focus:outline-none appearance-none cursor-pointer"
             disabled={!selectedMake}
           >
             <option value="">{selectedMake ? '車種を選択' : 'メーカーを先に選択'}</option>

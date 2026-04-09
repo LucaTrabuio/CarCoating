@@ -1,6 +1,7 @@
 import { getAdminDb } from './firebase-admin';
 import { V3StoreData, V3_CSV_COLUMNS, defaultV3Store } from './v3-types';
 import type { CampaignDefaults } from './types';
+import { MAX_CSV_ROWS } from './constants';
 
 const STORES_COLLECTION = 'stores';
 const CAMPAIGNS_COLLECTION = 'campaigns';
@@ -10,19 +11,37 @@ const CAMPAIGN_DOC_ID = 'defaults';
 
 /** Normalize Firestore doc to V3StoreData with proper types.
  *  CSV import stores booleans as strings and numbers as strings — fix them here once. */
+function toBool(val: unknown): boolean {
+  if (typeof val === 'boolean') return val;
+  if (typeof val === 'string') {
+    const lower = val.toLowerCase();
+    return lower === 'true' || lower === 'yes' || lower === '1';
+  }
+  return false;
+}
+
+function toNum(val: unknown, fallback: number, label?: string): number {
+  const n = Number(val);
+  if (isNaN(n)) {
+    if (label) console.warn(`normalizeStore: "${label}" could not be parsed as number, using ${fallback}`);
+    return fallback;
+  }
+  return n;
+}
+
 function normalizeStore(raw: Record<string, unknown>): V3StoreData {
   return {
     ...raw,
-    is_active: raw.is_active === true || raw.is_active === 'TRUE' || raw.is_active === 'true',
-    has_booth: raw.has_booth === true || raw.has_booth === 'TRUE' || raw.has_booth === 'true',
-    lat: Number(raw.lat) || 0,
-    lng: Number(raw.lng) || 0,
-    discount_rate: Number(raw.discount_rate) || 0,
-    parking_spaces: Number(raw.parking_spaces) || 0,
-    level1_staff_count: Number(raw.level1_staff_count) || 0,
-    level2_staff_count: Number(raw.level2_staff_count) || 0,
-    price_multiplier: Number(raw.price_multiplier) || 1.0,
-    min_price_limit: Number(raw.min_price_limit) || 0,
+    is_active: toBool(raw.is_active),
+    has_booth: toBool(raw.has_booth),
+    lat: toNum(raw.lat, 0, 'lat'),
+    lng: toNum(raw.lng, 0, 'lng'),
+    discount_rate: toNum(raw.discount_rate, 0, 'discount_rate'),
+    parking_spaces: toNum(raw.parking_spaces, 0, 'parking_spaces'),
+    level1_staff_count: toNum(raw.level1_staff_count, 0, 'level1_staff_count'),
+    level2_staff_count: toNum(raw.level2_staff_count, 0, 'level2_staff_count'),
+    price_multiplier: toNum(raw.price_multiplier, 1.0, 'price_multiplier'),
+    min_price_limit: toNum(raw.min_price_limit, 0, 'min_price_limit'),
   } as V3StoreData;
 }
 
@@ -98,11 +117,26 @@ export async function exportV3StoresToCSV(): Promise<string> {
 
 // ─── CSV Import (parse CSV row to V3StoreData) ──────────────
 
+function safeJsonString(val: string, fallback: string = '[]'): string {
+  if (!val || val === fallback) return fallback;
+  try { JSON.parse(val); return val; } catch { return fallback; }
+}
+
+function clampNum(val: number, min: number, max: number, fallback: number): number {
+  if (isNaN(val)) return fallback;
+  if (val < min || val > max) return fallback;
+  return val;
+}
+
 export function parseCSVToV3Stores(csvText: string): V3StoreData[] {
   // Remove BOM if present
   const text = csvText.replace(/^\uFEFF/, '');
   const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 2) return [];
+
+  if (lines.length - 1 > MAX_CSV_ROWS) {
+    throw new Error(`CSV exceeds maximum of ${MAX_CSV_ROWS} rows`);
+  }
 
   const headers = parseCSVLine(lines[0]);
   const stores: V3StoreData[] = [];
@@ -129,15 +163,15 @@ export function parseCSVToV3Stores(csvText: string): V3StoreData[] {
       regular_holiday: raw.regular_holiday || '',
       email: raw.email || '',
       line_url: raw.line_url || '',
-      lat: parseFloat(raw.lat) || 0,
-      lng: parseFloat(raw.lng) || 0,
+      lat: clampNum(parseFloat(raw.lat), -90, 90, 0),
+      lng: clampNum(parseFloat(raw.lng), -180, 180, 0),
       parking_spaces: parseInt(raw.parking_spaces) || 0,
       landmark: raw.landmark || '',
-      nearby_stations: raw.nearby_stations || '[]',
+      nearby_stations: safeJsonString(raw.nearby_stations || '', '[]'),
       access_map_url: raw.access_map_url || '',
       campaign_title: raw.campaign_title || '',
       campaign_deadline: raw.campaign_deadline || '',
-      discount_rate: parseFloat(raw.discount_rate) || 20,
+      discount_rate: clampNum(parseFloat(raw.discount_rate), 0, 100, 20),
       campaign_color_code: raw.campaign_color_code || '#c49a2a',
       hero_title: raw.hero_title || '',
       hero_subtitle: raw.hero_subtitle || '',
@@ -151,9 +185,9 @@ export function parseCSVToV3Stores(csvText: string): V3StoreData[] {
       store_interior_url: raw.store_interior_url || '',
       before_after_url: raw.before_after_url || '',
       campaign_banner_url: raw.campaign_banner_url || '',
-      gallery_images: raw.gallery_images || '[]',
-      custom_services: raw.custom_services || '[]',
-      price_multiplier: parseFloat(raw.price_multiplier) || 1.0,
+      gallery_images: safeJsonString(raw.gallery_images || '', '[]'),
+      custom_services: safeJsonString(raw.custom_services || '', '[]'),
+      price_multiplier: clampNum(parseFloat(raw.price_multiplier), 0, 10, 1.0),
       min_price_limit: parseFloat(raw.min_price_limit) || 0,
       has_booth: raw.has_booth?.toLowerCase() === 'true',
       level1_staff_count: parseInt(raw.level1_staff_count) || 0,
@@ -201,7 +235,7 @@ function parseCSVLine(line: string): string[] {
 
 const DEFAULT_CAMPAIGN: CampaignDefaults = {
   title: '春の新生活キャンペーン',
-  color: '#c49a2a',
+  color: '#001AFF',
   start: '2026-04-01',
   end: '2026-04-30',
   discount: 20,

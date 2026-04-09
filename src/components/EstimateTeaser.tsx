@@ -116,7 +116,7 @@ export default function EstimateTeaser({ storeId, basePath }: EstimateTeaserProp
           <div className="mt-6">
             <a
               href={basePath ? `${basePath}/booking` : '/booking'}
-              className="inline-block px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors"
+              className="inline-block px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
             >
               予約に進む
             </a>
@@ -270,7 +270,7 @@ export default function EstimateTeaser({ storeId, basePath }: EstimateTeaserProp
           <button
             type="submit"
             disabled={submitting || !name || !email || selectedServices.length === 0}
-            className="w-full py-3.5 bg-gradient-to-br from-amber-600 to-amber-500 text-white font-bold rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full py-3.5 bg-gradient-to-br from-amber-500 to-amber-500 text-white font-bold rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             {submitting ? '送信中...' : 'お見積もりを送信する'}
           </button>

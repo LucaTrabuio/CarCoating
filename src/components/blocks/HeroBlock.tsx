@@ -26,7 +26,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
           <p className="text-white/60 text-sm mb-4">{config.subtitle || store.hero_subtitle || `${store.store_name} \uFF5C KeePer PRO SHOP\u8A8D\u5B9A`}</p>
           {config.show_badges && <TrustBadges hasBooth={store.has_booth} level1Count={store.level1_staff_count} level2Count={store.level2_staff_count} />}
           <div className="flex gap-3 justify-center mt-5">
-            {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
+            {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
             {config.show_cta_inquiry && <TrackedLink href={`${basePath}/booking?mode=inquiry`} storeId={store.store_id} event="cta_inquiry" className="px-7 py-3 bg-white/10 border border-white/25 text-white font-semibold rounded-lg text-sm hover:bg-white/20 transition-colors">{'\u304A\u554F\u3044\u5408\u308F\u305B'}</TrackedLink>}
           </div>
         </div>

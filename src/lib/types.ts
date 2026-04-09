@@ -133,4 +133,14 @@ export interface CampaignDefaults {
   start: string;
   end: string;
   discount: number;
+  font?: string;
 }
+
+export const FONT_PRESETS = [
+  { id: 'noto-serif-jp', label: 'Noto Serif JP', family: '"Noto Serif JP", serif' },
+  { id: 'noto-sans-jp', label: 'Noto Sans JP', family: '"Noto Sans JP", sans-serif' },
+  { id: 'm-plus-rounded-1c', label: 'M PLUS Rounded 1c', family: '"M PLUS Rounded 1c", sans-serif' },
+  { id: 'zen-maru-gothic', label: 'Zen Maru Gothic', family: '"Zen Maru Gothic", sans-serif' },
+  { id: 'shippori-mincho', label: 'Shippori Mincho', family: '"Shippori Mincho", serif' },
+  { id: 'kosugi-maru', label: 'Kosugi Maru', family: '"Kosugi Maru", sans-serif' },
+] as const;

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
 
 interface Store {
   store_id: string;
@@ -23,6 +24,7 @@ const EMPTY_FORM: Omit<NewsItem, 'id'> = {
 };
 
 export default function NewsPage() {
+  const user = useAdminAuth();
   const [stores, setStores] = useState<Store[]>([]);
   const [selectedStore, setSelectedStore] = useState('');
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -31,13 +33,23 @@ export default function NewsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  // Fetch stores
+  // Fetch stores (filtered for store_admin)
   useEffect(() => {
     fetch('/api/v3/stores?all=true')
       .then((r) => r.json())
-      .then((data) => setStores(data.stores ?? data ?? []))
+      .then((data) => {
+        let list: Store[] = data.stores ?? data ?? [];
+        if (user.role === 'store_admin') {
+          list = list.filter(s => user.managed_stores.includes(s.store_id));
+        }
+        setStores(list);
+        // Auto-select first store for store_admin
+        if (user.role === 'store_admin' && list.length === 1) {
+          setSelectedStore(list[0].store_id);
+        }
+      })
       .catch(() => {});
-  }, []);
+  }, [user]);
 
   // Fetch news for selected store
   const fetchNews = useCallback(async (storeId: string) => {
@@ -168,7 +180,7 @@ export default function NewsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-50"
+              className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500 disabled:opacity-50"
             >
               {saving ? '保存中...' : '保存'}
             </button>

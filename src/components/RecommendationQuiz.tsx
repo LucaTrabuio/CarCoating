@@ -112,7 +112,7 @@ export default function RecommendationQuiz() {
           <div className="text-center">
             <button
               onClick={() => setStep(1)}
-              className="px-8 py-4 bg-gradient-to-br from-amber-600 to-amber-500 text-white font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
+              className="px-8 py-4 bg-gradient-to-br from-amber-500 to-amber-500 text-white font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
             >
               診断スタート →
             </button>
@@ -153,7 +153,7 @@ export default function RecommendationQuiz() {
             <div className="flex gap-3 justify-center flex-wrap">
               <Link
                 href={`/booking?mode=inquiry&recommended=${result.tierId}`}
-                className="px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors"
+                className="px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
               >
                 このコースについて相談する →
               </Link>

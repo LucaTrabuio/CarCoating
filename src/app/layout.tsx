@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Serif_JP } from "next/font/google";
-import VersionSwitcher from "@/components/VersionSwitcher";
+import { Noto_Serif_JP, Noto_Sans_JP, M_PLUS_Rounded_1c, Zen_Maru_Gothic, Shippori_Mincho, Kosugi_Maru } from "next/font/google";
 import "./globals.css";
 
 const notoSerif = Noto_Serif_JP({
@@ -9,6 +8,50 @@ const notoSerif = Noto_Serif_JP({
   weight: ["700"],
   display: "swap",
 });
+
+const notoSans = Noto_Sans_JP({
+  variable: "--font-noto-sans-jp",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
+const mplusRounded = M_PLUS_Rounded_1c({
+  variable: "--font-m-plus-rounded-1c",
+  subsets: ["latin"],
+  weight: ["700"],
+  display: "swap",
+});
+
+const zenMaru = Zen_Maru_Gothic({
+  variable: "--font-zen-maru-gothic",
+  subsets: ["latin"],
+  weight: ["700"],
+  display: "swap",
+});
+
+const shipporiMincho = Shippori_Mincho({
+  variable: "--font-shippori-mincho",
+  subsets: ["latin"],
+  weight: ["700"],
+  display: "swap",
+});
+
+const kosugiMaru = Kosugi_Maru({
+  variable: "--font-kosugi-maru",
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+});
+
+const fontVariables = [
+  notoSerif.variable,
+  notoSans.variable,
+  mplusRounded.variable,
+  zenMaru.variable,
+  shipporiMincho.variable,
+  kosugiMaru.variable,
+].join(' ');
 
 export const metadata: Metadata = {
   title: "KeePer PRO SHOP｜カーコーティング専門店",
@@ -24,10 +67,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${notoSerif.variable} antialiased`}>
+    <html lang="ja" className={`${fontVariables} antialiased`}>
       <body className="min-h-screen font-sans">
         {children}
-        <VersionSwitcher />
       </body>
     </html>
   );

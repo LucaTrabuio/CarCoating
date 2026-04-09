@@ -22,7 +22,16 @@ export type BlockType =
   | 'certifications'
   | 'appeal_points'
   | 'banners'
-  | 'custom_html';
+  | 'custom_html'
+  // Homepage-specific blocks
+  | 'hero_home'
+  | 'service_menu'
+  | 'why_keeper'
+  | 'store_finder'
+  | 'blog_section'
+  | 'news_home'
+  | 'process_home'
+  | 'cta_home';
 
 // ─── Per-block config interfaces ───
 
@@ -187,6 +196,52 @@ export interface CustomHtmlConfig {
   css: string;
 }
 
+// ─── Homepage block configs ───
+
+export interface HeroHomeConfig {
+  title: string;
+  subtitle: string;
+  description: string;
+  cta_primary_text: string;
+  cta_primary_link: string;
+  cta_secondary_text: string;
+  cta_secondary_link: string;
+  background_image_url: string;
+}
+
+export interface ServiceMenuConfig {
+  show_prices: boolean;
+}
+
+export interface WhyKeeperConfig {
+  items: { icon: string; title: string; desc: string }[];
+}
+
+export interface StoreFinderConfig {
+  heading: string;
+}
+
+export interface BlogSectionConfig {
+  max_articles: number;
+  heading: string;
+}
+
+export interface NewsHomeConfig {
+  max_items: number;
+  heading: string;
+}
+
+export interface ProcessHomeConfig {
+  steps: { icon: string; title: string; desc: string }[];
+}
+
+export interface CTAHomeConfig {
+  heading: string;
+  description: string;
+  button_text: string;
+  button_link: string;
+}
+
 // ─── Config type map ───
 
 export interface BlockConfigMap {
@@ -210,6 +265,14 @@ export interface BlockConfigMap {
   appeal_points: AppealPointsConfig;
   banners: BannersConfig;
   custom_html: CustomHtmlConfig;
+  hero_home: HeroHomeConfig;
+  service_menu: ServiceMenuConfig;
+  why_keeper: WhyKeeperConfig;
+  store_finder: StoreFinderConfig;
+  blog_section: BlogSectionConfig;
+  news_home: NewsHomeConfig;
+  process_home: ProcessHomeConfig;
+  cta_home: CTAHomeConfig;
 }
 
 // ─── Block instance ───

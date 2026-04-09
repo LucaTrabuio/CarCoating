@@ -9,20 +9,22 @@ interface NavItem {
   href: string;
   icon: string;
   superAdminOnly?: boolean;
+  storeAdminVisible?: boolean; // explicitly visible to store_admin
 }
 
 const NAV_ITEMS: NavItem[] = [
-  // All roles
-  { label: 'ダッシュボード', href: '/admin', icon: '▦' },
-  { label: '予約管理', href: '/admin/bookings', icon: '📅' },
-  { label: '店舗マスター', href: '/admin/stores', icon: '🏪' },
-  { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳' },
-  { label: 'ページビルダー', href: '/admin/builder', icon: '🧱' },
-  { label: '施工事例', href: '/admin/cases', icon: '📸' },
-  { label: 'お知らせ管理', href: '/admin/news', icon: '📢' },
-  { label: 'キャンペーン', href: '/admin/campaigns', icon: '🎯' },
+  // Store admin can see these
+  { label: 'ダッシュボード', href: '/admin', icon: '▦', storeAdminVisible: true },
+  { label: '予約管理', href: '/admin/bookings', icon: '📅', storeAdminVisible: true },
+  { label: 'ページビルダー', href: '/admin/builder', icon: '🧱', storeAdminVisible: true },
+  { label: 'お知らせ管理', href: '/admin/news', icon: '📢', storeAdminVisible: true },
+  { label: 'KPIダッシュボード', href: '/admin/kpi', icon: '📊', storeAdminVisible: true },
   // super_admin only
-  { label: 'KPIダッシュボード', href: '/admin/kpi', icon: '📊', superAdminOnly: true },
+  { label: '店舗マスター', href: '/admin/stores', icon: '🏪', superAdminOnly: true },
+  { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳', superAdminOnly: true },
+  { label: '施工事例', href: '/admin/cases', icon: '📸', superAdminOnly: true },
+  { label: 'トップページ', href: '/admin/homepage', icon: '🏠', superAdminOnly: true },
+  { label: 'キャンペーン', href: '/admin/campaigns', icon: '🎯', superAdminOnly: true },
   { label: 'ブログ管理', href: '/admin/blog', icon: '✏️', superAdminOnly: true },
   { label: 'ユーザー管理', href: '/admin/users', icon: '👥', superAdminOnly: true },
   { label: 'マスターデータ', href: '/admin/master', icon: '⚙️', superAdminOnly: true },
@@ -33,9 +35,12 @@ export function AdminSidebar() {
   const router = useRouter();
   const user = useAdminAuth();
 
-  const visibleItems = NAV_ITEMS.filter(
-    (item) => !item.superAdminOnly || user.role === 'super_admin',
-  );
+  const isSuper = user.role === 'super_admin';
+  const visibleItems = NAV_ITEMS.filter((item) => {
+    if (isSuper) return true;
+    if (item.superAdminOnly) return false;
+    return item.storeAdminVisible;
+  });
 
   function isActive(href: string) {
     if (href === '/admin') return pathname === '/admin';
@@ -61,6 +66,9 @@ export function AdminSidebar() {
         <div className="px-5 py-5">
           <h1 className="text-lg font-bold text-white">管理画面</h1>
           <p className="mt-1 truncate text-xs text-gray-400">{user.email}</p>
+          {!isSuper && (
+            <p className="mt-0.5 text-[10px] text-amber-400">店舗管理者</p>
+          )}
         </div>
 
         {/* Navigation */}

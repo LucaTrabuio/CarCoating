@@ -1,12 +1,25 @@
 import { CarSize, CoatingTier } from './types';
 import { coatingTiers } from '@/data/coating-tiers';
 
-export function getPriceForSize(tier: CoatingTier, size: CarSize): number {
+export type PriceOverrides = Record<string, Record<string, number>>;
+
+export function parsePriceOverrides(json?: string): PriceOverrides | undefined {
+  if (!json) return undefined;
+  try {
+    const parsed = JSON.parse(json);
+    return typeof parsed === 'object' ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export function getPriceForSize(tier: CoatingTier, size: CarSize, overrides?: PriceOverrides): number {
+  if (overrides?.[tier.id]?.[size]) return overrides[tier.id][size];
   return tier.prices[size];
 }
 
-export function getWebPrice(tier: CoatingTier, size: CarSize, discountRate: number): number {
-  const regular = tier.prices[size];
+export function getWebPrice(tier: CoatingTier, size: CarSize, discountRate: number, overrides?: PriceOverrides): number {
+  const regular = getPriceForSize(tier, size, overrides);
   return Math.round(regular * (1 - discountRate / 100));
 }
 
@@ -19,9 +32,10 @@ export function getTotalCostOverYears(
   tier: CoatingTier,
   size: CarSize,
   years: number,
-  discountRate: number
+  discountRate: number,
+  overrides?: PriceOverrides
 ): number {
-  const webPrice = getWebPrice(tier, size, discountRate);
+  const webPrice = getWebPrice(tier, size, discountRate, overrides);
 
   if (!tier.maintenance_prices) {
     // Tiers without maintenance need annual reapplication
@@ -36,7 +50,6 @@ export function getTotalCostOverYears(
 }
 
 export function getRecommendedTiers(size: CarSize, discountRate: number): CoatingTier[] {
-  // Return 3 tiers: entry, recommended, premium
   const crystal = coatingTiers.find(t => t.id === 'crystal')!;
   const diamond = coatingTiers.find(t => t.id === 'diamond')!;
   const ex = coatingTiers.find(t => t.id === 'ex')!;

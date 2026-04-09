@@ -18,7 +18,7 @@ export default function Footer({ storeId, storeName, tel, address, businessHours
           <div className="text-white font-bold text-base mb-1">{storeName}</div>
           <div className="text-xs">{address}</div>
           <div className="text-xs">{businessHours}</div>
-          <a href={`tel:${tel}`} className="text-amber-500 font-bold text-lg mt-2 inline-block">{tel}</a>
+          {tel && <a href={`tel:${tel}`} className="text-amber-500 font-bold text-lg mt-2 inline-block">{tel}</a>}
         </div>
 
         {/* Payment & Points */}

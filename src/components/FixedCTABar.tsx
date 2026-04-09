@@ -10,7 +10,7 @@ export default function FixedCTABar() {
         <div className="flex gap-2 mx-auto sm:mx-0">
           <Link
             href="/booking"
-            className="px-4 py-1.5 bg-amber-500 text-white text-[12px] font-bold rounded-md hover:bg-amber-600 transition-colors"
+            className="px-4 py-1.5 bg-amber-500 text-white text-[12px] font-bold rounded-md hover:bg-amber-500 transition-colors"
           >
             予約する
           </Link>

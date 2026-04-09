@@ -76,11 +76,13 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
               LINE
             </a>
           )}
-          <a href={`tel:${tel}`}
-            onClick={() => trackEvent(storeId, 'phone_call')}
-            className="text-white text-[11px] font-bold px-3 py-1.5 rounded-md bg-gradient-to-br from-amber-600 via-amber-400 to-amber-700">
-            &#9742; {tel}
-          </a>
+          {tel && (
+            <a href={`tel:${tel}`}
+              onClick={() => trackEvent(storeId, 'phone_call')}
+              className="text-white text-[11px] font-bold px-3 py-1.5 rounded-md bg-gradient-to-br from-amber-500 via-amber-400 to-amber-700">
+              &#9742; {tel}
+            </a>
+          )}
           <button
             className="md:hidden text-white text-xl ml-1"
             onClick={() => setMenuOpen(!menuOpen)}

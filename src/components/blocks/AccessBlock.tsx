@@ -56,7 +56,7 @@ export default function AccessBlock({ config, store, basePath }: AccessBlockProp
           <InfoRow label="営業時間" value={store.business_hours} />
           <InfoRow label="定休日" value={store.regular_holiday} />
           <InfoRow label="電話番号">
-            <TrackedPhoneLink tel={store.tel} storeId={store.store_id} className="text-amber-600 hover:underline">
+            <TrackedPhoneLink tel={store.tel} storeId={store.store_id} className="text-amber-500 hover:underline">
               {store.tel}
             </TrackedPhoneLink>
           </InfoRow>

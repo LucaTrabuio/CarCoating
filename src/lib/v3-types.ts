@@ -69,6 +69,8 @@ export interface V3StoreData {
   custom_css?: string;          // per-store custom CSS
   estimate_enabled?: boolean;
   qr_code_enabled?: boolean;
+  font_family?: string;         // Font preset ID (e.g., 'noto-serif-jp')
+  price_overrides?: string;     // JSON string: { [tierId]: { [size]: number } }
 }
 
 /** All CSV columns in order */
@@ -86,7 +88,7 @@ export const V3_CSV_COLUMNS: (keyof V3StoreData)[] = [
   // CMS fields (optional in CSV)
   'page_layout', 'blur_config', 'appeal_points', 'certifications',
   'store_news', 'banners', 'sub_company_id', 'store_slug', 'custom_css',
-  'estimate_enabled', 'qr_code_enabled',
+  'estimate_enabled', 'qr_code_enabled', 'font_family', 'price_overrides',
 ];
 
 /** Default values for a new V3 store */
