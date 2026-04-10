@@ -17,6 +17,7 @@ const NAV_ITEMS: NavItem[] = [
   // Store admin can see these
   { label: 'ダッシュボード', href: '/admin', icon: '▦', storeAdminVisible: true },
   { label: '予約管理', href: '/admin/bookings', icon: '📅', storeAdminVisible: true },
+  { label: 'お問い合わせ', href: '/admin/inquiries', icon: '💬', storeAdminVisible: true },
   { label: 'ページビルダー', href: '/admin/builder', icon: '🧱', storeAdminVisible: true },
   { label: 'お知らせ管理', href: '/admin/news', icon: '📢', storeAdminVisible: true },
   { label: 'KPIダッシュボード', href: '/admin/kpi', icon: '📊', storeAdminVisible: true },
