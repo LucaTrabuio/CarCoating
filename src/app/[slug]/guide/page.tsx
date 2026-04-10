@@ -2,9 +2,9 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { resolveSlugToStore } from '@/lib/firebase-stores';
-import { coatingTiers } from '@/data/coating-tiers';
 import { formatPrice, getPriceForSize, parsePriceOverrides } from '@/lib/pricing';
 import { KEEPER_BASE } from '@/lib/constants';
+import { parseGuideConfig, getCustomizedTiers } from '@/lib/guide-config';
 import type { Metadata } from 'next';
 import type { CoatingTier } from '@/lib/types';
 
@@ -202,7 +202,10 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
   const base = `/${slug}`;
   const priceOverrides = parsePriceOverrides(store.price_overrides);
-  const tiersById = new Map(coatingTiers.map(t => [t.id, t]));
+  const guideConfig = parseGuideConfig(store.guide_config);
+  const hidePrices = guideConfig.hide_prices === true;
+  const tiers = getCustomizedTiers(guideConfig);
+  const tiersById = new Map(tiers.map(t => [t.id, t]));
 
   return (
     <main>
@@ -342,7 +345,9 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                     return (
                       <li key={tid} className="text-xs flex items-center justify-between">
                         <span className="font-medium">{t.is_popular && '★ '}{t.name}</span>
-                        <span className="text-[10px] opacity-70 font-mono">{formatPrice(price)}〜</span>
+                        {!hidePrices && (
+                          <span className="text-[10px] opacity-70 font-mono">{formatPrice(price)}〜</span>
+                        )}
                       </li>
                     );
                   })}
@@ -353,7 +358,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
           {/* Per-tier detail cards */}
           <div className="space-y-4">
-            {coatingTiers.map(tier => {
+            {tiers.map(tier => {
               const price = getPriceForSize(tier, 'SS', priceOverrides);
               return (
                 <div key={tier.id} className="border border-slate-200 rounded-xl overflow-hidden">
@@ -371,10 +376,12 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                           </div>
                           <div className="text-[10px] text-slate-400 font-mono">{tier.name_en}</div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-[10px] text-slate-500">SSサイズ〜</div>
-                          <div className="text-lg font-bold text-amber-600 tabular-nums">{formatPrice(price)}</div>
-                        </div>
+                        {!hidePrices && (
+                          <div className="text-right">
+                            <div className="text-[10px] text-slate-500">SSサイズ〜</div>
+                            <div className="text-lg font-bold text-amber-600 tabular-nums">{formatPrice(price)}</div>
+                          </div>
+                        )}
                       </div>
                       <p className="text-xs text-slate-600 leading-relaxed mb-3">{tier.description}</p>
                       <div className="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 text-[11px] text-amber-900 leading-relaxed">

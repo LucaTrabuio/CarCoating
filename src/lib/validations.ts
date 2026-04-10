@@ -89,6 +89,7 @@ export const v3StoreWriteSchema = z.object({
   qr_code_enabled: z.boolean().optional(),
   font_family: z.string().max(50).optional(),
   price_overrides: jsonString.optional(),
+  guide_config: jsonString.optional(),
 });
 
 export type V3StoreWriteInput = z.infer<typeof v3StoreWriteSchema>;

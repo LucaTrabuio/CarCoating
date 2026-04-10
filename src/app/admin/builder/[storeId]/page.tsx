@@ -29,7 +29,7 @@ import BlockEditorSwitch from '../components/editors/BlockEditorSwitch';
 
 // ─── Types ───
 
-type TabId = 'blocks' | 'settings' | 'pricing' | 'options' | 'news';
+type TabId = 'blocks' | 'settings' | 'pricing' | 'options' | 'news' | 'guide';
 
 interface ServiceOption {
   id: string;
@@ -232,6 +232,197 @@ function PriceOverridesGrid({
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Guide config editor ───
+
+interface GuideTierOverride {
+  name?: string;
+  tagline?: string;
+  description?: string;
+  key_differentiator?: string;
+}
+
+interface GuideConfigShape {
+  hide_prices?: boolean;
+  tier_overrides?: Record<string, GuideTierOverride>;
+}
+
+function GuideConfigEditor({
+  storeData,
+  updateStoreField,
+}: {
+  storeData: Partial<V3StoreData>;
+  updateStoreField: (field: keyof V3StoreData, value: string) => void;
+}) {
+  let config: GuideConfigShape = {};
+  try {
+    if (storeData.guide_config) {
+      const parsed = JSON.parse(storeData.guide_config);
+      if (typeof parsed === 'object' && parsed !== null) config = parsed;
+    }
+  } catch { /* invalid JSON — start fresh */ }
+
+  const tierOverrides = config.tier_overrides || {};
+
+  function saveConfig(next: GuideConfigShape) {
+    // Drop empty overrides so we don't persist noise
+    const cleaned: GuideConfigShape = { ...next };
+    if (cleaned.tier_overrides) {
+      const filtered: Record<string, GuideTierOverride> = {};
+      for (const [tid, ov] of Object.entries(cleaned.tier_overrides)) {
+        const entries = Object.entries(ov).filter(([, v]) => typeof v === 'string' && v.trim() !== '');
+        if (entries.length > 0) filtered[tid] = Object.fromEntries(entries);
+      }
+      if (Object.keys(filtered).length === 0) delete cleaned.tier_overrides;
+      else cleaned.tier_overrides = filtered;
+    }
+    if (cleaned.hide_prices === false) delete cleaned.hide_prices;
+    const json = Object.keys(cleaned).length === 0 ? '' : JSON.stringify(cleaned);
+    updateStoreField('guide_config', json);
+  }
+
+  function setHidePrices(checked: boolean) {
+    saveConfig({ ...config, hide_prices: checked });
+  }
+
+  function setTierField(tierId: string, field: keyof GuideTierOverride, value: string) {
+    const next = {
+      ...config,
+      tier_overrides: {
+        ...tierOverrides,
+        [tierId]: {
+          ...(tierOverrides[tierId] || {}),
+          [field]: value,
+        },
+      },
+    };
+    saveConfig(next);
+  }
+
+  function resetTier(tierId: string) {
+    const next = { ...config, tier_overrides: { ...tierOverrides } };
+    delete next.tier_overrides![tierId];
+    saveConfig(next);
+  }
+
+  function resetAll() {
+    if (!confirm('ガイドページの設定をすべてリセットしますか？')) return;
+    updateStoreField('guide_config', '');
+  }
+
+  const overrideCount = Object.keys(tierOverrides).length;
+
+  return (
+    <div className="space-y-4">
+      {/* Global toggles */}
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h3 className="text-sm font-bold text-gray-800 mb-3">ガイドページ表示設定</h3>
+        <label className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={config.hide_prices === true}
+            onChange={e => setHidePrices(e.target.checked)}
+            className="rounded border-gray-300"
+          />
+          <span className="font-semibold">ガイドページで料金を非表示にする</span>
+        </label>
+        <p className="text-[10px] text-gray-400 mt-1 ml-6">
+          有効にすると、ガイドページ内のすべての料金表示が消えます。
+        </p>
+      </div>
+
+      {/* Per-tier text overrides */}
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="text-sm font-bold text-gray-800">コース別テキスト上書き</h3>
+          {overrideCount > 0 && (
+            <button
+              onClick={resetAll}
+              className="text-[10px] text-red-500 hover:text-red-700 underline"
+            >
+              すべてリセット
+            </button>
+          )}
+        </div>
+        <p className="text-[10px] text-gray-400 mb-4">
+          各コースの名前・キャッチコピー・説明・特徴をこの店舗だけの内容に上書きできます。
+          空欄のままなら全国統一のデフォルト文言が使われます。
+        </p>
+
+        <div className="space-y-3">
+          {coatingTiers.map(tier => {
+            const ov = tierOverrides[tier.id] || {};
+            const hasOverride = Object.values(ov).some(v => typeof v === 'string' && v.trim() !== '');
+            return (
+              <details
+                key={tier.id}
+                className={`border rounded-lg ${hasOverride ? 'border-amber-300 bg-amber-50/30' : 'border-gray-200'}`}
+              >
+                <summary className="cursor-pointer px-3 py-2 text-xs font-semibold text-gray-700 flex items-center justify-between list-none">
+                  <span>
+                    {tier.name}
+                    {hasOverride && <span className="ml-2 text-[9px] text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">上書きあり</span>}
+                  </span>
+                  <span className="text-gray-400 text-[10px]">▼</span>
+                </summary>
+                <div className="px-3 pb-3 pt-1 space-y-2">
+                  <div>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-0.5">名称</label>
+                    <input
+                      type="text"
+                      value={ov.name || ''}
+                      placeholder={tier.name}
+                      onChange={e => setTierField(tier.id, 'name', e.target.value)}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-0.5">キャッチコピー</label>
+                    <input
+                      type="text"
+                      value={ov.tagline || ''}
+                      placeholder={tier.tagline}
+                      onChange={e => setTierField(tier.id, 'tagline', e.target.value)}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-0.5">説明</label>
+                    <textarea
+                      value={ov.description || ''}
+                      placeholder={tier.description}
+                      onChange={e => setTierField(tier.id, 'description', e.target.value)}
+                      rows={3}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-medium text-gray-500 mb-0.5">特徴</label>
+                    <textarea
+                      value={ov.key_differentiator || ''}
+                      placeholder={tier.key_differentiator}
+                      onChange={e => setTierField(tier.id, 'key_differentiator', e.target.value)}
+                      rows={2}
+                      className="w-full px-2 py-1 border border-gray-200 rounded text-xs"
+                    />
+                  </div>
+                  {hasOverride && (
+                    <button
+                      onClick={() => resetTier(tier.id)}
+                      className="text-[10px] text-red-500 hover:text-red-700 underline"
+                    >
+                      このコースの上書きをリセット
+                    </button>
+                  )}
+                </div>
+              </details>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -598,6 +789,7 @@ export default function BuilderPage() {
     { id: 'pricing', label: '料金・割引' },
     { id: 'options', label: 'オプション' },
     { id: 'news', label: 'お知らせ' },
+    { id: 'guide', label: 'ガイド' },
   ];
 
   const blurFields = getPricingBlurFields();
@@ -1122,6 +1314,14 @@ export default function BuilderPage() {
               ))}
             </div>
           )}
+
+          {/* Tab content: Guide */}
+          {activeTab === 'guide' && (
+            <GuideConfigEditor
+              storeData={storeData}
+              updateStoreField={updateStoreField}
+            />
+          )}
         </div>
 
         {/* Right panel: iframe preview */}
@@ -1142,6 +1342,7 @@ export default function BuilderPage() {
                   <option value="/access">アクセス</option>
                   <option value="/options">オプション</option>
                   <option value="/news">お知らせ</option>
+                  <option value="/guide">ガイド</option>
                   <option value="/price">シミュレーター</option>
                 </select>
               </div>
