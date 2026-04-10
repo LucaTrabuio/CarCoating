@@ -4,6 +4,7 @@ import { parsePageLayout } from '@/lib/block-types';
 import BlockRenderer from '@/components/blocks/BlockRenderer';
 import PageViewTracker from '@/components/PageViewTracker';
 import SubCompanyStoreMap from '@/components/SubCompanyStoreMap';
+import { getMasterAppealPoints } from '@/lib/master-data';
 
 export default async function SlugPage({
   params,
@@ -11,6 +12,7 @@ export default async function SlugPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const appealPointsMaster = await getMasterAppealPoints();
 
   // Check sub-company first so multi-store groups (>1 store) win
   // over a single store that shares the same slug (e.g., "fussa").
@@ -44,6 +46,7 @@ export default async function SlugPage({
                 basePath={basePath}
                 discountRate={campaign.discount_rate}
                 allStores={stores}
+                appealPointsMaster={appealPointsMaster}
               />
             ))}
           <SubCompanyStoreMap
@@ -89,6 +92,7 @@ export default async function SlugPage({
               store={store}
               basePath={basePath}
               discountRate={discountRate}
+              appealPointsMaster={appealPointsMaster}
             />
           ))}
       </main>

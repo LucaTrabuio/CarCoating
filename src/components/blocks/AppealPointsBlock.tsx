@@ -1,13 +1,15 @@
 import type { AppealPointsConfig } from '@/lib/block-types';
 import type { V3StoreData } from '@/lib/v3-types';
+import type { MasterAppealPoint } from '@/lib/master-data';
 
 interface AppealPointsBlockProps {
   config: AppealPointsConfig;
   store: V3StoreData;
+  appealPointsMaster?: Record<string, MasterAppealPoint>;
 }
 
-// Static placeholder master data -- will be replaced with real master data integration later
-const APPEAL_POINTS_MASTER: Record<string, { label: string; icon: string; description: string }> = {
+// Inline fallback — only used when appealPointsMaster prop is not passed
+const FALLBACK_MASTER: Record<string, { label: string; icon: string; description: string }> = {
   booth: { label: 'コーティング専用ブース完備', icon: '🏢', description: '天候に左右されない専用施工環境' },
   certified: { label: '技術認定スタッフ在籍', icon: '👨\u200d🔧', description: 'KeePer技術資格保有のプロが対応' },
   warranty: { label: '施工保証付き', icon: '🛡️', description: '安心の施工品質保証' },
@@ -18,7 +20,9 @@ const APPEAL_POINTS_MASTER: Record<string, { label: string; icon: string; descri
   weekend: { label: '土日祝日営業', icon: '📅', description: 'お仕事帰りや休日にもご来店いただけます' },
 };
 
-export default function AppealPointsBlock({ config, store }: AppealPointsBlockProps) {
+export default function AppealPointsBlock({ config, store, appealPointsMaster }: AppealPointsBlockProps) {
+  const masterData = appealPointsMaster || FALLBACK_MASTER;
+
   // Read selected IDs from store or config
   let selectedIds = config.selected_ids;
   if (selectedIds.length === 0 && store.appeal_points) {
@@ -29,7 +33,7 @@ export default function AppealPointsBlock({ config, store }: AppealPointsBlockPr
 
   const points = selectedIds
     .map(id => {
-      const master = APPEAL_POINTS_MASTER[id];
+      const master = masterData[id];
       if (!master) return null;
       return { id, ...master };
     })

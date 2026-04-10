@@ -3,8 +3,8 @@
  */
 
 import { notFound } from 'next/navigation';
-import { coatingTiers } from '@/data/coating-tiers';
 import { formatPrice, getWebPrice, getPriceForSize, parsePriceOverrides } from '@/lib/pricing';
+import { getMasterCoatingTiers } from '@/lib/master-data';
 import Link from 'next/link';
 import { resolveSlugToStore, getV3CampaignDefaults } from '@/lib/firebase-stores';
 import { getBlurFieldsFromLayout, isBlurred } from '@/lib/blur-utils';
@@ -38,7 +38,10 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
   if (!resolved) notFound();
   const { store } = resolved;
 
-  const defaults = await getV3CampaignDefaults();
+  const [defaults, coatingTiers] = await Promise.all([
+    getV3CampaignDefaults(),
+    getMasterCoatingTiers(),
+  ]);
   const discountRate = store.discount_rate || defaults.discount;
   const base = `/${slug}`;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);

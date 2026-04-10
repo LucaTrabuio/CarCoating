@@ -20,6 +20,7 @@ import type {
   CustomHtmlConfig,
 } from '@/lib/block-types';
 import type { V3StoreData } from '@/lib/v3-types';
+import type { MasterAppealPoint } from '@/lib/master-data';
 import HeroBlock from './HeroBlock';
 import StoreIntroBlock from './StoreIntroBlock';
 import StaffPhotoBlock from './StaffPhotoBlock';
@@ -47,9 +48,10 @@ interface BlockRendererProps {
   basePath: string;
   discountRate: number;
   allStores?: V3StoreData[];
+  appealPointsMaster?: Record<string, MasterAppealPoint>;
 }
 
-export default function BlockRenderer({ block, store, basePath, discountRate, allStores }: BlockRendererProps) {
+export default function BlockRenderer({ block, store, basePath, discountRate, allStores, appealPointsMaster }: BlockRendererProps) {
   if (!block.visible) return null;
 
   switch (block.type) {
@@ -88,7 +90,7 @@ export default function BlockRenderer({ block, store, basePath, discountRate, al
     case 'certifications':
       return <CertificationsBlock config={block.config as CertificationsConfig} />;
     case 'appeal_points':
-      return <AppealPointsBlock config={block.config as AppealPointsConfig} store={store} />;
+      return <AppealPointsBlock config={block.config as AppealPointsConfig} store={store} appealPointsMaster={appealPointsMaster} />;
     case 'banners':
       return <BannersBlock config={block.config as BannersConfig} />;
     case 'custom_html':

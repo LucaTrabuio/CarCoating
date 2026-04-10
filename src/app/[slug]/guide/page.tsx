@@ -5,6 +5,7 @@ import { resolveSlugToStore } from '@/lib/firebase-stores';
 import { formatPrice, getPriceForSize, parsePriceOverrides } from '@/lib/pricing';
 import { KEEPER_BASE } from '@/lib/constants';
 import { parseGuideConfig, getCustomizedTiers } from '@/lib/guide-config';
+import { getMasterCoatingTiers } from '@/lib/master-data';
 import type { Metadata } from 'next';
 import type { CoatingTier } from '@/lib/types';
 
@@ -204,7 +205,8 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   const priceOverrides = parsePriceOverrides(store.price_overrides);
   const guideConfig = parseGuideConfig(store.guide_config);
   const hidePrices = guideConfig.hide_prices === true;
-  const tiers = getCustomizedTiers(guideConfig);
+  const baseTiers = await getMasterCoatingTiers();
+  const tiers = getCustomizedTiers(guideConfig, baseTiers);
   const tiersById = new Map(tiers.map(t => [t.id, t]));
 
   return (

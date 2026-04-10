@@ -6,7 +6,6 @@
  * on top of the default coating tier data.
  */
 
-import { coatingTiers } from '@/data/coating-tiers';
 import type { CoatingTier } from './types';
 
 export interface TierTextOverride {
@@ -48,7 +47,7 @@ export function applyTierOverride(tier: CoatingTier, override?: TierTextOverride
 }
 
 /** Return the full tier list with per-store overrides applied. */
-export function getCustomizedTiers(config: GuideConfig): CoatingTier[] {
+export function getCustomizedTiers(config: GuideConfig, baseTiers: CoatingTier[]): CoatingTier[] {
   const overrides = config.tier_overrides || {};
-  return coatingTiers.map(tier => applyTierOverride(tier, overrides[tier.id]));
+  return baseTiers.map(tier => applyTierOverride(tier, overrides[tier.id]));
 }
