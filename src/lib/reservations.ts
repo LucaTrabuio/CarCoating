@@ -5,11 +5,15 @@ import type { ReservationChoice } from './reservation-types';
 export interface CreateReservationInput {
   type: 'visit' | 'inquiry';
   storeId: string;
-  choices: ReservationChoice[];
+  date: string;
+  time: string;
   name: string;
   phone: string;
   email: string;
   notes: string;
+  autoConfirm?: boolean;
+  // Legacy support: if choices is provided, use first one
+  choices?: ReservationChoice[];
 }
 
 export interface CreateReservationResult {
@@ -22,17 +26,23 @@ export async function createReservation(input: CreateReservationInput): Promise<
   const now = new Date().toISOString();
   const cancelToken = randomUUID();
 
+  // Support both single date/time and legacy choices array
+  const date = input.date || input.choices?.[0]?.date || '';
+  const time = input.time || input.choices?.[0]?.time || '';
+  const choices: ReservationChoice[] = input.choices || [{ date, time }];
+
   const data = {
     type: input.type,
     storeId: input.storeId,
-    choices: input.choices,
-    date: input.choices[0]?.date || '',
-    time: input.choices[0]?.time || '',
+    choices,
+    date,
+    time,
+    confirmedChoice: input.autoConfirm ? 0 : undefined,
     name: input.name,
     phone: input.phone,
     email: input.email,
     notes: input.notes,
-    status: 'pending',
+    status: input.autoConfirm ? 'confirmed' : 'pending',
     cancelToken,
     googleCalendarEventId: null,
     googleCalendarId: null,

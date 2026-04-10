@@ -141,7 +141,6 @@ export async function sendStaffNotificationEmail(opts: {
 }): Promise<void> {
   if (!process.env.GMAIL_USER || opts.staffEmail.length === 0) return;
 
-  const choicesHtml = buildChoicesHtml(opts.choices);
   const html = `
     <div style="max-width:600px;font-family:sans-serif;color:#333">
       <h2 style="color:#0f1c2e">新規予約 - ${opts.locationName}</h2>
@@ -151,9 +150,11 @@ export async function sendStaffNotificationEmail(opts: {
         <tr><td style="padding:6px 0;color:#999">メール</td><td style="padding:6px 0">${opts.customerEmail}</td></tr>
         <tr><td style="padding:6px 0;color:#999">種別</td><td style="padding:6px 0">${opts.type === 'visit' ? '来店予約' : 'お問い合わせ'}</td></tr>
       </table>
-      <h3 style="margin:16px 0 8px">希望日時</h3>
-      ${choicesHtml}
-      ${opts.notes ? `<div style="margin:12px 0;padding:12px;background:#fff3e0;border-radius:6px"><strong>備考:</strong> ${opts.notes}</div>` : ''}
+      <h3 style="margin:16px 0 8px">予約日時</h3>
+      <div style="padding:12px;background:#e8f5e9;border:2px solid #4caf50;border-radius:6px;font-weight:bold;color:#2e7d32">
+        ${formatChoiceDate(opts.date, opts.time)}
+      </div>
+      ${opts.notes ? `<div style="margin:12px 0;padding:12px;background:#fff3e0;border-radius:6px"><strong>備考:</strong><br>${opts.notes.replace(/\n/g, '<br>')}</div>` : ''}
     </div>
   `;
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { V3StoreData } from '@/lib/v3-types';
-import type { ReservationChoice, SlotAvailability } from '@/lib/reservation-types';
+import type { SlotAvailability } from '@/lib/reservation-types';
 import { coatingTiers } from '@/data/coating-tiers';
 import { trackEvent } from '@/lib/track';
 
@@ -23,10 +23,9 @@ const DAY_LABELS = ['日', '月', '火', '水', '木', '金', '土'];
 
 export default function ReservationForm({ store }: Props) {
   const storeId = store.store_id;
-  const [step, setStep] = useState<'dates' | 'info' | 'done'>('dates');
-  const [choices, setChoices] = useState<(ReservationChoice | null)[]>([null, null, null]);
-  const [currentChoice, setCurrentChoice] = useState(0);
+  const [step, setStep] = useState<'datetime' | 'info' | 'done'>('datetime');
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [availableSlots, setAvailableSlots] = useState<SlotAvailability[]>([]);
   const [calMonth, setCalMonth] = useState(() => {
@@ -73,31 +72,14 @@ export default function ReservationForm({ store }: Props) {
       .finally(() => setLoadingSlots(false));
   }, [storeId, selectedDate]);
 
-  function selectSlot(time: string) {
-    if (!selectedDate) return;
-    const newChoices = [...choices];
-    newChoices[currentChoice] = { date: selectedDate, time };
-    setChoices(newChoices);
-
-    if (currentChoice < 2) {
-      setCurrentChoice(currentChoice + 1);
-      setSelectedDate(null);
-    }
-  }
-
-  function allChoicesComplete() {
-    return choices.every(c => c !== null);
-  }
-
-  function formatChoice(c: ReservationChoice | null) {
-    if (!c) return '未選択';
-    const d = new Date(c.date + 'T00:00:00+09:00');
-    return `${c.date}（${DAY_LABELS[d.getDay()]}）${c.time}`;
+  function formatDateTime(date: string, time: string) {
+    const d = new Date(date + 'T00:00:00+09:00');
+    return `${date}（${DAY_LABELS[d.getDay()]}）${time}`;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!allChoicesComplete()) return;
+    if (!selectedDate || !selectedTime) return;
     setSubmitting(true);
     setError('');
 
@@ -123,9 +105,11 @@ export default function ReservationForm({ store }: Props) {
         body: JSON.stringify({
           type: 'visit',
           storeId,
-          choices: choices.filter(Boolean),
+          date: selectedDate,
+          time: selectedTime,
           name, phone, email,
           notes: fullNotes,
+          autoConfirm: true,
         }),
       });
       if (!res.ok) throw new Error('Failed');
@@ -149,10 +133,12 @@ export default function ReservationForm({ store }: Props) {
   function prevMonth() {
     setCalMonth(prev => prev.month === 1 ? { year: prev.year - 1, month: 12 } : { year: prev.year, month: prev.month - 1 });
     setSelectedDate(null);
+    setSelectedTime(null);
   }
   function nextMonth() {
     setCalMonth(prev => prev.month === 12 ? { year: prev.year + 1, month: 1 } : { year: prev.year, month: prev.month + 1 });
     setSelectedDate(null);
+    setSelectedTime(null);
   }
 
   if (step === 'done') {
@@ -160,13 +146,13 @@ export default function ReservationForm({ store }: Props) {
       <div className="py-20 px-5 text-center">
         <div className="max-w-[500px] mx-auto">
           <div className="text-5xl mb-4">&#10003;</div>
-          <h2 className="text-2xl font-bold text-[#0f1c2e] mb-2">ご予約を受け付けました</h2>
-          <p className="text-sm text-gray-500 mb-4">確認メールをお送りしました。店舗より折り返しご連絡いたします。</p>
-          <div className="bg-gray-50 rounded-xl p-4 text-left text-sm space-y-1">
-            {choices.map((c, i) => (
-              <div key={i}>第{i + 1}希望: {formatChoice(c)}</div>
-            ))}
-          </div>
+          <h2 className="text-2xl font-bold text-[#0f1c2e] mb-2">ご予約が確定しました</h2>
+          <p className="text-sm text-gray-500 mb-4">確認メールをお送りしました。</p>
+          {selectedDate && selectedTime && (
+            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 text-center text-sm">
+              <div className="font-bold text-green-700">{formatDateTime(selectedDate, selectedTime)}</div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -175,24 +161,15 @@ export default function ReservationForm({ store }: Props) {
   return (
     <div className="py-8 px-5">
       <div className="max-w-[800px] mx-auto">
-        {/* Choice summary */}
-        <div className="grid grid-cols-3 gap-2 mb-6">
-          {choices.map((c, i) => (
-            <button
-              key={i}
-              onClick={() => { setCurrentChoice(i); setSelectedDate(null); }}
-              className={`p-3 rounded-lg border text-center text-xs cursor-pointer transition-all ${
-                currentChoice === i ? 'border-amber-500 bg-amber-50 ring-2 ring-amber-200' :
-                c ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-gray-50'
-              }`}
-            >
-              <div className="font-bold text-[#0f1c2e] mb-1">第{i + 1}希望</div>
-              <div className={c ? 'text-green-700' : 'text-gray-400'}>{formatChoice(c)}</div>
-            </button>
-          ))}
+        {/* Selection summary */}
+        <div className="mb-6 p-4 rounded-lg border-2 border-amber-200 bg-amber-50">
+          <div className="text-xs text-gray-500 mb-1">選択した日時</div>
+          <div className="text-base font-bold text-[#0f1c2e]">
+            {selectedDate && selectedTime ? formatDateTime(selectedDate, selectedTime) : '未選択'}
+          </div>
         </div>
 
-        {step === 'dates' && (
+        {step === 'datetime' && (
           <>
             {/* Calendar */}
             <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
@@ -212,7 +189,7 @@ export default function ReservationForm({ store }: Props) {
                   {calendarDays.map(({ day, dateStr, available }) => (
                     <button
                       key={day}
-                      onClick={() => available && setSelectedDate(dateStr)}
+                      onClick={() => { if (available) { setSelectedDate(dateStr); setSelectedTime(null); } }}
                       disabled={!available}
                       className={`py-2 rounded text-sm cursor-pointer transition-colors ${
                         selectedDate === dateStr ? 'bg-amber-500 text-white font-bold' :
@@ -231,7 +208,7 @@ export default function ReservationForm({ store }: Props) {
             {selectedDate && (
               <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
                 <h3 className="font-bold text-[#0f1c2e] text-sm mb-3">
-                  {selectedDate} の空き時間（第{currentChoice + 1}希望）
+                  {selectedDate} の空き時間
                 </h3>
                 {loadingSlots ? (
                   <div className="text-center py-4 text-gray-400 text-sm">読み込み中...</div>
@@ -242,11 +219,15 @@ export default function ReservationForm({ store }: Props) {
                     {availableSlots.map(slot => (
                       <button
                         key={slot.time}
-                        onClick={() => selectSlot(slot.time)}
-                        className="py-2 px-1 border border-gray-200 rounded-lg text-sm hover:border-amber-500 hover:bg-amber-50 transition-colors cursor-pointer"
+                        onClick={() => setSelectedTime(slot.time)}
+                        className={`py-2 px-1 border rounded-lg text-sm cursor-pointer transition-colors ${
+                          selectedTime === slot.time
+                            ? 'bg-amber-500 text-white border-amber-500 font-bold'
+                            : 'border-gray-200 hover:border-amber-500 hover:bg-amber-50'
+                        }`}
                       >
                         <div className="font-bold">{slot.time}</div>
-                        {slot.remaining <= 2 && (
+                        {slot.remaining <= 2 && selectedTime !== slot.time && (
                           <div className="text-[10px] text-red-500">残{slot.remaining}枠</div>
                         )}
                       </button>
@@ -257,7 +238,7 @@ export default function ReservationForm({ store }: Props) {
             )}
 
             {/* Next button */}
-            {allChoicesComplete() && (
+            {selectedDate && selectedTime && (
               <button
                 onClick={() => setStep('info')}
                 className="w-full py-3 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-700 text-white font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity"
@@ -356,7 +337,7 @@ export default function ReservationForm({ store }: Props) {
             </div>
             {error && <p className="text-sm text-red-500">{error}</p>}
             <div className="flex gap-3">
-              <button type="button" onClick={() => setStep('dates')}
+              <button type="button" onClick={() => setStep('datetime')}
                 className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg text-sm font-semibold cursor-pointer hover:bg-gray-200">
                 ← 日時選択に戻る
               </button>
