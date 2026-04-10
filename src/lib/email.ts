@@ -215,3 +215,97 @@ export async function sendCancellationNotificationEmail(opts: {
     html: `<p><strong>${opts.customerName}</strong> 様の予約がキャンセルされました。</p><p>日時: ${formatChoiceDate(opts.date, opts.time)}</p>`,
   });
 }
+
+export async function sendInquiryConfirmationEmail(opts: {
+  customerEmail: string;
+  customerName: string;
+  locationName: string;
+  locationPhone: string;
+  locationAddress: string;
+  message: string;
+  tierName?: string;
+  tierPrice?: string;
+}): Promise<void> {
+  if (!process.env.GMAIL_USER) return;
+
+  const pricingHtml = opts.tierName && opts.tierPrice
+    ? `<div style="margin:16px 0;padding:16px;background:#e8f5e9;border:2px solid #4caf50;border-radius:6px">
+        <div style="font-size:13px;color:#666;margin-bottom:4px">ご検討中のコース</div>
+        <div style="font-weight:bold;font-size:16px;color:#2e7d32">${opts.tierName}</div>
+        <div style="font-size:20px;font-weight:bold;color:#2e7d32;margin-top:4px">${opts.tierPrice}</div>
+        <div style="font-size:11px;color:#999;margin-top:4px">※ 上記はWeb予約割引適用価格（税込）です。車サイズにより変動します。</div>
+      </div>`
+    : '';
+
+  const html = `
+    <div style="max-width:600px;margin:0 auto;font-family:sans-serif;color:#333">
+      <div style="background:#0f1c2e;padding:20px;text-align:center;border-radius:8px 8px 0 0">
+        <h1 style="color:white;font-size:18px;margin:0">KeePer PRO SHOP</h1>
+        <p style="color:rgba(255,255,255,0.5);font-size:12px;margin:4px 0 0">${opts.locationName}</p>
+      </div>
+      <div style="padding:24px;background:white;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 8px 8px">
+        <p>${opts.customerName} 様</p>
+        <div style="background:#2196f3;color:white;padding:12px;text-align:center;font-weight:bold;border-radius:6px;margin-bottom:16px">
+          お問い合わせを受け付けました
+        </div>
+        <p style="font-size:13px;color:#666">店舗担当者より追ってご連絡いたします。</p>
+        ${pricingHtml}
+        ${opts.message ? `<div style="margin:16px 0;padding:12px;background:#f5f5f5;border-radius:6px"><strong>お問い合わせ内容:</strong><br><span style="font-size:13px">${opts.message.replace(/\n/g, '<br>')}</span></div>` : ''}
+        <div style="margin:20px 0;padding:16px;background:#fafafa;border-radius:8px;font-size:13px">
+          <strong>${opts.locationName}</strong><br>
+          ${opts.locationAddress}<br>
+          TEL: ${opts.locationPhone}
+        </div>
+        <p style="font-size:11px;color:#999;margin-top:20px;text-align:center">
+          お急ぎの場合はお電話でも承ります。
+        </p>
+      </div>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"KeePer PRO SHOP" <${process.env.GMAIL_USER}>`,
+    to: opts.customerEmail,
+    subject: `お問い合わせ受付 - ${opts.locationName}`,
+    html,
+  });
+}
+
+export async function sendInquiryNotificationEmail(opts: {
+  staffEmail: string[];
+  customerName: string;
+  customerPhone: string;
+  customerEmail: string;
+  locationName: string;
+  message: string;
+  tierName?: string;
+  vehicleInfo?: string;
+}): Promise<void> {
+  if (!process.env.GMAIL_USER || opts.staffEmail.length === 0) return;
+
+  const html = `
+    <div style="max-width:600px;font-family:sans-serif;color:#333">
+      <h2 style="color:#0f1c2e">新規お問い合わせ - ${opts.locationName}</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <tr><td style="padding:6px 0;color:#999;width:100px">お名前</td><td style="padding:6px 0;font-weight:bold">${opts.customerName}</td></tr>
+        <tr><td style="padding:6px 0;color:#999">電話</td><td style="padding:6px 0">${opts.customerPhone}</td></tr>
+        <tr><td style="padding:6px 0;color:#999">メール</td><td style="padding:6px 0">${opts.customerEmail}</td></tr>
+        ${opts.vehicleInfo ? `<tr><td style="padding:6px 0;color:#999">車種</td><td style="padding:6px 0">${opts.vehicleInfo}</td></tr>` : ''}
+        ${opts.tierName ? `<tr><td style="padding:6px 0;color:#999">検討コース</td><td style="padding:6px 0;font-weight:bold;color:#2e7d32">${opts.tierName}</td></tr>` : ''}
+      </table>
+      <div style="margin:12px 0;padding:12px;background:#e3f2fd;border-radius:6px">
+        <strong>お問い合わせ内容:</strong><br>
+        ${opts.message.replace(/\n/g, '<br>')}
+      </div>
+      <p style="font-size:11px;color:#999">このメールに返信すると、お客様（${opts.customerEmail}）に直接返信されます。</p>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"KeePer PRO SHOP お問い合わせ" <${process.env.GMAIL_USER}>`,
+    replyTo: opts.customerEmail,
+    to: opts.staffEmail.join(', '),
+    subject: `【お問い合わせ】${opts.customerName} 様 - ${opts.locationName}`,
+    html,
+  });
+}
