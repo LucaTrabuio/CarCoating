@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MobileCTA from '@/components/MobileCTA';
 import DynamicBanner from '@/components/DynamicBanner';
+import QuizPopup from '@/components/QuizPopup';
 import { getV3StoreById, getAllV3StoreIds, getV3CampaignDefaults, getSubCompanyBySlug, getStoresBySubCompany } from '@/lib/firebase-stores';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -89,6 +90,7 @@ export default async function SlugLayout({
             regularHoliday={store.regular_holiday}
           />
           <MobileCTA tel={store.tel} lineUrl={store.line_url} storeId={store.store_id} basePath={`/${slug}`} />
+          <QuizPopup storeId={store.store_id} basePath={`/${slug}`} />
         </>
       );
     }
@@ -132,6 +134,7 @@ export default async function SlugLayout({
             stores={scStores.map(s => ({ name: s.store_name, tel: s.tel }))}
           />
           <MobileCTA tel={primaryStore.tel} lineUrl={primaryStore.line_url} storeId={primaryStore.store_id} basePath={`/${slug}`} />
+          <QuizPopup storeId={primaryStore.store_id} basePath={`/${slug}`} />
         </>
       );
     }
