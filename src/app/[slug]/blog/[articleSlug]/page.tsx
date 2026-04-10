@@ -44,10 +44,33 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string; articleSlug: string }> }): Promise<Metadata> {
-  const { articleSlug } = await params;
+  const { slug, articleSlug } = await params;
   const article = await getArticle(articleSlug);
   if (!article) return {};
-  return { title: article.metaTitle, description: article.metaDescription };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:8081';
+  const title = article.metaTitle || article.title;
+  const description = article.metaDescription || article.summary || '';
+  const ogImage = (article as unknown as Record<string, unknown>).og_image_url as string | undefined;
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      url: `${siteUrl}/${slug}/blog/${articleSlug}`,
+      ...(ogImage ? { images: [{ url: ogImage }] } : {}),
+    },
+    twitter: {
+      card: ogImage ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      ...(ogImage ? { images: [ogImage] } : {}),
+    },
+    alternates: {
+      canonical: `${siteUrl}/${slug}/blog/${articleSlug}`,
+    },
+  };
 }
 
 const categoryLabels: Record<string, string> = { educational: '基礎知識', comparison: '比較', seasonal: '季節' };

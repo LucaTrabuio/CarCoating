@@ -9,6 +9,11 @@ interface BlogPost {
   slug: string;
   content: string;
   published: boolean;
+  summary?: string;
+  category?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  og_image_url?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -35,6 +40,14 @@ export default function BlogPage() {
   const [published, setPublished] = useState(false);
   const [saving, setSaving] = useState(false);
   const [slugManual, setSlugManual] = useState(false);
+
+  // SEO fields
+  const [summary, setSummary] = useState('');
+  const [category, setCategory] = useState('educational');
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [ogImageUrl, setOgImageUrl] = useState('');
+  const [showSeo, setShowSeo] = useState(false);
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
@@ -70,6 +83,12 @@ export default function BlogPage() {
     setContent('');
     setPublished(false);
     setSlugManual(false);
+    setSummary('');
+    setCategory('educational');
+    setMetaTitle('');
+    setMetaDescription('');
+    setOgImageUrl('');
+    setShowSeo(false);
   }
 
   function startEdit(post: BlogPost) {
@@ -79,6 +98,12 @@ export default function BlogPage() {
     setContent(post.content);
     setPublished(post.published);
     setSlugManual(true);
+    setSummary(post.summary || '');
+    setCategory(post.category || 'educational');
+    setMetaTitle(post.metaTitle || '');
+    setMetaDescription(post.metaDescription || '');
+    setOgImageUrl(post.og_image_url || '');
+    if (post.metaTitle || post.metaDescription || post.og_image_url) setShowSeo(true);
   }
 
   function handleTitleChange(value: string) {
@@ -100,7 +125,17 @@ export default function BlogPage() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, slug, content, published }),
+        body: JSON.stringify({
+          title,
+          slug,
+          content,
+          published,
+          summary: summary || content.slice(0, 200),
+          category,
+          metaTitle: metaTitle || title,
+          metaDescription: metaDescription || content.replace(/\n/g, ' ').slice(0, 160),
+          og_image_url: ogImageUrl || undefined,
+        }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -166,6 +201,72 @@ export default function BlogPage() {
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
           />
         </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-sm text-gray-700">要約（カード表示用）</label>
+            <textarea
+              rows={2}
+              value={summary}
+              onChange={e => setSummary(e.target.value)}
+              placeholder="空欄の場合は本文先頭200文字を使用"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm text-gray-700">カテゴリー</label>
+            <select
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            >
+              <option value="educational">豆知識</option>
+              <option value="comparison">比較</option>
+              <option value="seasonal">季節</option>
+            </select>
+          </div>
+        </div>
+
+        {/* SEO section */}
+        <details open={showSeo} onToggle={e => setShowSeo((e.target as HTMLDetailsElement).open)}>
+          <summary className="text-xs font-bold text-gray-500 cursor-pointer hover:text-gray-700 select-none">
+            SEO設定 {showSeo ? '▲' : '▼'}
+          </summary>
+          <div className="mt-3 space-y-3 pl-0">
+            <div>
+              <label className="mb-1 block text-xs text-gray-600">メタタイトル</label>
+              <input
+                type="text"
+                value={metaTitle}
+                onChange={e => setMetaTitle(e.target.value)}
+                placeholder={title || 'タイトルから自動生成'}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-gray-600">メタディスクリプション</label>
+              <textarea
+                rows={2}
+                value={metaDescription}
+                onChange={e => setMetaDescription(e.target.value)}
+                placeholder={content ? content.replace(/\n/g, ' ').slice(0, 160) : '本文先頭160文字から自動生成'}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              />
+              <p className="text-[10px] text-gray-400 mt-1">{(metaDescription || content.replace(/\n/g, ' ').slice(0, 160)).length}/160文字</p>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-gray-600">OG画像URL</label>
+              <input
+                type="url"
+                value={ogImageUrl}
+                onChange={e => setOgImageUrl(e.target.value)}
+                placeholder="https://..."
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              />
+              <p className="text-[10px] text-gray-400 mt-1">SNSシェア時に表示される画像。空欄の場合はデフォルト画像を使用。</p>
+            </div>
+          </div>
+        </details>
+
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
