@@ -106,21 +106,64 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'status') {
-      // Only super_admin can change status
       if (user.role !== 'super_admin') {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
-
       const { ticketId, status } = body;
       if (!ticketId || !['open', 'in_progress', 'closed'].includes(status)) {
         return NextResponse.json({ error: 'Invalid ticketId or status' }, { status: 400 });
       }
-
       await db.collection('tickets').doc(ticketId).update({
         status,
         updatedAt: new Date().toISOString(),
       });
+      return NextResponse.json({ ok: true });
+    }
 
+    if (action === 'edit') {
+      if (user.role !== 'super_admin') {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+      const { ticketId, subject } = body;
+      if (!ticketId || !subject?.trim()) {
+        return NextResponse.json({ error: 'ticketId and subject are required' }, { status: 400 });
+      }
+      await db.collection('tickets').doc(ticketId).update({
+        subject: subject.trim(),
+        updatedAt: new Date().toISOString(),
+      });
+      return NextResponse.json({ ok: true });
+    }
+
+    if (action === 'delete') {
+      if (user.role !== 'super_admin') {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+      const { ticketId } = body;
+      if (!ticketId) {
+        return NextResponse.json({ error: 'ticketId is required' }, { status: 400 });
+      }
+      await db.collection('tickets').doc(ticketId).delete();
+      return NextResponse.json({ ok: true });
+    }
+
+    if (action === 'delete_message') {
+      if (user.role !== 'super_admin') {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+      const { ticketId, messageIndex } = body;
+      if (!ticketId || typeof messageIndex !== 'number') {
+        return NextResponse.json({ error: 'ticketId and messageIndex are required' }, { status: 400 });
+      }
+      const ref = db.collection('tickets').doc(ticketId);
+      const doc = await ref.get();
+      if (!doc.exists) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      const messages = (doc.data()?.messages || []) as unknown[];
+      if (messageIndex < 0 || messageIndex >= messages.length) {
+        return NextResponse.json({ error: 'Invalid messageIndex' }, { status: 400 });
+      }
+      messages.splice(messageIndex, 1);
+      await ref.update({ messages, updatedAt: new Date().toISOString() });
       return NextResponse.json({ ok: true });
     }
 

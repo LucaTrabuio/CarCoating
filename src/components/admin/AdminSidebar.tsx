@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAdminAuth } from './AdminAuthProvider';
@@ -36,6 +37,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const user = useAdminAuth();
+  const [openTickets, setOpenTickets] = useState(0);
 
   const isSuper = user.role === 'super_admin';
   const visibleItems = NAV_ITEMS.filter((item) => {
@@ -43,6 +45,20 @@ export function AdminSidebar() {
     if (item.superAdminOnly) return false;
     return item.storeAdminVisible;
   });
+
+  // Fetch open ticket count for badge
+  useEffect(() => {
+    let mounted = true;
+    function fetchCount() {
+      fetch('/api/admin/tickets/count', { cache: 'no-store' })
+        .then(r => r.json())
+        .then(d => { if (mounted) setOpenTickets(d.open || 0); })
+        .catch(() => {});
+    }
+    fetchCount();
+    const interval = setInterval(fetchCount, 60_000);
+    return () => { mounted = false; clearInterval(interval); };
+  }, []);
 
   function isActive(href: string) {
     if (href === '/admin') return pathname === '/admin';
@@ -81,7 +97,7 @@ export function AdminSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors relative ${
                   active
                     ? 'bg-amber-500 font-medium text-white'
                     : 'text-gray-300 hover:bg-white/10 hover:text-white'
@@ -89,6 +105,11 @@ export function AdminSidebar() {
               >
                 <span className="w-5 text-center">{item.icon}</span>
                 {item.label}
+                {item.href === '/admin/tickets' && openTickets > 0 && (
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 bg-red-500 text-white text-[9px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                    {openTickets}
+                  </span>
+                )}
               </Link>
             );
           })}
