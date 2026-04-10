@@ -20,8 +20,8 @@ function PriceBlurOverlay({ children, basePath, storeId, tierId }: { children: R
       <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none" aria-hidden="true">
         {children}
       </div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[1px] rounded-lg">
-        <p className="text-xs text-slate-600 font-semibold mb-2 text-center px-4">
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[1px] rounded-lg pointer-events-auto">
+        <p className="text-xs text-slate-600 font-semibold mb-3 text-center px-4">
           料金はお問い合わせ後にメールでご案内
         </p>
         <TrackedLink
@@ -29,7 +29,7 @@ function PriceBlurOverlay({ children, basePath, storeId, tierId }: { children: R
           storeId={storeId}
           event="cta_inquiry"
           meta={{ source: 'pricing_blur', tier: tierId || '' }}
-          className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-lg text-sm hover:bg-blue-700 transition-colors shadow-lg"
+          className="inline-block px-8 py-3 bg-blue-600 text-white font-bold rounded-xl text-base hover:bg-blue-700 transition-colors shadow-lg cursor-pointer"
         >
           料金を問い合わせる →
         </TrackedLink>

@@ -286,7 +286,7 @@ export default function V3HomePage() {
                     const tier = coatingTiers.find(t => t.id === id);
                     if (!tier) return null;
                     return (
-                      <div key={id} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-amber-300 hover:shadow-md transition-all">
+                      <a key={id} href="#store-finder" className="block bg-white border border-gray-200 rounded-xl p-5 hover:border-amber-300 hover:shadow-md transition-all cursor-pointer">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <h3 className="font-bold text-[#0f1c2e] text-base">
@@ -296,7 +296,9 @@ export default function V3HomePage() {
                             <p className="text-xs text-gray-500 mt-0.5">{tier.tagline}</p>
                           </div>
                           <div className="text-right flex-shrink-0 ml-4">
-                            <div className="text-xs text-amber-600 font-semibold">詳細は店舗ページ →</div>
+                            <span className="inline-block px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors">
+                              店舗を探す →
+                            </span>
                           </div>
                         </div>
                         <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
@@ -304,7 +306,7 @@ export default function V3HomePage() {
                           <span>{tier.application_time}</span>
                           <span>艶 {'★'.repeat(tier.gloss_rating)}{'☆'.repeat(5 - tier.gloss_rating)}</span>
                         </div>
-                      </div>
+                      </a>
                     );
                   })}
                 </div>
