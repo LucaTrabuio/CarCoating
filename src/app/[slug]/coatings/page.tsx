@@ -91,12 +91,12 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                 <div className="text-right">
                   <div className="text-[10px] text-slate-400">SSサイズ〜・Web割後（税込）</div>
                   {isBlurred(tier.id, 'web_price', blurFields) ? (
-                    <div className="relative inline-block">
-                      <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">{formatPrice(getPriceForSize(tier, 'SS', priceOverrides))}</div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[9px] text-slate-500 font-semibold bg-white/80 px-1.5 py-0.5 rounded">要問合せ</span>
-                      </div>
-                    </div>
+                    <Link
+                      href={`${base}/inquiry?tier=${tier.id}&prefill=price`}
+                      className="inline-block px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      要問合せ →
+                    </Link>
                   ) : (
                     <div>
                       <div className="text-xs text-slate-400 line-through">{formatPrice(getPriceForSize(tier, 'SS', priceOverrides))}</div>
@@ -153,10 +153,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                       {ALL_SIZES.map(size => (
                         <td key={size} className="px-2.5 py-2 text-center text-[11px] text-slate-400 line-through">
                           {isBlurred(tier.id, 'web_price', blurFields) ? (
-                            <div className="relative inline-block">
-                              <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(getPriceForSize(tier, size, priceOverrides))}</span>
-                              <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
-                            </div>
+                            <Link href={`${base}/inquiry?tier=${tier.id}&prefill=price`} className="text-blue-500 hover:text-blue-700 font-semibold">要問合せ</Link>
                           ) : formatPrice(getPriceForSize(tier, size, priceOverrides))}
                         </td>
                       ))}
@@ -180,10 +177,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                         {ALL_SIZES.map(size => (
                           <td key={size} className="px-2.5 py-2 text-center text-[11px] text-slate-400">
                             {isBlurred(tier.id, 'maintenance_price', blurFields) ? (
-                              <div className="relative inline-block">
-                                <span style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">{formatPrice(tier.maintenance_prices![size])}</span>
-                                <span className="absolute inset-0 flex items-center justify-center text-[8px] text-slate-400 font-semibold">—</span>
-                              </div>
+                              <Link href={`${base}/inquiry?tier=${tier.id}&prefill=price`} className="text-blue-500 hover:text-blue-700 font-semibold">要問合せ</Link>
                             ) : formatPrice(tier.maintenance_prices![size])}
                           </td>
                         ))}
@@ -193,9 +187,10 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                 </table>
               </div>
 
-              <div className="flex gap-2.5 mt-5">
-                <Link href={`${base}/price`} className="px-5 py-2 bg-amber-500 text-white font-bold rounded-md text-[13px] hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>
+              <div className="flex gap-2.5 mt-5 flex-wrap">
+                <Link href={`${base}/price`} className="px-5 py-2 bg-amber-500 text-white font-bold rounded-md text-[13px] hover:bg-amber-600 transition-colors">見積もりシミュレーター →</Link>
                 <Link href={`${base}/booking`} className="px-5 py-2 bg-slate-200 text-slate-700 font-bold rounded-md text-[13px] hover:bg-slate-300 transition-colors">予約する</Link>
+                <Link href={`${base}/inquiry?tier=${tier.id}`} className="px-5 py-2 bg-blue-600 text-white font-bold rounded-md text-[13px] hover:bg-blue-700 transition-colors">お問い合わせ</Link>
               </div>
             </div>
           </section>
