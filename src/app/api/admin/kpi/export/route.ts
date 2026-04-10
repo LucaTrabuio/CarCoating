@@ -31,10 +31,11 @@ export async function GET(req: NextRequest) {
 
   const snapshot = await query.get();
 
-  const rows: string[] = ['date,phone_calls,inquiries,bookings'];
+  const fields = ['date', 'page_views', 'phone_calls', 'inquiries', 'bookings', 'cta_booking_clicks', 'cta_inquiry_clicks', 'line_clicks', 'quiz_completions', 'plan_selections'];
+  const rows: string[] = [fields.join(',')];
   for (const doc of snapshot.docs) {
     const d = doc.data();
-    rows.push(`${d.date ?? ''},${d.phone_calls ?? 0},${d.inquiries ?? 0},${d.bookings ?? 0}`);
+    rows.push(fields.map(f => f === 'date' ? (d.date ?? '') : String(d[f] ?? 0)).join(','));
   }
 
   const csv = rows.join('\n');
