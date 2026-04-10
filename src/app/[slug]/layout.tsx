@@ -129,6 +129,7 @@ export default async function SlugLayout({
             businessHours={primaryStore.business_hours}
             regularHoliday={primaryStore.regular_holiday}
             isMultiStore={scStores.length > 1}
+            stores={scStores.map(s => ({ name: s.store_name, tel: s.tel }))}
           />
           <MobileCTA tel={primaryStore.tel} lineUrl={primaryStore.line_url} storeId={primaryStore.store_id} basePath={`/${slug}`} />
         </>

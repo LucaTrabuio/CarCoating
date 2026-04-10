@@ -43,6 +43,7 @@ export default async function SlugPage({
                 store={primaryStore}
                 basePath={basePath}
                 discountRate={campaign.discount_rate}
+                allStores={stores}
               />
             ))}
           <SubCompanyStoreMap
@@ -125,6 +126,7 @@ export default async function SlugPage({
               store={primaryStore}
               basePath={basePath}
               discountRate={campaign.discount_rate}
+              allStores={stores}
             />
           ))}
         <SubCompanyStoreMap

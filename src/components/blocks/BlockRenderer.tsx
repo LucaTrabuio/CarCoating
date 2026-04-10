@@ -46,9 +46,10 @@ interface BlockRendererProps {
   store: V3StoreData;
   basePath: string;
   discountRate: number;
+  allStores?: V3StoreData[];
 }
 
-export default function BlockRenderer({ block, store, basePath, discountRate }: BlockRendererProps) {
+export default function BlockRenderer({ block, store, basePath, discountRate, allStores }: BlockRendererProps) {
   if (!block.visible) return null;
 
   switch (block.type) {
@@ -83,7 +84,7 @@ export default function BlockRenderer({ block, store, basePath, discountRate }: 
     case 'access':
       return <AccessBlock config={block.config as AccessConfig} store={store} basePath={basePath} />;
     case 'cta':
-      return <CTABlock config={block.config as CTAConfig} store={store} />;
+      return <CTABlock config={block.config as CTAConfig} store={store} allStores={allStores} />;
     case 'certifications':
       return <CertificationsBlock config={block.config as CertificationsConfig} />;
     case 'appeal_points':

@@ -1,5 +1,10 @@
 import Link from 'next/link';
 
+interface StoreContact {
+  name: string;
+  tel: string;
+}
+
 interface FooterProps {
   storeId: string;
   storeName: string;
@@ -8,10 +13,12 @@ interface FooterProps {
   businessHours: string;
   regularHoliday?: string;
   isMultiStore?: boolean;
+  stores?: StoreContact[];
 }
 
-export default function Footer({ storeId, storeName, tel, address, businessHours, regularHoliday, isMultiStore }: FooterProps) {
+export default function Footer({ storeId, storeName, tel, address, businessHours, regularHoliday, isMultiStore, stores }: FooterProps) {
   const base = `/${storeId}`;
+  const multiStorePhones = isMultiStore && stores ? stores.filter(s => s.tel) : [];
 
   return (
     <footer className="bg-gray-900 text-gray-400 py-8">
@@ -23,6 +30,16 @@ export default function Footer({ storeId, storeName, tel, address, businessHours
           {!isMultiStore && businessHours && <div className="text-xs">営業時間: {businessHours}</div>}
           {!isMultiStore && regularHoliday && <div className="text-xs">定休日: {regularHoliday}</div>}
           {!isMultiStore && tel && <a href={`tel:${tel}`} className="text-amber-500 font-bold text-lg mt-2 inline-block">{tel}</a>}
+          {isMultiStore && multiStorePhones.length > 0 && (
+            <div className="mt-3 space-y-1.5">
+              {multiStorePhones.map(s => (
+                <div key={s.name} className="flex items-center justify-center gap-3 text-xs">
+                  <span className="text-gray-400">{s.name}</span>
+                  <a href={`tel:${s.tel}`} className="text-amber-500 font-bold">{s.tel}</a>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Payment & Points */}

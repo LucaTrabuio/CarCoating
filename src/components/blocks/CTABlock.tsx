@@ -6,11 +6,14 @@ import TrackedLink from '@/components/TrackedLink';
 interface CTABlockProps {
   config: CTAConfig;
   store: V3StoreData;
+  allStores?: V3StoreData[];
 }
 
-export default function CTABlock({ config, store }: CTABlockProps) {
+export default function CTABlock({ config, store, allStores }: CTABlockProps) {
   const hasPhone = config.show_phone && !!store.tel;
   const hasLine = config.show_line && !!store.line_url;
+  const isMultiStore = allStores && allStores.length > 1;
+  const storesWithPhone = isMultiStore ? allStores.filter(s => s.tel) : [];
 
   if (!hasPhone && !hasLine) return null;
 
@@ -32,20 +35,41 @@ export default function CTABlock({ config, store }: CTABlockProps) {
           </p>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          {hasPhone && (
-            <TrackedPhoneLink
-              tel={store.tel}
-              storeId={store.store_id}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-[#0f1c2e] font-bold rounded-xl text-lg hover:bg-slate-100 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              {store.tel}
-            </TrackedPhoneLink>
-          )}
-          {hasLine && (
+        {/* Multi-store: list each store's phone */}
+        {hasPhone && isMultiStore && storesWithPhone.length > 1 ? (
+          <div className="space-y-3 mb-4">
+            {storesWithPhone.map(s => (
+              <div key={s.store_id} className="flex items-center justify-between gap-3 bg-white/10 rounded-xl px-5 py-3">
+                <span className="text-white/80 text-sm font-medium truncate">{s.store_name}</span>
+                <TrackedPhoneLink
+                  tel={s.tel}
+                  storeId={s.store_id}
+                  className="text-amber-400 font-bold text-lg hover:text-amber-300 transition-colors shrink-0"
+                >
+                  {s.tel}
+                </TrackedPhoneLink>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {hasPhone && (
+              <TrackedPhoneLink
+                tel={store.tel}
+                storeId={store.store_id}
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-[#0f1c2e] font-bold rounded-xl text-lg hover:bg-slate-100 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                {store.tel}
+              </TrackedPhoneLink>
+            )}
+          </div>
+        )}
+
+        {hasLine && (
+          <div className={`flex justify-center ${hasPhone ? 'mt-4' : ''}`}>
             <TrackedLink
               href={store.line_url!}
               storeId={store.store_id}
@@ -59,8 +83,8 @@ export default function CTABlock({ config, store }: CTABlockProps) {
               </svg>
               LINEで相談
             </TrackedLink>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );
