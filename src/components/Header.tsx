@@ -67,6 +67,7 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
           <Link href={`${base}/cases`} className="text-white/60 text-[13px] hover:text-white transition-colors">施工事例</Link>
           <Link href={`${base}/reviews`} className="text-white/60 text-[13px] hover:text-white transition-colors">お客様の声</Link>
           <Link href={`${base}/booking`} className="text-white/60 text-[13px] hover:text-white transition-colors">ご予約</Link>
+          <Link href={`${base}/inquiry`} className="text-white/60 text-[13px] hover:text-white transition-colors">お問い合わせ</Link>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -106,6 +107,7 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
           <Link href={`${base}/reviews`} className="text-white/80 text-sm" onClick={() => setMenuOpen(false)}>お客様の声・Q&A</Link>
           <Link href={`${base}/access`} className="text-white/80 text-sm" onClick={() => setMenuOpen(false)}>店舗情報</Link>
           <Link href={`${base}/booking`} className="text-white/80 text-sm font-bold text-amber-400" onClick={() => setMenuOpen(false)}>ご予約</Link>
+          <Link href={`${base}/inquiry`} className="text-white/80 text-sm text-blue-400" onClick={() => setMenuOpen(false)}>お問い合わせ</Link>
         </nav>
       )}
     </header>

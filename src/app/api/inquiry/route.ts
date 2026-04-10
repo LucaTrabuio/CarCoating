@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     const locationPhone = store?.tel || '';
     const locationAddress = store?.address || '';
 
-    // Calculate price if tier selected
+    // Calculate per-size prices if tier selected
     let tierName: string | undefined;
     let tierPrice: string | undefined;
     if (selectedTier && store) {
@@ -58,9 +58,12 @@ export async function POST(request: Request) {
         tierName = tier.name;
         const discountRate = store.discount_rate || 20;
         const priceOverrides = parsePriceOverrides(store.price_overrides);
-        const ssPrice = getWebPrice(tier, 'SS', discountRate, priceOverrides);
-        const xlPrice = getWebPrice(tier, 'XL', discountRate, priceOverrides);
-        tierPrice = `${formatPrice(ssPrice)}〜${formatPrice(xlPrice)}（税込・Web割引適用）`;
+        const sizes = ['SS', 'S', 'M', 'L', 'LL', 'XL'] as const;
+        const priceLines = sizes.map(size => {
+          const price = getWebPrice(tier, size, discountRate, priceOverrides);
+          return `${size}: ${formatPrice(price)}`;
+        });
+        tierPrice = priceLines.join(' / ') + '（税込・Web割引適用）';
       }
     }
 

@@ -11,9 +11,10 @@ interface Props {
   stores?: V3StoreData[];
   tiers: CoatingTier[];
   preselectedTier?: string;
+  prefillType?: string;
 }
 
-export default function InquiryForm({ store: initialStore, stores, tiers, preselectedTier }: Props) {
+export default function InquiryForm({ store: initialStore, stores, tiers, preselectedTier, prefillType }: Props) {
   const isMultiStore = stores && stores.length > 1;
   const [selectedStoreId, setSelectedStoreId] = useState(initialStore.store_id);
   const store = isMultiStore ? (stores!.find(s => s.store_id === selectedStoreId) || initialStore) : initialStore;
@@ -23,7 +24,11 @@ export default function InquiryForm({ store: initialStore, stores, tiers, presel
   const [email, setEmail] = useState('');
   const [emailConfirm, setEmailConfirm] = useState('');
   const [vehicleInfo, setVehicleInfo] = useState('');
-  const [message, setMessage] = useState('');
+  const tierName = tiers.find(t => t.id === preselectedTier)?.name || '';
+  const defaultMessage = prefillType === 'price' && tierName
+    ? `${tierName}の料金について詳しく教えてください。`
+    : '';
+  const [message, setMessage] = useState(defaultMessage);
   const [selectedTier, setSelectedTier] = useState(preselectedTier || '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -118,8 +123,8 @@ export default function InquiryForm({ store: initialStore, stores, tiers, presel
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">電話番号</label>
-            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)}
+            <label className="block text-xs text-gray-500 mb-1">電話番号 *</label>
+            <input type="tel" required value={phone} onChange={e => setPhone(e.target.value)}
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
           </div>
           <div>

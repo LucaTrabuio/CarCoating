@@ -67,17 +67,21 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
               {tier.durability_years}持続 | {tier.application_time}
             </p>
             {blurred ? (
-              <div className="relative">
-                <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">
-                  {formatPrice(webPrice)}〜
-                </div>
-              </div>
+              <TrackedLink
+                href={`${basePath}/inquiry?tier=${tier.id}&prefill=price`}
+                storeId={store.store_id}
+                event="cta_inquiry"
+                meta={{ source: 'pricing_card', tier: tier.id }}
+                className="inline-block px-5 py-2 bg-blue-600 text-white font-bold rounded-lg text-sm hover:bg-blue-700 transition-colors cursor-pointer"
+              >
+                要問合せ →
+              </TrackedLink>
             ) : (
               <div className="text-2xl font-bold text-[#0f1c2e]">
                 {formatPrice(webPrice)}〜
               </div>
             )}
-            <p className="text-[10px] text-slate-400 mb-3">SSサイズ・Web割後・税込</p>
+            <p className="text-[10px] text-slate-400 mb-3">{blurred ? 'お問い合わせ後にメールでご案内' : 'SSサイズ・Web割後・税込'}</p>
           </div>
         );
       })}

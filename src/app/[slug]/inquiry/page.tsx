@@ -19,10 +19,10 @@ export default async function InquiryPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tier?: string }>;
+  searchParams: Promise<{ tier?: string; prefill?: string }>;
 }) {
   const { slug } = await params;
-  const { tier: preselectedTier } = await searchParams;
+  const { tier: preselectedTier, prefill } = await searchParams;
 
   const resolved = await resolveSlugToStore(slug);
   if (!resolved) notFound();
@@ -55,6 +55,7 @@ export default async function InquiryPage({
         stores={allStores.length > 1 ? allStores : undefined}
         tiers={tiers}
         preselectedTier={preselectedTier}
+        prefillType={prefill}
       />
     </main>
   );
