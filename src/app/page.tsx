@@ -6,7 +6,6 @@ import type { V3StoreData } from '@/lib/v3-types';
 import { coatingTiers } from '@/data/coating-tiers';
 import { blogArticles } from '@/data/blog-articles';
 import { news, CATEGORY_LABELS } from '@/data/news';
-import { formatPrice } from '@/lib/pricing';
 import Image from 'next/image';
 import { KEEPER_BASE } from '@/lib/constants';
 
@@ -297,8 +296,7 @@ export default function V3HomePage() {
                             <p className="text-xs text-gray-500 mt-0.5">{tier.tagline}</p>
                           </div>
                           <div className="text-right flex-shrink-0 ml-4">
-                            <div className="text-lg font-bold text-[#0f1c2e]">{formatPrice(tier.prices.SS)}〜</div>
-                            <div className="text-[10px] text-gray-400">税込</div>
+                            <div className="text-xs text-amber-600 font-semibold">詳細は店舗ページ →</div>
                           </div>
                         </div>
                         <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
