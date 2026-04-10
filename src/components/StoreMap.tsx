@@ -69,7 +69,7 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
         icon: {
           path: google.maps.SymbolPath.CIRCLE,
           scale: isSelected ? 14 : 10,
-          fillColor: isSelected ? '#d97706' : '#0f1c2e',
+          fillColor: isSelected ? '#d97706' : '#0C3290',
           fillOpacity: 1,
           strokeColor: '#ffffff',
           strokeWeight: 3,
@@ -78,7 +78,7 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
       });
 
       const infoContent = `<div style="padding:8px 4px;min-width:200px;font-family:sans-serif;">
-        <div style="font-size:14px;font-weight:bold;color:${isSelected ? '#d97706' : '#0f1c2e'};margin-bottom:6px;">${store.store_name}</div>
+        <div style="font-size:14px;font-weight:bold;color:${isSelected ? '#d97706' : '#0C3290'};margin-bottom:6px;">${store.store_name}</div>
         <div style="font-size:11px;color:#555;margin-bottom:4px;">${store.address}</div>
         ${store.tel ? `<div style="font-size:11px;color:#555;margin-bottom:4px;">📞 ${store.tel}</div>` : ''}
         ${store.email ? `<div style="font-size:11px;color:#555;margin-bottom:4px;">✉️ ${store.email}</div>` : ''}
@@ -177,12 +177,12 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
             >
               <div className="flex items-start gap-3">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
-                  isSelected ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500'
+                  isSelected ? 'bg-amber-500 text-black' : 'bg-slate-100 text-slate-500'
                 }`}>
                   {isSelected ? '✓' : '📍'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className={`font-bold text-sm ${isSelected ? 'text-amber-700' : 'text-[#0f1c2e]'}`}>
+                  <h3 className={`font-bold text-sm ${isSelected ? 'text-amber-700' : 'text-[#0C3290]'}`}>
                     {store.store_name}
                   </h3>
                   <p className="text-xs text-slate-500 mt-0.5">{store.address}</p>

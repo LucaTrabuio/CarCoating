@@ -30,8 +30,8 @@ export default function AccessBlock({ config, store, basePath }: AccessBlockProp
     <section className="py-14 px-5 bg-slate-50">
       <div className="max-w-[900px] mx-auto">
         <h2
-          className="text-xl md:text-2xl font-bold text-[#0f1c2e] text-center mb-8"
-          style={{ fontFamily: '"Noto Serif JP", serif' }}
+          className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] text-center mb-8"
+          style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
         >
           アクセス
         </h2>
@@ -79,7 +79,7 @@ export default function AccessBlock({ config, store, basePath }: AccessBlockProp
           <div className="mt-8 text-center">
             <Link
               href={subCompanyHref}
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 rounded-lg text-sm font-semibold text-[#0f1c2e] hover:border-amber-500 hover:bg-amber-50 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 rounded-lg text-sm font-semibold text-[#0C3290] hover:border-amber-500 hover:bg-amber-50 transition-colors"
             >
               <span aria-hidden="true">&#128205;</span>
               他の店舗を見る
@@ -96,7 +96,7 @@ function InfoRow({ label, value, children }: { label: string; value?: string; ch
   return (
     <div className="flex gap-3 py-3 border-b border-slate-200">
       <span className="text-xs font-bold text-slate-400 w-20 flex-shrink-0 pt-0.5">{label}</span>
-      <span className="text-sm text-[#0f1c2e]">{children ?? value}</span>
+      <span className="text-sm text-[#0C3290]">{children ?? value}</span>
     </div>
   );
 }

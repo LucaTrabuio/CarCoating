@@ -33,14 +33,14 @@ export default function V3ReviewsPage() {
 
   return (
     <main>
-      <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>お客様の声・Q&A</h1>
+      <section className="bg-[#0C3290] py-12 px-5 text-center">
+        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>お客様の声・Q&A</h1>
       </section>
 
       <section className="py-10 px-5">
         <div className="max-w-[800px] mx-auto">
           <div className="text-center mb-8">
-            <div className="text-4xl font-bold text-[#0f1c2e]">{avg}</div>
+            <div className="text-4xl font-bold text-[#0C3290]">{avg}</div>
             <StarRating rating={Math.round(Number(avg))} />
             <p className="text-xs text-gray-400 mt-1">{SAMPLE_REVIEWS.length}件のレビュー</p>
           </div>
@@ -48,7 +48,7 @@ export default function V3ReviewsPage() {
             {SAMPLE_REVIEWS.map((r, i) => (
               <div key={i} className="bg-white border border-gray-200 rounded-xl p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="font-bold text-sm text-[#0f1c2e]">{r.author}</div>
+                  <div className="font-bold text-sm text-[#0C3290]">{r.author}</div>
                   <div className="text-xs text-gray-400">{r.date}</div>
                 </div>
                 <StarRating rating={r.rating} />
@@ -61,13 +61,13 @@ export default function V3ReviewsPage() {
 
       <section className="py-10 px-5 bg-gray-50">
         <div className="max-w-[800px] mx-auto">
-          <h2 className="text-xl font-bold text-[#0f1c2e] text-center mb-8" style={{ fontFamily: '"Noto Serif JP", serif' }}>よくあるご質問</h2>
+          <h2 className="text-xl font-bold text-[#0C3290] text-center mb-8" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>よくあるご質問</h2>
           <div className="space-y-2">
             {FAQ.map((item, i) => (
               <div key={i} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full px-5 py-4 text-left flex items-center justify-between cursor-pointer hover:bg-gray-50">
-                  <span className="text-sm font-semibold text-[#0f1c2e]">Q. {item.q}</span>
+                  <span className="text-sm font-semibold text-[#0C3290]">Q. {item.q}</span>
                   <span className="text-gray-400 text-lg ml-2">{openFaq === i ? '−' : '+'}</span>
                 </button>
                 {openFaq === i && (
@@ -79,11 +79,11 @@ export default function V3ReviewsPage() {
         </div>
       </section>
 
-      <section className="py-10 px-5 bg-[#0f1c2e]">
+      <section className="py-10 px-5 bg-[#0C3290]">
         <div className="max-w-[500px] mx-auto text-center text-white">
-          <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>コーティングをご検討中の方へ</h2>
+          <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングをご検討中の方へ</h2>
           <div className="flex gap-3 justify-center">
-            <Link href={`${base}/booking`} className="px-6 py-2.5 bg-amber-500 text-white font-bold rounded-md text-sm hover:bg-amber-500">予約する →</Link>
+            <Link href={`${base}/booking`} className="px-6 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500">予約する →</Link>
             <Link href={`${base}/booking?mode=inquiry`} className="px-6 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20">お問い合わせ</Link>
           </div>
         </div>

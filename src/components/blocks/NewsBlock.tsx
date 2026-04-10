@@ -26,8 +26,8 @@ export default function NewsBlock({ config, store }: NewsBlockProps) {
     <section className="py-14 px-5 bg-white">
       <div className="max-w-[1100px] mx-auto">
         <h2
-          className="text-xl font-bold text-[#0f1c2e] text-center mb-8"
-          style={{ fontFamily: '"Noto Serif JP", serif' }}
+          className="text-xl font-bold text-[#0C3290] text-center mb-8"
+          style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
         >
           お知らせ
         </h2>
@@ -35,7 +35,7 @@ export default function NewsBlock({ config, store }: NewsBlockProps) {
           {visibleItems.map(item => (
             <div key={item.id} className="border-b border-gray-200 pb-3">
               <div className="text-xs text-gray-400 mb-1">{item.date}</div>
-              <div className="font-semibold text-sm text-[#0f1c2e]">{item.title}</div>
+              <div className="font-semibold text-sm text-[#0C3290]">{item.title}</div>
               {item.content && (
                 <p className="text-xs text-gray-500 mt-1">{item.content}</p>
               )}

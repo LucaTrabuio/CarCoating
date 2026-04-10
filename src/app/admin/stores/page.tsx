@@ -134,7 +134,7 @@ export default function StoresPage() {
         <button
           onClick={() => setActiveSection('legacy')}
           className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-            activeSection === 'legacy' ? 'bg-amber-500 text-white' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
+            activeSection === 'legacy' ? 'bg-amber-500 text-black' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
           }`}
         >
           店舗マスターCSV管理
@@ -142,7 +142,7 @@ export default function StoresPage() {
         <button
           onClick={() => setActiveSection('v3')}
           className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-            activeSection === 'v3' ? 'bg-amber-500 text-white' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
+            activeSection === 'v3' ? 'bg-amber-500 text-black' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
           }`}
         >
           V3 Firebase管理
@@ -277,7 +277,7 @@ function LegacyStoresSection() {
           <div className="flex gap-2">
             <button onClick={handleCSVTemplateDownload} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📋 テンプレート</button>
             <button onClick={handleExportCSV} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📤 CSVエクスポート</button>
-            <label className="px-3 py-1.5 bg-gradient-to-br from-amber-500 to-amber-500 text-white rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
+            <label className="px-3 py-1.5 bg-amber-500 text-black rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
               📥 CSVインポート
               <input type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
             </label>
@@ -330,7 +330,7 @@ function LegacyStoresSection() {
               <button
                 onClick={handleCSVSave}
                 disabled={csvErrors.some(e => e.includes('store_id カラム'))}
-                className="px-4 py-2 bg-gradient-to-br from-amber-500 to-amber-500 text-white rounded-lg text-sm font-bold disabled:opacity-40"
+                className="px-4 py-2 bg-amber-500 text-black rounded-lg text-sm font-bold disabled:opacity-40"
               >
                 保存して反映する（{csvRows.length}店舗）
               </button>
@@ -515,7 +515,7 @@ function V3FirebaseSection() {
             className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-semibold hover:bg-gray-200">
             CSVエクスポート
           </button>
-          <label className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-500">
+          <label className="px-4 py-2 bg-amber-500 text-black rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-500">
             CSVインポート
             <input type="file" accept=".csv" onChange={handleV3FileSelect} className="hidden" />
           </label>
@@ -554,7 +554,7 @@ function V3FirebaseSection() {
               </table>
             </div>
             <button onClick={handleV3Import} disabled={v3Loading}
-              className="mt-3 px-6 py-2.5 bg-gradient-to-br from-amber-500 to-amber-500 text-white rounded-lg text-sm font-bold disabled:opacity-50">
+              className="mt-3 px-6 py-2.5 bg-amber-500 text-black rounded-lg text-sm font-bold disabled:opacity-50">
               {v3Loading ? '保存中...' : `Firestoreに保存（${v3CsvPreview.length}件）`}
             </button>
           </div>
@@ -613,12 +613,12 @@ function StoreHierarchy({ stores, loading }: { stores: Record<string, unknown>[]
           <div key={sc.id} className="bg-white border border-gray-200 rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="font-bold text-lg text-[#0f1c2e]">{sc.name}</h2>
+                <h2 className="font-bold text-lg text-[#0C3290]">{sc.name}</h2>
                 <p className="text-xs text-gray-500">/{sc.slug} — {groupStores.length}店舗（共有サイト）</p>
               </div>
               <div className="flex gap-2">
                 <Link href={`/${sc.slug}`} target="_blank" className="text-xs text-amber-500 font-semibold hover:underline">サイトを見る →</Link>
-                <Link href={`/admin/builder/${String(groupStores[0]?.store_id)}`} className="text-xs bg-amber-500 text-white px-3 py-1 rounded-lg font-semibold hover:bg-amber-500">ビルダー</Link>
+                <Link href={`/admin/builder/${String(groupStores[0]?.store_id)}`} className="text-xs bg-amber-500 text-black px-3 py-1 rounded-lg font-semibold hover:bg-amber-500">ビルダー</Link>
               </div>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -633,7 +633,7 @@ function StoreHierarchy({ stores, loading }: { stores: Record<string, unknown>[]
       {/* Ungrouped stores */}
       {ungrouped.length > 0 && (
         <div className="bg-white border border-gray-200 rounded-xl p-5">
-          <h2 className="font-bold text-lg mb-4 text-[#0f1c2e]">その他の店舗（{ungrouped.length}件）</h2>
+          <h2 className="font-bold text-lg mb-4 text-[#0C3290]">その他の店舗（{ungrouped.length}件）</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
             {ungrouped.map(s => (
               <StoreCard key={String(s.store_id)} store={s} />
@@ -652,7 +652,7 @@ function StoreCard({ store: s, companySlug }: { store: Record<string, unknown>; 
   return (
     <div className={`border rounded-lg p-4 ${s.is_active === false ? 'bg-gray-50 border-gray-200 opacity-50' : 'border-gray-200'}`}>
       <div className="flex items-center justify-between mb-1">
-        <div className="font-bold text-sm text-[#0f1c2e]">{String(s.store_name || '')}</div>
+        <div className="font-bold text-sm text-[#0C3290]">{String(s.store_name || '')}</div>
         <div className="flex gap-1">
           {s.is_active === false && <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">無効</span>}
           {s.sub_company_id ? <span className="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-bold">グループ</span> : null}

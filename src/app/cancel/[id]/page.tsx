@@ -31,7 +31,7 @@ export default async function CancelPage({
   return (
     <main className="min-h-screen bg-gray-50 py-10 px-5">
       <div className="max-w-[500px] mx-auto bg-white rounded-xl border border-gray-200 p-6">
-        <h1 className="text-xl font-bold text-[#0f1c2e] mb-2">予約のキャンセル</h1>
+        <h1 className="text-xl font-bold text-[#0C3290] mb-2">予約のキャンセル</h1>
         <p className="text-sm text-gray-500 mb-6">以下の予約をキャンセルしますか？</p>
 
         <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-2 text-sm">

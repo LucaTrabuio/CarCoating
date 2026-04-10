@@ -19,7 +19,7 @@ export default function PricingTable({ size, discountRate, storeId, blurFields =
     <div className="overflow-x-auto border border-gray-200 rounded-xl">
       <table className="w-full text-sm border-collapse">
         <thead>
-          <tr className="bg-[#0f1c2e] text-white">
+          <tr className="bg-[#0C3290] text-white">
             <th className="px-4 py-3 text-left text-xs font-semibold">プラン名</th>
             <th className="px-3 py-3 text-left text-xs font-semibold">耐久</th>
             <th className="px-3 py-3 text-left text-xs font-semibold">通常価格</th>
@@ -38,7 +38,7 @@ export default function PricingTable({ size, discountRate, storeId, blurFields =
             return (
               <tr key={tier.id} className={`border-b border-gray-100 hover:bg-amber-50/50 ${isPopular ? 'bg-amber-50/30' : ''}`}>
                 <td className="px-4 py-3">
-                  <div className="font-bold text-[#0f1c2e]">
+                  <div className="font-bold text-[#0C3290]">
                     {isPopular && <span className="text-amber-500">★ </span>}
                     {tier.name}
                   </div>

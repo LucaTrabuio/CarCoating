@@ -86,7 +86,7 @@ function AdminLoginPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f1c2e] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#0C3290] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-white">管理画面ログイン</h1>
@@ -159,7 +159,7 @@ function AdminLoginPageContent() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-500 text-white font-bold rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-amber-500 hover:bg-amber-500 text-black font-bold rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'ログイン中...' : 'メールでログイン'}
             </button>

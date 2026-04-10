@@ -93,11 +93,11 @@ export default function HierarchyPage() {
       <div className="relative">
         {/* Root node */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-[#0f1c2e] text-white flex items-center justify-center text-lg font-bold flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[#0C3290] text-white flex items-center justify-center text-lg font-bold flex-shrink-0">
             K
           </div>
           <div>
-            <div className="font-bold text-[#0f1c2e]">KeePer PRO SHOP ネットワーク</div>
+            <div className="font-bold text-[#0C3290]">KeePer PRO SHOP ネットワーク</div>
             <div className="text-xs text-gray-500">{stores.length}店舗 ・ {subCompanies.length}サブカンパニー</div>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function HierarchyPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-[#0f1c2e]">{sc.name}</span>
+                        <span className="font-bold text-sm text-[#0C3290]">{sc.name}</span>
                         <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-bold">共有サイト</span>
                         <span className="text-[10px] text-gray-400">/{sc.slug}</span>
                       </div>

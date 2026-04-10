@@ -127,7 +127,7 @@ export default function StoreSettingsPage() {
         <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-5">
           {/* Notification emails */}
           <div>
-            <label className="block text-sm font-bold text-[#0f1c2e] mb-1">通知メールアドレス</label>
+            <label className="block text-sm font-bold text-[#0C3290] mb-1">通知メールアドレス</label>
             <p className="text-xs text-gray-500 mb-3">新しい予約があったときに通知を受け取るメールアドレスです。複数設定できます。</p>
 
             <div className="space-y-2 mb-3">
@@ -158,7 +158,7 @@ export default function StoreSettingsPage() {
               />
               <button
                 onClick={addEmail}
-                className="px-4 py-2 bg-amber-500 text-white text-sm font-bold rounded-lg hover:bg-amber-600 cursor-pointer"
+                className="px-4 py-2 bg-amber-500 text-black text-sm font-bold rounded-lg hover:bg-amber-600 cursor-pointer"
               >
                 追加
               </button>
@@ -168,7 +168,7 @@ export default function StoreSettingsPage() {
           {/* Calendar ID (super_admin only) */}
           {user.role === 'super_admin' && (
             <div className="pt-4 border-t border-gray-100">
-              <label className="block text-sm font-bold text-[#0f1c2e] mb-1">Google Calendar ID</label>
+              <label className="block text-sm font-bold text-[#0C3290] mb-1">Google Calendar ID</label>
               <p className="text-xs text-gray-500 mb-2">確定した予約はこのカレンダーに自動で追加されます。（スーパー管理者のみ設定可）</p>
               <input
                 type="text"
@@ -186,7 +186,7 @@ export default function StoreSettingsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="ml-auto px-6 py-2 bg-amber-500 text-white text-sm font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
+              className="ml-auto px-6 py-2 bg-amber-500 text-black text-sm font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
             >
               {saving ? '保存中...' : '保存'}
             </button>

@@ -46,9 +46,9 @@ export default async function V3BlogPage({ params }: { params: Promise<{ slug: s
 
   return (
     <main>
-      <section className="bg-[#0f1c2e] py-14 px-5 text-center">
+      <section className="bg-[#0C3290] py-14 px-5 text-center">
         <div className="max-w-[700px] mx-auto">
-          <h1 className="text-white text-2xl md:text-3xl font-bold mb-3" style={{ fontFamily: '"Noto Serif JP", serif' }}>コーティングブログ</h1>
+          <h1 className="text-white text-2xl md:text-3xl font-bold mb-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングブログ</h1>
           <p className="text-white/40 text-sm leading-relaxed">
             初めてのコーティングで迷わないための基礎知識。ワックスとの違い、ガラスとセラミックの比較、施工後のお手入れまで。
           </p>
@@ -65,7 +65,7 @@ export default async function V3BlogPage({ params }: { params: Promise<{ slug: s
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${categoryColors[article.category] || ''}`}>{categoryLabels[article.category] || article.category}</span>
                   <span className="text-[10px] text-gray-400">{article.publishDate}</span>
                 </div>
-                <h2 className="text-base font-bold text-[#0f1c2e] mb-2 group-hover:text-amber-700 transition-colors leading-snug">{article.title}</h2>
+                <h2 className="text-base font-bold text-[#0C3290] mb-2 group-hover:text-amber-700 transition-colors leading-snug">{article.title}</h2>
                 <p className="text-xs text-gray-500 leading-relaxed">{article.summary}</p>
                 <span className="inline-block mt-3 text-xs font-semibold text-amber-500 group-hover:underline">続きを読む →</span>
               </div>
@@ -74,13 +74,13 @@ export default async function V3BlogPage({ params }: { params: Promise<{ slug: s
         </div>
       </section>
 
-      <section className="py-12 px-5 bg-[#0f1c2e]">
+      <section className="py-12 px-5 bg-[#0C3290]">
         <div className="max-w-[500px] mx-auto text-center text-white">
-          <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>コーティングを検討中の方へ</h2>
+          <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングを検討中の方へ</h2>
           <p className="text-sm text-white/40 mb-6">お車の状態を見て最適なコースをご提案します。</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href={`${base}/coatings`} className="px-5 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20">メニュー一覧</Link>
-            <Link href={`${base}/booking`} className="px-5 py-2.5 bg-amber-500 text-white font-bold rounded-md text-sm hover:bg-amber-500">ご予約・お問い合わせ →</Link>
+            <Link href={`${base}/booking`} className="px-5 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500">ご予約・お問い合わせ →</Link>
           </div>
         </div>
       </section>

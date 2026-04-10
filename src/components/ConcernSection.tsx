@@ -37,7 +37,7 @@ export default function ConcernSection() {
       <div className="max-w-[700px] mx-auto">
         <div className="text-center mb-10">
           <p className="text-slate-400 text-xs font-bold tracking-widest mb-2">FAQ</p>
-          <h2 className="text-[#0f1c2e] text-xl md:text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          <h2 className="text-[#0C3290] text-xl md:text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             よくあるご不安にお答えします
           </h2>
         </div>
@@ -48,7 +48,7 @@ export default function ConcernSection() {
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
                 className="w-full px-5 py-4 flex items-center justify-between text-left cursor-pointer"
               >
-                <span className="text-[14px] font-semibold text-[#0f1c2e]">{c.worry}</span>
+                <span className="text-[14px] font-semibold text-[#0C3290]">{c.worry}</span>
                 <span className="text-slate-400 text-lg flex-shrink-0 ml-3">{openIndex === i ? '−' : '+'}</span>
               </button>
               {openIndex === i && (

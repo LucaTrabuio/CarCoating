@@ -28,7 +28,7 @@ function PriceBlurOverlay({ children, basePath, storeId }: { children: React.Rea
           storeId={storeId}
           event="cta_inquiry"
           meta={{ source: 'pricing_blur' }}
-          className="px-5 py-2 bg-amber-500 text-white font-bold rounded-lg text-xs hover:bg-amber-500 transition-colors shadow-lg"
+          className="px-5 py-2 bg-amber-500 text-black font-bold rounded-lg text-xs hover:bg-amber-500 transition-colors shadow-lg"
         >
           お問い合わせ →
         </TrackedLink>
@@ -57,22 +57,22 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
             className={`bg-white rounded-xl p-6 text-center border-2 ${i === 1 ? 'border-amber-500 relative' : 'border-slate-200'}`}
           >
             {i === 1 && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-400 text-white text-xs font-bold px-3 py-0.5 rounded-full">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-black text-xs font-bold px-3 py-0.5 rounded-full">
                 一番人気
               </span>
             )}
-            <h3 className="font-bold text-lg text-[#0f1c2e] mb-1">{tier.name}</h3>
+            <h3 className="font-bold text-lg text-[#0C3290] mb-1">{tier.name}</h3>
             <p className="text-xs text-slate-500 mb-3">
               {tier.durability_years}持続 | {tier.application_time}
             </p>
             {blurred ? (
               <div className="relative">
-                <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">
+                <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0C3290]" aria-hidden="true">
                   {formatPrice(webPrice)}〜
                 </div>
               </div>
             ) : (
-              <div className="text-2xl font-bold text-[#0f1c2e]">
+              <div className="text-2xl font-bold text-[#0C3290]">
                 {formatPrice(webPrice)}〜
               </div>
             )}
@@ -87,7 +87,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
     <section className="py-14 px-5 bg-white">
       <div className="max-w-[900px] mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             コーティング料金
           </h2>
           {config.show_discount_badge && (
@@ -105,8 +105,8 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
           pricingContent
         )}
 
-        <p className="text-center text-sm mt-4">
-          <Link href={`${basePath}/coatings`} className="text-amber-500 font-semibold hover:underline">
+        <p className="text-right text-sm mt-4">
+          <Link href={`${basePath}/coatings`} className="inline-block bg-amber-500 text-black px-5 py-2.5 rounded-lg font-bold hover:opacity-90 transition-opacity">
             全8コースの詳細を見る →
           </Link>
         </p>

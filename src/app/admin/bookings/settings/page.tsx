@@ -178,7 +178,7 @@ export default function BookingSettingsPage() {
           <div key={day} className="bg-white border border-gray-200 rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <span className={`font-bold text-lg ${dayNum === 0 ? 'text-red-500' : dayNum === 6 ? 'text-blue-500' : 'text-[#0f1c2e]'}`}>
+                <span className={`font-bold text-lg ${dayNum === 0 ? 'text-red-500' : dayNum === 6 ? 'text-blue-500' : 'text-[#0C3290]'}`}>
                   {DAY_LABELS[dayNum]}曜日
                 </span>
                 <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -208,7 +208,7 @@ export default function BookingSettingsPage() {
                 <button
                   onClick={() => saveDay(day)}
                   disabled={saving === day}
-                  className="px-4 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-1.5 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
                 >
                   {saving === day ? '保存中...' : '保存'}
                 </button>
@@ -220,7 +220,7 @@ export default function BookingSettingsPage() {
                 <div className="grid grid-cols-4 md:grid-cols-8 gap-2 mb-3">
                   {sortedTimes.map(time => (
                     <div key={time} className="border border-gray-200 rounded p-2 text-center">
-                      <div className="text-xs font-bold text-[#0f1c2e] mb-1">{time}</div>
+                      <div className="text-xs font-bold text-[#0C3290] mb-1">{time}</div>
                       <input
                         type="number"
                         min={0}

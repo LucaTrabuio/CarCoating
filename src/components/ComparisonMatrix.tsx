@@ -28,9 +28,9 @@ export default function ComparisonMatrix({ size, discountRate, blurFields = [], 
       <table className="min-w-[700px] w-full text-xs border-collapse">
         <thead>
           <tr>
-            <th className="px-3 py-3 text-left font-semibold text-[#0f1c2e] bg-gray-50 sticky left-0 z-10 border-r border-gray-200">比較項目</th>
+            <th className="px-3 py-3 text-left font-semibold text-[#0C3290] bg-gray-50 sticky left-0 z-10 border-r border-gray-200">比較項目</th>
             {tiers.map(t => (
-              <th key={t.id} className={`px-3 py-3 text-center font-semibold text-[#0f1c2e] ${t.id === 'diamond' ? 'bg-amber-50/50' : 'bg-gray-50'}`}>
+              <th key={t.id} className={`px-3 py-3 text-center font-semibold text-[#0C3290] ${t.id === 'diamond' ? 'bg-amber-50/50' : 'bg-gray-50'}`}>
                 {t.id === 'diamond' && <span className="text-amber-500">★ </span>}
                 {t.name.replace('キーパー', '').replace('プレミアム', 'P')}
               </th>

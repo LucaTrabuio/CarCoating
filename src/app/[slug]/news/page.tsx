@@ -47,8 +47,8 @@ export default async function V3NewsPage({ params }: { params: Promise<{ slug: s
 
   return (
     <main>
-      <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>ニュース・お知らせ</h1>
+      <section className="bg-[#0C3290] py-12 px-5 text-center">
+        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>ニュース・お知らせ</h1>
       </section>
 
       <section className="py-10 px-5">
@@ -61,19 +61,19 @@ export default async function V3NewsPage({ params }: { params: Promise<{ slug: s
                 </span>
                 <span className="text-[10px] text-gray-400">{item.date}</span>
               </div>
-              <h2 className="text-sm font-bold text-[#0f1c2e]">{item.title}</h2>
+              <h2 className="text-sm font-bold text-[#0C3290]">{item.title}</h2>
               {(item.content || item.body) && <p className="text-xs text-gray-500 mt-1">{item.content || item.body}</p>}
             </div>
           ))}
         </div>
       </section>
 
-      <section className="py-10 px-5 bg-[#0f1c2e]">
+      <section className="py-10 px-5 bg-[#0C3290]">
         <div className="max-w-[500px] mx-auto text-center text-white">
-          <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>コーティングをご検討中の方へ</h2>
+          <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングをご検討中の方へ</h2>
           <div className="flex gap-3 justify-center">
             <Link href={`${base}/coatings`} className="px-5 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20">メニュー一覧</Link>
-            <Link href={`${base}/booking`} className="px-5 py-2.5 bg-amber-500 text-white font-bold rounded-md text-sm hover:bg-amber-500">ご予約 →</Link>
+            <Link href={`${base}/booking`} className="px-5 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500">ご予約 →</Link>
           </div>
         </div>
       </section>

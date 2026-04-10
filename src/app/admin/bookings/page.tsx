@@ -271,7 +271,7 @@ export default function BookingsPage() {
           <span className="text-[10px] text-gray-500 bg-gray-50 border border-gray-100 px-2 py-0.5 rounded">{storeNameById.get(b.storeId) || b.storeId}</span>
         </div>
         <div>
-          <div className="text-lg font-bold text-[#0f1c2e]">{b.name}</div>
+          <div className="text-lg font-bold text-[#0C3290]">{b.name}</div>
           {b.date && <div className="text-sm text-gray-600 mt-0.5">{formatDate(b.date, b.time)}</div>}
         </div>
         <div className="space-y-1 text-xs">
@@ -451,7 +451,7 @@ export default function BookingsPage() {
                     >
                       <div className="flex items-center gap-2">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${STATUS_CONFIG[b.status].color}`}>{STATUS_CONFIG[b.status].label}</span>
-                        <span className="font-bold text-sm text-[#0f1c2e]">{b.name}</span>
+                        <span className="font-bold text-sm text-[#0C3290]">{b.name}</span>
                         <span className="text-xs text-gray-500">{b.time}</span>
                       </div>
                       <div className="text-[10px] text-gray-400 mt-1">{storeNameById.get(b.storeId) || b.storeId}</div>
@@ -495,7 +495,7 @@ export default function BookingsPage() {
               >
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${STATUS_CONFIG[b.status].color}`}>{STATUS_CONFIG[b.status].label}</span>
-                  <span className="font-bold text-sm text-[#0f1c2e]">{b.name}</span>
+                  <span className="font-bold text-sm text-[#0C3290]">{b.name}</span>
                   {b.date && (
                     <span className="text-xs text-gray-500">{formatDate(b.date, b.time)}</span>
                   )}

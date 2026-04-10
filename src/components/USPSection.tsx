@@ -33,20 +33,20 @@ const usps = [
 
 export default function USPSection() {
   return (
-    <section className="py-16 px-5 bg-[#0f1c2e]">
+    <section className="py-16 px-5 bg-[#0C3290]">
       <div className="max-w-[900px] mx-auto">
         <div className="text-center mb-10">
-          <p className="text-amber-400 text-xs font-bold tracking-widest mb-2">WHY CHOOSE US</p>
-          <h2 className="text-white text-xl md:text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-2">WHY CHOOSE US</p>
+          <h2 className="text-white text-3xl md:text-5xl font-black tracking-tight" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             選ばれる6つの理由
           </h2>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {usps.map(usp => (
-            <div key={usp.num} className="bg-white/5 border border-white/10 rounded-xl p-5 hover:bg-white/10 transition-colors">
+            <div key={usp.num} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all">
               <div className="text-amber-500 text-[11px] font-bold tracking-widest mb-2">{usp.num}</div>
-              <h3 className="text-white font-bold text-[15px] mb-2">{usp.title}</h3>
-              <p className="text-white/50 text-[13px] leading-relaxed">{usp.desc}</p>
+              <h3 className="text-gray-900 font-bold text-[15px] mb-2">{usp.title}</h3>
+              <p className="text-gray-500 text-[13px] leading-relaxed">{usp.desc}</p>
             </div>
           ))}
         </div>

@@ -113,7 +113,7 @@ export default function TicketsPage() {
         <h1 className="text-xl font-bold text-gray-900">チケット</h1>
         <button
           onClick={() => { setShowCreate(!showCreate); setSelectedTicketId(null); }}
-          className="px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors cursor-pointer"
+          className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors cursor-pointer"
         >
           + 新規チケット
         </button>
@@ -143,7 +143,7 @@ export default function TicketsPage() {
             <button
               type="submit"
               disabled={creating}
-              className="px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
             >
               {creating ? '送信中...' : '送信'}
             </button>
@@ -184,7 +184,7 @@ export default function TicketsPage() {
                   <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${sc.color}`}>{sc.label}</span>
                   <span className="text-[10px] text-gray-400">{t.createdAt?.slice(0, 10)}</span>
                 </div>
-                <div className="text-sm font-bold text-[#0f1c2e] truncate">{t.subject}</div>
+                <div className="text-sm font-bold text-[#0C3290] truncate">{t.subject}</div>
                 <div className="text-[10px] text-gray-400 mt-1">
                   {t.authorEmail} · {t.messages?.length || 0} メッセージ
                 </div>
@@ -207,7 +207,7 @@ export default function TicketsPage() {
               <div className="p-4 border-b border-gray-100">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h2 className="text-base font-bold text-[#0f1c2e]">{selectedTicket.subject}</h2>
+                    <h2 className="text-base font-bold text-[#0C3290]">{selectedTicket.subject}</h2>
                     <div className="text-[10px] text-gray-400 mt-1">
                       作成: {selectedTicket.authorEmail} · {selectedTicket.createdAt?.slice(0, 10)}
                     </div>
@@ -240,7 +240,7 @@ export default function TicketsPage() {
                   return (
                     <div key={i} className={`px-4 py-3 ${isMine ? 'bg-amber-50/30' : ''}`}>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-bold text-[#0f1c2e]">{msg.email}</span>
+                        <span className="text-xs font-bold text-[#0C3290]">{msg.email}</span>
                         <span className="text-[10px] text-gray-400">{msg.createdAt?.slice(0, 16).replace('T', ' ')}</span>
                       </div>
                       <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{msg.text}</p>
@@ -262,7 +262,7 @@ export default function TicketsPage() {
                   <button
                     type="submit"
                     disabled={replying || !replyText.trim()}
-                    className="px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer shrink-0"
+                    className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer shrink-0"
                   >
                     送信
                   </button>

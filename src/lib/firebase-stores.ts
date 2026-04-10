@@ -172,7 +172,7 @@ export function parseCSVToV3Stores(csvText: string): V3StoreData[] {
       campaign_title: raw.campaign_title || '',
       campaign_deadline: raw.campaign_deadline || '',
       discount_rate: clampNum(parseFloat(raw.discount_rate), 0, 100, 20),
-      campaign_color_code: raw.campaign_color_code || '#c49a2a',
+      campaign_color_code: raw.campaign_color_code || '#F0EA01',
       hero_title: raw.hero_title || '',
       hero_subtitle: raw.hero_subtitle || '',
       description: raw.description || '',

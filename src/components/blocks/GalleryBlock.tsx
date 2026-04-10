@@ -21,7 +21,7 @@ export default function GalleryBlock({ config, store }: GalleryBlockProps) {
   return (
     <section className="py-14 px-5 bg-slate-50">
       <div className="max-w-[1100px] mx-auto">
-        <h2 className="text-[#0f1c2e] text-xl md:text-2xl font-bold text-center mb-8" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight text-center mb-8" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
           {'\u30D5\u30A9\u30C8\u30AE\u30E3\u30E9\u30EA\u30FC'}
         </h2>
         <div

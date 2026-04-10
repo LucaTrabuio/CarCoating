@@ -19,7 +19,7 @@ export default function ConcernsBlock({ config }: ConcernsBlockProps) {
   return (
     <section className="py-14 px-5 bg-white">
       <div className="max-w-[800px] mx-auto">
-        <h2 className="text-[#0f1c2e] text-xl md:text-2xl font-bold text-center mb-8" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight text-center mb-8" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
           {'\u3088\u304F\u3042\u308B\u3054\u8CEA\u554F'}
         </h2>
         <div className="space-y-3">
@@ -29,7 +29,7 @@ export default function ConcernsBlock({ config }: ConcernsBlockProps) {
                 onClick={() => toggle(item.id)}
                 className="w-full flex items-center justify-between px-5 py-4 text-left cursor-pointer hover:bg-slate-50 transition-colors"
               >
-                <span className="text-[#0f1c2e] text-sm font-semibold">{item.question}</span>
+                <span className="text-[#0C3290] text-sm font-semibold">{item.question}</span>
                 <span className="text-slate-400 text-lg ml-3 flex-shrink-0">
                   {openId === item.id ? '\u2212' : '+'}
                 </span>
