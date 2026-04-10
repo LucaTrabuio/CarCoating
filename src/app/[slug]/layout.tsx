@@ -36,7 +36,17 @@ export async function generateStaticParams() {
   }
 }
 
-function mergeCampaign(store: { campaign_title: string; campaign_deadline: string; discount_rate: number; campaign_color_code: string }, defaults: { title: string; color: string; end: string; discount: number; font?: string }) {
+function mergeCampaign(store: { campaign_title: string; campaign_deadline: string; discount_rate: number; campaign_color_code: string }, defaults: { title: string; color: string; end: string; discount: number; font?: string; force_hq_campaign?: boolean }) {
+  // When force_hq_campaign is enabled, ignore per-store campaign settings
+  if (defaults.force_hq_campaign) {
+    return {
+      title: defaults.title,
+      discount_rate: defaults.discount,
+      deadline: defaults.end,
+      color: defaults.color,
+      font: defaults.font,
+    };
+  }
   return {
     title: store.campaign_title || defaults.title,
     discount_rate: store.discount_rate || defaults.discount,

@@ -10,6 +10,7 @@ export default function CampaignsPage() {
   const [campaignEnd, setCampaignEnd] = useState('2026-04-30');
   const [campaignDiscount, setCampaignDiscount] = useState('20');
   const [campaignFont, setCampaignFont] = useState('');
+  const [forceHq, setForceHq] = useState(false);
   const [campaignSaved, setCampaignSaved] = useState(false);
   const [campaignLoaded, setCampaignLoaded] = useState(false);
 
@@ -23,6 +24,7 @@ export default function CampaignsPage() {
         if (data.end) setCampaignEnd(data.end);
         if (data.discount !== undefined) setCampaignDiscount(String(data.discount));
         if (data.font) setCampaignFont(data.font);
+        if (data.force_hq_campaign) setForceHq(true);
         setCampaignLoaded(true);
       })
       .catch(() => setCampaignLoaded(true));
@@ -36,6 +38,7 @@ export default function CampaignsPage() {
       end: campaignEnd,
       discount: parseInt(campaignDiscount) || 20,
       font: campaignFont || undefined,
+      force_hq_campaign: forceHq,
     };
     try {
       const res = await fetch('/api/campaign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
@@ -111,11 +114,29 @@ export default function CampaignsPage() {
           </div>
         </div>
 
+        {/* Force override checkbox */}
+        <div className="mb-4 p-3 border border-amber-200 bg-amber-50 rounded-lg">
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              checked={forceHq}
+              onChange={e => setForceHq(e.target.checked)}
+              className="rounded"
+            />
+            <span className="font-bold text-amber-800">全店舗にHQキャンペーンを強制適用する</span>
+          </label>
+          <p className="text-[10px] text-amber-600 mt-1 ml-6">
+            有効にすると、店舗個別のキャンペーン設定（campaign_title, discount_rate等）を無視して、上記のHQ設定を全店舗に表示します。
+          </p>
+        </div>
+
         <button onClick={handleCampaignSave} className="px-6 py-2.5 bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-lg text-sm font-bold cursor-pointer">保存して全店舗に反映</button>
         {campaignSaved && (
           <p className="text-xs text-green-600 font-semibold mt-2">✓ キャンペーン設定を保存しました</p>
         )}
-        <p className="text-xs text-gray-400 mt-2">※ 店舗個別のcampaign_titleが設定されている店舗にはHQデフォルトは適用されません</p>
+        {!forceHq && (
+          <p className="text-xs text-gray-400 mt-2">※ 店舗個別のcampaign_titleが設定されている店舗にはHQデフォルトは適用されません</p>
+        )}
       </div>
     </div>
   );

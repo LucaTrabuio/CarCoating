@@ -134,6 +134,7 @@ export interface CampaignDefaults {
   end: string;
   discount: number;
   font?: string;
+  force_hq_campaign?: boolean;
 }
 
 export const FONT_PRESETS = [
