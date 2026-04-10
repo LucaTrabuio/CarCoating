@@ -89,7 +89,7 @@ export default function AdminDashboard() {
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-      <div className="text-2xl font-bold text-[#0f1c2e]">{value}</div>
+      <div className="text-2xl font-bold text-[#0C3290]">{value}</div>
       <div className="text-xs text-gray-500 mt-1">{label}</div>
     </div>
   );
@@ -99,7 +99,7 @@ function QuickAction({ href, icon, title, desc }: { href: string; icon: string; 
   return (
     <Link href={href} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-amber-500 transition-colors">
       <div className="text-xl mb-1">{icon}</div>
-      <div className="font-bold text-sm text-[#0f1c2e]">{title}</div>
+      <div className="font-bold text-sm text-[#0C3290]">{title}</div>
       <div className="text-xs text-gray-500 mt-0.5">{desc}</div>
     </Link>
   );

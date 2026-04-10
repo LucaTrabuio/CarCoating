@@ -32,7 +32,7 @@ export default function BannersBlock({ config }: BannersBlockProps) {
                   />
                 )}
                 <div className="p-5">
-                  <h3 className="font-bold text-base text-[#0f1c2e] mb-1">{banner.title}</h3>
+                  <h3 className="font-bold text-base text-[#0C3290] mb-1">{banner.title}</h3>
                   {banner.subtitle && (
                     <p className="text-xs text-slate-500 mb-3">{banner.subtitle}</p>
                   )}
@@ -52,7 +52,7 @@ export default function BannersBlock({ config }: BannersBlockProps) {
                         </>
                       )}
                       {discountedPrice === null && (
-                        <span className="text-lg font-bold text-[#0f1c2e]">
+                        <span className="text-lg font-bold text-[#0C3290]">
                           {formatPrice(banner.original_price)}
                         </span>
                       )}

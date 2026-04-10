@@ -93,7 +93,7 @@ export default function HomepagePage() {
         <div className="flex items-center gap-3">
           {saved && <span className="text-xs text-green-600 font-semibold">✓ 保存しました</span>}
           <button onClick={handleSave} disabled={saving}
-            className="px-5 py-2 bg-amber-500 text-white rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-600 disabled:opacity-50">
+            className="px-5 py-2 bg-amber-500 text-black rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-600 disabled:opacity-50">
             {saving ? '保存中...' : '保存'}
           </button>
         </div>
@@ -113,7 +113,7 @@ export default function HomepagePage() {
                     className="text-gray-300 hover:text-gray-600 text-xs cursor-pointer disabled:invisible">▼</button>
                 </div>
                 <div>
-                  <div className="font-bold text-sm text-[#0f1c2e]">{block.label}</div>
+                  <div className="font-bold text-sm text-[#0C3290]">{block.label}</div>
                   <div className="text-[10px] text-gray-400">{block.type}</div>
                 </div>
               </div>

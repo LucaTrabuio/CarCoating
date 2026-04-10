@@ -1,3 +1,5 @@
+'use client';
+
 import { FONT_PRESETS } from '@/lib/types';
 
 interface DynamicBannerProps {
@@ -8,22 +10,23 @@ interface DynamicBannerProps {
   fontId?: string;
 }
 
-export default function DynamicBanner({ title, discountRate, deadline, colorCode, fontId }: DynamicBannerProps) {
-  const bgStyle = colorCode
-    ? { background: `linear-gradient(135deg, ${colorCode}, ${colorCode}dd)` }
-    : { background: 'linear-gradient(135deg, #001AFF, #0033FFdd)' };
-
+export default function DynamicBanner({ title, discountRate, deadline, fontId }: DynamicBannerProps) {
   const fontPreset = fontId ? FONT_PRESETS.find(f => f.id === fontId) : null;
   const fontStyle = fontPreset ? { fontFamily: fontPreset.family } : {};
 
+  const bannerText = `${title} ｜ 最大${discountRate}%OFF ｜ Web予約限定 ｜ ${deadline}まで`;
+
   return (
     <div
-      className="text-white text-center py-3 px-5 font-bold text-[15px]"
-      style={{ ...bgStyle, ...fontStyle }}
+      className="font-bold text-[14px] overflow-hidden whitespace-nowrap"
+      style={{ background: '#F0EA01', color: '#000000', ...fontStyle }}
     >
-      {title} ｜ 最大{discountRate}%OFF
-      <div className="text-[11px] font-normal opacity-80 mt-0.5">
-        Web予約限定 ｜ {deadline}まで
+      <div className="flex animate-marquee py-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <span key={i} className="mx-12 shrink-0">
+            {bannerText}
+          </span>
+        ))}
       </div>
     </div>
   );

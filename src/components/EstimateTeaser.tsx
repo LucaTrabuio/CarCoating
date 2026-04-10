@@ -93,12 +93,12 @@ export default function EstimateTeaser({ storeId, basePath }: EstimateTeaserProp
     return (
       <section className="py-14 px-5 bg-white">
         <div className="max-w-[480px] mx-auto text-center">
-          <p className="text-amber-500 text-xs font-bold tracking-widest mb-2">
+          <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-2">
             ESTIMATE READY
           </p>
           <h2
-            className="text-xl md:text-2xl font-bold text-[#0f1c2e] mb-6"
-            style={{ fontFamily: '"Noto Serif JP", serif' }}
+            className="text-xl md:text-2xl font-bold text-[#0C3290] mb-6"
+            style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
           >
             お見積もりQRコード
           </h2>
@@ -116,7 +116,7 @@ export default function EstimateTeaser({ storeId, basePath }: EstimateTeaserProp
           <div className="mt-6">
             <a
               href={basePath ? `${basePath}/booking` : '/booking'}
-              className="inline-block px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
+              className="inline-block px-6 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
             >
               予約に進む
             </a>
@@ -131,12 +131,12 @@ export default function EstimateTeaser({ storeId, basePath }: EstimateTeaserProp
     <section className="py-14 px-5 bg-slate-50">
       <div className="max-w-[560px] mx-auto">
         <div className="text-center mb-8">
-          <p className="text-amber-500 text-xs font-bold tracking-widest mb-2">
+          <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-2">
             QUICK ESTIMATE
           </p>
           <h2
-            className="text-xl md:text-2xl font-bold text-[#0f1c2e]"
-            style={{ fontFamily: '"Noto Serif JP", serif' }}
+            className="text-xl md:text-2xl font-bold text-[#0C3290]"
+            style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
           >
             かんたんお見積もり
           </h2>
@@ -233,7 +233,7 @@ export default function EstimateTeaser({ storeId, basePath }: EstimateTeaserProp
                     onChange={() => toggleService(svc.id)}
                     className="accent-amber-500"
                   />
-                  <span className="flex-1 font-semibold text-[#0f1c2e]">
+                  <span className="flex-1 font-semibold text-[#0C3290]">
                     {svc.label}
                   </span>
                   <span className="text-xs text-slate-400">
@@ -246,8 +246,8 @@ export default function EstimateTeaser({ storeId, basePath }: EstimateTeaserProp
 
           {/* Blurred estimate */}
           {selectedServices.length > 0 && (
-            <div className="relative bg-[#0f1c2e] rounded-xl p-6 text-center overflow-hidden">
-              <p className="text-amber-400 text-xs font-bold tracking-widest mb-2">
+            <div className="relative bg-[#0C3290] rounded-xl p-6 text-center overflow-hidden">
+              <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-2">
                 概算お見積もり
               </p>
               <p
@@ -270,7 +270,7 @@ export default function EstimateTeaser({ storeId, basePath }: EstimateTeaserProp
           <button
             type="submit"
             disabled={submitting || !name || !email || selectedServices.length === 0}
-            className="w-full py-3.5 bg-gradient-to-br from-amber-500 to-amber-500 text-white font-bold rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full py-3.5 bg-amber-500 text-black font-bold rounded-xl text-sm hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             {submitting ? '送信中...' : 'お見積もりを送信する'}
           </button>

@@ -212,8 +212,8 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   return (
     <main>
       {/* Hero */}
-      <section className="bg-[#0f1c2e] py-16 px-5 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1b2a] via-[#14253a] to-[#0f1c2e]" />
+      <section className="bg-[#0C3290] py-16 px-5 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1b2a] via-[#14253a] to-[#0C3290]" />
         <div className="relative max-w-[900px] mx-auto">
           <Image
             src={`${KEEPER_BASE}/img/lineup/p_keeper_logo.png`}
@@ -222,7 +222,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             height={28}
             className="h-7 w-auto mx-auto mb-5 opacity-50"
           />
-          <h1 className="text-white text-2xl md:text-4xl font-bold mb-3" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          <h1 className="text-white text-2xl md:text-4xl font-bold mb-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             コーティングガイド
           </h1>
           <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">
@@ -251,7 +251,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-[10px] text-amber-600 font-bold tracking-widest mb-2">WHY COATING?</div>
-            <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <h2 className="text-xl md:text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               なぜカーコーティングするのか？
             </h2>
             <p className="text-xs text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
@@ -262,7 +262,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             {BENEFITS.map((b, i) => (
               <div key={i} className="bg-slate-50 border border-slate-200 rounded-xl p-5">
                 <div className="text-3xl mb-2">{b.icon}</div>
-                <h3 className="text-sm font-bold text-[#0f1c2e] mb-1.5">{b.title}</h3>
+                <h3 className="text-sm font-bold text-[#0C3290] mb-1.5">{b.title}</h3>
                 <p className="text-xs text-slate-600 leading-relaxed">{b.body}</p>
               </div>
             ))}
@@ -275,7 +275,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-[10px] text-amber-600 font-bold tracking-widest mb-2">HOW IT WORKS</div>
-            <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <h2 className="text-xl md:text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               KeePerコーティングの仕組み
             </h2>
           </div>
@@ -284,7 +284,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center">1</span>
-                  <h3 className="text-sm font-bold text-[#0f1c2e]">洗浄・下地処理</h3>
+                  <h3 className="text-sm font-bold text-[#0C3290]">洗浄・下地処理</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   鉄粉・水垢・油分を徹底的に除去。プレミアムコースでは研磨工程で経年のくすみも除去します。
@@ -293,7 +293,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center">2</span>
-                  <h3 className="text-sm font-bold text-[#0f1c2e]">被膜の塗布</h3>
+                  <h3 className="text-sm font-bold text-[#0C3290]">被膜の塗布</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   グレードごとに1〜4層のガラス・レジン被膜を塗布。層が多いほど膜厚と耐久性が上がります。
@@ -302,7 +302,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center">3</span>
-                  <h3 className="text-sm font-bold text-[#0f1c2e]">硬化・仕上げ</h3>
+                  <h3 className="text-sm font-bold text-[#0C3290]">硬化・仕上げ</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
                   被膜を定着させ、ムラ・曇りがないか最終チェック。完全硬化まで12時間ほどが目安です。
@@ -310,7 +310,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               </div>
             </div>
             <div className="mt-8 pt-6 border-t border-slate-100 text-xs text-slate-500 leading-relaxed">
-              <strong className="text-[#0f1c2e]">ポイント：</strong>
+              <strong className="text-[#0C3290]">ポイント：</strong>
               KeePerの上位コースは「ガラス被膜＋レジン被膜」のW構造を採用。ガラスの透明感と硬さに加え、
               レジン層が微細な凹凸を埋めることで、塗装単体では出せない深い艶を実現しています。
             </div>
@@ -323,7 +323,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-[10px] text-amber-600 font-bold tracking-widest mb-2">THE 8 LINEUPS</div>
-            <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <h2 className="text-xl md:text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               8種類のKeePerコーティング
             </h2>
             <p className="text-xs text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
@@ -337,7 +337,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                 <div className={`text-[10px] font-bold tracking-widest mb-1 ${group.accent}`}>
                   {group.subLabel.toUpperCase()}
                 </div>
-                <h3 className="text-lg font-bold mb-1" style={{ fontFamily: '"Noto Serif JP", serif' }}>{group.label}</h3>
+                <h3 className="text-lg font-bold mb-1" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>{group.label}</h3>
                 <p className="text-xs leading-relaxed opacity-80 mb-3">{group.description}</p>
                 <ul className="space-y-1">
                   {group.tierIds.map(tid => {
@@ -369,7 +369,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                       <div className="flex items-start justify-between flex-wrap gap-2 mb-2">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-base md:text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+                            <h3 className="text-base md:text-lg font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
                               {tier.name}
                             </h3>
                             {tier.is_popular && (
@@ -427,7 +427,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-[10px] text-amber-600 font-bold tracking-widest mb-2">HOW TO CHOOSE</div>
-            <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <h2 className="text-xl md:text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               選び方ガイド
             </h2>
             <p className="text-xs text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
@@ -439,7 +439,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               <div key={i} className="bg-white border border-slate-200 rounded-xl p-5">
                 <div className="flex items-start gap-3 mb-2">
                   <span className="text-lg font-bold text-amber-600 shrink-0">Q{i + 1}.</span>
-                  <h3 className="text-sm font-bold text-[#0f1c2e] leading-snug">{item.q}</h3>
+                  <h3 className="text-sm font-bold text-[#0C3290] leading-snug">{item.q}</h3>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed pl-7">{item.a}</p>
               </div>
@@ -453,7 +453,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-[10px] text-amber-600 font-bold tracking-widest mb-2">MAINTENANCE</div>
-            <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <h2 className="text-xl md:text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               施工後のお手入れ
             </h2>
             <p className="text-xs text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
@@ -463,11 +463,11 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <div className="space-y-3">
             {MAINTENANCE_TIPS.map(tip => (
               <div key={tip.num} className="flex gap-4 bg-slate-50 border border-slate-200 rounded-xl p-5">
-                <div className="text-2xl font-bold text-amber-500 tabular-nums shrink-0" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+                <div className="text-2xl font-bold text-amber-500 tabular-nums shrink-0" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
                   {tip.num}
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-[#0f1c2e] mb-1">{tip.title}</h3>
+                  <h3 className="text-sm font-bold text-[#0C3290] mb-1">{tip.title}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">{tip.body}</p>
                 </div>
               </div>
@@ -481,7 +481,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-[10px] text-amber-600 font-bold tracking-widest mb-2">FAQ</div>
-            <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <h2 className="text-xl md:text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               よくある質問
             </h2>
           </div>
@@ -490,7 +490,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               <details key={i} className="bg-white border border-slate-200 rounded-xl group">
                 <summary className="cursor-pointer px-5 py-4 flex items-start gap-3 list-none">
                   <span className="text-sm font-bold text-amber-600 shrink-0">Q.</span>
-                  <span className="text-sm font-bold text-[#0f1c2e] flex-1 leading-snug">{item.q}</span>
+                  <span className="text-sm font-bold text-[#0C3290] flex-1 leading-snug">{item.q}</span>
                   <span className="text-slate-400 text-xs shrink-0 group-open:rotate-180 transition-transform">▼</span>
                 </summary>
                 <div className="px-5 pb-4 pl-[2.75rem]">
@@ -503,10 +503,10 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-5 bg-[#0f1c2e] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1b2a] via-[#14253a] to-[#0f1c2e]" />
+      <section className="py-16 px-5 bg-[#0C3290] relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1b2a] via-[#14253a] to-[#0C3290]" />
         <div className="relative max-w-[700px] mx-auto text-center">
-          <h2 className="text-xl md:text-2xl font-bold text-white mb-3" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          <h2 className="text-xl md:text-2xl font-bold text-white mb-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             あなたのお車に最適な一枚を
           </h2>
           <p className="text-white/50 text-xs mb-8 leading-relaxed">
@@ -516,7 +516,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <div className="flex gap-3 justify-center flex-wrap">
             <Link
               href={`${base}/coatings`}
-              className="px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors"
+              className="px-6 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors"
             >
               メニュー一覧を見る →
             </Link>
@@ -528,7 +528,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             </Link>
             <Link
               href={`${base}/booking`}
-              className="px-6 py-3 bg-white text-[#0f1c2e] font-bold rounded-lg text-sm hover:bg-white/90 transition-colors"
+              className="px-6 py-3 bg-white text-[#0C3290] font-bold rounded-lg text-sm hover:bg-white/90 transition-colors"
             >
               予約する
             </Link>

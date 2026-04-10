@@ -76,29 +76,44 @@ function getRecommendation(answers: string[]): Result {
 const STORAGE_KEY = 'quiz_popup_dismissed';
 
 export default function QuizPopup({ storeId, basePath }: { storeId: string; basePath: string }) {
-  const [showButton, setShowButton] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<Step>(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [result, setResult] = useState<Result | null>(null);
 
-  // Show button after scrolling past 400px, unless dismissed this session
+  // Auto-open popup after 4 seconds of scrolling, unless dismissed this session
   useEffect(() => {
     try {
-      if (sessionStorage.getItem(STORAGE_KEY)) return;
+      if (sessionStorage.getItem(STORAGE_KEY)) { setDismissed(true); return; }
     } catch { /* SSR or blocked */ }
 
+    let hasScrolled = false;
+
     const onScroll = () => {
-      if (window.scrollY > 400) setShowButton(true);
+      if (hasScrolled) return;
+      hasScrolled = true;
+      setTimeout(() => {
+        setIsOpen(true);
+        setStep(1);
+        trackEvent(storeId, 'quiz_complete');
+      }, 4000);
     };
-    // Also show after 5 seconds
-    const timer = setTimeout(() => setShowButton(true), 5000);
+
+    // Also auto-open after 8 seconds even without scroll
+    const fallbackTimer = setTimeout(() => {
+      if (!hasScrolled) {
+        setIsOpen(true);
+        setStep(1);
+      }
+    }, 8000);
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
-      clearTimeout(timer);
+      clearTimeout(fallbackTimer);
     };
-  }, []);
+  }, [storeId]);
 
   const openPopup = useCallback(() => {
     setIsOpen(true);
@@ -110,7 +125,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
 
   function dismiss() {
     setIsOpen(false);
-    setShowButton(false);
+    setDismissed(true);
     try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch { /* blocked */ }
   }
 
@@ -138,15 +153,15 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
     setResult(null);
   }
 
-  // Floating button
-  if (!isOpen && showButton) {
+  // Floating button (shows after user dismissed the auto-popup)
+  if (!isOpen && dismissed) {
     return (
       <button
         onClick={openPopup}
-        className="fixed bottom-24 right-4 z-40 bg-amber-500 text-white px-4 py-3 rounded-full shadow-lg hover:bg-amber-600 transition-all text-sm font-bold flex items-center gap-2 cursor-pointer animate-bounce-slow"
+        className="fixed bottom-24 right-4 z-40 bg-amber-500 text-black px-4 py-3 rounded-full shadow-lg hover:bg-amber-600 transition-all text-sm font-bold flex items-center gap-2 cursor-pointer animate-bounce-slow"
         style={{ animationDuration: '3s' }}
       >
-        <span className="text-lg">✨</span>
+        <span className="text-lg">🚗</span>
         コーティング診断
       </button>
     );
@@ -158,7 +173,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={dismiss} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={dismiss} />
 
       {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-[500px] max-h-[90vh] overflow-y-auto">
@@ -173,8 +188,8 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
         <div className="p-6">
           {/* Header */}
           <div className="text-center mb-6">
-            <p className="text-amber-500 text-[10px] font-bold tracking-widest mb-1">COATING QUIZ</p>
-            <h2 className="text-[#0f1c2e] text-lg font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <p className="text-[#0C3290] text-[10px] font-bold tracking-widest mb-1">COATING QUIZ</p>
+            <h2 className="text-black text-lg font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               あなたにぴったりのコースは？
             </h2>
             <p className="text-xs text-slate-400 mt-1">4つの質問に答えるだけ（30秒）</p>
@@ -196,13 +211,13 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
           {/* Questions */}
           {step >= 1 && step <= 3 && (
             <div>
-              <h3 className="text-base font-bold text-[#0f1c2e] mb-3">{questions[step - 1].question}</h3>
+              <h3 className="text-base font-bold text-[#0C3290] mb-3">{questions[step - 1].question}</h3>
               <div className="space-y-2">
                 {questions[step - 1].options.map(opt => (
                   <button
                     key={opt.value}
                     onClick={() => handleAnswer(opt.value)}
-                    className="w-full text-left px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-[#0f1c2e] hover:border-amber-400 hover:bg-amber-50 transition-colors cursor-pointer"
+                    className="w-full text-left px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-[#0C3290] hover:border-amber-400 hover:bg-amber-50 transition-colors cursor-pointer"
                   >
                     {opt.label}
                   </button>
@@ -213,9 +228,9 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
 
           {/* Result */}
           {step === 4 && result && (
-            <div className="bg-[#0f1c2e] rounded-xl p-6 text-center text-white -mx-2">
-              <p className="text-amber-400 text-[10px] font-bold tracking-widest mb-2">YOUR RECOMMENDATION</p>
-              <h3 className="text-xl font-bold mb-1" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <div className="bg-[#0C3290] rounded-xl p-6 text-center text-white -mx-2">
+              <p className="text-[#0C3290] text-[10px] font-bold tracking-widest mb-2">YOUR RECOMMENDATION</p>
+              <h3 className="text-xl font-bold mb-1" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
                 {result.tierName}
               </h3>
               <p className="text-white/50 text-xs mb-3">{result.tagline}</p>
@@ -224,7 +239,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
                 <Link
                   href={`${basePath}/coatings#${result.tierId}`}
                   onClick={dismiss}
-                  className="px-5 py-2.5 bg-amber-500 text-white font-bold rounded-lg text-xs hover:bg-amber-600 transition-colors"
+                  className="px-5 py-2.5 bg-amber-500 text-black font-bold rounded-lg text-xs hover:bg-amber-600 transition-colors"
                 >
                   詳細を見る →
                 </Link>

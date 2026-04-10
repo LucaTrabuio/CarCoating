@@ -78,7 +78,7 @@ export function AdminSidebar() {
   return (
     <aside
       className="flex h-screen w-60 flex-shrink-0 flex-col justify-between"
-      style={{ backgroundColor: '#0f1c2e' }}
+      style={{ backgroundColor: '#0C3290' }}
     >
       {/* Header */}
       <div>

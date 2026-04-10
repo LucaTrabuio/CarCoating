@@ -45,8 +45,8 @@ export default function AppealPointsBlock({ config, store, appealPointsMaster }:
     <section className="py-14 px-5 bg-white">
       <div className="max-w-[900px] mx-auto">
         <h2
-          className="text-xl md:text-2xl font-bold text-[#0f1c2e] text-center mb-8"
-          style={{ fontFamily: '"Noto Serif JP", serif' }}
+          className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] text-center mb-8"
+          style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
         >
           当店のポイント
         </h2>
@@ -59,7 +59,7 @@ export default function AppealPointsBlock({ config, store, appealPointsMaster }:
                 className="bg-slate-50 rounded-xl p-4 text-center hover:bg-slate-100 transition-colors cursor-default"
               >
                 <div className="text-2xl mb-2">{point.icon}</div>
-                <h3 className="font-bold text-sm text-[#0f1c2e] mb-1">{point.label}</h3>
+                <h3 className="font-bold text-sm text-[#0C3290] mb-1">{point.label}</h3>
                 {config.show_descriptions && (
                   <p className="text-xs text-slate-500">{point.description}</p>
                 )}

@@ -21,6 +21,7 @@ import type {
 } from '@/lib/block-types';
 import type { V3StoreData } from '@/lib/v3-types';
 import type { MasterAppealPoint } from '@/lib/master-data';
+import ScrollFadeIn from '@/components/ScrollFadeIn';
 import HeroBlock from './HeroBlock';
 import StoreIntroBlock from './StoreIntroBlock';
 import StaffPhotoBlock from './StaffPhotoBlock';
@@ -41,6 +42,7 @@ import CertificationsBlock from './CertificationsBlock';
 import AppealPointsBlock from './AppealPointsBlock';
 import BannersBlock from './BannersBlock';
 import CustomHtmlBlock from './CustomHtmlBlock';
+import PromoBannersBlock from './PromoBannersBlock';
 
 interface BlockRendererProps {
   block: PageBlock;
@@ -54,48 +56,79 @@ interface BlockRendererProps {
 export default function BlockRenderer({ block, store, basePath, discountRate, allStores, appealPointsMaster }: BlockRendererProps) {
   if (!block.visible) return null;
 
+  // Hero renders immediately without fade-in (above the fold), followed by promo banners
+  if (block.type === 'hero') {
+    return (
+      <>
+        <HeroBlock config={block.config as HeroConfig} store={store} basePath={basePath} />
+        <PromoBannersBlock />
+      </>
+    );
+  }
+
+  let content: React.ReactNode = null;
+
   switch (block.type) {
-    case 'hero':
-      return <HeroBlock config={block.config as HeroConfig} store={store} basePath={basePath} />;
     case 'store_intro':
-      return <StoreIntroBlock config={block.config as StoreIntroConfig} store={store} />;
+      content = <StoreIntroBlock config={block.config as StoreIntroConfig} store={store} />;
+      break;
     case 'staff_photo':
-      return <StaffPhotoBlock config={block.config as StaffPhotoConfig} store={store} />;
+      content = <StaffPhotoBlock config={block.config as StaffPhotoConfig} store={store} />;
+      break;
     case 'before_after':
-      return <BeforeAfterBlock config={block.config as BeforeAfterConfig} store={store} basePath={basePath} />;
+      content = <BeforeAfterBlock config={block.config as BeforeAfterConfig} store={store} basePath={basePath} />;
+      break;
     case 'gallery':
-      return <GalleryBlock config={block.config as GalleryConfig} store={store} />;
+      content = <GalleryBlock config={block.config as GalleryConfig} store={store} />;
+      break;
     case 'usp':
-      return <USPBlock config={block.config as USPConfig} />;
+      content = <USPBlock config={block.config as USPConfig} />;
+      break;
     case 'concerns':
-      return <ConcernsBlock config={block.config as ConcernsConfig} />;
+      content = <ConcernsBlock config={block.config as ConcernsConfig} />;
+      break;
     case 'quiz':
-      return <QuizBlock storeId={store.store_id} basePath={basePath} />;
+      content = <QuizBlock storeId={store.store_id} basePath={basePath} />;
+      break;
     case 'simulator':
-      return <SimulatorBlock store={store} basePath={basePath} />;
+      content = <SimulatorBlock store={store} basePath={basePath} />;
+      break;
     case 'cases':
-      return <CasesBlock config={block.config as CasesConfig} basePath={basePath} />;
+      content = <CasesBlock config={block.config as CasesConfig} basePath={basePath} />;
+      break;
     case 'pricing':
-      return <PricingBlock config={block.config as PricingConfig} store={store} basePath={basePath} discountRate={discountRate} />;
+      content = <PricingBlock config={block.config as PricingConfig} store={store} basePath={basePath} discountRate={discountRate} />;
+      break;
     case 'news':
-      return <NewsBlock config={block.config as NewsConfig} store={store} />;
+      content = <NewsBlock config={block.config as NewsConfig} store={store} />;
+      break;
     case 'process':
-      return <ProcessBlock config={block.config as ProcessConfig} />;
+      content = <ProcessBlock config={block.config as ProcessConfig} />;
+      break;
     case 'benefits':
-      return <BenefitsBlock config={block.config as BenefitsConfig} basePath={basePath} discountRate={discountRate} />;
+      content = <BenefitsBlock config={block.config as BenefitsConfig} basePath={basePath} discountRate={discountRate} />;
+      break;
     case 'access':
-      return <AccessBlock config={block.config as AccessConfig} store={store} basePath={basePath} />;
+      content = <AccessBlock config={block.config as AccessConfig} store={store} basePath={basePath} />;
+      break;
     case 'cta':
-      return <CTABlock config={block.config as CTAConfig} store={store} allStores={allStores} />;
+      content = <CTABlock config={block.config as CTAConfig} store={store} allStores={allStores} />;
+      break;
     case 'certifications':
-      return <CertificationsBlock config={block.config as CertificationsConfig} />;
+      content = <CertificationsBlock config={block.config as CertificationsConfig} />;
+      break;
     case 'appeal_points':
-      return <AppealPointsBlock config={block.config as AppealPointsConfig} store={store} appealPointsMaster={appealPointsMaster} />;
+      content = <AppealPointsBlock config={block.config as AppealPointsConfig} store={store} appealPointsMaster={appealPointsMaster} />;
+      break;
     case 'banners':
-      return <BannersBlock config={block.config as BannersConfig} />;
+      content = <BannersBlock config={block.config as BannersConfig} />;
+      break;
     case 'custom_html':
-      return <CustomHtmlBlock config={block.config as CustomHtmlConfig} />;
+      content = <CustomHtmlBlock config={block.config as CustomHtmlConfig} />;
+      break;
     default:
       return null;
   }
+
+  return <ScrollFadeIn>{content}</ScrollFadeIn>;
 }

@@ -58,8 +58,8 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
 
   return (
     <main>
-      <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>オプションメニュー</h1>
+      <section className="bg-[#0C3290] py-12 px-5 text-center">
+        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>オプションメニュー</h1>
         {showOptionBanner && (
           <p className="text-white/40 text-sm mt-1">コーティングと同時施工で{optionDiscount}%OFF</p>
         )}
@@ -84,7 +84,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
                 {options.filter(o => (o.category || 'other') === cat).map(opt => (
                   <div key={opt.id} className="flex items-center justify-between py-3 px-2 border-b border-gray-100">
                     <div>
-                      <span className="text-sm font-semibold text-[#0f1c2e]">
+                      <span className="text-sm font-semibold text-[#0C3290]">
                         {opt.name}
                         {opt.popular && <span className="text-[10px] text-amber-500 font-bold ml-1">★人気</span>}
                       </span>
@@ -107,7 +107,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
                           <div className="text-sm font-semibold text-amber-700">{formatPrice(applyDiscount(opt.price, optionDiscount))}</div>
                         </>
                       ) : (
-                        <div className="text-sm font-semibold text-[#0f1c2e]">{formatPrice(opt.price)}</div>
+                        <div className="text-sm font-semibold text-[#0C3290]">{formatPrice(opt.price)}</div>
                       )}
                     </div>
                   </div>
@@ -118,7 +118,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
 
           <div className="mt-8 text-center">
             <Link href={`${base}/price`}
-              className="inline-block px-8 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
+              className="inline-block px-8 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
               見積もりシミュレーターへ →
             </Link>
           </div>

@@ -139,7 +139,7 @@ export default function BookingCalendar({ holidays = [], onChoicesChange }: Book
               disabled={unavailable}
               className={`relative aspect-square flex items-center justify-center text-sm rounded-md border-2 transition-all
                 ${unavailable ? 'text-gray-300 bg-gray-50 border-transparent cursor-not-allowed' :
-                  rank === 1 ? 'bg-amber-500 text-white border-amber-700 font-bold' :
+                  rank === 1 ? 'bg-amber-500 text-black border-amber-700 font-bold' :
                   rank === 2 ? 'bg-amber-100 text-amber-800 border-amber-500 font-bold' :
                   rank === 3 ? 'bg-amber-50 text-amber-700 border-amber-400 font-bold opacity-70' :
                   isSelected ? 'bg-blue-50 border-blue-400' :
@@ -178,7 +178,7 @@ export default function BookingCalendar({ holidays = [], onChoicesChange }: Book
                   onClick={() => handleTimeClick(time)}
                   disabled={alreadyChosen}
                   className={`py-2.5 text-center text-xs font-semibold rounded-lg border transition-all
-                    ${alreadyChosen ? 'bg-amber-500 text-white border-amber-500' :
+                    ${alreadyChosen ? 'bg-amber-500 text-black border-amber-500' :
                       'border-gray-200 hover:border-amber-500 hover:bg-amber-50 cursor-pointer'}
                   `}
                 >
@@ -198,7 +198,7 @@ export default function BookingCalendar({ holidays = [], onChoicesChange }: Book
             {choices.map((choice, idx) => (
               <div key={idx} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0
-                  ${idx === 0 ? 'bg-amber-500 text-white' : idx === 1 ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-500'}`}>
+                  ${idx === 0 ? 'bg-amber-500 text-black' : idx === 1 ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-500'}`}>
                   {idx + 1}
                 </div>
                 <span className="text-sm">{choice.label}</span>

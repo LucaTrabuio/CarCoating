@@ -50,12 +50,12 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
 
   return (
     <main>
-      <section className="bg-[#0f1c2e] py-16 px-5 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1b2a] via-[#14253a] to-[#0f1c2e]" />
+      <section className="bg-[#0C3290] py-16 px-5 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0d1b2a] via-[#14253a] to-[#0C3290]" />
         <div className="relative max-w-[900px] mx-auto">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <Image src={`${KEEPER_BASE}/img/lineup/p_keeper_logo.png`} alt="KeePer" width={80} height={28} className="h-7 w-auto mx-auto mb-5 opacity-50" />
-          <h1 className="text-white text-2xl md:text-4xl font-bold mb-3" style={{ fontFamily: '"Noto Serif JP", serif' }}>カーコーティングメニュー</h1>
+          <h1 className="text-white text-2xl md:text-4xl font-bold mb-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>カーコーティングメニュー</h1>
           <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">
             全8種類のKeePer コーティングを詳しく解説。あなたの車と目的に合った最適なコースをお選びください。
           </p>
@@ -85,7 +85,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                   <div className="flex items-center gap-2 mb-1.5">
                     {tier.is_popular && <span className="text-[9px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-bold">人気</span>}
                   </div>
-                  <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e] leading-tight" style={{ fontFamily: '"Noto Serif JP", serif' }}>{tier.name}</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-[#0C3290] leading-tight" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>{tier.name}</h2>
                   <p className="text-[13px] text-slate-500 mt-1">{tier.tagline}</p>
                 </div>
                 <div className="text-right">
@@ -100,7 +100,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                   ) : (
                     <div>
                       <div className="text-xs text-slate-400 line-through">{formatPrice(getPriceForSize(tier, 'SS', priceOverrides))}</div>
-                      <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(getWebPrice(tier, 'SS', discountRate, priceOverrides))}</div>
+                      <div className="text-2xl font-bold text-[#0C3290]">{formatPrice(getWebPrice(tier, 'SS', discountRate, priceOverrides))}</div>
                     </div>
                   )}
                 </div>
@@ -140,7 +140,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
               <div className="overflow-x-auto mb-5">
                 <table className="w-full text-xs border-collapse">
                   <thead>
-                    <tr className="bg-[#0f1c2e] text-white">
+                    <tr className="bg-[#0C3290] text-white">
                       <th className="px-2.5 py-2 text-left font-medium text-[10px]"></th>
                       {ALL_SIZES.map(size => (
                         <th key={size} className="px-2.5 py-2 text-center font-medium text-[10px]">{size}</th>
@@ -188,7 +188,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
               </div>
 
               <div className="flex gap-2.5 mt-5 flex-wrap">
-                <Link href={`${base}/price`} className="px-5 py-2 bg-amber-500 text-white font-bold rounded-md text-[13px] hover:bg-amber-600 transition-colors">見積もりシミュレーター →</Link>
+                <Link href={`${base}/price`} className="px-5 py-2 bg-amber-500 text-black font-bold rounded-md text-[13px] hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>
                 <Link href={`${base}/booking`} className="px-5 py-2 bg-slate-200 text-slate-700 font-bold rounded-md text-[13px] hover:bg-slate-300 transition-colors">予約する</Link>
                 <Link href={`${base}/inquiry?tier=${tier.id}`} className="px-5 py-2 bg-blue-600 text-white font-bold rounded-md text-[13px] hover:bg-blue-700 transition-colors">お問い合わせ</Link>
               </div>
@@ -197,12 +197,12 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
         );
       })}
 
-      <section className="py-14 px-5 bg-[#0f1c2e]">
+      <section className="py-14 px-5 bg-[#0C3290]">
         <div className="max-w-[520px] mx-auto text-center text-white">
-          <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>コース選びに迷ったら</h2>
+          <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コース選びに迷ったら</h2>
           <p className="text-sm text-white/40 mb-6">お車の状態やご予算に合わせて最適なコースをご提案します。</p>
           <div className="flex gap-3 justify-center">
-            <Link href={`${base}/price`} className="px-6 py-2.5 bg-amber-500 text-white font-bold rounded-md text-sm hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>
+            <Link href={`${base}/price`} className="px-6 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>
             <Link href={`${base}/booking`} className="px-6 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20 transition-colors">ご予約</Link>
           </div>
         </div>

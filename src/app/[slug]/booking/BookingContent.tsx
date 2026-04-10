@@ -29,7 +29,7 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
       <main className="py-20 px-5 text-center">
         <div className="max-w-[500px] mx-auto">
           <div className="text-5xl mb-4">&#10003;</div>
-          <h1 className="text-2xl font-bold text-[#0f1c2e] mb-2">
+          <h1 className="text-2xl font-bold text-[#0C3290] mb-2">
             {isInquiry ? 'お問い合わせを受け付けました' : '仮予約を受け付けました'}
           </h1>
           <p className="text-sm text-gray-500 mb-6">担当者より折り返しご連絡いたします。</p>
@@ -40,8 +40,8 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
 
   return (
     <main>
-      <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+      <section className="bg-[#0C3290] py-12 px-5 text-center">
+        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
           {isInquiry ? 'お問い合わせ' : 'ご予約'}
         </h1>
         <p className="text-white/40 text-sm mt-1">{store.store_name}</p>
@@ -50,7 +50,7 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
       <section className="py-4 px-5 bg-gray-50 border-b border-gray-200">
         <div className="max-w-[700px] mx-auto flex items-center justify-between">
           <div>
-            <div className="font-bold text-[#0f1c2e] text-sm">{store.store_name}</div>
+            <div className="font-bold text-[#0C3290] text-sm">{store.store_name}</div>
             <div className="text-xs text-gray-500">{store.address}</div>
           </div>
         </div>
@@ -60,13 +60,13 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
         <div className="max-w-[700px] mx-auto">
           {!isInquiry && (
             <div className="mb-8">
-              <h2 className="text-lg font-bold text-[#0f1c2e] mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>希望日時を選択</h2>
+              <h2 className="text-lg font-bold text-[#0C3290] mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>希望日時を選択</h2>
               <BookingCalendar />
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <h2 className="text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+            <h2 className="text-lg font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               {isInquiry ? 'お問い合わせ内容' : 'お客様情報'}
             </h2>
             <div>
@@ -92,7 +92,7 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
               </div>
             )}
             <button type="submit"
-              className="w-full py-3 bg-gradient-to-br from-amber-500 via-amber-500 to-amber-700 text-white font-bold rounded-lg text-sm hover:opacity-90 transition-opacity cursor-pointer">
+              className="w-full py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:opacity-90 transition-opacity cursor-pointer">
               {isInquiry ? '送信する' : '仮予約する'}
             </button>
           </form>

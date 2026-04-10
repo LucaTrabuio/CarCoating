@@ -103,7 +103,7 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
       )}
 
       {/* Running total */}
-      <div className={`mt-4 bg-[#0f1c2e] text-white rounded-xl p-4 ${blurPrices ? 'blur-[5px] select-none' : ''}`}>
+      <div className={`mt-4 bg-[#0C3290] text-white rounded-xl p-4 ${blurPrices ? 'blur-[5px] select-none' : ''}`}>
         <div className="flex justify-between items-center">
           <span className="text-sm">お見積もり合計（税込）</span>
           <span className="text-2xl font-bold text-amber-300">{formatPrice(total)}</span>

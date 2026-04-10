@@ -190,7 +190,7 @@ function PriceOverridesGrid({
             {coatingTiers.map(tier => (
               <tr key={tier.id} className="border-b border-gray-100">
                 <td className="py-2 pr-3">
-                  <div className="font-bold text-[#0f1c2e] text-[11px]">{tier.name}</div>
+                  <div className="font-bold text-[#0C3290] text-[11px]">{tier.name}</div>
                   <div className="text-[9px] text-gray-400">{tier.id}</div>
                 </td>
                 {SIZES.map(size => {

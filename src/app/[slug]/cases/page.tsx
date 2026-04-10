@@ -24,31 +24,31 @@ export default function V3CasesPage() {
 
   return (
     <main>
-      <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>施工事例</h1>
+      <section className="bg-[#0C3290] py-12 px-5 text-center">
+        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>施工事例</h1>
         <p className="text-white/40 text-sm mt-1">ビフォーアフターで見るKeePer品質</p>
       </section>
 
       <section className="py-6 px-5 border-b border-gray-200">
         <div className="max-w-[1100px] mx-auto flex flex-wrap gap-2">
           <button onClick={() => setFilterCoating('all')}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCoating === 'all' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCoating === 'all' ? 'bg-amber-500 text-black' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
             全コース
           </button>
           {coatingTypes.map(t => (
             <button key={t} onClick={() => setFilterCoating(t)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCoating === t ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCoating === t ? 'bg-amber-500 text-black' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
               {t}
             </button>
           ))}
           <span className="mx-2 border-l border-gray-300" />
           <button onClick={() => setFilterCar('all')}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCar === 'all' ? 'bg-[#0f1c2e] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCar === 'all' ? 'bg-[#0C3290] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
             全車種
           </button>
           {carTypes.slice(0, 6).map(t => (
             <button key={t} onClick={() => setFilterCar(t)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCar === t ? 'bg-[#0f1c2e] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCar === t ? 'bg-[#0C3290] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
               {t}
             </button>
           ))}
@@ -66,7 +66,7 @@ export default function V3CasesPage() {
             </div>
             <div>
               <div className="text-xs text-amber-500 font-bold mb-1">PICKUP</div>
-              <h2 className="text-lg font-bold text-[#0f1c2e] mb-2">{featured.car}</h2>
+              <h2 className="text-lg font-bold text-[#0C3290] mb-2">{featured.car}</h2>
               <p className="text-sm text-gray-500 mb-3">{featured.coatingType} ｜ {featured.date}</p>
               {featured.staffComment && <p className="text-xs text-gray-500 mt-2 italic">&ldquo;{featured.staffComment}&rdquo;</p>}
             </div>
@@ -85,7 +85,7 @@ export default function V3CasesPage() {
                 }
               </div>
               <div className="p-3">
-                <div className="text-sm font-bold text-[#0f1c2e]">{c.car}</div>
+                <div className="text-sm font-bold text-[#0C3290]">{c.car}</div>
                 <div className="text-xs text-gray-500">{c.coatingType} ｜ {c.date}</div>
               </div>
             </div>
@@ -93,11 +93,11 @@ export default function V3CasesPage() {
         </div>
       </section>
 
-      <section className="py-10 px-5 bg-[#0f1c2e]">
+      <section className="py-10 px-5 bg-[#0C3290]">
         <div className="max-w-[500px] mx-auto text-center text-white">
-          <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>コーティングをご検討中の方へ</h2>
+          <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングをご検討中の方へ</h2>
           <div className="flex gap-3 justify-center">
-            <Link href={`${base}/booking`} className="px-6 py-2.5 bg-amber-500 text-white font-bold rounded-md text-sm hover:bg-amber-500">予約する →</Link>
+            <Link href={`${base}/booking`} className="px-6 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500">予約する →</Link>
             <Link href={`${base}/booking?mode=inquiry`} className="px-6 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20">お問い合わせ</Link>
           </div>
         </div>

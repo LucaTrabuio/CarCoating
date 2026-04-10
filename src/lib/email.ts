@@ -85,7 +85,7 @@ export async function sendConfirmationEmail(opts: {
 
   const html = `
     <div style="max-width:600px;margin:0 auto;font-family:sans-serif;color:#333">
-      <div style="background:#0f1c2e;padding:20px;text-align:center;border-radius:8px 8px 0 0">
+      <div style="background:#0C3290;padding:20px;text-align:center;border-radius:8px 8px 0 0">
         <h1 style="color:white;font-size:18px;margin:0">KeePer PRO SHOP</h1>
         <p style="color:rgba(255,255,255,0.5);font-size:12px;margin:4px 0 0">${opts.locationName}</p>
       </div>
@@ -143,7 +143,7 @@ export async function sendStaffNotificationEmail(opts: {
 
   const html = `
     <div style="max-width:600px;font-family:sans-serif;color:#333">
-      <h2 style="color:#0f1c2e">新規予約 - ${opts.locationName}</h2>
+      <h2 style="color:#0C3290">新規予約 - ${opts.locationName}</h2>
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <tr><td style="padding:6px 0;color:#999;width:100px">お名前</td><td style="padding:6px 0;font-weight:bold">${opts.customerName}</td></tr>
         <tr><td style="padding:6px 0;color:#999">電話</td><td style="padding:6px 0">${opts.customerPhone}</td></tr>
@@ -178,7 +178,7 @@ export async function sendCancellationConfirmationEmail(opts: {
 
   const html = `
     <div style="max-width:600px;font-family:sans-serif;color:#333">
-      <div style="background:#0f1c2e;padding:20px;text-align:center;border-radius:8px 8px 0 0">
+      <div style="background:#0C3290;padding:20px;text-align:center;border-radius:8px 8px 0 0">
         <h1 style="color:white;font-size:18px;margin:0">KeePer PRO SHOP</h1>
       </div>
       <div style="padding:24px;background:white;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 8px 8px">

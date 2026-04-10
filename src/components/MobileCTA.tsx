@@ -16,7 +16,7 @@ export default function MobileCTA({ tel, lineUrl, storeId, basePath = '' }: Mobi
         <a
           href={`tel:${tel}`}
           onClick={() => storeId && trackEvent(storeId, 'phone_call')}
-          className="flex-1 flex items-center justify-center gap-1.5 py-3 bg-[#0f1c2e] text-white text-[13px] font-bold"
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 bg-[#0C3290] text-white text-[13px] font-bold"
         >
           &#9742; 電話する
         </a>
@@ -35,7 +35,7 @@ export default function MobileCTA({ tel, lineUrl, storeId, basePath = '' }: Mobi
         <a
           href={`${basePath}/booking`}
           onClick={() => storeId && trackEvent(storeId, 'cta_booking')}
-          className="flex-1 flex items-center justify-center gap-1.5 py-3 bg-amber-500 text-white text-[13px] font-bold"
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 bg-amber-500 text-black text-[13px] font-bold"
         >
           Web予約
         </a>

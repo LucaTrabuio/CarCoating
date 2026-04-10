@@ -25,7 +25,7 @@ function StoreAccessCard({ store }: { store: V3StoreData }) {
         )}
       </div>
       <div className="p-5 space-y-3 text-sm">
-        <h3 className="text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>{store.store_name}</h3>
+        <h3 className="text-lg font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>{store.store_name}</h3>
         <div><span className="text-xs text-gray-400 block mb-0.5">住所</span>{store.postal_code && `〒${store.postal_code} `}{store.address}</div>
         <div className="grid grid-cols-2 gap-3">
           <div><span className="text-xs text-gray-400 block mb-0.5">営業時間</span>{store.business_hours || '—'}</div>
@@ -61,8 +61,8 @@ export default async function V3AccessPage({ params }: { params: Promise<{ slug:
   if (store && store.is_active) {
     return (
       <main>
-        <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-          <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>店舗情報・アクセス</h1>
+        <section className="bg-[#0C3290] py-12 px-5 text-center">
+          <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>店舗情報・アクセス</h1>
           <p className="text-white/40 text-sm mt-1">{store.store_name}</p>
         </section>
         <section className="py-10 px-5">
@@ -82,8 +82,8 @@ export default async function V3AccessPage({ params }: { params: Promise<{ slug:
 
     return (
       <main>
-        <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-          <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>店舗一覧・アクセス</h1>
+        <section className="bg-[#0C3290] py-12 px-5 text-center">
+          <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>店舗一覧・アクセス</h1>
           <p className="text-white/40 text-sm mt-1">{subCompany.name}</p>
           <p className="text-white/30 text-xs mt-2">{stores.length}店舗</p>
         </section>

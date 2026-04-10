@@ -14,7 +14,7 @@ export default function BeforeAfterBlock({ config, store, basePath }: BeforeAfte
   return (
     <section className="py-14 px-5 bg-white">
       <div className="max-w-[900px] mx-auto text-center">
-        <h2 className="text-[#0f1c2e] text-xl md:text-2xl font-bold mb-6" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight mb-6" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
           {'\u30D3\u30D5\u30A9\u30FC\u30A2\u30D5\u30BF\u30FC'}
         </h2>
         <div className="rounded-xl overflow-hidden">

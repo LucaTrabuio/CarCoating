@@ -148,7 +148,7 @@ export default function ReservationForm({ store }: Props) {
       <div className="py-20 px-5 text-center">
         <div className="max-w-[500px] mx-auto">
           <div className="text-5xl mb-4">&#10003;</div>
-          <h2 className="text-2xl font-bold text-[#0f1c2e] mb-2">ご予約が確定しました</h2>
+          <h2 className="text-2xl font-bold text-[#0C3290] mb-2">ご予約が確定しました</h2>
           <p className="text-sm text-gray-500 mb-4">確認メールをお送りしました。</p>
           {selectedDate && selectedTime && (
             <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 text-center text-sm">
@@ -166,7 +166,7 @@ export default function ReservationForm({ store }: Props) {
         {/* Selection summary */}
         <div className="mb-6 p-4 rounded-lg border-2 border-amber-200 bg-amber-50">
           <div className="text-xs text-gray-500 mb-1">選択した日時</div>
-          <div className="text-base font-bold text-[#0f1c2e]">
+          <div className="text-base font-bold text-[#0C3290]">
             {selectedDate && selectedTime ? formatDateTime(selectedDate, selectedTime) : '未選択'}
           </div>
         </div>
@@ -177,7 +177,7 @@ export default function ReservationForm({ store }: Props) {
             <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <button onClick={prevMonth} className="text-gray-400 hover:text-gray-700 px-2 py-1 cursor-pointer">&lt;</button>
-                <h3 className="font-bold text-[#0f1c2e]">{calMonth.year}年{calMonth.month}月</h3>
+                <h3 className="font-bold text-[#0C3290]">{calMonth.year}年{calMonth.month}月</h3>
                 <button onClick={nextMonth} className="text-gray-400 hover:text-gray-700 px-2 py-1 cursor-pointer">&gt;</button>
               </div>
               <div className="grid grid-cols-7 gap-1 text-center text-xs mb-2">
@@ -194,7 +194,7 @@ export default function ReservationForm({ store }: Props) {
                       onClick={() => { if (available) { setSelectedDate(dateStr); setSelectedTime(null); } }}
                       disabled={!available}
                       className={`py-2 rounded text-sm cursor-pointer transition-colors ${
-                        selectedDate === dateStr ? 'bg-amber-500 text-white font-bold' :
+                        selectedDate === dateStr ? 'bg-amber-500 text-black font-bold' :
                         available ? 'bg-green-50 text-green-700 hover:bg-green-100' :
                         'text-gray-300'
                       }`}
@@ -209,7 +209,7 @@ export default function ReservationForm({ store }: Props) {
             {/* Time slots */}
             {selectedDate && (
               <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6">
-                <h3 className="font-bold text-[#0f1c2e] text-sm mb-3">
+                <h3 className="font-bold text-[#0C3290] text-sm mb-3">
                   {selectedDate} の空き時間
                 </h3>
                 {loadingSlots ? (
@@ -224,7 +224,7 @@ export default function ReservationForm({ store }: Props) {
                         onClick={() => setSelectedTime(slot.time)}
                         className={`py-2 px-1 border rounded-lg text-sm cursor-pointer transition-colors ${
                           selectedTime === slot.time
-                            ? 'bg-amber-500 text-white border-amber-500 font-bold'
+                            ? 'bg-amber-500 text-black border-amber-500 font-bold'
                             : 'border-gray-200 hover:border-amber-500 hover:bg-amber-50'
                         }`}
                       >
@@ -243,7 +243,7 @@ export default function ReservationForm({ store }: Props) {
             {selectedDate && selectedTime && (
               <button
                 onClick={() => setStep('info')}
-                className="w-full py-3 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-700 text-white font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity"
+                className="w-full py-3 bg-amber-500 text-black font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity"
               >
                 お客様情報の入力へ →
               </button>
@@ -255,7 +255,7 @@ export default function ReservationForm({ store }: Props) {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Service selection */}
             <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-4">
-              <h2 className="text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>ご希望のサービス</h2>
+              <h2 className="text-lg font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>ご希望のサービス</h2>
 
               {/* Coatings */}
               <div>
@@ -316,7 +316,7 @@ export default function ReservationForm({ store }: Props) {
               </div>
             </div>
 
-            <h2 className="text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>お客様情報</h2>
+            <h2 className="text-lg font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>お客様情報</h2>
             <GoogleAutoFill onAutoFill={({ name: n, email: e }) => { setName(n); setEmail(e); setEmailConfirm(e); }} />
             <div>
               <label className="block text-xs text-gray-500 mb-1">お名前 *</label>
@@ -361,7 +361,7 @@ export default function ReservationForm({ store }: Props) {
                 ← 日時選択に戻る
               </button>
               <button type="submit" disabled={submitting}
-                className="flex-1 py-3 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-700 text-white font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50">
+                className="flex-1 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50">
                 {submitting ? '送信中...' : '予約を確定する'}
               </button>
             </div>

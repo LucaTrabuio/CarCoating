@@ -95,7 +95,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
           position: { lat: store.lat, lng: store.lng },
           map,
           title: store.store_name,
-          icon: { path: maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#c49a2a', fillOpacity: 1, strokeColor: '#0f1c2e', strokeWeight: 2 },
+          icon: { path: maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#c49a2a', fillOpacity: 1, strokeColor: '#0C3290', strokeWeight: 2 },
         });
 
         marker.addListener('click', () => {
@@ -174,7 +174,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
     <section className="py-14 px-5 bg-slate-50">
       <div className="max-w-[1100px] mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-xl md:text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          <h2 className="text-xl md:text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             店舗一覧・アクセス
           </h2>
           <p className="text-sm text-gray-500 mt-1">{groupName} — {stores.length}店舗</p>
@@ -233,7 +233,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-sm text-[#0f1c2e]">{store.store_name}</h3>
+                          <h3 className="font-bold text-sm text-[#0C3290]">{store.store_name}</h3>
                           <p className="text-xs text-gray-500 mt-0.5">{store.address}</p>
                           <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
                             {store.tel && <span>{store.tel}</span>}

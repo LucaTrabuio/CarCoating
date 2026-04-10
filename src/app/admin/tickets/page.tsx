@@ -163,7 +163,7 @@ export default function TicketsPage() {
         <h1 className="text-xl font-bold text-gray-900">チケット</h1>
         <button
           onClick={() => { setShowCreate(!showCreate); setSelectedTicketId(null); }}
-          className="px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors cursor-pointer"
+          className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors cursor-pointer"
         >
           + 新規チケット
         </button>
@@ -208,7 +208,7 @@ export default function TicketsPage() {
           />
           <div className="flex gap-2">
             <button type="submit" disabled={creating}
-              className="px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer">
+              className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer">
               {creating ? '送信中...' : '送信'}
             </button>
             <button type="button" onClick={() => setShowCreate(false)}
@@ -245,7 +245,7 @@ export default function TicketsPage() {
                   <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${sc.color}`}>{sc.label}</span>
                   <span className="text-[10px] text-gray-400">{t.createdAt?.slice(0, 10)}</span>
                 </div>
-                <div className="text-sm font-bold text-[#0f1c2e] truncate">{t.subject}</div>
+                <div className="text-sm font-bold text-[#0C3290] truncate">{t.subject}</div>
                 <div className="text-[10px] text-gray-400 mt-1">
                   {t.authorEmail} · {t.messages?.length || 0} メッセージ
                 </div>
@@ -279,11 +279,11 @@ export default function TicketsPage() {
                           onKeyDown={e => { if (e.key === 'Enter') editSubject(selectedTicket.id); if (e.key === 'Escape') setEditingSubject(false); }}
                         />
                         <button onClick={() => editSubject(selectedTicket.id)} className="text-xs text-amber-600 font-bold cursor-pointer">保存</button>
-                        <button onClick={() => setEditingSubject(false)} className="text-xs text-gray-400 cursor-pointer">×</button>
+                        <button onClick={() => setEditingSubject(false)} className="text-xs text-gray-400 cursor-pointer">x</button>
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <h2 className="text-base font-bold text-[#0f1c2e] truncate">{selectedTicket.subject}</h2>
+                        <h2 className="text-base font-bold text-[#0C3290] truncate">{selectedTicket.subject}</h2>
                         {isSuper && (
                           <button
                             onClick={() => { setEditingSubject(true); setEditSubjectValue(selectedTicket.subject); }}
@@ -337,7 +337,7 @@ export default function TicketsPage() {
                     <div key={i} className={`px-4 py-3 group ${isMine ? 'bg-amber-50/30' : ''}`}>
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-[#0f1c2e]">{msg.email}</span>
+                          <span className="text-xs font-bold text-[#0C3290]">{msg.email}</span>
                           <span className="text-[10px] text-gray-400">{msg.createdAt?.slice(0, 16).replace('T', ' ')}</span>
                         </div>
                         {isSuper && (
@@ -369,7 +369,7 @@ export default function TicketsPage() {
                   <button
                     type="submit"
                     disabled={replying || !replyText.trim()}
-                    className="px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer shrink-0"
+                    className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer shrink-0"
                   >
                     送信
                   </button>

@@ -22,7 +22,7 @@ export default function BlurOverlay({
         <p className="text-sm text-slate-600 font-semibold mb-2 text-center px-4">{subtitle}</p>
         <Link
           href={ctaHref}
-          className="px-6 py-2.5 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg"
+          className="px-6 py-2.5 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg"
         >
           {ctaText}
         </Link>

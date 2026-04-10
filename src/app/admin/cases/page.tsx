@@ -37,7 +37,7 @@ export default function CasesPage() {
           <label className="block text-xs font-semibold mb-1">スタッフコメント</label>
           <textarea className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm min-h-[80px]" placeholder="施工のポイントやお客様の反応など" />
         </div>
-        <button className="px-6 py-2.5 bg-gradient-to-br from-amber-500 to-amber-500 text-white rounded-lg text-sm font-bold">投稿する</button>
+        <button className="px-6 py-2.5 bg-amber-500 text-black rounded-lg text-sm font-bold">投稿する</button>
       </div>
     </div>
   );

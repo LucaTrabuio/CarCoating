@@ -98,12 +98,12 @@ export default function CustomerFeedback({
       <div className="max-w-[800px] mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="text-amber-500 text-xs font-bold tracking-widest mb-2">
+          <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-2">
             VOICE
           </p>
           <h2
-            className="text-xl md:text-2xl font-bold text-[#0f1c2e]"
-            style={{ fontFamily: '"Noto Serif JP", serif' }}
+            className="text-xl md:text-2xl font-bold text-[#0C3290]"
+            style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
           >
             お客様の声
           </h2>
@@ -131,10 +131,10 @@ export default function CustomerFeedback({
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              <span className="text-sm font-bold text-[#0f1c2e]">Google</span>
+              <span className="text-sm font-bold text-[#0C3290]">Google</span>
             </div>
             <StarRating rating={Math.round(reviewData.average_rating)} />
-            <span className="text-lg font-bold text-[#0f1c2e]">
+            <span className="text-lg font-bold text-[#0C3290]">
               {reviewData.average_rating.toFixed(1)}
             </span>
             <span className="text-xs text-slate-400">
@@ -151,11 +151,11 @@ export default function CustomerFeedback({
               className="bg-slate-50 rounded-xl p-5 border border-slate-100"
             >
               <StarRating rating={t.rating} size="sm" />
-              <p className="text-[13px] text-[#0f1c2e] leading-relaxed mt-3 mb-4">
+              <p className="text-[13px] text-[#0C3290] leading-relaxed mt-3 mb-4">
                 &ldquo;{t.comment}&rdquo;
               </p>
               <div className="border-t border-slate-200 pt-3">
-                <p className="text-sm font-bold text-[#0f1c2e]">{t.name}</p>
+                <p className="text-sm font-bold text-[#0C3290]">{t.name}</p>
                 <p className="text-xs text-slate-400">{t.carModel}</p>
               </div>
             </div>

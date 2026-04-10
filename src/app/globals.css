@@ -3,17 +3,55 @@
 :root {
   --background: #ffffff;
   --foreground: #1c1c1c;
+  --primary-blue: #0C3290;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary-blue: var(--primary-blue);
+
+  /* Override Tailwind blue palette with #0C3290 shades */
+  --color-blue-50: #e6eaf5;
+  --color-blue-100: #c0c8e6;
+  --color-blue-200: #96a3d5;
+  --color-blue-300: #6c7ec4;
+  --color-blue-400: #4d62b7;
+  --color-blue-500: #2e47aa;
+  --color-blue-600: #0C3290;
+  --color-blue-700: #0a2a78;
+  --color-blue-800: #082160;
+  --color-blue-900: #061948;
+  --color-blue-950: #030e2e;
+
+  /* Override Tailwind amber palette with #F0EA01 shades */
+  --color-amber-50: #fefde6;
+  --color-amber-100: #fcf9b3;
+  --color-amber-200: #f9f480;
+  --color-amber-300: #f6ef4d;
+  --color-amber-400: #f3ec27;
+  --color-amber-500: #F0EA01;
+  --color-amber-600: #c9c401;
+  --color-amber-700: #a19d01;
+  --color-amber-800: #7a7701;
+  --color-amber-900: #535100;
+  --color-amber-950: #2b2a00;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  letter-spacing: 0.04em;
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
 }

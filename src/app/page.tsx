@@ -8,6 +8,7 @@ import { blogArticles } from '@/data/blog-articles';
 import { news, CATEGORY_LABELS } from '@/data/news';
 import Image from 'next/image';
 import { KEEPER_BASE } from '@/lib/constants';
+import ScrollFadeIn from '@/components/ScrollFadeIn';
 
 const MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 
@@ -54,7 +55,7 @@ interface StoreWithDistance extends V3StoreData {
 // ─── Service tier groupings ─────────────────────────────────
 const SERVICE_GROUPS = [
   { label: 'FLAGSHIP', ids: ['ex-premium', 'ex'], color: 'from-amber-500 to-amber-500' },
-  { label: 'PREMIUM', ids: ['dia2-premium', 'dia2'], color: 'from-[#0f1c2e] to-slate-700' },
+  { label: 'PREMIUM', ids: ['dia2-premium', 'dia2'], color: 'from-[#0C3290] to-slate-700' },
   { label: 'STANDARD', ids: ['diamond-premium', 'diamond'], color: 'from-slate-600 to-slate-500' },
   { label: 'ENTRY', ids: ['fresh', 'crystal'], color: 'from-slate-400 to-slate-300' },
 ];
@@ -142,7 +143,7 @@ export default function V3HomePage() {
           position: { lat, lng },
           map,
           title: store.store_name,
-          icon: { path: maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#c49a2a', fillOpacity: 1, strokeColor: '#0f1c2e', strokeWeight: 2 },
+          icon: { path: maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#c49a2a', fillOpacity: 1, strokeColor: '#0C3290', strokeWeight: 2 },
         });
         marker.addListener('click', () => {
           setSelectedStore(store.store_id);
@@ -242,21 +243,21 @@ export default function V3HomePage() {
     <main>
       {/* ═══ HERO ═══ */}
       <section className="relative bg-[#0a0e14] min-h-[480px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0d1b2a] via-[#1b2838] to-[#0f1c2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0d1b2a] via-[#1b2838] to-[#0C3290]" />
         <div className="absolute inset-0 flex items-center justify-center opacity-20">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <Image src={`${KEEPER_BASE}/img/lineup/p_keeper_logo.png`} alt="KeePer" width={200} height={128} className="h-32 w-auto opacity-30" aria-hidden="true" />
         </div>
         <div className="relative text-center px-5 py-20">
           <div className="text-amber-500 text-sm font-semibold tracking-wider mb-4">KeePer PRO SHOP</div>
-          <h1 className="text-white text-3xl md:text-5xl font-bold leading-tight mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          <h1 className="text-white text-3xl md:text-5xl font-bold leading-tight mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             洗車だけで、この輝きが続く。
           </h1>
           <p className="text-white/50 text-sm md:text-base max-w-xl mx-auto leading-relaxed mb-8">
             特許技術のガラスコーティングで愛車を守る。全国のKeePer認定プロショップで、あなたの車に最適なコースをご提案します。
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <a href="#store-finder" className="px-7 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
+            <a href="#store-finder" className="px-7 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
               近くの店舗を探す
             </a>
             <a href="#services" className="px-7 py-3 bg-white/10 border border-white/25 text-white font-semibold rounded-lg text-sm hover:bg-white/20 transition-colors">
@@ -267,10 +268,11 @@ export default function V3HomePage() {
       </section>
 
       {/* ═══ SERVICES MENU ═══ */}
+      <ScrollFadeIn>
       <section id="services" className="py-16 px-5 bg-white">
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>コーティングメニュー</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングメニュー</h2>
             <p className="text-sm text-gray-400 mt-2">全8コースのKeePer コーティング。あなたの目的に合った最適なコースをお選びください。</p>
           </div>
 
@@ -289,14 +291,14 @@ export default function V3HomePage() {
                       <a key={id} href="#store-finder" className="block bg-white border border-gray-200 rounded-xl p-5 hover:border-amber-300 hover:shadow-md transition-all cursor-pointer">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="font-bold text-[#0f1c2e] text-base">
+                            <h3 className="font-bold text-[#0C3290] text-base">
                               {tier.name}
                               {tier.is_popular && <span className="text-[10px] text-amber-500 font-bold ml-2">★人気</span>}
                             </h3>
                             <p className="text-xs text-gray-500 mt-0.5">{tier.tagline}</p>
                           </div>
                           <div className="text-right flex-shrink-0 ml-4">
-                            <span className="inline-block px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors">
+                            <span className="inline-block px-3 py-1.5 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-500 transition-colors">
                               店舗を探す →
                             </span>
                           </div>
@@ -320,11 +322,14 @@ export default function V3HomePage() {
         </div>
       </section>
 
+      </ScrollFadeIn>
+
       {/* ═══ WHY KeePer ═══ */}
+      <ScrollFadeIn>
       <section className="py-16 px-5 bg-slate-50">
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>KeePer が選ばれる理由</h2>
+            <h2 className="text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>KeePer が選ばれる理由</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
@@ -337,7 +342,7 @@ export default function V3HomePage() {
             ].map(item => (
               <div key={item.title} className="bg-white rounded-xl p-6 border border-gray-200">
                 <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="font-bold text-[#0f1c2e] mb-2">{item.title}</h3>
+                <h3 className="font-bold text-[#0C3290] mb-2">{item.title}</h3>
                 <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
               </div>
             ))}
@@ -345,11 +350,14 @@ export default function V3HomePage() {
         </div>
       </section>
 
+      </ScrollFadeIn>
+
       {/* ═══ STORE GALLERY ═══ */}
+      <ScrollFadeIn>
       <section className="py-16 px-5 bg-white overflow-hidden">
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>全国の店舗</h2>
+            <h2 className="text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>全国の店舗</h2>
             <p className="text-sm text-gray-500 mt-1">北海道から九州まで、各地のKeePer PRO SHOPから</p>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-4 snap-x snap-mandatory -mx-5 px-5 scrollbar-hide">
@@ -386,17 +394,20 @@ export default function V3HomePage() {
         </div>
       </section>
 
+      </ScrollFadeIn>
+
       {/* ═══ STORE FINDER MAP ═══ */}
-      <section id="store-finder" ref={mapSectionRef} className="bg-[#0f1c2e]">
+      <ScrollFadeIn>
+      <section id="store-finder" ref={mapSectionRef} className="bg-[#0C3290]">
         <div className="px-5 py-6 border-b border-white/10">
           <div className="max-w-[1400px] mx-auto flex items-center justify-between">
             <div>
-              <h2 className="text-white text-xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>店舗検索</h2>
+              <h2 className="text-white text-xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>店舗検索</h2>
               <p className="text-white/40 text-xs mt-0.5">お近くのKeePer PRO SHOPを探す</p>
             </div>
             <div className="flex items-center gap-3">
               {geoStatus === 'idle' && (
-                <button onClick={detectLocation} className="px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-500 cursor-pointer">
+                <button onClick={detectLocation} className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-500 cursor-pointer">
                   現在地から探す
                 </button>
               )}
@@ -419,7 +430,7 @@ export default function V3HomePage() {
           <div className="flex-1 relative min-h-[250px] md:min-h-0">
             <div ref={mapRef} className="absolute inset-0" />
             {!mapReady && (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#0f1c2e]">
+              <div className="absolute inset-0 flex items-center justify-center bg-[#0C3290]">
                 {storesLoading
                   ? <p className="text-white/40 text-sm">店舗データを読み込み中...</p>
                   : <p className="text-white/40 text-sm">地図を読み込み中...</p>
@@ -463,7 +474,7 @@ export default function V3HomePage() {
                         </span>
                       )}
                       <Link href={(() => { const scId = (store as V3StoreData & { sub_company_id?: string }).sub_company_id; return scId && subCompanyMap[scId] ? `/${subCompanyMap[scId].slug}` : `/${store.store_id}/`; })()}
-                        className="px-3 py-1.5 bg-amber-500 text-white text-[11px] font-bold rounded-md hover:bg-amber-500 transition-colors"
+                        className="px-3 py-1.5 bg-amber-500 text-black text-[11px] font-bold rounded-md hover:bg-amber-500 transition-colors"
                         onClick={e => e.stopPropagation()}>
                         詳細 →
                       </Link>
@@ -484,11 +495,14 @@ export default function V3HomePage() {
         </div>
       </section>
 
+      </ScrollFadeIn>
+
       {/* ═══ BLOG / COLUMNS ═══ */}
+      <ScrollFadeIn>
       <section className="py-16 px-5 bg-white">
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>コラム・お役立ち情報</h2>
+            <h2 className="text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コラム・お役立ち情報</h2>
             <p className="text-sm text-gray-400 mt-2">初めてのコーティングで迷わないための基礎知識</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -502,7 +516,7 @@ export default function V3HomePage() {
                     </span>
                     <span className="text-[10px] text-gray-400">{article.publishDate}</span>
                   </div>
-                  <h3 className="text-sm font-bold text-[#0f1c2e] mb-2 group-hover:text-amber-700 transition-colors leading-snug">
+                  <h3 className="text-sm font-bold text-[#0C3290] mb-2 group-hover:text-amber-700 transition-colors leading-snug">
                     {article.title}
                   </h3>
                   <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{article.summary}</p>
@@ -512,18 +526,21 @@ export default function V3HomePage() {
             ))}
           </div>
           <div className="text-center mt-8">
-            <Link href="/blog" className="px-6 py-2.5 bg-gray-100 text-[#0f1c2e] font-semibold rounded-lg text-sm hover:bg-gray-200 transition-colors">
+            <Link href="/blog" className="px-6 py-2.5 bg-gray-100 text-[#0C3290] font-semibold rounded-lg text-sm hover:bg-gray-200 transition-colors">
               すべての記事を見る →
             </Link>
           </div>
         </div>
       </section>
 
+      </ScrollFadeIn>
+
       {/* ═══ NEWS ═══ */}
+      <ScrollFadeIn>
       <section className="py-16 px-5 bg-slate-50">
         <div className="max-w-[800px] mx-auto">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>お知らせ</h2>
+            <h2 className="text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>お知らせ</h2>
           </div>
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100">
             {sortedNews.map(item => (
@@ -534,18 +551,21 @@ export default function V3HomePage() {
                     {CATEGORY_LABELS[item.category]?.label || item.category}
                   </span>
                 </div>
-                <p className="text-sm text-[#0f1c2e] font-medium flex-1">{item.title}</p>
+                <p className="text-sm text-[#0C3290] font-medium flex-1">{item.title}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
+      </ScrollFadeIn>
+
       {/* ═══ PROCESS STEPS ═══ */}
+      <ScrollFadeIn>
       <section className="py-16 px-5 bg-white">
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>ご利用の流れ</h2>
+            <h2 className="text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>ご利用の流れ</h2>
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             {[
@@ -555,10 +575,10 @@ export default function V3HomePage() {
               { num: '4', title: '施工・お引渡し', desc: '朝お預け → 夕方お引渡し。無料点検2回付き。' },
             ].map(step => (
               <div key={step.num} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-amber-400 text-white font-bold flex items-center justify-center text-lg mx-auto mb-3">
+                <div className="w-12 h-12 rounded-full bg-amber-500 text-black font-bold flex items-center justify-center text-lg mx-auto mb-3">
                   {step.num}
                 </div>
-                <h3 className="font-bold text-sm text-[#0f1c2e] mb-1">{step.title}</h3>
+                <h3 className="font-bold text-sm text-[#0C3290] mb-1">{step.title}</h3>
                 <p className="text-xs text-gray-500">{step.desc}</p>
               </div>
             ))}
@@ -566,18 +586,22 @@ export default function V3HomePage() {
         </div>
       </section>
 
+      </ScrollFadeIn>
+
       {/* ═══ CTA ═══ */}
-      <section className="py-14 px-5 bg-[#0f1c2e]">
+      <ScrollFadeIn>
+      <section className="py-14 px-5 bg-[#0C3290]">
         <div className="max-w-[600px] mx-auto text-center text-white">
-          <h2 className="text-xl font-bold mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>コーティングを始めませんか？</h2>
+          <h2 className="text-xl font-bold mb-2" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングを始めませんか？</h2>
           <p className="text-sm text-white/40 mb-6">お近くの店舗で無料見積もり。Web予約限定の割引特典もご用意しています。</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <a href="#store-finder" className="px-7 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
+            <a href="#store-finder" className="px-7 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
               近くの店舗を探す
             </a>
           </div>
         </div>
       </section>
+      </ScrollFadeIn>
     </main>
   );
 }

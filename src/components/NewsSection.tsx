@@ -8,7 +8,7 @@ export default function NewsSection() {
     <section className="py-12 px-5 bg-white">
       <div className="max-w-[700px] mx-auto">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          <h2 className="text-lg font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             お知らせ
           </h2>
         </div>

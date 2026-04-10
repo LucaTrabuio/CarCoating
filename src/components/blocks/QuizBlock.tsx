@@ -146,17 +146,17 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
     <section className="py-16 px-5 bg-white">
       <div className="max-w-[600px] mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <p className="text-amber-500 text-xs font-bold tracking-widest mb-2">
+        <div className="text-center mb-10">
+          <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-4">
             COATING QUIZ
           </p>
           <h2
-            className="text-[#0f1c2e] text-xl md:text-2xl font-bold"
-            style={{ fontFamily: '"Noto Serif JP", serif' }}
+            className="text-black text-2xl md:text-5xl font-black tracking-tight whitespace-nowrap"
+            style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
           >
             あなたにぴったりのコースは？
           </h2>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-400 mt-3">
             4つの質問に答えるだけ（30秒）
           </p>
         </div>
@@ -183,7 +183,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
           <div className="text-center animate-[fadeIn_0.4s_ease-out]">
             <button
               onClick={handleStart}
-              className="px-8 py-4 bg-gradient-to-br from-amber-500 to-amber-500 text-white font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
+              className="px-8 py-4 bg-amber-500 text-black font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
             >
               診断スタート
             </button>
@@ -200,7 +200,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
                 : 'animate-[slideInLeft_0.35s_ease-out]'
             }`}
           >
-            <h3 className="text-lg font-bold text-[#0f1c2e] mb-5">
+            <h3 className="text-lg font-bold text-[#0C3290] mb-5">
               {questions[step].question}
             </h3>
             <div className="space-y-2.5">
@@ -208,7 +208,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
                 <button
                   key={choice.label}
                   onClick={() => handleAnswer(choice.points)}
-                  className="w-full text-left px-5 py-4 bg-white border border-slate-200 rounded-lg text-[14px] font-semibold text-[#0f1c2e] hover:border-amber-500 hover:bg-amber-50 transition-colors cursor-pointer"
+                  className="w-full text-left px-5 py-4 bg-white border border-slate-200 rounded-lg text-[14px] font-semibold text-[#0C3290] hover:border-amber-500 hover:bg-amber-50 transition-colors cursor-pointer"
                 >
                   {choice.label}
                 </button>
@@ -227,13 +227,13 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
 
         {/* Result */}
         {step === 4 && result && (
-          <div className="bg-[#0f1c2e] rounded-xl p-8 text-center text-white animate-[fadeIn_0.5s_ease-out]">
-            <p className="text-amber-400 text-xs font-bold tracking-widest mb-3">
+          <div className="bg-[#0C3290] rounded-xl p-8 text-center text-white animate-[fadeIn_0.5s_ease-out]">
+            <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-3">
               YOUR RECOMMENDATION
             </p>
             <h3
               className="text-2xl font-bold mb-1"
-              style={{ fontFamily: '"Noto Serif JP", serif' }}
+              style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
             >
               {result.name}
             </h3>
@@ -246,7 +246,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
               <Link
                 href={`${basePath}/booking`}
                 onClick={() => storeId && trackEvent(storeId, 'cta_booking', { source: 'quiz' })}
-                className="px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
+                className="px-6 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
               >
                 このコースで予約する
               </Link>

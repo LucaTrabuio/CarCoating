@@ -58,8 +58,8 @@ export default async function EstimatePage({
       <main className="min-h-screen flex items-center justify-center bg-slate-50 px-5">
         <div className="text-center">
           <h1
-            className="text-2xl font-bold text-[#0f1c2e] mb-4"
-            style={{ fontFamily: '"Noto Serif JP", serif' }}
+            className="text-2xl font-bold text-[#0C3290] mb-4"
+            style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
           >
             お見積もりが見つかりません
           </h1>
@@ -68,7 +68,7 @@ export default async function EstimatePage({
           </p>
           <Link
             href="/"
-            className="inline-block px-6 py-3 bg-amber-500 text-white font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
+            className="inline-block px-6 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
           >
             トップページへ
           </Link>
@@ -88,12 +88,12 @@ export default async function EstimatePage({
       <div className="max-w-[560px] mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="text-amber-500 text-xs font-bold tracking-widest mb-2">
+          <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-2">
             YOUR ESTIMATE
           </p>
           <h1
-            className="text-xl md:text-2xl font-bold text-[#0f1c2e]"
-            style={{ fontFamily: '"Noto Serif JP", serif' }}
+            className="text-xl md:text-2xl font-bold text-[#0C3290]"
+            style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
           >
             お見積もり詳細
           </h1>
@@ -144,13 +144,13 @@ export default async function EstimatePage({
           </div>
 
           {/* Price */}
-          <div className="px-6 py-6 bg-[#0f1c2e] text-center">
-            <p className="text-amber-400 text-xs font-bold tracking-widest mb-2">
+          <div className="px-6 py-6 bg-[#0C3290] text-center">
+            <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-2">
               概算お見積もり
             </p>
             <p
               className="text-3xl font-bold text-white"
-              style={{ fontFamily: '"Noto Serif JP", serif' }}
+              style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
             >
               {inquiry.estimated_price.toLocaleString()}
               <span className="text-lg ml-1">円</span>
@@ -165,7 +165,7 @@ export default async function EstimatePage({
         <div className="mt-8 text-center space-y-3">
           <Link
             href="/booking"
-            className="inline-block w-full max-w-[320px] px-6 py-3.5 bg-gradient-to-br from-amber-500 to-amber-500 text-white font-bold rounded-xl text-sm hover:opacity-90 transition-opacity"
+            className="inline-block w-full max-w-[320px] px-6 py-3.5 bg-amber-500 text-black font-bold rounded-xl text-sm hover:opacity-90 transition-opacity"
           >
             予約する
           </Link>
@@ -184,7 +184,7 @@ function Row({ label, value }: { label: string; value: string }) {
       <span className="text-xs font-bold text-slate-400 w-24 flex-shrink-0 pt-0.5">
         {label}
       </span>
-      <span className="text-sm text-[#0f1c2e]">{value}</span>
+      <span className="text-sm text-[#0C3290]">{value}</span>
     </div>
   );
 }

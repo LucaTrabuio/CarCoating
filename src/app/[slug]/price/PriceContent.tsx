@@ -67,15 +67,15 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
 
   return (
     <main>
-      <section className="bg-[#0f1c2e] pt-8 pb-10 px-5">
+      <section className="bg-[#0C3290] pt-8 pb-10 px-5">
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-6">
             <h1 className="text-white text-xl md:text-2xl font-bold" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>見積もりシミュレーター</h1>
             <p className="text-white/50 text-sm mt-1">車種を選ぶか、サイズで直接料金を確認できます。</p>
           </div>
           <div className="flex justify-center gap-2 mb-6">
-            <button onClick={() => setSizeMode('car')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${sizeMode === 'car' ? 'bg-amber-500 text-white' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>車種から探す</button>
-            <button onClick={() => setSizeMode('size')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${sizeMode === 'size' ? 'bg-amber-500 text-white' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>サイズから探す</button>
+            <button onClick={() => setSizeMode('car')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${sizeMode === 'car' ? 'bg-amber-500 text-black' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>車種から探す</button>
+            <button onClick={() => setSizeMode('size')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${sizeMode === 'size' ? 'bg-amber-500 text-black' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>サイズから探す</button>
           </div>
           {sizeMode === 'car' ? (
             <CarSimulator onSizeChange={handleSizeChange} />
@@ -84,7 +84,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
               <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                 {ALL_SIZES.map(size => (
                   <button key={size} onClick={() => handleDirectSizeSelect(size)}
-                    className={`py-3 px-2 rounded-lg text-center transition-all cursor-pointer ${selectedSize === size && sizeMode === 'size' ? 'bg-amber-500 text-white ring-2 ring-amber-300' : 'bg-white/10 text-white hover:bg-white/20'}`}>
+                    className={`py-3 px-2 rounded-lg text-center transition-all cursor-pointer ${selectedSize === size && sizeMode === 'size' ? 'bg-amber-500 text-black ring-2 ring-amber-300' : 'bg-white/10 text-white hover:bg-white/20'}`}>
                     <div className="text-lg font-bold">{size}</div>
                     <div className="text-[10px] opacity-70 mt-0.5">{sizeLabels[size].replace(`${size}サイズ`, '').replace('（', '').replace('）', '')}</div>
                   </button>
@@ -106,7 +106,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           <section className="py-12 px-5">
             <div className="max-w-[1100px] mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>{sizeHeading}</h2>
+                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>{sizeHeading}</h2>
                 <p className="text-sm text-gray-500 mt-1">Web予約限定割引 ｜ 税込価格</p>
               </div>
               <PricingTable size={selectedSize} discountRate={discountRate} storeId={storeId} blurFields={blurFields} priceOverrides={priceOverrides} />
@@ -116,7 +116,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           <section className="py-12 px-5 bg-gray-50">
             <div className="max-w-[1100px] mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>おすすめコース</h2>
+                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>おすすめコース</h2>
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 {[
@@ -129,19 +129,19 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
                   return (
                     <button key={tier.id} onClick={() => { setSelectedPlan(tier.id); trackEvent(storeId, 'plan_select', { plan: tier.id }); }}
                       className={`bg-white rounded-xl p-6 text-center border-2 transition-all cursor-pointer hover:shadow-lg ${selectedPlan === tier.id ? 'border-amber-500 shadow-lg ring-2 ring-amber-200' : isCenter ? 'border-amber-500 relative' : 'border-gray-200'}`}>
-                      {isCenter && !selectedPlan && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-400 text-white text-xs font-bold px-3 py-0.5 rounded-full">★ 一番人気</span>}
+                      {isCenter && !selectedPlan && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-black text-xs font-bold px-3 py-0.5 rounded-full">★ 一番人気</span>}
                       <div className="text-xs text-gray-400 mb-1">{label}</div>
-                      <h3 className="font-bold text-lg text-[#0f1c2e] mb-1">{tier.name}</h3>
+                      <h3 className="font-bold text-lg text-[#0C3290] mb-1">{tier.name}</h3>
                       <p className="text-xs text-gray-500 mb-3">{tier.durability_years}持続 ｜ {tier.application_time}</p>
                       {isBlurred(tier.id, 'web_price', blurFields) ? (
                         <div className="relative inline-block">
-                          <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0f1c2e]" aria-hidden="true">{formatPrice(web)}</div>
+                          <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none text-2xl font-bold text-[#0C3290]" aria-hidden="true">{formatPrice(web)}</div>
                           <div className="absolute inset-0 flex items-center justify-center">
                             <span className="text-[10px] text-slate-500 font-semibold bg-white/80 px-2 py-0.5 rounded">要問合せ</span>
                           </div>
                         </div>
                       ) : (
-                        <div className="text-2xl font-bold text-[#0f1c2e]">{formatPrice(web)}</div>
+                        <div className="text-2xl font-bold text-[#0C3290]">{formatPrice(web)}</div>
                       )}
                       <p className="text-xs text-gray-400 mb-2">{selectedSize}サイズ・Web割後</p>
                       {selectedPlan === tier.id && <div className="text-xs text-amber-500 font-bold mt-2">✓ 選択中</div>}
@@ -155,7 +155,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           <section className="py-12 px-5">
             <div className="max-w-[1100px] mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>プラン比較マトリクス</h2>
+                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>プラン比較マトリクス</h2>
                 <p className="text-sm text-gray-500 mt-1">横スクロールで全プランを比較 ｜ {selectedSize}サイズの場合</p>
               </div>
               <ComparisonMatrix size={selectedSize} discountRate={discountRate} blurFields={blurFields} priceOverrides={priceOverrides} />
@@ -165,7 +165,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           <section className="py-12 px-5 bg-gray-50">
             <div className="max-w-[800px] mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>5年間の総コスト比較</h2>
+                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>5年間の総コスト比較</h2>
                 <p className="text-sm text-gray-500 mt-1">長く乗るほど上位プランがお得</p>
               </div>
               <div className="overflow-x-auto border border-gray-200 rounded-xl">
@@ -187,7 +187,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
                       const isDiamond = id === 'diamond';
                       return (
                         <tr key={id} className={`border-b border-gray-100 ${isDiamond ? 'bg-amber-50/30' : ''}`}>
-                          <td className="px-4 py-3 font-bold text-[#0f1c2e]">{isDiamond && '★ '}{tier.name}</td>
+                          <td className="px-4 py-3 font-bold text-[#0C3290]">{isDiamond && '★ '}{tier.name}</td>
                           {isBlurred(id, 'web_price', blurFields) ? (
                             <>
                               {[web, maint ? `${formatPrice(maint)}/年` : '毎年再施工', total3, total5].map((val, ci) => (
@@ -220,14 +220,14 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
             <section className="py-12 px-5">
               <div className="max-w-[700px] mx-auto">
                 <div className="text-center mb-8">
-                  <h2 className="text-xl font-bold text-[#0f1c2e]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>オプション追加</h2>
+                  <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>オプション追加</h2>
                   <p className="text-sm text-gray-500 mt-1">チェックすると合計額がリアルタイムで更新されます</p>
                 </div>
                 <OptionCalculator basePlanPrice={getWebPrice(selectedTier, selectedSize, discountRate)} basePlanName={`${selectedTier.name}（${selectedSize}サイズ）`} optionDiscountRate={optionDiscountRate} showDiscountBanner={!optionDiscountSync && optionDiscountRate > 0} />
                 <div className="mt-6 text-center">
                   <Link href={`${base}/booking?plan=${selectedTier.id}&size=${selectedSize}&make=${encodeURIComponent(selectedMake)}&model=${encodeURIComponent(selectedModel)}`}
                     onClick={() => trackEvent(storeId, 'cta_booking', { source: 'price', plan: selectedTier.id })}
-                    className="inline-block w-full max-w-md px-8 py-4 bg-gradient-to-br from-amber-500 via-amber-500 to-amber-700 text-white font-bold rounded-xl text-base hover:opacity-90 transition-opacity">
+                    className="inline-block w-full max-w-md px-8 py-4 bg-amber-500 text-black font-bold rounded-xl text-base hover:opacity-90 transition-opacity">
                     この内容で空き状況を確認する（仮予約）→
                   </Link>
                 </div>
@@ -236,7 +236,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           )}
 
           <section className="py-8 px-5 bg-gray-50">
-            <div className="max-w-[600px] mx-auto bg-[#0f1c2e] rounded-xl p-8 text-center text-white">
+            <div className="max-w-[600px] mx-auto bg-[#0C3290] rounded-xl p-8 text-center text-white">
               <h3 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>コース選びに迷ったら</h3>
               <p className="text-sm opacity-60 mb-4">お車の状態を見て最適なコースをご提案します</p>
               <div className="flex gap-3 justify-center flex-wrap">
