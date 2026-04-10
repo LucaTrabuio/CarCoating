@@ -53,7 +53,6 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
             <div className="font-bold text-[#0f1c2e] text-sm">{store.store_name}</div>
             <div className="text-xs text-gray-500">{store.address}</div>
           </div>
-          {store.tel && <a href={`tel:${store.tel}`} onClick={() => trackEvent(storeId, 'phone_call')} className="text-amber-500 font-bold text-sm">{store.tel}</a>}
         </div>
       </section>
 
