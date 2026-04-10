@@ -70,7 +70,7 @@ export default function BookingsPage() {
     try {
       const res = await fetch(`/api/admin/bookings?store=${selectedStore}`);
       const data = await res.json();
-      setBookings(data.bookings || []);
+      setBookings(data.reservations || data.bookings || []);
     } catch {
       setBookings([]);
     }
