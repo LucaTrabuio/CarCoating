@@ -37,6 +37,32 @@ export async function GET(req: NextRequest) {
   }
 }
 
+// DELETE: Removes a date override (reverts to weekly template)
+export async function DELETE(req: NextRequest) {
+  try {
+    const auth = await requireAuth();
+    if (auth.error) return auth.error;
+    const { user } = auth;
+
+    const storeId = req.nextUrl.searchParams.get('store');
+    const date = req.nextUrl.searchParams.get('date');
+
+    if (!storeId || !date) {
+      return NextResponse.json({ error: 'store and date are required' }, { status: 400 });
+    }
+    if (!canManageStore(user, storeId)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const db = getAdminDb();
+    await db.doc(`shops/${storeId}/dateOverrides/${date}`).delete();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting date override:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
 // PUT: Saves a date override
 export async function PUT(req: NextRequest) {
   try {
