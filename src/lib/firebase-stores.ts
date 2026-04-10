@@ -321,15 +321,30 @@ export async function resolveSlugToStore(slug: string): Promise<{
   isSubCompany: boolean;
   subCompanyName?: string;
 } | null> {
+  // Check sub-company first so multi-store groups win over a
+  // single store that happens to share the same slug (e.g., "fussa").
+  const subCompany = await getSubCompanyBySlug(slug);
+  if (subCompany) {
+    const stores = await getStoresBySubCompany(subCompany.id);
+    if (stores.length > 1) {
+      return { store: stores[0], isSubCompany: true, subCompanyName: subCompany.name };
+    }
+    // Single-store sub-company — fall through to the individual store
+    // check so they get the richer single-store access block.
+    // If store check misses, we still return this one below.
+  }
+
   const store = await getV3StoreById(slug);
   if (store && store.is_active) {
     return { store, isSubCompany: false };
   }
-  const subCompany = await getSubCompanyBySlug(slug);
+
+  // Fallback: single-store sub-company whose store_id doesn't match the slug
   if (subCompany) {
     const stores = await getStoresBySubCompany(subCompany.id);
-    if (stores.length === 0) return null;
-    return { store: stores[0], isSubCompany: true, subCompanyName: subCompany.name };
+    if (stores.length > 0) {
+      return { store: stores[0], isSubCompany: true, subCompanyName: subCompany.name };
+    }
   }
   return null;
 }
