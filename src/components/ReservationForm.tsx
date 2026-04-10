@@ -5,6 +5,7 @@ import type { V3StoreData } from '@/lib/v3-types';
 import type { SlotAvailability } from '@/lib/reservation-types';
 import { coatingTiers } from '@/data/coating-tiers';
 import { trackEvent } from '@/lib/track';
+import GoogleAutoFill from './GoogleAutoFill';
 
 const DEFAULT_OPTIONS = [
   { id: 'hydrophilic-wheel', name: 'ホイール親水ガラスコーティング' },
@@ -316,6 +317,7 @@ export default function ReservationForm({ store }: Props) {
             </div>
 
             <h2 className="text-lg font-bold text-[#0f1c2e]" style={{ fontFamily: '"Noto Serif JP", serif' }}>お客様情報</h2>
+            <GoogleAutoFill onAutoFill={({ name: n, email: e }) => { setName(n); setEmail(e); setEmailConfirm(e); }} />
             <div>
               <label className="block text-xs text-gray-500 mb-1">お名前 *</label>
               <input type="text" required value={name} onChange={e => setName(e.target.value)}

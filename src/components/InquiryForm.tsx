@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { V3StoreData } from '@/lib/v3-types';
 import type { CoatingTier } from '@/lib/types';
 import { trackEvent } from '@/lib/track';
+import GoogleAutoFill from './GoogleAutoFill';
 
 interface Props {
   store: V3StoreData;
@@ -109,6 +110,7 @@ export default function InquiryForm({ store: initialStore, stores, tiers, presel
           </div>
 
           <h2 className="text-lg font-bold text-[#0f1c2e] pt-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>お客様情報</h2>
+          <GoogleAutoFill onAutoFill={({ name: n, email: e }) => { setName(n); setEmail(e); setEmailConfirm(e); }} />
 
           <div>
             <label className="block text-xs text-gray-500 mb-1">お名前 *</label>
