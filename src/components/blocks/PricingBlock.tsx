@@ -13,24 +13,25 @@ interface PricingBlockProps {
   discountRate: number;
 }
 
-function PriceBlurOverlay({ children, basePath, storeId }: { children: React.ReactNode; basePath: string; storeId: string }) {
+function PriceBlurOverlay({ children, basePath, storeId, tierId }: { children: React.ReactNode; basePath: string; storeId: string; tierId?: string }) {
+  const inquiryUrl = tierId ? `${basePath}/inquiry?tier=${tierId}` : `${basePath}/inquiry`;
   return (
     <div className="relative">
-      <div style={{ filter: 'blur(6px)' }} className="select-none pointer-events-none" aria-hidden="true">
+      <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none" aria-hidden="true">
         {children}
       </div>
-      <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/60 rounded-lg">
+      <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[1px] rounded-lg">
         <p className="text-xs text-slate-600 font-semibold mb-2 text-center px-4">
-          料金の詳細はお問い合わせください
+          料金はお問い合わせ後にメールでご案内
         </p>
         <TrackedLink
-          href={`${basePath}/booking?mode=inquiry`}
+          href={inquiryUrl}
           storeId={storeId}
           event="cta_inquiry"
-          meta={{ source: 'pricing_blur' }}
-          className="px-5 py-2 bg-amber-500 text-white font-bold rounded-lg text-xs hover:bg-amber-500 transition-colors shadow-lg"
+          meta={{ source: 'pricing_blur', tier: tierId || '' }}
+          className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-lg text-sm hover:bg-blue-700 transition-colors shadow-lg"
         >
-          お問い合わせ →
+          料金を問い合わせる →
         </TrackedLink>
       </div>
     </div>
