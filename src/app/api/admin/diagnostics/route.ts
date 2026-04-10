@@ -157,16 +157,35 @@ export async function GET() {
       });
     }
 
-    const emptyLayoutStores = storesSnap.docs.filter(d => {
+    // page_layout stats — empty is NORMAL (the app auto-generates a default
+    // layout from each store's hero_title/has_booth/etc. via parsePageLayout).
+    // Only a custom page_layout stored in Firestore overrides the default.
+    // So we report the custom-layout count as info, and only warn on invalid JSON.
+    const customLayoutStores = storesSnap.docs.filter(d => {
       const pl = d.data().page_layout;
-      return !pl || pl === '' || pl === '{}';
+      return typeof pl === 'string' && pl.length > 2; // non-empty, non-"{}"
     });
-    if (emptyLayoutStores.length > 0) {
+    collectionChecks.push({
+      label: 'カスタムレイアウト設定済み',
+      status: 'info',
+      value: `${customLayoutStores.length} / ${storesSnap.size}`,
+      detail: 'その他の店舗は自動生成デフォルトレイアウトを使用',
+    });
+
+    const invalidLayoutStores = customLayoutStores.filter(d => {
+      try {
+        JSON.parse(d.data().page_layout as string);
+        return false;
+      } catch {
+        return true;
+      }
+    });
+    if (invalidLayoutStores.length > 0) {
       collectionChecks.push({
-        label: 'レイアウト未設定',
-        status: 'warn',
-        value: String(emptyLayoutStores.length),
-        items: emptyLayoutStores.map(storeItem),
+        label: '不正なレイアウトJSON',
+        status: 'error',
+        value: String(invalidLayoutStores.length),
+        items: invalidLayoutStores.map(storeItem),
       });
     }
 
