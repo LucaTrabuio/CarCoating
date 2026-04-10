@@ -41,6 +41,7 @@ import CertificationsBlock from './CertificationsBlock';
 import AppealPointsBlock from './AppealPointsBlock';
 import BannersBlock from './BannersBlock';
 import CustomHtmlBlock from './CustomHtmlBlock';
+import PromoBannersBlock from './PromoBannersBlock';
 
 interface BlockRendererProps {
   block: PageBlock;
@@ -53,9 +54,14 @@ interface BlockRendererProps {
 export default function BlockRenderer({ block, store, basePath, discountRate, allStores }: BlockRendererProps) {
   if (!block.visible) return null;
 
-  // Hero renders immediately without fade-in (above the fold)
+  // Hero renders immediately without fade-in (above the fold), followed by promo banners
   if (block.type === 'hero') {
-    return <HeroBlock config={block.config as HeroConfig} store={store} basePath={basePath} />;
+    return (
+      <>
+        <HeroBlock config={block.config as HeroConfig} store={store} basePath={basePath} />
+        <PromoBannersBlock />
+      </>
+    );
   }
 
   let content: React.ReactNode = null;
