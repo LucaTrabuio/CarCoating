@@ -7,7 +7,7 @@ import { getV3StoreById } from '@/lib/firebase-stores';
 import { getStoreSettings } from '@/lib/store-settings';
 import type { Reservation } from '@/lib/reservation-types';
 
-// GET: Fetch reservations for a store
+// GET: Fetch reservations for a store, or all visible stores when no store param
 export async function GET(req: NextRequest) {
   try {
     const auth = await requireAuth();
@@ -19,28 +19,38 @@ export async function GET(req: NextRequest) {
     const from = searchParams.get('from');
     const to = searchParams.get('to');
 
-    if (!storeId) {
-      return NextResponse.json({ error: 'store parameter is required' }, { status: 400 });
-    }
-    if (!canManageStore(user, storeId)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
     const db = getAdminDb();
-    let query = db.collection('reservations').where('storeId', '==', storeId);
+    let reservations: Array<{ id: string; [key: string]: unknown }> = [];
 
-    if (from) {
-      query = query.where('date', '>=', from);
+    if (storeId && storeId !== 'all') {
+      if (!canManageStore(user, storeId)) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
+      let query: FirebaseFirestore.Query = db.collection('reservations').where('storeId', '==', storeId);
+      if (from) query = query.where('date', '>=', from);
+      if (to) query = query.where('date', '<=', to);
+      const snap = await query.get();
+      reservations = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } else if (user.role === 'super_admin') {
+      let query: FirebaseFirestore.Query = db.collection('reservations');
+      if (from) query = query.where('date', '>=', from);
+      if (to) query = query.where('date', '<=', to);
+      const snap = await query.get();
+      reservations = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } else {
+      const stores = user.managed_stores || [];
+      if (stores.length === 0) {
+        return NextResponse.json({ reservations: [] });
+      }
+      // Firestore 'in' filter is limited to 30 values per query
+      for (let i = 0; i < stores.length; i += 30) {
+        const chunk = stores.slice(i, i + 30);
+        const snap = await db.collection('reservations').where('storeId', 'in', chunk).get();
+        snap.docs.forEach(d => reservations.push({ id: d.id, ...d.data() }));
+      }
+      if (from) reservations = reservations.filter(r => typeof r.date === 'string' && r.date >= from);
+      if (to) reservations = reservations.filter(r => typeof r.date === 'string' && r.date <= to);
     }
-    if (to) {
-      query = query.where('date', '<=', to);
-    }
-
-    const snapshot = await query.get();
-    const reservations = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
 
     return NextResponse.json({ reservations });
   } catch (error) {
