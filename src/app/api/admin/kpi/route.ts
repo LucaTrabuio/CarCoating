@@ -2,6 +2,15 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { verifySession, canManageStore } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 
+async function fetchKpiForStore(storeId: string, startDate: string | null, endDate: string | null) {
+  const db = getAdminDb();
+  let query = db.collection('kpi').doc(storeId).collection('daily').orderBy('date', 'asc');
+  if (startDate) query = query.where('date', '>=', startDate);
+  if (endDate) query = query.where('date', '<=', endDate);
+  const snapshot = await query.get();
+  return snapshot.docs.map((doc) => ({ id: doc.id, storeId, ...doc.data() }));
+}
+
 export async function GET(req: NextRequest) {
   const user = await verifySession();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -19,18 +28,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
-  const db = getAdminDb();
-  let query = db.collection('kpi').doc(storeId).collection('daily').orderBy('date', 'asc');
-
-  if (startDate) {
-    query = query.where('date', '>=', startDate);
-  }
-  if (endDate) {
-    query = query.where('date', '<=', endDate);
-  }
-
-  const snapshot = await query.get();
-  const records = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  const records = await fetchKpiForStore(storeId, startDate, endDate);
   return NextResponse.json({ records });
 }
 

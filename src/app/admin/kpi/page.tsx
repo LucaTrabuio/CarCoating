@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
 
 interface Store {
   store_id: string;
@@ -38,9 +39,10 @@ interface StoreGroup {
 }
 
 export default function KpiPage() {
+  const user = useAdminAuth();
   const [stores, setStores] = useState<Store[]>([]);
   const [subCompanies, setSubCompanies] = useState<SubCompany[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState('');
+  const [selectedGroup, setSelectedGroup] = useState('__all__');
   const [startDate, setStartDate] = useState(() => {
     const d = new Date();
     d.setMonth(d.getMonth() - 1);
@@ -67,8 +69,26 @@ export default function KpiPage() {
     const result: StoreGroup[] = [];
     const grouped = new Set<string>();
 
+    // "All stores" aggregate — visible store IDs depend on role
+    const visibleStores = user.role === 'store_admin'
+      ? stores.filter(s => user.managed_stores.includes(s.store_id))
+      : stores;
+
+    if (visibleStores.length > 0) {
+      result.push({
+        id: '__all__',
+        label: user.role === 'super_admin'
+          ? `すべての店舗（${visibleStores.length}）`
+          : `すべての担当店舗（${visibleStores.length}）`,
+        storeIds: visibleStores.map(s => s.store_id),
+        type: 'group',
+      });
+    }
+
     for (const sc of subCompanies) {
-      const memberIds = sc.stores || [];
+      const memberIds = (sc.stores || []).filter(id =>
+        user.role === 'super_admin' || user.managed_stores.includes(id)
+      );
       if (memberIds.length > 0) {
         result.push({
           id: `sc:${sc.id}`,
@@ -80,7 +100,7 @@ export default function KpiPage() {
       }
     }
 
-    for (const s of stores) {
+    for (const s of visibleStores) {
       if (!grouped.has(s.store_id)) {
         result.push({
           id: s.store_id,
@@ -92,7 +112,7 @@ export default function KpiPage() {
     }
 
     return result;
-  }, [stores, subCompanies]);
+  }, [stores, subCompanies, user]);
 
   const selectedGroupData = useMemo(
     () => groups.find(g => g.id === selectedGroup),
@@ -210,10 +230,12 @@ export default function KpiPage() {
               onChange={(e) => setSelectedGroup(e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
             >
-              <option value="">-- 選択 --</option>
-              {groups.filter(g => g.type === 'group').length > 0 && (
+              {groups.filter(g => g.id === '__all__').map(g => (
+                <option key={g.id} value={g.id}>{g.label}</option>
+              ))}
+              {groups.filter(g => g.type === 'group' && g.id !== '__all__').length > 0 && (
                 <optgroup label="グループ（共有サイト）">
-                  {groups.filter(g => g.type === 'group').map(g => (
+                  {groups.filter(g => g.type === 'group' && g.id !== '__all__').map(g => (
                     <option key={g.id} value={g.id}>{g.label}</option>
                   ))}
                 </optgroup>
