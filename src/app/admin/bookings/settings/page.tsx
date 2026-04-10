@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
 import type { WeeklyTemplate, SlotCapacity, DateOverride } from '@/lib/reservation-types';
+import { getMonthHolidays } from '@/lib/jp-holidays';
 
 interface Store {
   store_id: string;
@@ -198,6 +199,11 @@ export default function BookingSettingsPage() {
     return cells;
   }, [calMonth]);
 
+  const holidays = useMemo(
+    () => getMonthHolidays(calMonth.year, calMonth.month),
+    [calMonth.year, calMonth.month]
+  );
+
   function selectCalendarDate(date: string) {
     setSelectedDate(date);
     const existing = overrides[date];
@@ -268,12 +274,26 @@ export default function BookingSettingsPage() {
     setEditOverride({ ...editOverride, slotOverrides: newSlots });
   }
 
-  function getCellStatus(cell: { date: string; dayOfWeek: number }) {
+  function getCellStatus(cell: { date: string; dayOfWeek: number }): {
+    status: string;
+    holiday?: string;
+    isTemplateOff: boolean;
+  } {
+    const holiday = holidays.get(cell.date);
     const ov = overrides[cell.date];
-    if (ov) return ov.closed ? 'closed-override' : 'override';
     const tpl = template[String(cell.dayOfWeek)];
-    if (tpl?.closed) return 'closed-template';
-    return 'open';
+    const isTemplateOff = tpl?.closed === true;
+
+    if (ov) {
+      return { status: ov.closed ? 'closed-override' : 'override', holiday, isTemplateOff };
+    }
+    if (isTemplateOff) {
+      return { status: 'closed-template', holiday, isTemplateOff };
+    }
+    if (holiday) {
+      return { status: 'holiday', holiday, isTemplateOff };
+    }
+    return { status: 'open', holiday, isTemplateOff };
   }
 
   return (
@@ -424,41 +444,54 @@ export default function BookingSettingsPage() {
             </div>
             <div className="grid grid-cols-7 gap-0.5">
               {calendarGrid.map((cell, i) => {
-                const status = cell.inMonth ? getCellStatus(cell) : 'out';
+                const info = cell.inMonth ? getCellStatus(cell) : { status: 'out', holiday: undefined, isTemplateOff: false };
                 const isSelected = cell.date === selectedDate;
-                const bgColor = {
+                const bgColor: Record<string, string> = {
                   'out': 'bg-gray-50 text-gray-300',
                   'open': 'bg-white hover:border-gray-300',
+                  'holiday': 'bg-pink-50 hover:border-pink-300',
                   'closed-template': 'bg-red-50 text-red-400',
                   'closed-override': 'bg-red-100 text-red-600',
                   'override': 'bg-amber-50 border-amber-200',
-                }[status];
+                };
                 return (
                   <button
                     key={i}
                     type="button"
                     onClick={() => cell.inMonth && selectCalendarDate(cell.date)}
                     disabled={!cell.inMonth}
+                    title={info.holiday || (info.isTemplateOff ? '定休日（テンプレート）' : undefined)}
                     className={`relative aspect-square border rounded text-[10px] cursor-pointer transition-colors flex flex-col items-center justify-center ${
                       isSelected ? 'ring-2 ring-amber-400' : ''
-                    } ${bgColor} ${cell.inMonth ? 'border-gray-100' : 'border-transparent'}`}
+                    } ${bgColor[info.status] || 'bg-white'} ${cell.inMonth ? 'border-gray-100' : 'border-transparent'}`}
                   >
-                    <div className={cell.isToday ? 'font-bold text-amber-700' : ''}>
+                    <div className={`${cell.isToday ? 'font-bold text-amber-700' : ''} ${info.holiday && info.status !== 'closed-override' && info.status !== 'closed-template' ? 'text-pink-600' : ''} ${cell.dayOfWeek === 0 ? 'text-red-400' : cell.dayOfWeek === 6 ? 'text-blue-400' : ''}`}>
                       {parseInt(cell.date.split('-')[2], 10)}
                     </div>
-                    {cell.inMonth && overrides[cell.date] && (
-                      <span className={`mt-0.5 w-1.5 h-1.5 rounded-full ${overrides[cell.date].closed ? 'bg-red-500' : 'bg-amber-500'}`} />
-                    )}
+                    {/* Indicator dots */}
+                    <div className="flex gap-0.5 mt-0.5">
+                      {cell.inMonth && overrides[cell.date] && (
+                        <span className={`w-1.5 h-1.5 rounded-full ${overrides[cell.date].closed ? 'bg-red-500' : 'bg-amber-500'}`} />
+                      )}
+                      {cell.inMonth && info.holiday && !overrides[cell.date] && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-pink-400" />
+                      )}
+                      {cell.inMonth && info.isTemplateOff && !overrides[cell.date] && !info.holiday && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-300" />
+                      )}
+                    </div>
                   </button>
                 );
               })}
             </div>
 
             {/* Legend */}
-            <div className="flex gap-3 mt-3 text-[9px] text-gray-500 justify-center">
+            <div className="flex flex-wrap gap-x-3 gap-y-1 mt-3 text-[9px] text-gray-500 justify-center">
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-white border border-gray-200" />通常</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-100" />休業</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-100" />変更あり</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-pink-100 border border-pink-200" />祝日</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-50 border border-red-200" />定休日</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-200" />休業（個別）</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-100 border border-amber-200" />変更あり</span>
             </div>
 
             {/* Bulk close */}
@@ -502,7 +535,15 @@ export default function BookingSettingsPage() {
             {selectedDate && editOverride && (
               <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-gray-800">{selectedDate}</h3>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-800">{selectedDate}</h3>
+                    {holidays.get(selectedDate) && (
+                      <span className="text-[10px] text-pink-600 font-bold">{holidays.get(selectedDate)}</span>
+                    )}
+                    {template[String(new Date(selectedDate + 'T00:00:00').getDay())]?.closed && !overrides[selectedDate] && (
+                      <span className="text-[10px] text-red-400 font-bold ml-2">定休日（テンプレート）</span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     {overrides[selectedDate] && (
                       <button onClick={deleteOverride} className="text-[10px] text-red-500 hover:text-red-700 underline cursor-pointer">
