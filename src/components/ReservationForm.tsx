@@ -39,6 +39,8 @@ export default function ReservationForm({ store }: Props) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [emailConfirm, setEmailConfirm] = useState('');
+  const [vehicleInfo, setVehicleInfo] = useState('');
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -80,23 +82,19 @@ export default function ReservationForm({ store }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedDate || !selectedTime) return;
+
+    // Validate email confirmation
+    if (email !== emailConfirm) {
+      setError('メールアドレスが一致しません');
+      return;
+    }
+
     setSubmitting(true);
     setError('');
 
-    // Build service summary to include in notes
-    const selectedCoatings = coatings.filter(Boolean).map(id => {
-      const t = coatingTiers.find(t => t.id === id);
-      return t ? t.name : id;
-    });
-    const selectedOptions = options.map(id => {
-      const o = DEFAULT_OPTIONS.find(o => o.id === id);
-      return o ? o.name : id;
-    });
-    const serviceSummary = [
-      selectedCoatings.length > 0 ? `【コース】${selectedCoatings.join(', ')}` : '',
-      selectedOptions.length > 0 ? `【オプション】${selectedOptions.join(', ')}` : '',
-    ].filter(Boolean).join('\n');
-    const fullNotes = [serviceSummary, notes].filter(Boolean).join('\n\n');
+    // Send structured data (coatings/options as IDs, not serialized into notes)
+    const selectedCoatingIds = coatings.filter(Boolean);
+    const selectedOptionIds = [...options];
 
     try {
       const res = await fetch('/api/reservation', {
@@ -108,7 +106,10 @@ export default function ReservationForm({ store }: Props) {
           date: selectedDate,
           time: selectedTime,
           name, phone, email,
-          notes: fullNotes,
+          notes,
+          vehicleInfo: vehicleInfo || undefined,
+          selectedCoatings: selectedCoatingIds,
+          selectedOptions: selectedOptionIds,
           autoConfirm: true,
         }),
       });
@@ -328,6 +329,22 @@ export default function ReservationForm({ store }: Props) {
             <div>
               <label className="block text-xs text-gray-500 mb-1">メールアドレス *</label>
               <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">メールアドレス（確認） *</label>
+              <input type="email" required value={emailConfirm} onChange={e => setEmailConfirm(e.target.value)}
+                className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-amber-500 outline-none ${
+                  emailConfirm && email !== emailConfirm ? 'border-red-400 focus:border-red-400' : 'border-gray-300 focus:border-amber-500'
+                }`} />
+              {emailConfirm && email !== emailConfirm && (
+                <p className="text-[10px] text-red-500 mt-1">メールアドレスが一致しません</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">車種・年式（任意）</label>
+              <input type="text" value={vehicleInfo} onChange={e => setVehicleInfo(e.target.value)}
+                placeholder="例: トヨタ プリウス 2024年式"
                 className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none" />
             </div>
             <div>

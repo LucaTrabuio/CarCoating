@@ -16,6 +16,9 @@ interface Reservation {
   phone: string;
   email: string;
   notes: string;
+  vehicleInfo?: string;
+  selectedCoatings?: string[];
+  selectedOptions?: string[];
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
   createdAt: string;
 }
@@ -296,6 +299,24 @@ export default function BookingsPage() {
             </div>
           )}
         </div>
+        {b.vehicleInfo && (
+          <div className="text-xs">
+            <span className="text-gray-400 w-14 inline-block">車種</span>
+            <span className="text-gray-700">{b.vehicleInfo}</span>
+          </div>
+        )}
+        {b.selectedCoatings && b.selectedCoatings.length > 0 && (
+          <div className="text-xs">
+            <span className="text-gray-400">コース: </span>
+            <span className="text-gray-700">{b.selectedCoatings.join(', ')}</span>
+          </div>
+        )}
+        {b.selectedOptions && b.selectedOptions.length > 0 && (
+          <div className="text-xs">
+            <span className="text-gray-400">オプション: </span>
+            <span className="text-gray-700">{b.selectedOptions.join(', ')}</span>
+          </div>
+        )}
         {b.notes && (
           <div className="text-xs">
             <div className="text-gray-400 mb-1">備考</div>

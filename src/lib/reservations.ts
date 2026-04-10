@@ -12,6 +12,9 @@ export interface CreateReservationInput {
   email: string;
   notes: string;
   autoConfirm?: boolean;
+  vehicleInfo?: string;
+  selectedCoatings?: string[];
+  selectedOptions?: string[];
   // Legacy support: if choices is provided, use first one
   choices?: ReservationChoice[];
 }
@@ -42,6 +45,9 @@ export async function createReservation(input: CreateReservationInput): Promise<
     phone: input.phone,
     email: input.email,
     notes: input.notes,
+    vehicleInfo: input.vehicleInfo || null,
+    selectedCoatings: input.selectedCoatings || [],
+    selectedOptions: input.selectedOptions || [],
     status: input.autoConfirm ? 'confirmed' : 'pending',
     cancelToken,
     googleCalendarEventId: null,

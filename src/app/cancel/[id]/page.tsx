@@ -37,7 +37,6 @@ export default async function CancelPage({
         <div className="bg-gray-50 rounded-lg p-4 mb-6 space-y-2 text-sm">
           <div><span className="text-gray-400">店舗: </span>{store?.store_name || data.storeId}</div>
           <div><span className="text-gray-400">お名前: </span>{data.name} 様</div>
-          <div><span className="text-gray-400">電話: </span>{data.phone}</div>
           <div><span className="text-gray-400">希望日時: </span>
             {(data.choices || []).map((c: { date: string; time: string }, i: number) => (
               <div key={i} className="ml-4">第{i + 1}希望: {c.date} {c.time}</div>

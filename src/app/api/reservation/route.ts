@@ -9,7 +9,8 @@ import { getAdminDb } from '@/lib/firebase-admin';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { type, storeId, name, phone, email, notes, date, time, autoConfirm } = body;
+    const { type, storeId, name, phone, email, notes, date, time, autoConfirm,
+            vehicleInfo, selectedCoatings, selectedOptions } = body;
 
     // Validate required fields
     if (!type || !['visit', 'inquiry'].includes(type)) {
@@ -61,6 +62,9 @@ export async function POST(request: Request) {
       email,
       notes: notes || '',
       autoConfirm: shouldConfirm,
+      vehicleInfo: typeof vehicleInfo === 'string' ? vehicleInfo : undefined,
+      selectedCoatings: Array.isArray(selectedCoatings) ? selectedCoatings : undefined,
+      selectedOptions: Array.isArray(selectedOptions) ? selectedOptions : undefined,
     });
 
     // Get store info for emails
