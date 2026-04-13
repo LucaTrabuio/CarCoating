@@ -36,7 +36,7 @@ function fetchPage(url: string): Promise<string> {
       res.on('data', (c: Buffer) => chunks.push(c));
       res.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
       res.on('error', reject);
-    }).on('error', reject).on('timeout', function() { this.destroy(); reject(new Error('timeout')); });
+    }).on('error', reject).on('timeout', function(this: ReturnType<typeof client.get>) { this.destroy(); reject(new Error('timeout')); });
   });
 }
 
