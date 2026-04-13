@@ -36,6 +36,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Firestore unavailable — skip store pages
   }
 
+  // Blog index
+  entries.push({
+    url: `${siteUrl}/blog`,
+    changeFrequency: 'weekly',
+    priority: 0.6,
+  });
+
   // Published blog posts
   try {
     const db = getAdminDb();
