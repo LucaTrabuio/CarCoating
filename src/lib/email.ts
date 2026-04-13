@@ -313,30 +313,40 @@ export async function sendInquiryNotificationEmail(opts: {
 export async function sendTicketNotificationEmail(opts: {
   adminEmails: string[];
   authorEmail: string;
+  key: string;
   subject: string;
+  type: string;
+  severity: string;
   message: string;
 }): Promise<void> {
   if (!process.env.GMAIL_USER || opts.adminEmails.length === 0) return;
 
+  const typeLabels: Record<string, string> = { bug: 'バグ', improvement: '改善', support: 'サポート', general: '一般' };
+  const severityLabels: Record<string, string> = { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' };
+  const severityColors: Record<string, string> = { critical: '#dc2626', high: '#ea580c', medium: '#d97706', low: '#6b7280' };
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:8081';
   const html = `
     <div style="max-width:600px;font-family:sans-serif;color:#333">
-      <h2 style="color:#0C3290">新規チケット</h2>
+      <h2 style="color:#0C3290">新規チケット <span style="font-family:monospace;font-size:14px;color:#0C3290">${opts.key}</span></h2>
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <tr><td style="padding:6px 0;color:#999;width:80px">件名</td><td style="padding:6px 0;font-weight:bold">${opts.subject}</td></tr>
         <tr><td style="padding:6px 0;color:#999">送信者</td><td style="padding:6px 0">${opts.authorEmail}</td></tr>
+        <tr><td style="padding:6px 0;color:#999">種別</td><td style="padding:6px 0"><span style="background:#e5e7eb;padding:2px 8px;border-radius:4px;font-size:12px">${typeLabels[opts.type] || opts.type}</span></td></tr>
+        <tr><td style="padding:6px 0;color:#999">重要度</td><td style="padding:6px 0"><span style="background:${severityColors[opts.severity] || '#d97706'};color:white;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:bold">${severityLabels[opts.severity] || opts.severity}</span></td></tr>
       </table>
-      <div style="margin:12px 0;padding:12px;background:#fff3e0;border-radius:6px">
-        ${opts.message.replace(/\n/g, '<br>')}
+      <div style="margin:16px 0;padding:16px;background:#fff3e0;border-radius:6px">
+        <div style="font-size:11px;color:#999;margin-bottom:6px">メッセージ:</div>
+        <div style="font-size:14px">${opts.message.replace(/\n/g, '<br>')}</div>
       </div>
-      <p><a href="${siteUrl}/admin/tickets" style="color:#0C3290;font-weight:bold">チケットを確認する →</a></p>
+      <p><a href="${siteUrl}/admin/tickets" style="display:inline-block;padding:10px 20px;background:#0C3290;color:white;border-radius:6px;text-decoration:none;font-weight:bold;font-size:13px">チケットを確認する →</a></p>
     </div>
   `;
 
   await transporter.sendMail({
     from: `"KeePer PRO SHOP チケット" <${process.env.GMAIL_USER}>`,
     to: opts.adminEmails.join(', '),
-    subject: `【チケット】${opts.subject} — ${opts.authorEmail}`,
+    subject: `【${opts.key}】${typeLabels[opts.type] || opts.type} / ${severityLabels[opts.severity] || opts.severity} — ${opts.subject}`,
     html,
   });
 }

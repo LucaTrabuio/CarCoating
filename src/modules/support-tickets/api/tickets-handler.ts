@@ -83,7 +83,7 @@ export async function handleTicketAction(
       updatedAt: now,
     };
     const ref = await db.collection('tickets').add(ticket);
-    return { status: 201, data: { id: ref.id, key } };
+    return { status: 201, data: { id: ref.id, key, type: ticket.type, severity: ticket.severity, subject: ticket.subject, authorEmail: ticket.authorEmail, message: text.trim() } };
   }
 
   if (action === 'reply') {

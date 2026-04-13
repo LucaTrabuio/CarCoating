@@ -102,7 +102,10 @@ export async function POST(req: NextRequest) {
           await sendTicketNotificationEmail({
             adminEmails,
             authorEmail: user.email,
+            key,
             subject: subject.trim(),
+            type: type || 'general',
+            severity: severity || 'medium',
             message: text.trim(),
           });
         }
