@@ -29,7 +29,7 @@ export default function BuilderPage() {
   useEffect(() => {
     Promise.all([
       fetch('/api/v3/stores?all=true').then(r => r.ok ? r.json() : []),
-      fetch('/api/admin/sub-companies').then(r => r.ok ? r.json() : []),
+      fetch('/api/v3/sub-companies').then(r => r.ok ? r.json() : []),
     ])
       .then(([storeData, scData]) => {
         let storeList: Store[] = Array.isArray(storeData) ? storeData : [];
