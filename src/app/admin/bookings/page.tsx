@@ -102,8 +102,6 @@ export default function BookingsPage() {
       const list = data.reservations || data.bookings || [];
       setBookings(list);
       setDebugInfo(`HTTP ${res.status} · url=${url} · items=${list.length}${data.error ? ' · error=' + data.error : ''}${!Array.isArray(data.reservations) && !Array.isArray(data.bookings) ? ' · raw=' + text.slice(0, 200) : ''}`);
-      // eslint-disable-next-line no-console
-      console.log('[bookings]', { url, status: res.status, data });
     } catch (err) {
       setBookings([]);
       setDebugInfo(`fetch failed: ${err instanceof Error ? err.message : String(err)}`);

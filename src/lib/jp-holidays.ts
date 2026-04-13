@@ -1,4 +1,3 @@
-// Module version available at @/modules/booking-calendar/lib/jp-holidays
 
 /**
  * Japanese national holidays (祝日) calculator.

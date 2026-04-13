@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { randomUUID } from 'crypto';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import { getV3StoreById } from '@/lib/firebase-stores';
 import { getStoreSettings } from '@/lib/store-settings';
 import { sendInquiryConfirmationEmail, sendInquiryNotificationEmail } from '@/lib/email';
@@ -8,6 +8,12 @@ import { getMasterCoatingTiers } from '@/lib/master-data';
 import { formatPrice, getWebPrice, parsePriceOverrides } from '@/lib/pricing';
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const { allowed } = rateLimit(`inquiry:${ip}`, 10);
+  if (!allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   try {
     const body = await request.json();
     const { storeId, name, phone, email, message, selectedTier, vehicleInfo } = body;
@@ -21,10 +27,15 @@ export async function POST(request: Request) {
     if (!email || typeof email !== 'string' || !email.trim()) {
       return NextResponse.json({ error: 'email is required' }, { status: 400 });
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
+    }
+    if (phone && typeof phone === 'string' && phone.trim().length > 0 && phone.trim().length < 10) {
+      return NextResponse.json({ error: 'Phone number is too short' }, { status: 400 });
+    }
 
     const db = getAdminDb();
     const now = new Date().toISOString();
-    const replyToken = randomUUID();
 
     const inquiryData = {
       storeId,
@@ -35,7 +46,6 @@ export async function POST(request: Request) {
       selectedTier: selectedTier || null,
       message: (message || '').trim(),
       status: 'open',
-      replyToken,
       createdAt: now,
       updatedAt: now,
     };

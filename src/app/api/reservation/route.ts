@@ -28,6 +28,9 @@ export async function POST(request: Request) {
     if (!email || typeof email !== 'string' || !email.trim()) {
       return NextResponse.json({ error: 'email is required' }, { status: 400 });
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
+    }
 
     // Validate single date/time for visit type
     if (type === 'visit') {

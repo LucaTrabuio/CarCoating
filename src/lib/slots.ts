@@ -1,4 +1,3 @@
-// Module version available at @/modules/booking-calendar/lib/slots
 import { getAdminDb } from './firebase-admin';
 import type { WeeklyTemplate, DateOverride, SlotAvailability, SlotCapacity } from './reservation-types';
 
