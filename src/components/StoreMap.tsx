@@ -189,7 +189,7 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
                   <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1.5 text-[10px] text-slate-400">
                     <span>{store.business_hours}</span>
                     <span>{store.regular_holiday}</span>
-                    {store.has_booth && <span className="text-amber-500 font-semibold">専用ブース</span>}
+                    {store.has_booth && <span className="text-blue-600 font-semibold">専用ブース</span>}
                     {store.parking_spaces > 0 && <span>駐車場{store.parking_spaces}台</span>}
                   </div>
                 </div>

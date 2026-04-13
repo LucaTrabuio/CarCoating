@@ -11,9 +11,9 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const includeInactive = searchParams.get('all') === 'true';
 
-    // Including inactive stores requires super_admin
+    // Including inactive stores requires any authenticated admin
     if (includeInactive) {
-      const auth = await requireAuth('super_admin');
+      const auth = await requireAuth();
       if (auth.error) return auth.error;
     }
 

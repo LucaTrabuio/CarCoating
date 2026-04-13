@@ -202,7 +202,7 @@ export default function BookingStoreSelector({ stores, groupName }: { stores: V3
                   <button
                     onClick={detectLocation}
                     disabled={geoStatus === 'detecting'}
-                    className="text-xs text-amber-500 font-semibold hover:underline disabled:opacity-50 cursor-pointer"
+                    className="text-xs text-blue-600 font-semibold hover:underline disabled:opacity-50 cursor-pointer"
                   >
                     {geoStatus === 'detecting' ? '検出中...' : geoStatus === 'done' ? '再検出' : '📍 現在地から探す'}
                   </button>
@@ -230,12 +230,12 @@ export default function BookingStoreSelector({ stores, groupName }: { stores: V3
                             <p className="text-xs text-gray-500 mt-0.5">{store.address}</p>
                             <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
                               {store.tel && <span>{store.tel}</span>}
-                              {store.has_booth && <span className="text-amber-500 font-semibold">ブース有</span>}
+                              {store.has_booth && <span className="text-blue-600 font-semibold">ブース有</span>}
                             </div>
                           </div>
                           <div className="flex flex-col items-end gap-1 flex-shrink-0">
                             {store.distance !== null && (
-                              <span className="text-amber-500 text-xs font-bold">
+                              <span className="text-blue-600 text-xs font-bold">
                                 {store.distance < 1 ? `${Math.round(store.distance * 1000)}m` : `${store.distance.toFixed(1)}km`}
                               </span>
                             )}
@@ -268,7 +268,7 @@ export default function BookingStoreSelector({ stores, groupName }: { stores: V3
                 </div>
                 <button
                   onClick={() => { setSelectedStoreId(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  className="text-xs text-amber-600 font-semibold hover:underline cursor-pointer"
+                  className="text-xs text-blue-600 font-semibold hover:underline cursor-pointer"
                 >
                   店舗を変更
                 </button>

@@ -235,7 +235,7 @@ function parseCSVLine(line: string): string[] {
 
 const DEFAULT_CAMPAIGN: CampaignDefaults = {
   title: '春の新生活キャンペーン',
-  color: '#001AFF',
+  color: '#0C3290',
   start: '2026-04-01',
   end: '2026-04-30',
   discount: 20,

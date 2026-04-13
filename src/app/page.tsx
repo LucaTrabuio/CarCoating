@@ -249,7 +249,7 @@ export default function V3HomePage() {
           <Image src={`${KEEPER_BASE}/img/lineup/p_keeper_logo.png`} alt="KeePer" width={200} height={128} className="h-32 w-auto opacity-30" aria-hidden="true" />
         </div>
         <div className="relative text-center px-5 py-20">
-          <div className="text-amber-500 text-sm font-semibold tracking-wider mb-4">KeePer PRO SHOP</div>
+          <div className="text-blue-600 text-sm font-semibold tracking-wider mb-4">KeePer PRO SHOP</div>
           <h1 className="text-white text-3xl md:text-5xl font-bold leading-tight mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             洗車だけで、この輝きが続く。
           </h1>
@@ -293,7 +293,7 @@ export default function V3HomePage() {
                           <div className="flex-1">
                             <h3 className="font-bold text-[#0C3290] text-base">
                               {tier.name}
-                              {tier.is_popular && <span className="text-[10px] text-amber-500 font-bold ml-2">★人気</span>}
+                              {tier.is_popular && <span className="text-[10px] text-blue-600 font-bold ml-2">★人気</span>}
                             </h3>
                             <p className="text-xs text-gray-500 mt-0.5">{tier.tagline}</p>
                           </div>
@@ -520,7 +520,7 @@ export default function V3HomePage() {
                     {article.title}
                   </h3>
                   <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{article.summary}</p>
-                  <span className="inline-block mt-3 text-xs font-semibold text-amber-500 group-hover:underline">続きを読む →</span>
+                  <span className="inline-block mt-3 text-xs font-semibold text-blue-600 group-hover:underline">続きを読む →</span>
                 </div>
               </Link>
             ))}

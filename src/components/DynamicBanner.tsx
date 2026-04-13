@@ -19,7 +19,7 @@ export default function DynamicBanner({ title, discountRate, deadline, fontId }:
   return (
     <div
       className="font-bold text-[14px] overflow-hidden whitespace-nowrap"
-      style={{ background: '#F0EA01', color: '#000000', ...fontStyle }}
+      style={{ background: '#0C3290', color: '#FFFFFF', ...fontStyle }}
     >
       <div className="flex animate-marquee py-3">
         {Array.from({ length: 4 }).map((_, i) => (
