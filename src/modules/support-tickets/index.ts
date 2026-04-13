@@ -24,5 +24,6 @@ export { default as TicketCreateForm } from './components/TicketCreateForm';
 // Hooks
 export { useTickets } from './hooks/useTickets';
 
-// Server-side API handler (for integration into any framework)
-export { listTickets, handleTicketAction } from './api/tickets-handler';
+// Server-side API handler — import directly from:
+//   import { listTickets, handleTicketAction } from '@/modules/support-tickets/api/tickets-handler'
+// Do NOT re-export here (would pull firebase-admin into client bundle)
