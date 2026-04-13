@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
 
 interface Store {
@@ -22,6 +23,7 @@ interface SubCompany {
 
 export default function BuilderPage() {
   const user = useAdminAuth();
+  const router = useRouter();
   const [stores, setStores] = useState<Store[]>([]);
   const [subCompanies, setSubCompanies] = useState<SubCompany[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,16 +35,20 @@ export default function BuilderPage() {
     ])
       .then(([storeData, scData]) => {
         let storeList: Store[] = Array.isArray(storeData) ? storeData : [];
-        // Store admins only see their managed stores
         if (user.role === 'store_admin') {
           storeList = storeList.filter(s => user.managed_stores.includes(s.store_id));
         }
         setStores(storeList);
         setSubCompanies(Array.isArray(scData) ? scData : []);
+
+        // Auto-redirect if store_admin has exactly 1 store
+        if (user.role === 'store_admin' && storeList.length === 1) {
+          router.replace(`/admin/builder/${storeList[0].store_id}`);
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [user, router]);
 
   // Group stores by sub_company_id
   const grouped = new Map<string, Store[]>();
