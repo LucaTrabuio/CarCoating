@@ -1,0 +1,232 @@
+{
+  "eniwa-coating.com": [
+    {"imageUrl": "/case-images/eniwa-coating.com/202212051218062.jpg", "car": "スズキ・ハスラー", "coatingType": "クリスタルキーパー", "date": "2022/12/05"},
+    {"imageUrl": "/case-images/eniwa-coating.com/202212121430362.jpg", "car": "三菱・アウトランダー", "coatingType": "フレッシュキーパー", "date": "2022/12/12"},
+    {"imageUrl": "/case-images/eniwa-coating.com/202212051217122.jpg", "car": "フォルクスワーゲン・UP!", "coatingType": "ダイヤモンドキーパー", "date": "2022/12/05"}
+  ],
+  "sapporo-coating.com": [
+    {"imageUrl": "/case-images/sapporo-coating.com/202205101511142.jpg", "car": "マツダ・CX-5", "coatingType": "クリスタルキーパー", "date": "2022/05/10"},
+    {"imageUrl": "/case-images/sapporo-coating.com/202306120532152.jpg", "car": "ダイハツ・ロッキー", "coatingType": "フレッシュキーパー", "date": "2023/06/12"},
+    {"imageUrl": "/case-images/sapporo-coating.com/202306120521342.jpg", "car": "トヨタ・ハイラックス", "coatingType": "フレッシュキーパー", "date": "2023/06/12"}
+  ],
+  "asahikawa-coating.com": [
+    {"imageUrl": "/case-images/asahikawa-coating.com/202306081504112.jpg", "car": "トヨタ・ヴェルファイア", "coatingType": "ダイヤモンドキーパー", "date": "2023/06/08"},
+    {"imageUrl": "/case-images/asahikawa-coating.com/202306081503172.jpg", "car": "ホンダ・フィットクロスター", "coatingType": "ダイヤモンドキーパー", "date": "2023/06/08"},
+    {"imageUrl": "/case-images/asahikawa-coating.com/202107080015502.jpg", "car": "BMW・X4", "coatingType": "クリスタルキーパー", "date": "2021/07/08"}
+  ],
+  "sendai-iwanuma-coating.com": [
+    {"imageUrl": "/case-images/sendai-iwanuma-coating.com/202604021402512.jpg", "car": "レクサス・GS", "coatingType": "ダイヤモンドキーパー", "date": "2026/04/02"},
+    {"imageUrl": "/case-images/sendai-iwanuma-coating.com/202604021609382.jpg", "car": "BMW・X3", "coatingType": "ダイヤモンドキーパー", "date": "2026/04/02"},
+    {"imageUrl": "/case-images/sendai-iwanuma-coating.com/202409291343472.jpg", "car": "BMW・2シリーズ", "coatingType": "ダイヤモンドキーパー", "date": "2024/09/29"}
+  ],
+  "morioka-coating.com": [
+    {"imageUrl": "/case-images/morioka-coating.com/202505230937132.jpg", "car": "トヨタ・アルファード", "coatingType": "ダイヤモンドキーパー", "date": "2025/05/23"},
+    {"imageUrl": "/case-images/morioka-coating.com/202505230939082.jpg", "car": "BMW・7シリーズ", "coatingType": "ダイヤモンドキーパー", "date": "2025/05/23"},
+    {"imageUrl": "/case-images/morioka-coating.com/202505230946582.jpg", "car": "スバル・レガシィアウトバック", "coatingType": "クリスタルキーパー", "date": "2025/05/23"}
+  ],
+  "akita-coating.com": [
+    {"imageUrl": "/case-images/akita-coating.com/202601191114212.jpg", "car": "ホンダ・オデッセイ", "coatingType": "ダイヤモンドキーパー", "date": "2026/01/19"},
+    {"imageUrl": "/case-images/akita-coating.com/202601191117372.jpg", "car": "トヨタ・アルファード", "coatingType": "ダイヤモンドキーパー", "date": "2026/01/19"},
+    {"imageUrl": "/case-images/akita-coating.com/202505221322262.jpg", "car": "トヨタ・ヴェルファイア", "coatingType": "ダイヤモンドキーパー", "date": "2025/05/22"}
+  ],
+  "sakata-coating.com": [
+    {"imageUrl": "/case-images/sakata-coating.com/202505231128132.jpg", "car": "三菱・アウトランダー", "coatingType": "クリスタルキーパー", "date": "2025/05/23"},
+    {"imageUrl": "/case-images/sakata-coating.com/202505231130102.jpg", "car": "ダイハツ・タフト", "coatingType": "クリスタルキーパー", "date": "2025/05/23"},
+    {"imageUrl": "/case-images/sakata-coating.com/202505231137082.jpg", "car": "トヨタ・アルファード", "coatingType": "フレッシュキーパー", "date": "2025/05/23"}
+  ],
+  "ashikaga-coating.com": [
+    {"imageUrl": "/case-images/ashikaga-coating.com/202603231641242.jpg", "car": "トヨタ・プリウス", "coatingType": "クリスタルキーパー", "date": "2026/03/23"},
+    {"imageUrl": "/case-images/ashikaga-coating.com/202603231544522.jpg", "car": "ホンダ・ZR-V", "coatingType": "クリスタルキーパー", "date": "2026/03/23"},
+    {"imageUrl": "/case-images/ashikaga-coating.com/202603231613572.jpg", "car": "プジョー・2008", "coatingType": "フレッシュキーパー", "date": "2026/03/23"}
+  ],
+  "saitama-nishiomiya-coating.com": [
+    {"imageUrl": "/case-images/saitama-nishiomiya-coating.com/202304111751392.jpg", "car": "スズキ・スイフト", "coatingType": "フレッシュキーパー", "date": "2023/04/11"},
+    {"imageUrl": "/case-images/saitama-nishiomiya-coating.com/202304111754062.jpg", "car": "日産・ルークス", "coatingType": "フレッシュキーパー", "date": "2023/04/11"},
+    {"imageUrl": "/case-images/saitama-nishiomiya-coating.com/202304111757442.jpg", "car": "スバル・WRX", "coatingType": "フレッシュキーパー", "date": "2023/04/11"}
+  ],
+  "hanyuu-coating.com": [
+    {"imageUrl": "/case-images/hanyuu-coating.com/202409121716142.jpg", "car": "トヨタ・86", "coatingType": "クリスタルキーパー", "date": "2024/09/12"},
+    {"imageUrl": "/case-images/hanyuu-coating.com/202409121714062.jpg", "car": "日産・セレナ", "coatingType": "クリスタルキーパー", "date": "2024/09/12"},
+    {"imageUrl": "/case-images/hanyuu-coating.com/202409121712502.jpg", "car": "スズキ・スイフト", "coatingType": "クリスタルキーパー", "date": "2024/09/12"}
+  ],
+  "utsunomiya-coating.com": [
+    {"imageUrl": "/case-images/utsunomiya-coating.com/202409121822152.jpg", "car": "ホンダ・フィット", "coatingType": "クリスタルキーパー", "date": "2024/09/12"},
+    {"imageUrl": "/case-images/utsunomiya-coating.com/202409121820302.jpg", "car": "トヨタ・クラウン", "coatingType": "クリスタルキーパー", "date": "2024/09/12"},
+    {"imageUrl": "/case-images/utsunomiya-coating.com/202409121814252.jpg", "car": "トヨタ・ハイエース", "coatingType": "クリスタルキーパー", "date": "2024/09/12"}
+  ],
+  "takasaki-maebashi-coating.com": [
+    {"imageUrl": "/case-images/takasaki-maebashi-coating.com/202407010945552.jpg", "car": "マツダ・アテンザ", "coatingType": "クリスタルキーパー", "date": "2024/07/01"},
+    {"imageUrl": "/case-images/takasaki-maebashi-coating.com/202407010943492.jpg", "car": "トヨタ・レビン", "coatingType": "フレッシュキーパー", "date": "2024/07/01"},
+    {"imageUrl": "/case-images/takasaki-maebashi-coating.com/202407011004232.jpg", "car": "トヨタ・ヤリス", "coatingType": "ダイヤモンドキーパー", "date": "2024/07/01"}
+  ],
+  "ichihara-coating.com": [
+    {"imageUrl": "/case-images/ichihara-coating.com/202305301003082.jpg", "car": "ダイハツ・ハイゼット", "coatingType": "フレッシュキーパー", "date": "2023/05/30"},
+    {"imageUrl": "/case-images/ichihara-coating.com/202305301002182.jpg", "car": "スズキ・ラパン", "coatingType": "フレッシュキーパー", "date": "2023/05/30"},
+    {"imageUrl": "/case-images/ichihara-coating.com/202305301001362.jpg", "car": "日産・エクストレイル", "coatingType": "フレッシュキーパー", "date": "2023/05/30"}
+  ],
+  "tsukuba-coating.com": [
+    {"imageUrl": "/case-images/tsukuba-coating.com/202501171930382.jpg", "car": "ホンダ・WR-V", "coatingType": "クリスタルキーパー", "date": "2025/01/17"},
+    {"imageUrl": "/case-images/tsukuba-coating.com/202501172005212.jpg", "car": "ポルシェ・マカン", "coatingType": "ダブルダイヤキーパー", "date": "2025/01/17"},
+    {"imageUrl": "/case-images/tsukuba-coating.com/202501171935502.jpg", "car": "アウディ・TT", "coatingType": "フレッシュキーパー", "date": "2025/01/17"}
+  ],
+  "yachiyo-hanamigawa-coating.com": [
+    {"imageUrl": "/case-images/yachiyo-hanamigawa-coating.com/202312020932012.jpg", "car": "トヨタ・ライズ", "coatingType": "EXキーパー", "date": "2023/12/02"},
+    {"imageUrl": "/case-images/yachiyo-hanamigawa-coating.com/202312020932102.jpg", "car": "スズキ・ワゴンRスマイル", "coatingType": "エコダイヤキーパー", "date": "2023/12/02"},
+    {"imageUrl": "/case-images/yachiyo-hanamigawa-coating.com/202312020932412.jpg", "car": "トヨタ・マークX", "coatingType": "フレッシュキーパー", "date": "2023/12/02"}
+  ],
+  "narita-coating.com": [
+    {"imageUrl": "/case-images/narita-coating.com/202508221427032.jpg", "car": "マツダ・MAZDA2", "coatingType": "エコダイヤキーパー", "date": "2025/08/22"},
+    {"imageUrl": "/case-images/narita-coating.com/202508221427452.jpg", "car": "マツダ・CX-80", "coatingType": "エコダイヤキーパー", "date": "2025/08/22"},
+    {"imageUrl": "/case-images/narita-coating.com/202508221423292.jpg", "car": "マツダ・CX-30", "coatingType": "ダイヤモンドキーパー", "date": "2025/08/22"}
+  ],
+  "fussa-coating.com": [
+    {"imageUrl": "/case-images/fussa-coating.com/202303221748382.jpg", "car": "ダイハツ・ミラ", "coatingType": "フレッシュキーパー", "date": "2023/03/22"},
+    {"imageUrl": "/case-images/fussa-coating.com/202010281128072.jpg", "car": "フォルクスワーゲン・ゴルフ", "coatingType": "ダイヤモンドキーパー", "date": "2020/10/28"},
+    {"imageUrl": "/case-images/fussa-coating.com/202303221533072.jpg", "car": "トヨタ・ヴォクシー", "coatingType": "ダイヤモンドキーパー", "date": "2023/03/22"}
+  ],
+  "kawasaki-machida-coating.com": [
+    {"imageUrl": "/case-images/kawasaki-machida-coating.com/202305091456292.jpg", "car": "日産・ノートオーラ", "coatingType": "フレッシュキーパー", "date": "2023/05/09"},
+    {"imageUrl": "/case-images/kawasaki-machida-coating.com/202305091528212.jpg", "car": "トヨタ・シエンタ", "coatingType": "ダイヤモンドキーパー", "date": "2023/05/09"},
+    {"imageUrl": "/case-images/kawasaki-machida-coating.com/202305091535122.jpg", "car": "マツダ・アテンザ", "coatingType": "ダブルダイヤキーパー", "date": "2023/05/09"}
+  ],
+  "yokosuka-coating.com": [
+    {"imageUrl": "/case-images/yokosuka-coating.com/202507251349122.jpg", "car": "ホンダ・ステップワゴン", "coatingType": "クリスタルキーパー", "date": "2025/07/25"},
+    {"imageUrl": "/case-images/yokosuka-coating.com/202507251350332.jpg", "car": "アウディ・TT", "coatingType": "フレッシュキーパー", "date": "2025/07/25"},
+    {"imageUrl": "/case-images/yokosuka-coating.com/202305101540012.jpg", "car": "スズキ・スイフト", "coatingType": "フレッシュキーパー", "date": "2023/05/10"}
+  ],
+  "coating-yokohama.com": [
+    {"imageUrl": "/case-images/coating-yokohama.com/202603051645042.jpeg", "car": "日産・フェアレディZ", "coatingType": "フレッシュキーパー", "date": "2026/03/05"},
+    {"imageUrl": "/case-images/coating-yokohama.com/202603031747032.jpeg", "car": "レクサス・IS", "coatingType": "フレッシュキーパー", "date": "2026/03/03"},
+    {"imageUrl": "/case-images/coating-yokohama.com/202603021611462.jpeg", "car": "ホンダ・ZR-V", "coatingType": "フレッシュキーパー", "date": "2026/03/02"}
+  ],
+  "coating-nagoyashi.com": [
+    {"imageUrl": "/case-images/coating-nagoyashi.com/202401161040102.jpg", "car": "メルセデスベンツ・Gクラス", "coatingType": "ダブルダイヤキーパー", "date": "2024/01/16"},
+    {"imageUrl": "/case-images/coating-nagoyashi.com/202401161009342.jpg", "car": "ホンダ・N-BOX", "coatingType": "ダイヤモンドキーパー", "date": "2024/01/16"},
+    {"imageUrl": "/case-images/coating-nagoyashi.com/202401161006392.jpg", "car": "メルセデスベンツ・Cクラス", "coatingType": "ダイヤモンドキーパー", "date": "2024/01/16"}
+  ],
+  "toukai-toyoake-coating.com": [
+    {"imageUrl": "/case-images/toukai-toyoake-coating.com/201801191601072.jpg", "car": "アウディ・A4", "coatingType": "ダイヤモンドキーパー", "date": "2018/01/19"},
+    {"imageUrl": "/case-images/toukai-toyoake-coating.com/201801181332452.jpg", "car": "日産・ノート", "coatingType": "クリスタルキーパー", "date": "2018/01/18"},
+    {"imageUrl": "/case-images/toukai-toyoake-coating.com/201801181343022.jpg", "car": "トヨタ・スープラ", "coatingType": "クリスタルキーパー", "date": "2018/01/18"}
+  ],
+  "toyota-coating.com": [
+    {"imageUrl": "/case-images/toyota-coating.com/202304111459382.jpg", "car": "トヨタ・プリウス", "coatingType": "フレッシュキーパー", "date": "2023/04/11"},
+    {"imageUrl": "/case-images/toyota-coating.com/202304111501222.jpg", "car": "レクサス・IS", "coatingType": "エコダイヤキーパー", "date": "2023/04/11"},
+    {"imageUrl": "/case-images/toyota-coating.com/202304111503232.jpg", "car": "トヨタ・ハリアー", "coatingType": "エコダイヤキーパー", "date": "2023/04/11"}
+  ],
+  "ichinomiya-hashima-coating.com": [
+    {"imageUrl": "/case-images/ichinomiya-hashima-coating.com/202304111655032.jpg", "car": "レクサス・LS", "coatingType": "フレッシュキーパー", "date": "2023/04/11"},
+    {"imageUrl": "/case-images/ichinomiya-hashima-coating.com/202304111657012.jpg", "car": "日産・エクストレイル", "coatingType": "フレッシュキーパー", "date": "2023/04/11"},
+    {"imageUrl": "/case-images/ichinomiya-hashima-coating.com/202304111659402.jpg", "car": "フォルクスワーゲン・ゴルフ", "coatingType": "エコダイヤキーパー", "date": "2023/04/11"}
+  ],
+  "kasugai-coating.com": [
+    {"imageUrl": "/case-images/kasugai-coating.com/202502281533402.jpg", "car": "日産・フーガ", "coatingType": "クリスタルキーパー", "date": "2025/02/28"},
+    {"imageUrl": "/case-images/kasugai-coating.com/202502281530382.jpg", "car": "トヨタ・クラウン", "coatingType": "フレッシュキーパー", "date": "2025/02/28"},
+    {"imageUrl": "/case-images/kasugai-coating.com/202502281528202.jpg", "car": "トヨタ・ハリアー", "coatingType": "ダイヤモンドキーパー", "date": "2025/02/28"}
+  ],
+  "kanazawa-coating.com": [
+    {"imageUrl": "/case-images/kanazawa-coating.com/202601061414522.jpg", "car": "トヨタ・カローラクロス", "coatingType": "ダイヤⅡキーパー", "date": "2026/01/06"},
+    {"imageUrl": "/case-images/kanazawa-coating.com/202601061418192.jpg", "car": "トヨタ・クラウン", "coatingType": "ダイヤⅡキーパー", "date": "2026/01/06"},
+    {"imageUrl": "/case-images/kanazawa-coating.com/202304111409262.jpg", "car": "マツダ・CX-60", "coatingType": "フレッシュキーパー", "date": "2023/04/11"}
+  ],
+  "yokkaichi-coating.com": [
+    {"imageUrl": "/case-images/yokkaichi-coating.com/202304111604292.jpg", "car": "メルセデスベンツ・GLB", "coatingType": "フレッシュキーパー", "date": "2023/04/11"},
+    {"imageUrl": "/case-images/yokkaichi-coating.com/202304111604462.jpg", "car": "BMW・5シリーズ", "coatingType": "フレッシュキーパー", "date": "2023/04/11"},
+    {"imageUrl": "/case-images/yokkaichi-coating.com/202304111605502.jpg", "car": "日産・ノートオーラ", "coatingType": "エコダイヤキーパー", "date": "2023/04/11"}
+  ],
+  "takatsuki-coating.com": [
+    {"imageUrl": "/case-images/takatsuki-coating.com/202512091228152.jpg", "car": "レクサス・RX", "coatingType": "クリスタルキーパー", "date": "2025/12/09"},
+    {"imageUrl": "/case-images/takatsuki-coating.com/202512081903412.jpg", "car": "レクサス・CT", "coatingType": "クリスタルキーパー", "date": "2025/12/08"},
+    {"imageUrl": "/case-images/takatsuki-coating.com/202512081924392.jpg", "car": "ホンダ・N-WGN", "coatingType": "クリスタルキーパー", "date": "2025/12/08"}
+  ],
+  "nawate-coating.com": [
+    {"imageUrl": "/case-images/nawate-coating.com/202507251418182.jpg", "car": "スズキ・ラパン", "coatingType": "クリスタルキーパー", "date": "2025/07/25"},
+    {"imageUrl": "/case-images/nawate-coating.com/202505271013142.jpg", "car": "スズキ・ジムニー", "coatingType": "クリスタルキーパー", "date": "2025/05/27"},
+    {"imageUrl": "/case-images/nawate-coating.com/202505271015012.jpg", "car": "スズキ・スペーシアカスタム", "coatingType": "クリスタルキーパー", "date": "2025/05/27"}
+  ],
+  "otake-coating.com": [
+    {"imageUrl": "/case-images/otake-coating.com/202209060858252.jpg", "car": "日産・ジューク", "coatingType": "クリスタルキーパー", "date": "2022/09/06"},
+    {"imageUrl": "/case-images/otake-coating.com/202209060859492.jpg", "car": "トヨタ・ルーミー", "coatingType": "クリスタルキーパー", "date": "2022/09/06"},
+    {"imageUrl": "/case-images/otake-coating.com/202209060900442.jpg", "car": "BMW・3シリーズ", "coatingType": "クリスタルキーパー", "date": "2022/09/06"}
+  ],
+  "okayama-coating.com": [
+    {"imageUrl": "/case-images/okayama-coating.com/202110271735222.jpg", "car": "トヨタ・ヴィッツ", "coatingType": "クリスタルキーパー", "date": "2021/10/27"},
+    {"imageUrl": "/case-images/okayama-coating.com/202110271737572.jpg", "car": "トヨタ・アクア", "coatingType": "クリスタルキーパー", "date": "2021/10/27"},
+    {"imageUrl": "/case-images/okayama-coating.com/202110271736402.jpg", "car": "ホンダ・ヴェゼル", "coatingType": "ダイヤモンドキーパー", "date": "2021/10/27"}
+  ],
+  "coating-hiroshima.com": [
+    {"imageUrl": "/case-images/coating-hiroshima.com/202601201718412.jpg", "car": "スズキ・ジムニー", "coatingType": "ダイヤⅡキーパー", "date": "2026/01/20"},
+    {"imageUrl": "/case-images/coating-hiroshima.com/202601201718542.jpg", "car": "スズキ・スイフト", "coatingType": "ダイヤⅡキーパー", "date": "2026/01/20"},
+    {"imageUrl": "/case-images/coating-hiroshima.com/202601201719072.jpg", "car": "スズキ・ジムニー", "coatingType": "ダイヤⅡキーパー", "date": "2026/01/20"}
+  ],
+  "izumo-coating.com": [
+    {"imageUrl": "/case-images/izumo-coating.com/202409121406112.jpg", "car": "トヨタ・GRヤリス", "coatingType": "EXキーパー", "date": "2024/09/12"},
+    {"imageUrl": "/case-images/izumo-coating.com/202409121415212.jpg", "car": "ホンダ・ヴェゼル", "coatingType": "EXキーパープレミアム", "date": "2024/09/12"},
+    {"imageUrl": "/case-images/izumo-coating.com/202409121417202.jpg", "car": "BMW・3シリーズ", "coatingType": "エコダイヤキーパー", "date": "2024/09/12"}
+  ],
+  "tottorishi-coating.com": [
+    {"imageUrl": "/case-images/tottorishi-coating.com/202406171253472.jpg", "car": "トヨタ・ヤリス", "coatingType": "EXキーパープレミアム", "date": "2024/06/17"},
+    {"imageUrl": "/case-images/tottorishi-coating.com/202406171257512.jpg", "car": "レクサス・NX", "coatingType": "EXキーパープレミアム", "date": "2024/06/17"},
+    {"imageUrl": "/case-images/tottorishi-coating.com/202405270853092.jpg", "car": "トヨタ・プリウス", "coatingType": "EXキーパー", "date": "2024/05/27"}
+  ],
+  "miki-coating.com": [
+    {"imageUrl": "/case-images/miki-coating.com/202209051804512.jpg", "car": "スバル・インプレッサ", "coatingType": "クリスタルキーパー", "date": "2022/09/05"},
+    {"imageUrl": "/case-images/miki-coating.com/202209051806512.jpg", "car": "ホンダ・フィット", "coatingType": "クリスタルキーパー", "date": "2022/09/05"},
+    {"imageUrl": "/case-images/miki-coating.com/202209051817282.jpg", "car": "ホンダ・ビート", "coatingType": "クリスタルキーパー", "date": "2022/09/05"}
+  ],
+  "kobe-himeji-coating.com": [
+    {"imageUrl": "/case-images/kobe-himeji-coating.com/202406191140022.jpg", "car": "レクサス・NX", "coatingType": "クリスタルキーパー", "date": "2024/06/19"},
+    {"imageUrl": "/case-images/kobe-himeji-coating.com/202406191138312.jpg", "car": "メルセデスベンツ・Cクラス", "coatingType": "クリスタルキーパー", "date": "2024/06/19"},
+    {"imageUrl": "/case-images/kobe-himeji-coating.com/202312061047452.jpg", "car": "レクサス・ES", "coatingType": "クリスタルキーパー", "date": "2023/12/06"}
+  ],
+  "kobe-coating.com": [
+    {"imageUrl": "/case-images/kobe-coating.com/202410031301352.jpg", "car": "BMW・3シリーズ", "coatingType": "フレッシュキーパー", "date": "2024/10/03"},
+    {"imageUrl": "/case-images/kobe-coating.com/201603101841532.jpg", "car": "ホンダ・フィットシャトル", "coatingType": "ダイヤモンドキーパー", "date": "2016/03/10"},
+    {"imageUrl": "/case-images/kobe-coating.com/201603101903322.jpg", "car": "メルセデスベンツ・GLK", "coatingType": "クリスタルキーパー", "date": "2016/03/10"}
+  ],
+  "takamatsu-coating.com": [
+    {"imageUrl": "/case-images/takamatsu-coating.com/202306061645272.jpg", "car": "ボルボ・XC60", "coatingType": "フレッシュキーパー", "date": "2023/06/06"},
+    {"imageUrl": "/case-images/takamatsu-coating.com/202306061641492.jpg", "car": "BMW・MINIクラブマン", "coatingType": "フレッシュキーパー", "date": "2023/06/06"},
+    {"imageUrl": "/case-images/takamatsu-coating.com/202007281705402.jpg", "car": "アウディ・Q5", "coatingType": "ダイヤモンドキーパー", "date": "2020/07/28"}
+  ],
+  "kochi-coating.com": [
+    {"imageUrl": "/case-images/kochi-coating.com/202210211309592.jpg", "car": "マツダ・ロードスター", "coatingType": "クリスタルキーパー", "date": "2022/10/21"},
+    {"imageUrl": "/case-images/kochi-coating.com/202210211149352.jpg", "car": "スズキ・ジムニー", "coatingType": "クリスタルキーパー", "date": "2022/10/21"},
+    {"imageUrl": "/case-images/kochi-coating.com/202210211313142.jpg", "car": "ホンダ・N-BOX", "coatingType": "クリスタルキーパー", "date": "2022/10/21"}
+  ],
+  "tokushima-coating.com": [
+    {"imageUrl": "/case-images/tokushima-coating.com/202211121900052.jpg", "car": "ダイハツ・コペン", "coatingType": "EXキーパー", "date": "2022/11/12"},
+    {"imageUrl": "/case-images/tokushima-coating.com/202207292021152.jpg", "car": "ホンダ・ステップワゴン", "coatingType": "Wダイヤモンドキーパープレミアム", "date": "2022/07/29"},
+    {"imageUrl": "/case-images/tokushima-coating.com/202207051225182.jpg", "car": "マツダ・MAZDA3", "coatingType": "EXキーパープレミアム", "date": "2022/07/05"}
+  ],
+  "niihama-coating.com": [
+    {"imageUrl": "/case-images/niihama-coating.com/202006291626002.jpg", "car": "日産・キューブ", "coatingType": "クリスタルキーパー", "date": "2020/06/29"},
+    {"imageUrl": "/case-images/niihama-coating.com/202006291627092.jpg", "car": "トヨタ・クラウン", "coatingType": "クリスタルキーパー", "date": "2020/06/29"},
+    {"imageUrl": "/case-images/niihama-coating.com/202306081417312.jpg", "car": "スバル・フォレスター", "coatingType": "フレッシュキーパー", "date": "2023/06/08"}
+  ],
+  "coating-shimonoseki.com": [
+    {"imageUrl": "/case-images/coating-shimonoseki.com/202204080133052.jpg", "car": "アウディ・Q2", "coatingType": "クリスタルキーパー", "date": "2022/04/08"},
+    {"imageUrl": "/case-images/coating-shimonoseki.com/202204080133342.jpg", "car": "スバル・BRZ", "coatingType": "クリスタルキーパー", "date": "2022/04/08"},
+    {"imageUrl": "/case-images/coating-shimonoseki.com/202204080133552.jpg", "car": "トヨタ・クラウン", "coatingType": "クリスタルキーパー", "date": "2022/04/08"}
+  ],
+  "kumamoto-coating.com": [
+    {"imageUrl": "/case-images/kumamoto-coating.com/202410041013002.jpg", "car": "メルセデスベンツ・Eクラス", "coatingType": "フレッシュキーパー", "date": "2024/10/04"},
+    {"imageUrl": "/case-images/kumamoto-coating.com/202507091414312.jpg", "car": "日産・モコ", "coatingType": "フレッシュキーパー", "date": "2025/07/09"},
+    {"imageUrl": "/case-images/kumamoto-coating.com/202507091416322.jpg", "car": "トヨタ・ライズ", "coatingType": "フレッシュキーパー", "date": "2025/07/09"}
+  ],
+  "fukuoka-sasebo-coating.com": [
+    {"imageUrl": "/case-images/fukuoka-sasebo-coating.com/202308171229282.jpg", "car": "マツダ・CX-60", "coatingType": "フレッシュキーパー", "date": "2023/08/17"},
+    {"imageUrl": "/case-images/fukuoka-sasebo-coating.com/202308171111472.jpg", "car": "スズキ・イグニス", "coatingType": "フレッシュキーパー", "date": "2023/08/17"},
+    {"imageUrl": "/case-images/fukuoka-sasebo-coating.com/202105271649222.jpg", "car": "マツダ・CX-8", "coatingType": "Wダイヤキーパー", "date": "2021/05/27"}
+  ],
+  "sasebo-coating.com": [
+    {"imageUrl": "/case-images/sasebo-coating.com/202410071013322.jpg", "car": "日産・スカイライン", "coatingType": "フレッシュキーパー", "date": "2024/10/07"},
+    {"imageUrl": "/case-images/sasebo-coating.com/202507091231382.jpg", "car": "BMW・Z4", "coatingType": "フレッシュキーパー", "date": "2025/07/09"},
+    {"imageUrl": "/case-images/sasebo-coating.com/202507091232462.jpg", "car": "三菱・トライトン", "coatingType": "フレッシュキーパー", "date": "2025/07/09"}
+  ],
+  "kitakyushu-coating.com": [
+    {"imageUrl": "/case-images/kitakyushu-coating.com/202409191057062.jpg", "car": "BMW・2シリーズグランツアラー", "coatingType": "フレッシュキーパー", "date": "2024/09/19"},
+    {"imageUrl": "/case-images/kitakyushu-coating.com/202507081748432.jpg", "car": "ルノー・トゥインゴ", "coatingType": "フレッシュキーパー", "date": "2025/07/08"},
+    {"imageUrl": "/case-images/kitakyushu-coating.com/202507081750342.jpg", "car": "スバル・フォレスター", "coatingType": "フレッシュキーパー", "date": "2025/07/08"}
+  ]
+}

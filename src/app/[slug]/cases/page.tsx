@@ -3,20 +3,47 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { SAMPLE_CASES } from '@/data/cases-sample';
+import { SUB_COMPANY_TO_DOMAIN } from '@/data/store-domain-map';
+import storeCasesData from '@/data/store-cases.json';
 import Link from 'next/link';
 
+interface CaseEntry {
+  imageUrl: string;
+  car: string;
+  coatingType: string;
+  date: string | null;
+}
+
+function getStoreCases(slug: string): CaseEntry[] {
+  const domain = SUB_COMPANY_TO_DOMAIN[slug];
+  if (domain) {
+    const cases = (storeCasesData as Record<string, CaseEntry[]>)[domain];
+    if (cases && cases.length > 0) return cases;
+  }
+  // Fallback to sample cases
+  return SAMPLE_CASES;
+}
+
 export default function V3CasesPage() {
-  const { slug: storeId } = useParams<{ slug: string }>();
-  const base = `/${storeId}`;
+  const { slug } = useParams<{ slug: string }>();
+  const base = `/${slug}`;
   const [filterCoating, setFilterCoating] = useState('all');
   const [filterCar, setFilterCar] = useState('all');
 
-  const coatingTypes = [...new Set(SAMPLE_CASES.map(c => c.coatingType))];
-  const carTypes = [...new Set(SAMPLE_CASES.map(c => c.car.split(' ')[0]))];
+  const cases = getStoreCases(slug);
 
-  const filtered = SAMPLE_CASES.filter(c => {
+  const coatingTypes = [...new Set(cases.map(c => c.coatingType))];
+  const carBrands = [...new Set(cases.map(c => {
+    const brand = c.car.split(/[・\s／]/)[0];
+    return brand || c.car;
+  }))];
+
+  const filtered = cases.filter(c => {
     if (filterCoating !== 'all' && c.coatingType !== filterCoating) return false;
-    if (filterCar !== 'all' && !c.car.startsWith(filterCar)) return false;
+    if (filterCar !== 'all') {
+      const brand = c.car.split(/[・\s／]/)[0];
+      if (brand !== filterCar) return false;
+    }
     return true;
   });
 
@@ -46,7 +73,7 @@ export default function V3CasesPage() {
             className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCar === 'all' ? 'bg-[#0C3290] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
             全車種
           </button>
-          {carTypes.slice(0, 6).map(t => (
+          {carBrands.slice(0, 6).map(t => (
             <button key={t} onClick={() => setFilterCar(t)}
               className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCar === t ? 'bg-[#0C3290] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
               {t}
@@ -67,8 +94,7 @@ export default function V3CasesPage() {
             <div>
               <div className="text-xs text-amber-500 font-bold mb-1">PICKUP</div>
               <h2 className="text-lg font-bold text-[#0C3290] mb-2">{featured.car}</h2>
-              <p className="text-sm text-gray-500 mb-3">{featured.coatingType} ｜ {featured.date}</p>
-              {featured.staffComment && <p className="text-xs text-gray-500 mt-2 italic">&ldquo;{featured.staffComment}&rdquo;</p>}
+              <p className="text-sm text-gray-500 mb-3">{featured.coatingType}{featured.date ? ` ｜ ${featured.date}` : ''}</p>
             </div>
           </div>
         </section>
@@ -86,7 +112,7 @@ export default function V3CasesPage() {
               </div>
               <div className="p-3">
                 <div className="text-sm font-bold text-[#0C3290]">{c.car}</div>
-                <div className="text-xs text-gray-500">{c.coatingType} ｜ {c.date}</div>
+                <div className="text-xs text-gray-500">{c.coatingType}{c.date ? ` ｜ ${c.date}` : ''}</div>
               </div>
             </div>
           ))}
