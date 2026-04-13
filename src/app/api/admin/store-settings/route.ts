@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { requireAuth, canManageStore } from '@/lib/auth';
 import { getStoreSettings, updateStoreSettings } from '@/lib/store-settings';
+import { google } from 'googleapis';
 
 // GET: Returns store settings (calendarId, notificationEmails)
 export async function GET(req: NextRequest) {
@@ -22,6 +23,60 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Error fetching store settings:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// POST: Special actions (e.g., calendar invite)
+export async function POST(req: NextRequest) {
+  try {
+    const auth = await requireAuth();
+    if (auth.error) return auth.error;
+    const { user } = auth;
+
+    const body = await req.json();
+    const { storeId, action, email } = body;
+
+    if (!storeId || !canManageStore(user, storeId)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    if (action === 'invite') {
+      if (!email || !email.includes('@')) {
+        return NextResponse.json({ error: 'Valid email is required' }, { status: 400 });
+      }
+
+      const settings = await getStoreSettings(storeId);
+      if (!settings.calendarId) {
+        return NextResponse.json({ error: 'This store has no Google Calendar configured' }, { status: 400 });
+      }
+
+      // Use service account to share the calendar with the provided email
+      const serviceAuth = new google.auth.GoogleAuth({
+        credentials: {
+          client_email: process.env.FIREBASE_CLIENT_EMAIL,
+          private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        },
+        scopes: ['https://www.googleapis.com/auth/calendar'],
+      });
+
+      const calendar = google.calendar({ version: 'v3', auth: serviceAuth });
+
+      await calendar.acl.insert({
+        calendarId: settings.calendarId,
+        sendNotifications: true,
+        requestBody: {
+          role: 'reader',
+          scope: { type: 'user', value: email },
+        },
+      });
+
+      return NextResponse.json({ success: true });
+    }
+
+    return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+  } catch (error) {
+    console.error('Store settings action error:', error);
+    return NextResponse.json({ error: 'Failed to send invite' }, { status: 500 });
   }
 }
 

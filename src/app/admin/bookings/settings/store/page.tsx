@@ -23,6 +23,9 @@ export default function StoreSettingsPage() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviting, setInviting] = useState(false);
+  const [inviteResult, setInviteResult] = useState<string | null>(null);
 
   // Load stores
   useEffect(() => {
@@ -177,6 +180,50 @@ export default function StoreSettingsPage() {
                 placeholder="xxx@group.calendar.google.com"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
               />
+            </div>
+          )}
+
+          {/* Calendar invite */}
+          {settings.calendarId && (
+            <div className="pt-4 border-t border-gray-100">
+              <label className="block text-sm font-bold text-[#0C3290] mb-1">Googleカレンダー招待</label>
+              <p className="text-xs text-gray-500 mb-2">メールアドレスを入力すると、店舗の予約カレンダーに閲覧権限で招待します。</p>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={e => { setInviteEmail(e.target.value); setInviteResult(null); }}
+                  placeholder="you@example.com"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                />
+                <button
+                  onClick={async () => {
+                    if (!inviteEmail.includes('@') || !selectedStore) return;
+                    setInviting(true);
+                    setInviteResult(null);
+                    try {
+                      const res = await fetch('/api/admin/store-settings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ storeId: selectedStore, action: 'invite', email: inviteEmail }),
+                      });
+                      if (!res.ok) throw new Error((await res.json()).error || 'Failed');
+                      setInviteResult('✓ 招待を送信しました');
+                      setInviteEmail('');
+                    } catch (err) {
+                      setInviteResult('✗ ' + (err instanceof Error ? err.message : '送信失敗'));
+                    }
+                    setInviting(false);
+                  }}
+                  disabled={inviting || !inviteEmail.includes('@')}
+                  className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+                >
+                  {inviting ? '送信中...' : '招待を送信'}
+                </button>
+              </div>
+              {inviteResult && (
+                <p className={`text-xs mt-1 ${inviteResult.startsWith('✓') ? 'text-green-600' : 'text-red-500'}`}>{inviteResult}</p>
+              )}
             </div>
           )}
 
