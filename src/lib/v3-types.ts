@@ -114,7 +114,7 @@ export function defaultV3Store(partial: Partial<V3StoreData> & { store_id: strin
     campaign_title: '',
     campaign_deadline: '',
     discount_rate: 20,
-    campaign_color_code: '#0C3290',
+    campaign_color_code: '#F0EA01',
     hero_title: '',
     hero_subtitle: '',
     description: '',
