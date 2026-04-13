@@ -35,7 +35,7 @@ export default function CasesBlock({ config, basePath }: CasesBlockProps) {
           <div className="text-right mt-8">
             <Link
               href={`${basePath}/cases`}
-              className="inline-block bg-amber-500 text-black px-5 py-2.5 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity"
+              className="inline-block bg-amber-500 text-[#0C3290] px-5 py-2.5 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity"
             >
               {'\u65BD\u5DE5\u4E8B\u4F8B\u3092\u3059\u3079\u3066\u898B\u308B \u2192'}
             </Link>

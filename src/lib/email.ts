@@ -309,3 +309,72 @@ export async function sendInquiryNotificationEmail(opts: {
     html,
   });
 }
+
+export async function sendTicketNotificationEmail(opts: {
+  adminEmails: string[];
+  authorEmail: string;
+  subject: string;
+  message: string;
+}): Promise<void> {
+  if (!process.env.GMAIL_USER || opts.adminEmails.length === 0) return;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:8081';
+  const html = `
+    <div style="max-width:600px;font-family:sans-serif;color:#333">
+      <h2 style="color:#0C3290">新規チケット</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <tr><td style="padding:6px 0;color:#999;width:80px">件名</td><td style="padding:6px 0;font-weight:bold">${opts.subject}</td></tr>
+        <tr><td style="padding:6px 0;color:#999">送信者</td><td style="padding:6px 0">${opts.authorEmail}</td></tr>
+      </table>
+      <div style="margin:12px 0;padding:12px;background:#fff3e0;border-radius:6px">
+        ${opts.message.replace(/\n/g, '<br>')}
+      </div>
+      <p><a href="${siteUrl}/admin/tickets" style="color:#0C3290;font-weight:bold">チケットを確認する →</a></p>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"KeePer PRO SHOP チケット" <${process.env.GMAIL_USER}>`,
+    to: opts.adminEmails.join(', '),
+    subject: `【チケット】${opts.subject} — ${opts.authorEmail}`,
+    html,
+  });
+}
+
+export async function sendInquiryReplyEmail(opts: {
+  customerEmail: string;
+  customerName: string;
+  locationName: string;
+  replyText: string;
+  originalMessage: string;
+}): Promise<void> {
+  if (!process.env.GMAIL_USER) return;
+
+  const html = `
+    <div style="max-width:600px;margin:0 auto;font-family:sans-serif;color:#333">
+      <div style="background:#0C3290;padding:20px;text-align:center;border-radius:8px 8px 0 0">
+        <h1 style="color:white;font-size:18px;margin:0">KeePer PRO SHOP</h1>
+        <p style="color:rgba(255,255,255,0.5);font-size:12px;margin:4px 0 0">${opts.locationName}</p>
+      </div>
+      <div style="padding:24px;background:white;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 8px 8px">
+        <p>${opts.customerName} 様</p>
+        <p style="font-size:13px;color:#666">お問い合わせいただきありがとうございます。</p>
+        <div style="margin:16px 0;padding:16px;background:#e8f5e9;border:2px solid #4caf50;border-radius:6px">
+          <div style="font-size:12px;color:#666;margin-bottom:8px">店舗からの回答:</div>
+          <div style="font-size:14px;color:#333;white-space:pre-wrap">${opts.replyText.replace(/\n/g, '<br>')}</div>
+        </div>
+        <div style="margin:16px 0;padding:12px;background:#f5f5f5;border-radius:6px;font-size:12px;color:#999">
+          <div style="margin-bottom:4px">お客様のお問い合わせ内容:</div>
+          ${opts.originalMessage.replace(/\n/g, '<br>')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  await transporter.sendMail({
+    from: `"KeePer PRO SHOP" <${process.env.GMAIL_USER}>`,
+    to: opts.customerEmail,
+    subject: `お問い合わせへのご回答 - ${opts.locationName}`,
+    html,
+  });
+}

@@ -158,7 +158,7 @@ export default function StoreSettingsPage() {
               />
               <button
                 onClick={addEmail}
-                className="px-4 py-2 bg-amber-500 text-black text-sm font-bold rounded-lg hover:bg-amber-600 cursor-pointer"
+                className="px-4 py-2 bg-amber-500 text-[#0C3290] text-sm font-bold rounded-lg hover:bg-amber-600 cursor-pointer"
               >
                 追加
               </button>
@@ -186,7 +186,7 @@ export default function StoreSettingsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="ml-auto px-6 py-2 bg-amber-500 text-black text-sm font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
+              className="ml-auto px-6 py-2 bg-amber-500 text-[#0C3290] text-sm font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
             >
               {saving ? '保存中...' : '保存'}
             </button>

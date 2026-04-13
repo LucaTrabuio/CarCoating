@@ -103,9 +103,10 @@ export default function CampaignsPage() {
         <div className="mt-4 mb-4">
           <p className="text-xs text-gray-400 mb-2">プレビュー（リアルタイム）:</p>
           <div
-            className="text-white text-center py-3 px-5 font-bold text-sm rounded-lg"
+            className="text-center py-3 px-5 font-bold text-sm rounded-lg"
             style={{
-              background: `linear-gradient(135deg, ${bannerColor}, ${bannerColor}dd)`,
+              background: bannerColor,
+              color: '#0C3290',
               ...previewFontStyle,
             }}
           >
@@ -130,7 +131,7 @@ export default function CampaignsPage() {
           </p>
         </div>
 
-        <button onClick={handleCampaignSave} className="px-6 py-2.5 bg-amber-500 text-black rounded-lg text-sm font-bold cursor-pointer">保存して全店舗に反映</button>
+        <button onClick={handleCampaignSave} className="px-6 py-2.5 bg-amber-500 text-[#0C3290] rounded-lg text-sm font-bold cursor-pointer">保存して全店舗に反映</button>
         {campaignSaved && (
           <p className="text-xs text-green-600 font-semibold mt-2">✓ キャンペーン設定を保存しました</p>
         )}

@@ -48,7 +48,10 @@ export default async function V3NewsPage({ params }: { params: Promise<{ slug: s
   return (
     <main>
       <section className="bg-[#0C3290] py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>ニュース・お知らせ</h1>
+        <div className="max-w-[800px] mx-auto">
+          <Link href={base} className="text-xs text-white/40 hover:text-white/70 transition-colors mb-3 inline-block">← トップに戻る</Link>
+          <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>ニュース・お知らせ</h1>
+        </div>
       </section>
 
       <section className="py-10 px-5">
@@ -73,7 +76,7 @@ export default async function V3NewsPage({ params }: { params: Promise<{ slug: s
           <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングをご検討中の方へ</h2>
           <div className="flex gap-3 justify-center">
             <Link href={`${base}/coatings`} className="px-5 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20">メニュー一覧</Link>
-            <Link href={`${base}/booking`} className="px-5 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500">ご予約 →</Link>
+            <Link href={`${base}/booking`} className="px-5 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-md text-sm hover:bg-amber-500">ご予約 →</Link>
           </div>
         </div>
       </section>

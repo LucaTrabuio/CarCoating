@@ -29,7 +29,7 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
         </Link>
 
         <nav className="hidden md:flex gap-5 items-center">
-          <Link href={base} className="text-gray-600 text-[13px] hover:text-black transition-colors">ホーム</Link>
+          <Link href={base} className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors">ホーム</Link>
 
           {/* Menu dropdown */}
           <div
@@ -37,7 +37,7 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
             onMouseEnter={() => setMenuDropdown(true)}
             onMouseLeave={() => setMenuDropdown(false)}
           >
-            <button className="text-gray-600 text-[13px] hover:text-black transition-colors cursor-pointer">
+            <button className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors cursor-pointer">
               メニュー ▾
             </button>
             {menuDropdown && (
@@ -45,14 +45,14 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
                 <div className="bg-white border border-gray-200 rounded-lg shadow-xl py-1.5 min-w-[180px]">
                   <Link
                     href={`${base}/coatings`}
-                    className="block px-4 py-2 text-[13px] text-gray-600 hover:text-black hover:bg-gray-50 transition-colors"
+                    className="block px-4 py-2 text-[13px] text-gray-600 hover:text-[#0C3290] hover:bg-gray-50 transition-colors"
                     onClick={() => setMenuDropdown(false)}
                   >
                     コーティングメニュー
                   </Link>
                   <Link
                     href={`${base}/options`}
-                    className="block px-4 py-2 text-[13px] text-gray-600 hover:text-black hover:bg-gray-50 transition-colors"
+                    className="block px-4 py-2 text-[13px] text-gray-600 hover:text-[#0C3290] hover:bg-gray-50 transition-colors"
                     onClick={() => setMenuDropdown(false)}
                   >
                     オプションメニュー
@@ -62,12 +62,12 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
             )}
           </div>
 
-          <Link href={`${base}/price`} className="text-gray-600 text-[13px] hover:text-black transition-colors">見積もり</Link>
-          <Link href={`${base}/guide`} className="text-gray-600 text-[13px] hover:text-black transition-colors">ガイド</Link>
-          <Link href={`${base}/cases`} className="text-gray-600 text-[13px] hover:text-black transition-colors">施工事例</Link>
-          <Link href={`${base}/reviews`} className="text-gray-600 text-[13px] hover:text-black transition-colors">お客様の声</Link>
-          <Link href={`${base}/booking`} className="text-gray-600 text-[13px] hover:text-black transition-colors">ご予約</Link>
-          <Link href={`${base}/inquiry`} className="text-gray-600 text-[13px] hover:text-black transition-colors">お問い合わせ</Link>
+          <Link href={`${base}/price`} className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors">見積もり</Link>
+          <Link href={`${base}/guide`} className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors">ガイド</Link>
+          <Link href={`${base}/cases`} className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors">施工事例</Link>
+          <Link href={`${base}/reviews`} className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors">お客様の声</Link>
+          <Link href={`${base}/booking`} className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors">ご予約</Link>
+          <Link href={`${base}/inquiry`} className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors">お問い合わせ</Link>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -80,12 +80,12 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
           {tel && (
             <a href={`tel:${tel}`}
               onClick={() => trackEvent(storeId, 'phone_call')}
-              className="text-black text-[11px] font-bold px-3 py-1.5 rounded-md bg-amber-500">
+              className="text-[#0C3290] text-[11px] font-bold px-3 py-1.5 rounded-md bg-amber-500">
               &#9742; {tel}
             </a>
           )}
           <button
-            className="md:hidden text-black text-xl ml-1"
+            className="md:hidden text-[#0C3290] text-xl ml-1"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="メニュー"
           >

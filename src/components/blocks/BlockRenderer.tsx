@@ -100,7 +100,7 @@ export default function BlockRenderer({ block, store, basePath, discountRate, al
       content = <PricingBlock config={block.config as PricingConfig} store={store} basePath={basePath} discountRate={discountRate} />;
       break;
     case 'news':
-      content = <NewsBlock config={block.config as NewsConfig} store={store} />;
+      content = <NewsBlock config={block.config as NewsConfig} store={store} basePath={basePath} />;
       break;
     case 'process':
       content = <ProcessBlock config={block.config as ProcessConfig} />;

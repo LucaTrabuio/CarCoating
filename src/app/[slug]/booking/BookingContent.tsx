@@ -92,7 +92,7 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
               </div>
             )}
             <button type="submit"
-              className="w-full py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:opacity-90 transition-opacity cursor-pointer">
+              className="w-full py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:opacity-90 transition-opacity cursor-pointer">
               {isInquiry ? '送信する' : '仮予約する'}
             </button>
           </form>

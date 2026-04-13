@@ -390,7 +390,7 @@ export default function BookingSettingsPage() {
                 <button
                   onClick={() => saveDay(day)}
                   disabled={saving === day}
-                  className="px-4 py-1.5 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-1.5 bg-amber-500 text-[#0C3290] text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
                 >
                   {saving === day ? '保存中...' : '保存'}
                 </button>

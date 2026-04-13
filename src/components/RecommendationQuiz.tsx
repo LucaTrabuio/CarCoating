@@ -102,7 +102,7 @@ export default function RecommendationQuiz() {
       <div className="max-w-[600px] mx-auto">
         <div className="text-center mb-8">
           <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-2">RECOMMENDATION</p>
-          <h2 className="text-black text-xl md:text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+          <h2 className="text-[#0C3290] text-xl md:text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             あなたにぴったりのコースは？
           </h2>
           <p className="text-sm text-slate-400 mt-1">4つの質問に答えるだけ（30秒）</p>
@@ -112,7 +112,7 @@ export default function RecommendationQuiz() {
           <div className="text-center">
             <button
               onClick={() => setStep(1)}
-              className="px-8 py-4 bg-amber-500 text-black font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
+              className="px-8 py-4 bg-amber-500 text-[#0C3290] font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
             >
               診断スタート →
             </button>
@@ -153,7 +153,7 @@ export default function RecommendationQuiz() {
             <div className="flex gap-3 justify-center flex-wrap">
               <Link
                 href={`/booking?mode=inquiry&recommended=${result.tierId}`}
-                className="px-6 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
+                className="px-6 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
               >
                 このコースについて相談する →
               </Link>

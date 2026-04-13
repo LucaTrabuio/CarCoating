@@ -158,7 +158,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
     return (
       <button
         onClick={openPopup}
-        className="fixed bottom-24 right-4 z-40 bg-amber-500 text-black px-4 py-3 rounded-full shadow-lg hover:bg-amber-600 transition-all text-sm font-bold flex items-center gap-2 cursor-pointer animate-bounce-slow"
+        className="fixed bottom-24 right-4 z-40 bg-amber-500 text-[#0C3290] px-4 py-3 rounded-full shadow-lg hover:bg-amber-600 transition-all text-sm font-bold flex items-center gap-2 cursor-pointer animate-bounce-slow"
         style={{ animationDuration: '3s' }}
       >
         <span className="text-lg">🚗</span>
@@ -189,7 +189,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
           {/* Header */}
           <div className="text-center mb-6">
             <p className="text-[#0C3290] text-[10px] font-bold tracking-widest mb-1">COATING QUIZ</p>
-            <h2 className="text-black text-lg font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 className="text-[#0C3290] text-lg font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               あなたにぴったりのコースは？
             </h2>
             <p className="text-xs text-slate-400 mt-1">4つの質問に答えるだけ（30秒）</p>
@@ -239,7 +239,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
                 <Link
                   href={`${basePath}/coatings#${result.tierId}`}
                   onClick={dismiss}
-                  className="px-5 py-2.5 bg-amber-500 text-black font-bold rounded-lg text-xs hover:bg-amber-600 transition-colors"
+                  className="px-5 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-xs hover:bg-amber-600 transition-colors"
                 >
                   詳細を見る →
                 </Link>

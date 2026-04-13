@@ -68,7 +68,7 @@ export default async function EstimatePage({
           </p>
           <Link
             href="/"
-            className="inline-block px-6 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
+            className="inline-block px-6 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
           >
             トップページへ
           </Link>
@@ -165,7 +165,7 @@ export default async function EstimatePage({
         <div className="mt-8 text-center space-y-3">
           <Link
             href="/booking"
-            className="inline-block w-full max-w-[320px] px-6 py-3.5 bg-amber-500 text-black font-bold rounded-xl text-sm hover:opacity-90 transition-opacity"
+            className="inline-block w-full max-w-[320px] px-6 py-3.5 bg-amber-500 text-[#0C3290] font-bold rounded-xl text-sm hover:opacity-90 transition-opacity"
           >
             予約する
           </Link>

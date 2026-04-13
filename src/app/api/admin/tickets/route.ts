@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { sendTicketNotificationEmail } from '@/lib/email';
 
 interface TicketMessage {
   uid: string;
@@ -72,6 +73,23 @@ export async function POST(req: NextRequest) {
       };
 
       const ref = await db.collection('tickets').add(ticket);
+
+      // Notify super_admins by email
+      try {
+        const usersSnap = await db.collection('users').where('role', '==', 'super_admin').get();
+        const adminEmails = usersSnap.docs.map(d => d.data().email).filter(Boolean) as string[];
+        if (adminEmails.length > 0) {
+          await sendTicketNotificationEmail({
+            adminEmails,
+            authorEmail: user.email,
+            subject: subject.trim(),
+            message: text.trim(),
+          });
+        }
+      } catch (emailErr) {
+        console.error('Ticket notification email failed:', emailErr);
+      }
+
       return NextResponse.json({ id: ref.id }, { status: 201 });
     }
 

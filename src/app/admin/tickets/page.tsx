@@ -161,12 +161,23 @@ export default function TicketsPage() {
     <div className="max-w-[1100px] mx-auto space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-gray-900">チケット</h1>
-        <button
-          onClick={() => { setShowCreate(!showCreate); setSelectedTicketId(null); }}
-          className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors cursor-pointer"
-        >
-          + 新規チケット
-        </button>
+        <div className="flex items-center gap-2">
+          {isSuper && (
+            <a
+              href="/api/admin/tickets/export"
+              target="_blank"
+              className="px-3 py-2 text-xs text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              CSV出力
+            </a>
+          )}
+          <button
+            onClick={() => { setShowCreate(!showCreate); setSelectedTicketId(null); }}
+            className="px-4 py-2 bg-amber-500 text-[#0C3290] text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors cursor-pointer"
+          >
+            + 新規チケット
+          </button>
+        </div>
       </div>
 
       {/* Status filter chips */}
@@ -208,7 +219,7 @@ export default function TicketsPage() {
           />
           <div className="flex gap-2">
             <button type="submit" disabled={creating}
-              className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer">
+              className="px-4 py-2 bg-amber-500 text-[#0C3290] text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer">
               {creating ? '送信中...' : '送信'}
             </button>
             <button type="button" onClick={() => setShowCreate(false)}
@@ -369,7 +380,7 @@ export default function TicketsPage() {
                   <button
                     type="submit"
                     disabled={replying || !replyText.trim()}
-                    className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer shrink-0"
+                    className="px-4 py-2 bg-amber-500 text-[#0C3290] text-xs font-bold rounded-lg hover:bg-amber-600 disabled:opacity-50 cursor-pointer shrink-0"
                   >
                     送信
                   </button>

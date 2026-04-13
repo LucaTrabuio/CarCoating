@@ -48,6 +48,7 @@ export default async function V3BlogPage({ params }: { params: Promise<{ slug: s
     <main>
       <section className="bg-[#0C3290] py-14 px-5 text-center">
         <div className="max-w-[700px] mx-auto">
+          <Link href={base} className="text-xs text-white/40 hover:text-white/70 transition-colors mb-3 inline-block">← トップに戻る</Link>
           <h1 className="text-white text-2xl md:text-3xl font-bold mb-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングブログ</h1>
           <p className="text-white/40 text-sm leading-relaxed">
             初めてのコーティングで迷わないための基礎知識。ワックスとの違い、ガラスとセラミックの比較、施工後のお手入れまで。
@@ -80,7 +81,7 @@ export default async function V3BlogPage({ params }: { params: Promise<{ slug: s
           <p className="text-sm text-white/40 mb-6">お車の状態を見て最適なコースをご提案します。</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href={`${base}/coatings`} className="px-5 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20">メニュー一覧</Link>
-            <Link href={`${base}/booking`} className="px-5 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500">ご予約・お問い合わせ →</Link>
+            <Link href={`${base}/booking`} className="px-5 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-md text-sm hover:bg-amber-500">ご予約・お問い合わせ →</Link>
           </div>
         </div>
       </section>

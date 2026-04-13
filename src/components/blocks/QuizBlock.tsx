@@ -151,7 +151,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
             COATING QUIZ
           </p>
           <h2
-            className="text-black text-2xl md:text-5xl font-black tracking-tight whitespace-nowrap"
+            className="text-[#0C3290] text-2xl md:text-5xl font-black tracking-tight whitespace-nowrap"
             style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
           >
             あなたにぴったりのコースは？
@@ -183,7 +183,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
           <div className="text-center animate-[fadeIn_0.4s_ease-out]">
             <button
               onClick={handleStart}
-              className="px-8 py-4 bg-amber-500 text-black font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
+              className="px-8 py-4 bg-amber-500 text-[#0C3290] font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
             >
               診断スタート
             </button>
@@ -246,7 +246,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
               <Link
                 href={`${basePath}/booking`}
                 onClick={() => storeId && trackEvent(storeId, 'cta_booking', { source: 'quiz' })}
-                className="px-6 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
+                className="px-6 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors"
               >
                 このコースで予約する
               </Link>

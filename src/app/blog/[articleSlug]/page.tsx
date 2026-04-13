@@ -84,7 +84,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ ar
           {article.sections.map((section, i) => (
             <div key={i}>
               <h2 className="text-lg font-bold text-[#0C3290] mb-3 flex items-center gap-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
-                <span className="w-7 h-7 rounded-full bg-amber-500 text-black font-bold flex items-center justify-center text-xs flex-shrink-0">{i + 1}</span>
+                <span className="w-7 h-7 rounded-full bg-amber-500 text-[#0C3290] font-bold flex items-center justify-center text-xs flex-shrink-0">{i + 1}</span>
                 {section.heading}
               </h2>
               <p className="text-[13px] text-slate-600 leading-relaxed pl-10">{section.text}</p>
@@ -97,7 +97,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ ar
         <div className="max-w-[500px] mx-auto text-center text-white">
           <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングを検討中の方へ</h2>
           <p className="text-sm text-white/40 mb-6">お車の状態を見て最適なコースをご提案します。</p>
-          <Link href="/blog" className="inline-block px-8 py-3 bg-amber-500 text-black font-bold rounded-xl text-sm hover:bg-amber-600 transition-colors">ブログ一覧 →</Link>
+          <Link href="/blog" className="inline-block px-8 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-xl text-sm hover:bg-amber-600 transition-colors">ブログ一覧 →</Link>
         </div>
       </section>
     </main>

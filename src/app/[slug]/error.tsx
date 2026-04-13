@@ -12,7 +12,7 @@ export default function V3StoreError({ reset }: { reset: () => void }) {
         <div className="flex gap-3 justify-center">
           <button
             onClick={reset}
-            className="px-6 py-2.5 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors cursor-pointer"
+            className="px-6 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors cursor-pointer"
           >
             再読み込み
           </button>

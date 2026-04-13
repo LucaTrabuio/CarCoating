@@ -188,7 +188,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
               </div>
 
               <div className="flex gap-2.5 mt-5 flex-wrap">
-                <Link href={`${base}/price`} className="px-5 py-2 bg-amber-500 text-black font-bold rounded-md text-[13px] hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>
+                <Link href={`${base}/price`} className="px-5 py-2 bg-amber-500 text-[#0C3290] font-bold rounded-md text-[13px] hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>
                 <Link href={`${base}/booking`} className="px-5 py-2 bg-slate-200 text-slate-700 font-bold rounded-md text-[13px] hover:bg-slate-300 transition-colors">予約する</Link>
                 <Link href={`${base}/inquiry?tier=${tier.id}`} className="px-5 py-2 bg-blue-600 text-white font-bold rounded-md text-[13px] hover:bg-blue-700 transition-colors">お問い合わせ</Link>
               </div>
@@ -202,7 +202,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
           <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コース選びに迷ったら</h2>
           <p className="text-sm text-white/40 mb-6">お車の状態やご予算に合わせて最適なコースをご提案します。</p>
           <div className="flex gap-3 justify-center">
-            <Link href={`${base}/price`} className="px-6 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>
+            <Link href={`${base}/price`} className="px-6 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-md text-sm hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>
             <Link href={`${base}/booking`} className="px-6 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20 transition-colors">ご予約</Link>
           </div>
         </div>

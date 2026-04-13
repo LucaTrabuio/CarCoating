@@ -29,7 +29,7 @@ function PriceBlurOverlay({ children, basePath, storeId, tierId }: { children: R
           storeId={storeId}
           event="cta_inquiry"
           meta={{ source: 'pricing_blur', tier: tierId || '' }}
-          className="px-5 py-2 bg-amber-500 text-black font-bold rounded-lg text-xs hover:bg-amber-500 transition-colors shadow-lg"
+          className="px-5 py-2 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-xs hover:bg-amber-500 transition-colors shadow-lg"
         >
           料金を問い合わせる →
         </TrackedLink>
@@ -58,7 +58,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
             className={`bg-white rounded-xl p-6 text-center border-2 ${i === 1 ? 'border-amber-500 relative' : 'border-slate-200'}`}
           >
             {i === 1 && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-black text-xs font-bold px-3 py-0.5 rounded-full">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-[#0C3290] text-xs font-bold px-3 py-0.5 rounded-full">
                 一番人気
               </span>
             )}
@@ -72,7 +72,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
                 storeId={store.store_id}
                 event="cta_inquiry"
                 meta={{ source: 'pricing_card', tier: tier.id }}
-                className="inline-block px-5 py-2 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors cursor-pointer"
+                className="inline-block px-5 py-2 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors cursor-pointer"
               >
                 要問合せ →
               </TrackedLink>
@@ -111,7 +111,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
         )}
 
         <p className="text-right text-sm mt-4">
-          <Link href={`${basePath}/coatings`} className="inline-block bg-amber-500 text-black px-5 py-2.5 rounded-lg font-bold hover:opacity-90 transition-opacity">
+          <Link href={`${basePath}/coatings`} className="inline-block bg-amber-500 text-[#0C3290] px-5 py-2.5 rounded-lg font-bold hover:opacity-90 transition-opacity">
             全8コースの詳細を見る →
           </Link>
         </p>

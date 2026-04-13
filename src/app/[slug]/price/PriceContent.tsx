@@ -74,8 +74,8 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
             <p className="text-white/50 text-sm mt-1">車種を選ぶか、サイズで直接料金を確認できます。</p>
           </div>
           <div className="flex justify-center gap-2 mb-6">
-            <button onClick={() => setSizeMode('car')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${sizeMode === 'car' ? 'bg-amber-500 text-black' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>車種から探す</button>
-            <button onClick={() => setSizeMode('size')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${sizeMode === 'size' ? 'bg-amber-500 text-black' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>サイズから探す</button>
+            <button onClick={() => setSizeMode('car')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${sizeMode === 'car' ? 'bg-amber-500 text-[#0C3290]' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>車種から探す</button>
+            <button onClick={() => setSizeMode('size')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer ${sizeMode === 'size' ? 'bg-amber-500 text-[#0C3290]' : 'bg-white/10 text-white/60 hover:bg-white/20'}`}>サイズから探す</button>
           </div>
           {sizeMode === 'car' ? (
             <CarSimulator onSizeChange={handleSizeChange} />
@@ -84,7 +84,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
               <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                 {ALL_SIZES.map(size => (
                   <button key={size} onClick={() => handleDirectSizeSelect(size)}
-                    className={`py-3 px-2 rounded-lg text-center transition-all cursor-pointer ${selectedSize === size && sizeMode === 'size' ? 'bg-amber-500 text-black ring-2 ring-amber-300' : 'bg-white/10 text-white hover:bg-white/20'}`}>
+                    className={`py-3 px-2 rounded-lg text-center transition-all cursor-pointer ${selectedSize === size && sizeMode === 'size' ? 'bg-amber-500 text-[#0C3290] ring-2 ring-amber-300' : 'bg-white/10 text-white hover:bg-white/20'}`}>
                     <div className="text-lg font-bold">{size}</div>
                     <div className="text-[10px] opacity-70 mt-0.5">{sizeLabels[size].replace(`${size}サイズ`, '').replace('（', '').replace('）', '')}</div>
                   </button>
@@ -129,7 +129,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
                   return (
                     <button key={tier.id} onClick={() => { setSelectedPlan(tier.id); trackEvent(storeId, 'plan_select', { plan: tier.id }); }}
                       className={`bg-white rounded-xl p-6 text-center border-2 transition-all cursor-pointer hover:shadow-lg ${selectedPlan === tier.id ? 'border-amber-500 shadow-lg ring-2 ring-amber-200' : isCenter ? 'border-amber-500 relative' : 'border-gray-200'}`}>
-                      {isCenter && !selectedPlan && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-black text-xs font-bold px-3 py-0.5 rounded-full">★ 一番人気</span>}
+                      {isCenter && !selectedPlan && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-[#0C3290] text-xs font-bold px-3 py-0.5 rounded-full">★ 一番人気</span>}
                       <div className="text-xs text-gray-400 mb-1">{label}</div>
                       <h3 className="font-bold text-lg text-[#0C3290] mb-1">{tier.name}</h3>
                       <p className="text-xs text-gray-500 mb-3">{tier.durability_years}持続 ｜ {tier.application_time}</p>
@@ -227,7 +227,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
                 <div className="mt-6 text-center">
                   <Link href={`${base}/booking?plan=${selectedTier.id}&size=${selectedSize}&make=${encodeURIComponent(selectedMake)}&model=${encodeURIComponent(selectedModel)}`}
                     onClick={() => trackEvent(storeId, 'cta_booking', { source: 'price', plan: selectedTier.id })}
-                    className="inline-block w-full max-w-md px-8 py-4 bg-amber-500 text-black font-bold rounded-xl text-base hover:opacity-90 transition-opacity">
+                    className="inline-block w-full max-w-md px-8 py-4 bg-amber-500 text-[#0C3290] font-bold rounded-xl text-base hover:opacity-90 transition-opacity">
                     この内容で空き状況を確認する（仮予約）→
                   </Link>
                 </div>

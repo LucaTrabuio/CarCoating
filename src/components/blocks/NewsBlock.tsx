@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import type { NewsConfig, StoreNewsItem } from '@/lib/block-types';
 import type { V3StoreData } from '@/lib/v3-types';
 import NewsSection from '@/components/NewsSection';
@@ -5,9 +6,10 @@ import NewsSection from '@/components/NewsSection';
 interface NewsBlockProps {
   config: NewsConfig;
   store: V3StoreData;
+  basePath?: string;
 }
 
-export default function NewsBlock({ config, store }: NewsBlockProps) {
+export default function NewsBlock({ config, store, basePath }: NewsBlockProps) {
   let newsItems: StoreNewsItem[] = [];
   try {
     newsItems = JSON.parse(store.store_news || '[]');
@@ -42,6 +44,13 @@ export default function NewsBlock({ config, store }: NewsBlockProps) {
             </div>
           ))}
         </div>
+        {basePath && (
+          <div className="text-center mt-6">
+            <Link href={`${basePath}/news`} className="inline-block px-6 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors">
+              すべてのお知らせを見る →
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

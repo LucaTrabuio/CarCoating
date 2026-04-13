@@ -35,6 +35,8 @@ export default function InquiriesPage() {
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'replied' | 'closed'>('open');
+  const [replyText, setReplyText] = useState('');
+  const [replying, setReplying] = useState(false);
 
   useEffect(() => {
     fetch('/api/v3/stores?all=true').then(r => r.json())
@@ -79,6 +81,19 @@ export default function InquiriesPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ inquiryId: id, status }),
     });
+    fetchInquiries();
+  }
+
+  async function sendReply(id: string) {
+    if (!replyText.trim()) return;
+    setReplying(true);
+    await fetch('/api/admin/inquiries', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ inquiryId: id, status: 'replied', replyText }),
+    });
+    setReplyText('');
+    setReplying(false);
     fetchInquiries();
   }
 
@@ -169,10 +184,45 @@ export default function InquiriesPage() {
                 <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{selected.message}</p>
               </div>
 
-              <p className="text-[10px] text-gray-400">
-                店舗に送信された通知メールの「返信」ボタンから、お客様に直接返信できます。
-                返信後は上のステータスを「返信済み」に変更してください。
-              </p>
+              {/* Reply history */}
+              {Array.isArray((selected as unknown as Record<string, unknown>).replies) && (
+                <div className="space-y-2">
+                  <div className="text-[10px] text-gray-500 font-bold">返信履歴</div>
+                  {((selected as unknown as Record<string, unknown>).replies as Array<{ email: string; text: string; createdAt: string }>).map((r: { email: string; text: string; createdAt: string }, i: number) => (
+                    <div key={i} className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-bold text-green-800">{r.email}</span>
+                        <span className="text-[10px] text-gray-400">{r.createdAt?.slice(0, 16).replace('T', ' ')}</span>
+                      </div>
+                      <p className="text-sm text-gray-700 whitespace-pre-wrap">{r.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Reply form */}
+              {selected.status !== 'closed' && (
+                <div className="border-t border-gray-100 pt-3">
+                  <div className="text-[10px] text-gray-500 font-bold mb-2">お客様に返信</div>
+                  <textarea
+                    rows={3}
+                    value={replyText}
+                    onChange={e => setReplyText(e.target.value)}
+                    placeholder="返信内容を入力..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-2"
+                  />
+                  <button
+                    onClick={() => sendReply(selected.id)}
+                    disabled={replying || !replyText.trim()}
+                    className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+                  >
+                    {replying ? '送信中...' : '返信を送信（メール送付）'}
+                  </button>
+                  <p className="text-[10px] text-gray-400 mt-1">
+                    送信するとお客様にメールが届きます。通知メールの「返信」ボタンからも直接返信できます。
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

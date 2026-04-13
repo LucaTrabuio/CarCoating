@@ -69,7 +69,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
             <p className="text-white/60 text-sm mb-4">{config.subtitle || store.hero_subtitle || `${store.store_name} ｜ KeePer PRO SHOP認定`}</p>
             {config.show_badges && <TrustBadges hasBooth={store.has_booth} level1Count={store.level1_staff_count} level2Count={store.level2_staff_count} />}
             <div className="flex gap-3 justify-center mt-5">
-              {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
+              {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
               {config.show_cta_inquiry && <TrackedLink href={`${basePath}/booking?mode=inquiry`} storeId={store.store_id} event="cta_inquiry" className="px-7 py-3 bg-white border border-white text-[#0C3290] font-semibold rounded-lg text-sm hover:bg-gray-100 transition-colors shadow-lg">{'\u304A\u554F\u3044\u5408\u308F\u305B'}</TrackedLink>}
             </div>
           </div>
@@ -83,7 +83,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
             <p className="text-white/60 text-sm mb-4">{config.subtitle || store.hero_subtitle || `${store.store_name} ｜ KeePer PRO SHOP認定`}</p>
             {config.show_badges && <TrustBadges hasBooth={store.has_booth} level1Count={store.level1_staff_count} level2Count={store.level2_staff_count} />}
             <div className="flex gap-3 justify-center mt-5">
-              {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
+              {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
               {config.show_cta_inquiry && <TrackedLink href={`${basePath}/booking?mode=inquiry`} storeId={store.store_id} event="cta_inquiry" className="px-7 py-3 bg-white border border-white text-[#0C3290] font-semibold rounded-lg text-sm hover:bg-gray-100 transition-colors shadow-lg">{'\u304A\u554F\u3044\u5408\u308F\u305B'}</TrackedLink>}
             </div>
           </div>

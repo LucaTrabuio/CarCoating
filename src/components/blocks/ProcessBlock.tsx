@@ -20,7 +20,7 @@ export default function ProcessBlock({ config }: ProcessBlockProps) {
           {config.steps.map((step, i) => (
             <div key={step.id} className="flex gap-5 mb-8 last:mb-0">
               <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-amber-500 text-black flex items-center justify-center font-bold text-lg flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-amber-500 text-[#0C3290] flex items-center justify-center font-bold text-lg flex-shrink-0">
                   {step.number}
                 </div>
                 {i < config.steps.length - 1 && (

@@ -32,12 +32,12 @@ export default function V3CasesPage() {
       <section className="py-6 px-5 border-b border-gray-200">
         <div className="max-w-[1100px] mx-auto flex flex-wrap gap-2">
           <button onClick={() => setFilterCoating('all')}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCoating === 'all' ? 'bg-amber-500 text-black' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCoating === 'all' ? 'bg-amber-500 text-[#0C3290]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
             全コース
           </button>
           {coatingTypes.map(t => (
             <button key={t} onClick={() => setFilterCoating(t)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCoating === t ? 'bg-amber-500 text-black' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer ${filterCoating === t ? 'bg-amber-500 text-[#0C3290]' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
               {t}
             </button>
           ))}
@@ -97,7 +97,7 @@ export default function V3CasesPage() {
         <div className="max-w-[500px] mx-auto text-center text-white">
           <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングをご検討中の方へ</h2>
           <div className="flex gap-3 justify-center">
-            <Link href={`${base}/booking`} className="px-6 py-2.5 bg-amber-500 text-black font-bold rounded-md text-sm hover:bg-amber-500">予約する →</Link>
+            <Link href={`${base}/booking`} className="px-6 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-md text-sm hover:bg-amber-500">予約する →</Link>
             <Link href={`${base}/booking?mode=inquiry`} className="px-6 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20">お問い合わせ</Link>
           </div>
         </div>

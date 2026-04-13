@@ -118,7 +118,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
 
           <div className="mt-8 text-center">
             <Link href={`${base}/price`}
-              className="inline-block px-8 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
+              className="inline-block px-8 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
               見積もりシミュレーターへ →
             </Link>
           </div>

@@ -487,7 +487,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           </div>
           <div className="space-y-3">
             {FAQ.map((item, i) => (
-              <details key={i} className="bg-white border border-slate-200 rounded-xl group">
+              <details key={i} name={`faq-${i}`} className="bg-white border border-slate-200 rounded-xl group">
                 <summary className="cursor-pointer px-5 py-4 flex items-start gap-3 list-none">
                   <span className="text-sm font-bold text-amber-600 shrink-0">Q.</span>
                   <span className="text-sm font-bold text-[#0C3290] flex-1 leading-snug">{item.q}</span>
@@ -516,7 +516,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <div className="flex gap-3 justify-center flex-wrap">
             <Link
               href={`${base}/coatings`}
-              className="px-6 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors"
+              className="px-6 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-600 transition-colors"
             >
               メニュー一覧を見る →
             </Link>

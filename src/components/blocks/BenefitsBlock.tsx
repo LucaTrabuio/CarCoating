@@ -14,12 +14,12 @@ export default function BenefitsBlock({ config, basePath, discountRate }: Benefi
     <section className="py-14 px-5 bg-amber-500">
       <div className="max-w-[700px] mx-auto">
         <h2
-          className="text-3xl md:text-5xl font-black tracking-tight text-black text-center mb-2"
+          className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] text-center mb-2"
           style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
         >
           Web予約限定 {config.items.length}つの特典
         </h2>
-        <p className="text-sm text-black/60 text-center mb-8">
+        <p className="text-sm text-[#0C3290]/60 text-center mb-8">
           最大{discountRate}%OFFの割引をはじめ、特典が充実
         </p>
         <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-200">
@@ -29,7 +29,7 @@ export default function BenefitsBlock({ config, basePath, discountRate }: Benefi
                 <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#0C3290] text-white text-sm font-bold flex items-center justify-center">
                   {i + 1}
                 </span>
-                <span className="text-black text-sm font-medium leading-relaxed pt-0.5">
+                <span className="text-[#0C3290] text-sm font-medium leading-relaxed pt-0.5">
                   {item.text}
                 </span>
               </li>

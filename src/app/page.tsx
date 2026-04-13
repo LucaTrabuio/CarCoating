@@ -257,7 +257,7 @@ export default function V3HomePage() {
             特許技術のガラスコーティングで愛車を守る。全国のKeePer認定プロショップで、あなたの車に最適なコースをご提案します。
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <a href="#store-finder" className="px-7 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
+            <a href="#store-finder" className="px-7 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
               近くの店舗を探す
             </a>
             <a href="#services" className="px-7 py-3 bg-white/10 border border-white/25 text-white font-semibold rounded-lg text-sm hover:bg-white/20 transition-colors">
@@ -298,7 +298,7 @@ export default function V3HomePage() {
                             <p className="text-xs text-gray-500 mt-0.5">{tier.tagline}</p>
                           </div>
                           <div className="text-right flex-shrink-0 ml-4">
-                            <span className="inline-block px-3 py-1.5 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-500 transition-colors">
+                            <span className="inline-block px-3 py-1.5 bg-amber-500 text-[#0C3290] text-xs font-bold rounded-lg hover:bg-amber-500 transition-colors">
                               店舗を探す →
                             </span>
                           </div>
@@ -407,7 +407,7 @@ export default function V3HomePage() {
             </div>
             <div className="flex items-center gap-3">
               {geoStatus === 'idle' && (
-                <button onClick={detectLocation} className="px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-lg hover:bg-amber-500 cursor-pointer">
+                <button onClick={detectLocation} className="px-4 py-2 bg-amber-500 text-[#0C3290] text-xs font-bold rounded-lg hover:bg-amber-500 cursor-pointer">
                   現在地から探す
                 </button>
               )}
@@ -474,7 +474,7 @@ export default function V3HomePage() {
                         </span>
                       )}
                       <Link href={(() => { const scId = (store as V3StoreData & { sub_company_id?: string }).sub_company_id; return scId && subCompanyMap[scId] ? `/${subCompanyMap[scId].slug}` : `/${store.store_id}/`; })()}
-                        className="px-3 py-1.5 bg-amber-500 text-black text-[11px] font-bold rounded-md hover:bg-amber-500 transition-colors"
+                        className="px-3 py-1.5 bg-amber-500 text-[#0C3290] text-[11px] font-bold rounded-md hover:bg-amber-500 transition-colors"
                         onClick={e => e.stopPropagation()}>
                         詳細 →
                       </Link>
@@ -575,7 +575,7 @@ export default function V3HomePage() {
               { num: '4', title: '施工・お引渡し', desc: '朝お預け → 夕方お引渡し。無料点検2回付き。' },
             ].map(step => (
               <div key={step.num} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-amber-500 text-black font-bold flex items-center justify-center text-lg mx-auto mb-3">
+                <div className="w-12 h-12 rounded-full bg-amber-500 text-[#0C3290] font-bold flex items-center justify-center text-lg mx-auto mb-3">
                   {step.num}
                 </div>
                 <h3 className="font-bold text-sm text-[#0C3290] mb-1">{step.title}</h3>
@@ -595,7 +595,7 @@ export default function V3HomePage() {
           <h2 className="text-xl font-bold mb-2" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングを始めませんか？</h2>
           <p className="text-sm text-white/40 mb-6">お近くの店舗で無料見積もり。Web予約限定の割引特典もご用意しています。</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <a href="#store-finder" className="px-7 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
+            <a href="#store-finder" className="px-7 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors">
               近くの店舗を探す
             </a>
           </div>

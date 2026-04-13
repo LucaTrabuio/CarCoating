@@ -44,6 +44,9 @@
   --text-5xl: 3.25rem;       /* 52px (was 48px) */
   --text-5xl--line-height: 1;
 
+  /* Button text on amber backgrounds */
+  --color-btn-text: #0C3290;
+
   /* Override Tailwind amber palette with #F0EA01 shades */
   --color-amber-50: #fefde6;
   --color-amber-100: #fcf9b3;
@@ -60,11 +63,11 @@
 
 @keyframes marquee {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(-25%); }
 }
 
 .animate-marquee {
-  animation: marquee 20s linear infinite;
+  animation: marquee 10s linear infinite;
 }
 
 body {

@@ -134,7 +134,7 @@ export default function StoresPage() {
         <button
           onClick={() => setActiveSection('legacy')}
           className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-            activeSection === 'legacy' ? 'bg-amber-500 text-black' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
+            activeSection === 'legacy' ? 'bg-amber-500 text-[#0C3290]' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
           }`}
         >
           店舗マスターCSV管理
@@ -142,7 +142,7 @@ export default function StoresPage() {
         <button
           onClick={() => setActiveSection('v3')}
           className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
-            activeSection === 'v3' ? 'bg-amber-500 text-black' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
+            activeSection === 'v3' ? 'bg-amber-500 text-[#0C3290]' : 'bg-white border border-gray-300 text-gray-600 hover:bg-gray-50'
           }`}
         >
           V3 Firebase管理
@@ -277,7 +277,7 @@ function LegacyStoresSection() {
           <div className="flex gap-2">
             <button onClick={handleCSVTemplateDownload} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📋 テンプレート</button>
             <button onClick={handleExportCSV} className="px-3 py-1.5 border border-gray-300 rounded-lg text-xs font-semibold hover:bg-gray-50">📤 CSVエクスポート</button>
-            <label className="px-3 py-1.5 bg-amber-500 text-black rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
+            <label className="px-3 py-1.5 bg-amber-500 text-[#0C3290] rounded-lg text-xs font-semibold cursor-pointer hover:opacity-90">
               📥 CSVインポート
               <input type="file" accept=".csv" onChange={handleCSVUpload} className="hidden" />
             </label>
@@ -330,7 +330,7 @@ function LegacyStoresSection() {
               <button
                 onClick={handleCSVSave}
                 disabled={csvErrors.some(e => e.includes('store_id カラム'))}
-                className="px-4 py-2 bg-amber-500 text-black rounded-lg text-sm font-bold disabled:opacity-40"
+                className="px-4 py-2 bg-amber-500 text-[#0C3290] rounded-lg text-sm font-bold disabled:opacity-40"
               >
                 保存して反映する（{csvRows.length}店舗）
               </button>
@@ -515,7 +515,7 @@ function V3FirebaseSection() {
             className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm font-semibold hover:bg-gray-200">
             CSVエクスポート
           </button>
-          <label className="px-4 py-2 bg-amber-500 text-black rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-500">
+          <label className="px-4 py-2 bg-amber-500 text-[#0C3290] rounded-lg text-sm font-bold cursor-pointer hover:bg-amber-500">
             CSVインポート
             <input type="file" accept=".csv" onChange={handleV3FileSelect} className="hidden" />
           </label>
@@ -554,7 +554,7 @@ function V3FirebaseSection() {
               </table>
             </div>
             <button onClick={handleV3Import} disabled={v3Loading}
-              className="mt-3 px-6 py-2.5 bg-amber-500 text-black rounded-lg text-sm font-bold disabled:opacity-50">
+              className="mt-3 px-6 py-2.5 bg-amber-500 text-[#0C3290] rounded-lg text-sm font-bold disabled:opacity-50">
               {v3Loading ? '保存中...' : `Firestoreに保存（${v3CsvPreview.length}件）`}
             </button>
           </div>
@@ -618,7 +618,7 @@ function StoreHierarchy({ stores, loading }: { stores: Record<string, unknown>[]
               </div>
               <div className="flex gap-2">
                 <Link href={`/${sc.slug}`} target="_blank" className="text-xs text-amber-500 font-semibold hover:underline">サイトを見る →</Link>
-                <Link href={`/admin/builder/${String(groupStores[0]?.store_id)}`} className="text-xs bg-amber-500 text-black px-3 py-1 rounded-lg font-semibold hover:bg-amber-500">ビルダー</Link>
+                <Link href={`/admin/builder/${String(groupStores[0]?.store_id)}`} className="text-xs bg-amber-500 text-[#0C3290] px-3 py-1 rounded-lg font-semibold hover:bg-amber-500">ビルダー</Link>
               </div>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">

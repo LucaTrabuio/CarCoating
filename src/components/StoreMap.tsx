@@ -177,7 +177,7 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
             >
               <div className="flex items-start gap-3">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
-                  isSelected ? 'bg-amber-500 text-black' : 'bg-slate-100 text-slate-500'
+                  isSelected ? 'bg-amber-500 text-[#0C3290]' : 'bg-slate-100 text-slate-500'
                 }`}>
                   {isSelected ? '✓' : '📍'}
                 </div>

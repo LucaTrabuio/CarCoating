@@ -194,7 +194,7 @@ export default function ReservationForm({ store }: Props) {
                       onClick={() => { if (available) { setSelectedDate(dateStr); setSelectedTime(null); } }}
                       disabled={!available}
                       className={`py-2 rounded text-sm cursor-pointer transition-colors ${
-                        selectedDate === dateStr ? 'bg-amber-500 text-black font-bold' :
+                        selectedDate === dateStr ? 'bg-amber-500 text-[#0C3290] font-bold' :
                         available ? 'bg-green-50 text-green-700 hover:bg-green-100' :
                         'text-gray-300'
                       }`}
@@ -224,7 +224,7 @@ export default function ReservationForm({ store }: Props) {
                         onClick={() => setSelectedTime(slot.time)}
                         className={`py-2 px-1 border rounded-lg text-sm cursor-pointer transition-colors ${
                           selectedTime === slot.time
-                            ? 'bg-amber-500 text-black border-amber-500 font-bold'
+                            ? 'bg-amber-500 text-[#0C3290] border-amber-500 font-bold'
                             : 'border-gray-200 hover:border-amber-500 hover:bg-amber-50'
                         }`}
                       >
@@ -243,7 +243,7 @@ export default function ReservationForm({ store }: Props) {
             {selectedDate && selectedTime && (
               <button
                 onClick={() => setStep('info')}
-                className="w-full py-3 bg-amber-500 text-black font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity"
+                className="w-full py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity"
               >
                 お客様情報の入力へ →
               </button>
@@ -361,7 +361,7 @@ export default function ReservationForm({ store }: Props) {
                 ← 日時選択に戻る
               </button>
               <button type="submit" disabled={submitting}
-                className="flex-1 py-3 bg-amber-500 text-black font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50">
+                className="flex-1 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50">
                 {submitting ? '送信中...' : '予約を確定する'}
               </button>
             </div>
