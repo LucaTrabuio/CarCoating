@@ -50,13 +50,21 @@ export async function POST(req: NextRequest) {
     const db = getAdminDb();
 
     if (action === 'create') {
-      const { subject, text, storeId } = body;
+      const { subject, text, storeId, type, severity } = body;
       if (!subject?.trim() || !text?.trim()) {
         return NextResponse.json({ error: 'subject and text are required' }, { status: 400 });
       }
 
+      // Auto-generate ticket key (TKT-NNN)
+      const countSnap = await db.collection('tickets').count().get();
+      const nextNum = (countSnap.data().count || 0) + 1;
+      const key = `TKT-${String(nextNum).padStart(3, '0')}`;
+
       const now = new Date().toISOString();
       const ticket = {
+        key,
+        type: type || 'general',
+        severity: severity || 'medium',
         storeId: storeId || '',
         authorUid: user.uid,
         authorEmail: user.email,
@@ -130,13 +138,14 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
       }
       const { ticketId, status } = body;
-      if (!ticketId || !['open', 'in_progress', 'closed'].includes(status)) {
+      if (!ticketId || !['open', 'in_progress', 'resolved', 'closed'].includes(status)) {
         return NextResponse.json({ error: 'Invalid ticketId or status' }, { status: 400 });
       }
-      await db.collection('tickets').doc(ticketId).update({
-        status,
-        updatedAt: new Date().toISOString(),
-      });
+      const now = new Date().toISOString();
+      const updateData: Record<string, unknown> = { status, updatedAt: now };
+      if (status === 'resolved') updateData.resolvedAt = now;
+      if (status === 'closed') updateData.closedAt = now;
+      await db.collection('tickets').doc(ticketId).update(updateData);
       return NextResponse.json({ ok: true });
     }
 

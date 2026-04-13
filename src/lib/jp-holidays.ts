@@ -1,3 +1,5 @@
+// Module version available at @/modules/booking-calendar/lib/jp-holidays
+
 /**
  * Japanese national holidays (祝日) calculator.
  * Returns a Map<dateString, holidayName> for a given year.

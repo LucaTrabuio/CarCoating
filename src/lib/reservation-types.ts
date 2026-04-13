@@ -1,3 +1,5 @@
+// Module version available at @/modules/booking-calendar/types
+
 export interface SlotCapacity {
   capacity: number;
 }
