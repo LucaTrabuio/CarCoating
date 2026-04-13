@@ -20,10 +20,10 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/97 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-[1100px] mx-auto px-5 flex items-center justify-between h-14">
-        <Link href={base} className="flex items-center gap-2.5 text-[#0C3290]">
+        <Link href={base} className="flex items-center gap-2 text-[#0C3290] min-w-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/keeper-logo-header.png" alt="KeePer" className="h-10" />
-          <span className="text-[13px] font-bold leading-tight">
+          <img src="/images/keeper-logo-header.png" alt="KeePer" className="h-8 sm:h-10 shrink-0" />
+          <span className="hidden sm:inline text-[13px] font-bold leading-tight truncate max-w-[180px] md:max-w-none">
             {storeName}
           </span>
         </Link>
@@ -80,7 +80,7 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
           {tel && (
             <a href={`tel:${tel}`}
               onClick={() => trackEvent(storeId, 'phone_call')}
-              className="text-[#0C3290] text-[11px] font-bold px-3 py-1.5 rounded-md bg-amber-500">
+              className="hidden sm:inline-block text-[#0C3290] text-[11px] font-bold px-3 py-1.5 rounded-md bg-amber-500 whitespace-nowrap">
               &#9742; {tel}
             </a>
           )}
