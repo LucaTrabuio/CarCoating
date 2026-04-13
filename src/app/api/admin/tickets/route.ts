@@ -28,7 +28,7 @@ export async function GET() {
     const snap = await query.get();
     const tickets = snap.docs
       .map(d => ({ id: d.id, ...d.data() }))
-      .sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+      .sort((a, b) => String((b as Record<string, unknown>).updatedAt || '').localeCompare(String((a as Record<string, unknown>).updatedAt || '')));
     return NextResponse.json({ tickets });
   } catch (error) {
     console.error('Error fetching tickets:', error);
