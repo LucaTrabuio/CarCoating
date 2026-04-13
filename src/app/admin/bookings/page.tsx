@@ -81,6 +81,9 @@ export default function BookingsPage() {
           list = list.filter(s => user.managed_stores.includes(s.store_id));
         }
         setStores(list);
+        if (user.role === 'store_admin' && list.length === 1) {
+          setSelectedStore(list[0].store_id);
+        }
       })
       .catch(() => {});
   }, [user]);

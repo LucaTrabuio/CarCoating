@@ -18,7 +18,7 @@ export async function GET() {
     const { user } = auth;
 
     const db = getAdminDb();
-    let query: FirebaseFirestore.Query = db.collection('tickets').orderBy('updatedAt', 'desc');
+    let query: FirebaseFirestore.Query = db.collection('tickets');
 
     // store_admin can only see tickets they created
     if (user.role === 'store_admin') {
@@ -26,7 +26,9 @@ export async function GET() {
     }
 
     const snap = await query.get();
-    const tickets = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const tickets = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
     return NextResponse.json({ tickets });
   } catch (error) {
     console.error('Error fetching tickets:', error);

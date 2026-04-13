@@ -10,13 +10,15 @@ export async function GET() {
     const { user } = auth;
 
     const db = getAdminDb();
-    let query: FirebaseFirestore.Query = db.collection('tickets').where('status', '==', 'open');
 
     if (user.role === 'store_admin') {
-      query = query.where('authorUid', '==', user.uid);
+      // Avoid composite index by filtering in code
+      const snap = await db.collection('tickets').where('authorUid', '==', user.uid).get();
+      const openCount = snap.docs.filter(d => d.data().status === 'open').length;
+      return NextResponse.json({ open: openCount });
     }
 
-    const snap = await query.count().get();
+    const snap = await db.collection('tickets').where('status', '==', 'open').count().get();
     return NextResponse.json({ open: snap.data().count });
   } catch {
     return NextResponse.json({ open: 0 });
