@@ -23,3 +23,6 @@ export { default as TicketCreateForm } from './components/TicketCreateForm';
 
 // Hooks
 export { useTickets } from './hooks/useTickets';
+
+// Server-side API handler (for integration into any framework)
+export { listTickets, handleTicketAction } from './api/tickets-handler';
