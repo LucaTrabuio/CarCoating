@@ -49,7 +49,7 @@ function AdminLoginPageContent() {
 
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
-      const idToken = await credential.user.getIdToken();
+      const idToken = await credential.user.getIdToken(true); // force refresh to get latest custom claims
       await createSession(idToken);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Login failed';
@@ -69,7 +69,7 @@ function AdminLoginPageContent() {
 
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const idToken = await result.user.getIdToken();
+      const idToken = await result.user.getIdToken(true); // force refresh to get latest custom claims
       await createSession(idToken);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Google login failed';

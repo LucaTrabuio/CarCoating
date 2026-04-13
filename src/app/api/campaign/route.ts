@@ -6,7 +6,7 @@ const BLOB_KEY = 'campaign.json';
 
 const HARDCODED_DEFAULTS: CampaignDefaults = {
   title: 'Web予約限定キャンペーン',
-  color: '#c49a2a',
+  color: '#F0EA01',
   start: '2026-04-01',
   end: '2026-04-30',
   discount: 20,
