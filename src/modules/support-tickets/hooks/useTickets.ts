@@ -54,12 +54,13 @@ export function useTickets(apiBasePath: string = '/api/admin/tickets'): UseTicke
         const res = await fetch(apiBasePath, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'create', ...data }),
+          body: JSON.stringify({ action: 'create', subject: data.subject, text: data.message, type: data.type, severity: data.severity }),
         });
         if (!res.ok) throw new Error(`作成に失敗しました (${res.status})`);
-        const created = await res.json();
-        setTickets((prev) => [created, ...prev]);
-        return created;
+        const result = await res.json();
+        // API returns { id } — refetch for full data
+        await fetchTickets();
+        return result as Ticket;
       } catch (err) {
         setError(err instanceof Error ? err.message : '不明なエラー');
         return null;
