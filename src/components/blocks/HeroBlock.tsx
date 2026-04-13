@@ -30,7 +30,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
   const isReblurred = phase === 'reblur';
 
   return (
-    <section suppressHydrationWarning className="relative min-h-[600px] md:min-h-[800px] flex items-center justify-center" style={{ clipPath: 'inset(0)' }}>
+    <section suppressHydrationWarning className="relative min-h-[360px] sm:min-h-[500px] md:min-h-[800px] flex items-center justify-center" style={{ clipPath: 'inset(0)' }}>
       {mounted ? (
         <img
           src={imgSrc}

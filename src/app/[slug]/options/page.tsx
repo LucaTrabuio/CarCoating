@@ -58,7 +58,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
 
   return (
     <main>
-      <section className="bg-[#0C3290] py-12 px-5 text-center">
+      <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
         <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>オプションメニュー</h1>
         {showOptionBanner && (
           <p className="text-white/40 text-sm mt-1">コーティングと同時施工で{optionDiscount}%OFF</p>

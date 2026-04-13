@@ -61,7 +61,7 @@ export default async function V3AccessPage({ params }: { params: Promise<{ slug:
   if (store && store.is_active) {
     return (
       <main>
-        <section className="bg-[#0C3290] py-12 px-5 text-center">
+        <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
           <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>店舗情報・アクセス</h1>
           <p className="text-white/40 text-sm mt-1">{store.store_name}</p>
         </section>
@@ -82,7 +82,7 @@ export default async function V3AccessPage({ params }: { params: Promise<{ slug:
 
     return (
       <main>
-        <section className="bg-[#0C3290] py-12 px-5 text-center">
+        <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
           <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>店舗一覧・アクセス</h1>
           <p className="text-white/40 text-sm mt-1">{subCompany.name}</p>
           <p className="text-white/30 text-xs mt-2">{stores.length}店舗</p>

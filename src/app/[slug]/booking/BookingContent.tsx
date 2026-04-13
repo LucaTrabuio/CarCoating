@@ -40,7 +40,7 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
 
   return (
     <main>
-      <section className="bg-[#0C3290] py-12 px-5 text-center">
+      <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
         <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
           {isInquiry ? 'お問い合わせ' : 'ご予約'}
         </h1>

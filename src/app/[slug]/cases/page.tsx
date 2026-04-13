@@ -24,7 +24,7 @@ export default function V3CasesPage() {
 
   return (
     <main>
-      <section className="bg-[#0C3290] py-12 px-5 text-center">
+      <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
         <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>施工事例</h1>
         <p className="text-white/40 text-sm mt-1">ビフォーアフターで見るKeePer品質</p>
       </section>

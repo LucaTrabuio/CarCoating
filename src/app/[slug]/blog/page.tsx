@@ -46,7 +46,7 @@ export default async function V3BlogPage({ params }: { params: Promise<{ slug: s
 
   return (
     <main>
-      <section className="bg-[#0C3290] py-14 px-5 text-center">
+      <section className="bg-[#0C3290] py-8 md:py-14 px-5 text-center">
         <div className="max-w-[700px] mx-auto">
           <Link href={base} className="text-xs text-white/40 hover:text-white/70 transition-colors mb-3 inline-block">← トップに戻る</Link>
           <h1 className="text-white text-2xl md:text-3xl font-bold mb-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングブログ</h1>

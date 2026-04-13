@@ -212,7 +212,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   return (
     <main>
       {/* Hero */}
-      <section className="bg-[#0C3290] py-16 px-5 text-center relative overflow-hidden">
+      <section className="bg-[#0C3290] py-8 md:py-16 px-5 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0d1b2a] via-[#14253a] to-[#0C3290]" />
         <div className="relative max-w-[900px] mx-auto">
           <Image
