@@ -28,7 +28,19 @@ export async function GET() {
 
     const snap = await query.get();
     const tickets = snap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
+      .map(d => {
+        const data = d.data();
+        return {
+          id: d.id,
+          key: data.key || d.id.slice(0, 8),
+          type: data.type || 'general',
+          severity: data.severity || 'medium',
+          assigneeEmail: data.assigneeEmail || '',
+          resolvedAt: data.resolvedAt || null,
+          closedAt: data.closedAt || null,
+          ...data,
+        };
+      })
       .sort((a, b) => String((b as Record<string, unknown>).updatedAt || '').localeCompare(String((a as Record<string, unknown>).updatedAt || '')));
     return NextResponse.json({ tickets });
   } catch (error) {
@@ -125,10 +137,15 @@ export async function POST(req: NextRequest) {
         createdAt: new Date().toISOString(),
       };
 
-      await ref.update({
+      // Auto-set assignee to whoever replies (if not already assigned)
+      const replyUpdate: Record<string, unknown> = {
         messages: FieldValue.arrayUnion(message),
         updatedAt: new Date().toISOString(),
-      });
+      };
+      if (!doc.data()?.assigneeEmail) {
+        replyUpdate.assigneeEmail = user.email;
+      }
+      await ref.update(replyUpdate);
 
       return NextResponse.json({ ok: true });
     }
@@ -145,6 +162,11 @@ export async function POST(req: NextRequest) {
       const updateData: Record<string, unknown> = { status, updatedAt: now };
       if (status === 'resolved') updateData.resolvedAt = now;
       if (status === 'closed') updateData.closedAt = now;
+      // Auto-set assignee to whoever changes the status
+      const ticketDoc = await db.collection('tickets').doc(ticketId).get();
+      if (!ticketDoc.data()?.assigneeEmail) {
+        updateData.assigneeEmail = user.email;
+      }
       await db.collection('tickets').doc(ticketId).update(updateData);
       return NextResponse.json({ ok: true });
     }

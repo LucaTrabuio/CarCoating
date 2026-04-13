@@ -74,16 +74,16 @@ export default function TicketTable({ tickets, onRowClick, onSort, sortField, so
               className="cursor-pointer border-b border-gray-100 transition-colors hover:bg-blue-50/40"
             >
               <td className="whitespace-nowrap px-3 py-2 font-mono text-xs text-blue-600 font-semibold">
-                {ticket.key}
+                {ticket.key || ticket.id.slice(0, 8)}
               </td>
               <td className="px-3 py-2">
-                <TicketStatusBadge kind="type" value={ticket.type} />
+                <TicketStatusBadge kind="type" value={ticket.type || 'general'} />
               </td>
               <td className="px-3 py-2 max-w-[200px] md:max-w-[360px] truncate" title={ticket.subject}>
                 {ticket.subject}
               </td>
               <td className="px-3 py-2">
-                <TicketStatusBadge kind="severity" value={ticket.severity} />
+                <TicketStatusBadge kind="severity" value={ticket.severity || 'medium'} />
               </td>
               <td className="px-3 py-2">
                 <TicketStatusBadge kind="status" value={ticket.status} />
