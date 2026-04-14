@@ -16,11 +16,24 @@ interface PricingBlockProps {
 function PriceBlurOverlay({ children, basePath, storeId, tierId }: { children: React.ReactNode; basePath: string; storeId: string; tierId?: string }) {
   const inquiryUrl = tierId ? `${basePath}/inquiry?tier=${tierId}` : `${basePath}/inquiry`;
   return (
-    <div className="relative">
-      <div style={{ filter: 'blur(8px)' }} className="select-none pointer-events-none" aria-hidden="true">
-        {children}
-      </div>
-      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/70 backdrop-blur-[1px] rounded-lg pointer-events-auto">
+    <div className="relative pt-6">
+      {/* Card content underneath (clear) */}
+      {children}
+      {/* Single backdrop-blur overlay: transparent at top (near ichiban ninki), full blur at bottom */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          backdropFilter: 'blur(7px)',
+          WebkitBackdropFilter: 'blur(7px)',
+          maskImage: 'linear-gradient(to bottom, transparent 15%, black 60%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 15%, black 60%)',
+        }}
+      />
+      <div
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none"
+        style={{ transform: 'translateY(90px)' }}
+      >
         <p className="text-xs text-slate-600 font-semibold mb-3 text-center px-4">
           料金はお問い合わせ後にメールでご案内
         </p>
@@ -29,7 +42,8 @@ function PriceBlurOverlay({ children, basePath, storeId, tierId }: { children: R
           storeId={storeId}
           event="cta_inquiry"
           meta={{ source: 'pricing_blur', tier: tierId || '' }}
-          className="px-5 py-2 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-xs hover:bg-amber-500 transition-colors shadow-lg"
+          className="px-5 py-2 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-xs hover:bg-amber-500 transition-colors pointer-events-auto"
+          style={{ boxShadow: '0 1px 1px rgba(0,0,0,0.45)' }}
         >
           料金を問い合わせる →
         </TrackedLink>
@@ -47,7 +61,13 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
   const anyBlurred = featured.some(tier => tier && isBlurred(tier.id, 'web_price', config.blur_fields));
 
   const pricingContent = (
-    <div className="grid md:grid-cols-3 gap-4 mb-6">
+    <div
+      className="grid md:grid-cols-3 gap-4 mb-6 pt-4"
+      style={anyBlurred ? {
+        maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
+      } : undefined}
+    >
       {featured.map((tier, i) => {
         if (!tier) return null;
         const webPrice = getWebPrice(tier, 'SS', discountRate);
@@ -66,21 +86,9 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
             <p className="text-xs text-slate-500 mb-3">
               {tier.durability_years}持続 | {tier.application_time}
             </p>
-            {blurred ? (
-              <TrackedLink
-                href={`${basePath}/inquiry?tier=${tier.id}&prefill=price`}
-                storeId={store.store_id}
-                event="cta_inquiry"
-                meta={{ source: 'pricing_card', tier: tier.id }}
-                className="inline-block px-5 py-2 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors cursor-pointer"
-              >
-                要問合せ →
-              </TrackedLink>
-            ) : (
-              <div className="text-2xl font-bold text-[#0C3290]">
-                {formatPrice(webPrice)}〜
-              </div>
-            )}
+            <div className="text-2xl font-bold text-[#0C3290]">
+              {formatPrice(webPrice)}〜
+            </div>
             <p className="text-[10px] text-slate-400 mb-3">{blurred ? 'お問い合わせ後にメールでご案内' : 'SSサイズ・Web割後・税込'}</p>
           </div>
         );
@@ -89,8 +97,13 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
   );
 
   return (
-    <section className="py-14 px-5 bg-white">
-      <div className="max-w-[900px] mx-auto">
+    <section
+      className="py-14 px-5 relative"
+      style={anyBlurred ? {
+        background: 'linear-gradient(to bottom, #ffffff 0%, #ffffff 30%, rgba(235,235,238,1) 70%, rgba(220,220,225,1) 100%)',
+      } : { background: '#ffffff' }}
+    >
+      <div className="max-w-[1100px] mx-auto">
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             コーティング料金
@@ -110,11 +123,11 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
           pricingContent
         )}
 
-        <p className="text-right text-sm mt-4">
-          <Link href={`${basePath}/coatings`} className="inline-block bg-amber-500 text-[#0C3290] px-5 py-2.5 rounded-lg font-bold hover:opacity-90 transition-opacity">
+        <div className="text-right mt-24">
+          <Link href={`${basePath}/coatings`} className="inline-block bg-amber-500 text-[#0C3290] px-5 py-2.5 rounded-lg text-sm font-bold hover:opacity-90 transition-opacity">
             全8コースの詳細を見る →
           </Link>
-        </p>
+        </div>
       </div>
     </section>
   );

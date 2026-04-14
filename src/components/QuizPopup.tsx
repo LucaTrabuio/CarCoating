@@ -81,6 +81,24 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
   const [step, setStep] = useState<Step>(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [result, setResult] = useState<Result | null>(null);
+  const [showFloatingButton, setShowFloatingButton] = useState(false);
+
+  // Show floating button after 3s (sync with hero CTA pop-in), or immediately if already past the hero, or as soon as user scrolls
+  useEffect(() => {
+    if (window.scrollY > window.innerHeight * 0.5) {
+      setShowFloatingButton(true);
+      return;
+    }
+    const t = setTimeout(() => setShowFloatingButton(true), 3000);
+    const onScroll = () => {
+      if (window.scrollY > 50) setShowFloatingButton(true);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   // Auto-open popup after 4 seconds of scrolling, unless dismissed this session
   useEffect(() => {
@@ -153,15 +171,15 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
     setResult(null);
   }
 
-  // Floating button (shows after user dismissed the auto-popup)
-  if (!isOpen && dismissed) {
+  // Floating button (shown once popup hasn't auto-opened yet OR after it's been dismissed)
+  if (!isOpen && showFloatingButton) {
     return (
       <button
         onClick={openPopup}
-        className="fixed bottom-24 right-4 z-40 bg-amber-500 text-[#0C3290] px-4 py-3 rounded-full shadow-lg hover:bg-amber-600 transition-all text-sm font-bold flex items-center gap-2 cursor-pointer animate-bounce-slow"
-        style={{ animationDuration: '3s' }}
+        className="fixed bottom-20 sm:bottom-24 right-3 sm:right-4 z-40 bg-amber-500 text-[#0C3290] px-3 py-2 sm:px-4 sm:py-3 rounded-full hover:bg-amber-600 transition-all text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 cursor-pointer animate-pop-in"
+        style={{ boxShadow: '0 0 10px 1px rgba(240, 234, 1, 0.9), 0 6px 16px rgba(0, 0, 0, 0.35)' }}
       >
-        <span className="text-lg">🚗</span>
+        <span className="text-sm sm:text-lg">🚗</span>
         コーティング診断
       </button>
     );
