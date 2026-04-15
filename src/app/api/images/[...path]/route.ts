@@ -20,7 +20,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ pat
     const data = await res.arrayBuffer();
     return new NextResponse(data, {
       headers: {
-        'Content-Type': blobs[0].contentType || 'image/jpeg',
+        'Content-Type': res.headers.get('content-type') || 'image/jpeg',
         'Cache-Control': 'public, max-age=31536000, immutable',
       },
     });
