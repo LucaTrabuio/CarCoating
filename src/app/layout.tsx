@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Serif_JP, Noto_Sans_JP, M_PLUS_Rounded_1c, Zen_Maru_Gothic, Shippori_Mincho, Kosugi_Maru } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const notoSerif = Noto_Serif_JP({
@@ -80,6 +82,8 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen font-sans">
         {children}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
