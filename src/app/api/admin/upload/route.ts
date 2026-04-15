@@ -31,12 +31,14 @@ export async function POST(req: NextRequest) {
   const ext = EXT_FROM_MIME[file.type];
   const key = `admin/${Date.now()}-${nanoid(10)}.${ext}`;
   try {
-    const blob = await put(key, file, {
+    await put(key, file, {
       access: 'private',
       contentType: file.type,
       addRandomSuffix: false,
     });
-    return NextResponse.json({ url: blob.url });
+    // Return proxy URL that serves the private blob publicly
+    const proxyUrl = `/api/admin/image/${key.replace('admin/', '')}`;
+    return NextResponse.json({ url: proxyUrl });
   } catch (err) {
     console.error('Upload error:', err);
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Upload failed' }, { status: 500 });
