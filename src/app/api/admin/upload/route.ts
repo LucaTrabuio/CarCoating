@@ -1,6 +1,6 @@
+import { put } from '@vercel/blob';
 import { NextResponse, type NextRequest } from 'next/server';
 import { requireAuth } from '@/lib/auth';
-import { getAdminStorage } from '@/lib/firebase-admin';
 import { nanoid } from 'nanoid';
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -31,18 +31,14 @@ export async function POST(req: NextRequest) {
   const ext = EXT_FROM_MIME[file.type];
   const key = `admin/${Date.now()}-${nanoid(10)}.${ext}`;
   try {
-    const bucket = getAdminStorage().bucket();
-    const fileRef = bucket.file(key);
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await fileRef.save(buffer, {
+    const blob = await put(key, file, {
+      access: 'private',
       contentType: file.type,
-      metadata: { cacheControl: 'public, max-age=31536000' },
+      addRandomSuffix: false,
     });
-    await fileRef.makePublic();
-    const url = `https://storage.googleapis.com/${bucket.name}/${key}`;
-    return NextResponse.json({ url });
+    return NextResponse.json({ url: blob.url });
   } catch (err) {
-    console.error('Firebase Storage upload error:', err);
+    console.error('Upload error:', err);
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Upload failed' }, { status: 500 });
   }
 }
