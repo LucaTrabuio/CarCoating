@@ -1,6 +1,7 @@
 'use client';
 
 import type { BannersConfig, Banner } from '@/lib/block-types';
+import ImageUploadField from '../ImageUploadField';
 
 interface BannersEditorProps {
   config: BannersConfig;
@@ -79,16 +80,11 @@ export default function BannersEditor({ config, onChange }: BannersEditorProps) 
               className={inputClass}
             />
           </div>
-          <div>
-            <label className="block text-xs text-gray-500 mb-0.5">Image URL</label>
-            <input
-              type="text"
-              value={banner.image_url}
-              onChange={(e) => updateBanner(index, { image_url: e.target.value })}
-              className={inputClass}
-              placeholder="https://..."
-            />
-          </div>
+          <ImageUploadField
+            label="Image"
+            value={banner.image_url}
+            onChange={(url) => updateBanner(index, { image_url: url })}
+          />
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block text-xs text-gray-500 mb-0.5">Original Price</label>

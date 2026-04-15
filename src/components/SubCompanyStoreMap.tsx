@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-const MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+import { MAPS_API_KEY } from '@/lib/constants';
 
 interface StoreLocation {
   store_id: string;
@@ -162,13 +162,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
     );
   }
 
-  // Auto-detect on mount
-  useEffect(() => {
-    if (geoStatus === 'idle' && navigator.geolocation) {
-      detectLocation();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Geolocation is opt-in: user clicks "現在地から探す" to trigger detectLocation().
 
   return (
     <section className="py-14 px-5 bg-slate-50">

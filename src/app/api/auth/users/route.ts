@@ -1,12 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifySession, createUser, type UserRole } from '@/lib/auth';
+import { requireAuth, createUser, type UserRole } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 
 // GET: List all users (super_admin only)
 export async function GET() {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (user.role !== 'super_admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const db = getAdminDb();
   const snapshot = await db.collection('users').get();
@@ -17,9 +16,8 @@ export async function GET() {
 
 // POST: Create a new user (super_admin only)
 export async function POST(req: NextRequest) {
-  const session = await verifySession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (session.role !== 'super_admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const { email, password, displayName, role, managedStores } = await req.json();
 
@@ -41,7 +39,7 @@ export async function POST(req: NextRequest) {
     );
     return NextResponse.json({ success: true, uid });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Create user failed:', error);
+    return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
   }
 }

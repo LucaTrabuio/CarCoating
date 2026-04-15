@@ -1,13 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifySession } from '@/lib/auth';
+import { requireAuth } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 
 export async function GET() {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (user.role !== 'super_admin') {
-    return NextResponse.json({ error: 'Forbidden: super_admin required' }, { status: 403 });
-  }
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const db = getAdminDb();
   const snapshot = await db.collection('blog_posts').orderBy('created_at', 'desc').get();
@@ -16,11 +13,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (user.role !== 'super_admin') {
-    return NextResponse.json({ error: 'Forbidden: super_admin required' }, { status: 403 });
-  }
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
+  const user = auth.user;
 
   const body = await req.json();
   const { title, slug, content, published, summary, category, publishDate, metaTitle, metaDescription, sections } = body as {

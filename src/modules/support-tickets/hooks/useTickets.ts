@@ -97,7 +97,7 @@ export function useTickets(apiBasePath: string = '/api/admin/tickets'): UseTicke
         const res = await fetch(apiBasePath, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'changeStatus', ticketId, status }),
+          body: JSON.stringify({ action: 'status', ticketId, status }),
         });
         if (!res.ok) throw new Error(`ステータス変更に失敗しました (${res.status})`);
         const updated = await res.json();
@@ -118,7 +118,7 @@ export function useTickets(apiBasePath: string = '/api/admin/tickets'): UseTicke
         const res = await fetch(apiBasePath, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'editSubject', ticketId, subject }),
+          body: JSON.stringify({ action: 'edit', ticketId, subject }),
         });
         if (!res.ok) throw new Error(`タイトル変更に失敗しました (${res.status})`);
         const updated = await res.json();
@@ -159,7 +159,7 @@ export function useTickets(apiBasePath: string = '/api/admin/tickets'): UseTicke
         const res = await fetch(apiBasePath, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'deleteMessage', ticketId, messageIdx }),
+          body: JSON.stringify({ action: 'delete_message', ticketId, messageIndex: messageIdx }),
         });
         if (!res.ok) throw new Error(`メッセージ削除に失敗しました (${res.status})`);
         const updated = await res.json();

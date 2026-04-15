@@ -1,16 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifySession } from '@/lib/auth';
+import { requireAuth } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ postId: string }> },
 ) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (user.role !== 'super_admin') {
-    return NextResponse.json({ error: 'Forbidden: super_admin required' }, { status: 403 });
-  }
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const { postId } = await params;
   const db = getAdminDb();
@@ -27,11 +24,8 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ postId: string }> },
 ) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (user.role !== 'super_admin') {
-    return NextResponse.json({ error: 'Forbidden: super_admin required' }, { status: 403 });
-  }
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const { postId } = await params;
   const body = await req.json();
@@ -57,11 +51,8 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ postId: string }> },
 ) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (user.role !== 'super_admin') {
-    return NextResponse.json({ error: 'Forbidden: super_admin required' }, { status: 403 });
-  }
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const { postId } = await params;
   const db = getAdminDb();

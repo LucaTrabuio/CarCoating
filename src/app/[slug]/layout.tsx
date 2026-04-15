@@ -14,9 +14,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const store = await getV3StoreById(slug);
     if (store) {
+      const title = store.hero_title
+        ? `${store.hero_title}｜${store.store_name}`
+        : `${store.store_name}｜KeePer PRO SHOP`;
+      const description = store.meta_description || store.description || `${store.store_name}のカーコーティング。Web予約限定割引あり。`;
       return {
-        title: `${store.store_name}｜KeePer PRO SHOP`,
-        description: store.meta_description || `${store.store_name}のカーコーティング。Web予約限定割引あり。`,
+        title,
+        description,
+        ...(store.seo_keywords ? { keywords: store.seo_keywords.split(/[,、\s]+/).filter(Boolean) } : {}),
+        openGraph: { title, description },
       };
     }
     const subCompany = await getSubCompanyBySlug(slug);
@@ -36,6 +42,17 @@ export async function generateStaticParams() {
   }
 }
 
+function getLatestNewsTitle(storeNewsJson: string | undefined): string | undefined {
+  try {
+    const items = JSON.parse(storeNewsJson || '[]');
+    if (!Array.isArray(items) || items.length === 0) return undefined;
+    const visible = items.filter((n: { visible?: boolean }) => n.visible !== false);
+    if (visible.length === 0) return undefined;
+    visible.sort((a: { date: string }, b: { date: string }) => b.date.localeCompare(a.date));
+    return visible[0].title;
+  } catch { return undefined; }
+}
+
 function mergeCampaign(store: { campaign_title: string; campaign_deadline: string; discount_rate: number; campaign_color_code: string }, defaults: { title: string; color: string; end: string; discount: number; font?: string; force_hq_campaign?: boolean }) {
   // When force_hq_campaign is enabled, ignore per-store campaign settings
   if (defaults.force_hq_campaign) {
@@ -49,7 +66,7 @@ function mergeCampaign(store: { campaign_title: string; campaign_deadline: strin
   }
   return {
     title: store.campaign_title || defaults.title,
-    discount_rate: store.discount_rate || defaults.discount,
+    discount_rate: store.discount_rate ?? defaults.discount,
     deadline: store.campaign_deadline || defaults.end,
     color: store.campaign_color_code || defaults.color,
     font: defaults.font,
@@ -71,6 +88,11 @@ export default async function SlugLayout({
     if (store && store.is_active) {
       const defaults = await getV3CampaignDefaults();
       const campaign = mergeCampaign(store, defaults);
+      // Auto-expire campaign if end date has passed
+      if (defaults.end && new Date(defaults.end) < new Date()) {
+        campaign.discount_rate = 0;
+      }
+      const newsTitle = campaign.discount_rate > 0 ? undefined : getLatestNewsTitle(store.store_news);
 
       return (
         <>
@@ -88,6 +110,7 @@ export default async function SlugLayout({
               deadline={campaign.deadline}
               colorCode={campaign.color}
               fontId={campaign.font}
+              newsText={newsTitle}
             />
             {children}
           </div>
@@ -113,6 +136,10 @@ export default async function SlugLayout({
       const primaryStore = scStores[0];
       const defaults = await getV3CampaignDefaults();
       const campaign = mergeCampaign(primaryStore, defaults);
+      if (defaults.end && new Date(defaults.end) < new Date()) {
+        campaign.discount_rate = 0;
+      }
+      const scNewsTitle = campaign.discount_rate > 0 ? undefined : getLatestNewsTitle(primaryStore.store_news);
 
       return (
         <>
@@ -130,6 +157,7 @@ export default async function SlugLayout({
               deadline={campaign.deadline}
               colorCode={campaign.color}
               fontId={campaign.font}
+              newsText={scNewsTitle}
             />
             {children}
           </div>

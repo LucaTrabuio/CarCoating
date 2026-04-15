@@ -3,6 +3,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { requireAuth } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
+import nextPkg from 'next/package.json';
 
 type CheckStatus = 'ok' | 'warn' | 'error' | 'info';
 
@@ -33,7 +34,7 @@ function envStatus(name: string, required = true): Check {
   }
   const secretPatterns = [/KEY/, /SECRET/, /PASSWORD/, /TOKEN/, /CREDENTIAL/];
   const isSecret = secretPatterns.some(p => p.test(name));
-  const display = isSecret ? `set (${value.length} chars)` : value;
+  const display = isSecret ? 'set' : value;
   return { label: name, status: 'ok', value: display };
 }
 
@@ -57,7 +58,7 @@ export async function GET() {
       title: '環境',
       checks: [
         { label: 'Node version', status: 'info', value: process.version },
-        { label: 'Next.js version', status: 'info', value: '16.2.2' },
+        { label: 'Next.js version', status: 'info', value: nextPkg.version },
         { label: 'NODE_ENV', status: 'info', value: process.env.NODE_ENV || '(unset)' },
         envStatus('NEXT_PUBLIC_SITE_URL', false),
         envStatus('NEXT_PUBLIC_FIREBASE_PROJECT_ID'),
@@ -137,23 +138,41 @@ export async function GET() {
       items: inactiveStores.length > 0 ? inactiveStores.map(storeItem) : undefined,
     });
 
-    const noTelStores = storesSnap.docs.filter(d => !d.data().tel);
-    if (noTelStores.length > 0) {
-      collectionChecks.push({
-        label: 'TEL 未設定店舗',
-        status: 'warn',
-        value: String(noTelStores.length),
-        items: noTelStores.map(storeItem),
-      });
+    // Grouped required-field validation
+    const requiredFields = [
+      { key: 'tel', label: 'TEL' },
+      { key: 'address', label: '住所' },
+      { key: 'prefecture', label: '都道府県' },
+      { key: 'city', label: '市区町村' },
+      { key: 'postal_code', label: '郵便番号' },
+      { key: 'business_hours', label: '営業時間' },
+      { key: 'level1_staff_count', label: 'L1スタッフ数' },
+      { key: 'level2_staff_count', label: 'L2スタッフ数' },
+    ];
+    const storesWithMissing: { doc: FirebaseFirestore.QueryDocumentSnapshot; missing: string[] }[] = [];
+    for (const doc of storesSnap.docs) {
+      const data = doc.data();
+      const missing: string[] = [];
+      for (const f of requiredFields) {
+        const val = data[f.key];
+        if (f.key === 'level1_staff_count' || f.key === 'level2_staff_count') {
+          if (!val || Number(val) <= 0) missing.push(f.label);
+        } else {
+          if (!val || (typeof val === 'string' && !val.trim())) missing.push(f.label);
+        }
+      }
+      if (missing.length > 0) storesWithMissing.push({ doc, missing });
     }
-
-    const noAddressStores = storesSnap.docs.filter(d => !d.data().address);
-    if (noAddressStores.length > 0) {
+    if (storesWithMissing.length > 0) {
       collectionChecks.push({
-        label: '住所 未設定店舗',
+        label: '店舗データ未設定項目',
         status: 'warn',
-        value: String(noAddressStores.length),
-        items: noAddressStores.map(storeItem),
+        value: `${storesWithMissing.length}店舗に未設定あり`,
+        items: storesWithMissing.map(({ doc, missing }) => ({
+          id: doc.id,
+          label: `${doc.data().store_name || doc.id}: ${missing.join(', ')}`,
+          sublabel: doc.id,
+        })),
       });
     }
 
@@ -377,9 +396,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Diagnostics error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error', detail: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -22,8 +22,11 @@ const TIME_SLOTS = [
 ];
 
 export default function BookingCalendar({ holidays = [], onChoicesChange }: BookingCalendarProps) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const [today] = useState(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);

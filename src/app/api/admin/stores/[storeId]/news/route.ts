@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifySession, canManageStore } from '@/lib/auth';
+import { requireAuth, canManageStore } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 
 interface NewsItem {
@@ -23,8 +23,9 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ storeId: string }> },
 ) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+  const user = auth.user;
 
   const { storeId } = await params;
   if (!canManageStore(user, storeId)) {
@@ -45,8 +46,9 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ storeId: string }> },
 ) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+  const user = auth.user;
 
   const { storeId } = await params;
   if (!canManageStore(user, storeId)) {
@@ -78,8 +80,9 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ storeId: string }> },
 ) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+  const user = auth.user;
 
   const { storeId } = await params;
   if (!canManageStore(user, storeId)) {
@@ -108,8 +111,9 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ storeId: string }> },
 ) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+  const user = auth.user;
 
   const { storeId } = await params;
   if (!canManageStore(user, storeId)) {

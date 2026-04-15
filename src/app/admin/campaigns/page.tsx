@@ -15,7 +15,7 @@ export default function CampaignsPage() {
   const [campaignLoaded, setCampaignLoaded] = useState(false);
 
   useEffect(() => {
-    fetch('/api/campaign')
+    fetch('/api/v3/campaign')
       .then(r => r.json())
       .then(data => {
         if (data.title) setCampaignTitle(data.title);
@@ -36,13 +36,16 @@ export default function CampaignsPage() {
       color: bannerColor,
       start: campaignStart,
       end: campaignEnd,
-      discount: parseInt(campaignDiscount) || 20,
+      discount: Number.isFinite(parseInt(campaignDiscount)) ? parseInt(campaignDiscount) : 0,
       font: campaignFont || undefined,
       force_hq_campaign: forceHq,
     };
     try {
-      const res = await fetch('/api/campaign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      // Save to Firebase (primary — getV3CampaignDefaults reads from here)
+      const res = await fetch('/api/v3/campaign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       if (!res.ok) throw new Error('Failed');
+      // Also save to Blob as backup
+      fetch('/api/campaign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(() => {});
     } catch {
       // fallback to localStorage
     }

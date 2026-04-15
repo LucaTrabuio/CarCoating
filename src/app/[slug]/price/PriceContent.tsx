@@ -24,7 +24,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
   const base = `/${storeId}`;
 
   // Derive from store prop instead of useEffect fetch
-  const discountRate = store.discount_rate || 20;
+  const discountRate = store.discount_rate ?? 0;
   const blurFields = store.page_layout ? getBlurFieldsFromLayout(store.page_layout) : [];
   const priceOverrides = parsePriceOverrides(store.price_overrides);
 
@@ -259,10 +259,10 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
   );
 }
 
-export default function PriceContent({ store }: { store: V3StoreData }) {
+export default function PriceContent({ store, discountRateOverride }: { store: V3StoreData; discountRateOverride?: number }) {
   return (
     <Suspense fallback={<div className="py-20 text-center text-gray-400">読み込み中...</div>}>
-      <PriceContentInner store={store} />
+      <PriceContentInner store={discountRateOverride !== undefined ? { ...store, discount_rate: discountRateOverride } : store} />
     </Suspense>
   );
 }

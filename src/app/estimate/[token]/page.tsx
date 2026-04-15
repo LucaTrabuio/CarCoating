@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { getV3StoreById } from '@/lib/firebase-stores';
+import { SITE_URL } from '@/lib/constants';
 
 interface InquiryData {
   id: string;
@@ -33,7 +35,7 @@ const SIZE_LABELS: Record<string, string> = {
 };
 
 async function fetchInquiry(token: string): Promise<InquiryData | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080';
+  const baseUrl = SITE_URL;
   try {
     const res = await fetch(`${baseUrl}/api/inquiries/${token}`, {
       cache: 'no-store',
@@ -52,6 +54,8 @@ export default async function EstimatePage({
 }) {
   const { token } = await params;
   const inquiry = await fetchInquiry(token);
+  const store = inquiry ? await getV3StoreById(inquiry.store_id).catch(() => null) : null;
+  const bookingHref = store?.store_slug ? `/${store.store_slug}/booking` : '/';
 
   if (!inquiry) {
     return (
@@ -164,7 +168,7 @@ export default async function EstimatePage({
         {/* CTA */}
         <div className="mt-8 text-center space-y-3">
           <Link
-            href="/booking"
+            href={bookingHref}
             className="inline-block w-full max-w-[320px] px-6 py-3.5 bg-amber-500 text-[#0C3290] font-bold rounded-xl text-sm hover:opacity-90 transition-opacity"
           >
             予約する

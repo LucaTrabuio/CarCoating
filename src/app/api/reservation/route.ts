@@ -5,8 +5,15 @@ import { getV3StoreById } from '@/lib/firebase-stores';
 import { getStoreSettings } from '@/lib/store-settings';
 import { createCalendarEvent } from '@/lib/google-calendar';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const { allowed } = rateLimit(`reservation:${ip}`, 5);
+  if (!allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   try {
     const body = await request.json();
     const { type, storeId, name, phone, email, notes, date, time, autoConfirm,

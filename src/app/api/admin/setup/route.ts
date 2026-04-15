@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       message: 'Super admin created.',
     });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('Admin setup failed:', error);
+    return NextResponse.json({ error: 'Failed to create admin' }, { status: 500 });
   }
 }

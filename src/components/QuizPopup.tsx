@@ -141,11 +141,20 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
     trackEvent(storeId, 'quiz_complete'); // track open — quiz_complete tracks both
   }, [storeId]);
 
-  function dismiss() {
+  const dismiss = useCallback(() => {
     setIsOpen(false);
     setDismissed(true);
     try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch { /* blocked */ }
-  }
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') dismiss();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, dismiss]);
 
   function handleAnswer(value: string) {
     const newAnswers = [...answers, value];
@@ -189,7 +198,12 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="quiz-popup-title"
+    >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={dismiss} />
 
@@ -198,7 +212,8 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
         {/* Close button */}
         <button
           onClick={dismiss}
-          className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 text-lg cursor-pointer"
+          aria-label="閉じる"
+          className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 text-lg cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
         >
           ×
         </button>
@@ -207,7 +222,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
           {/* Header */}
           <div className="text-center mb-6">
             <p className="text-[#0C3290] text-[10px] font-bold tracking-widest mb-1">COATING QUIZ</p>
-            <h2 className="text-[#0C3290] text-lg font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 id="quiz-popup-title" className="text-[#0C3290] text-lg font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
               あなたにぴったりのコースは？
             </h2>
             <p className="text-xs text-slate-400 mt-1">4つの質問に答えるだけ（30秒）</p>

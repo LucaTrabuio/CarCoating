@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifySession, setUserClaims, type UserRole } from '@/lib/auth';
+import { requireAuth, setUserClaims, type UserRole } from '@/lib/auth';
 import { getAdminAuth, getAdminDb } from '@/lib/firebase-admin';
 
 // PUT: Update user role and managed stores (super_admin only)
@@ -7,9 +7,8 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ uid: string }> }
 ) {
-  const session = await verifySession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (session.role !== 'super_admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const { uid } = await params;
   const { role, managedStores, displayName } = await req.json();
@@ -45,8 +44,8 @@ export async function PUT(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('User management error:', error);
+    return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
   }
 }
 
@@ -55,9 +54,8 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ uid: string }> }
 ) {
-  const session = await verifySession();
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  if (session.role !== 'super_admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const { uid } = await params;
 
@@ -70,7 +68,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : 'Unknown error';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('User management error:', error);
+    return NextResponse.json({ error: 'Operation failed' }, { status: 500 });
   }
 }

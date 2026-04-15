@@ -8,12 +8,16 @@ interface ConcernsBlockProps {
 }
 
 export default function ConcernsBlock({ config }: ConcernsBlockProps) {
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openIds, setOpenIds] = useState<Set<string>>(new Set());
 
   if (!config.items || config.items.length === 0) return null;
 
   function toggle(id: string) {
-    setOpenId(prev => (prev === id ? null : id));
+    setOpenIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
   }
 
   return (
@@ -31,10 +35,10 @@ export default function ConcernsBlock({ config }: ConcernsBlockProps) {
               >
                 <span className="text-[#0C3290] text-sm font-semibold">{item.question}</span>
                 <span className="text-slate-400 text-lg ml-3 flex-shrink-0">
-                  {openId === item.id ? '\u2212' : '+'}
+                  {openIds.has(item.id) ? '\u2212' : '+'}
                 </span>
               </button>
-              {openId === item.id && (
+              {openIds.has(item.id) && (
                 <div className="px-5 pb-4">
                   <p className="text-slate-500 text-sm leading-relaxed">{item.answer}</p>
                 </div>

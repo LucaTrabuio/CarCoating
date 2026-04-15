@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { put, list, del } from '@vercel/blob';
 import { CampaignDefaults } from '@/lib/types';
+import { requireAuth } from '@/lib/auth';
+import { campaignDefaultsSchema } from '@/lib/validations';
+import { saveV3CampaignDefaults } from '@/lib/firebase-stores';
 
 const BLOB_KEY = 'campaign.json';
 
@@ -27,14 +30,23 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
+
   try {
-    const campaign: CampaignDefaults = await request.json();
+    const body = await request.json();
+    const parsed = campaignDefaultsSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid campaign data' }, { status: 400 });
+    }
     const { blobs } = await list({ prefix: BLOB_KEY });
     for (const blob of blobs) await del(blob.url);
-    await put(BLOB_KEY, JSON.stringify(campaign), {
+    await put(BLOB_KEY, JSON.stringify(parsed.data), {
       access: 'public',
       contentType: 'application/json',
     });
+    // Also save to Firebase so getV3CampaignDefaults() picks it up
+    try { await saveV3CampaignDefaults(parsed.data as CampaignDefaults); } catch { /* blob is primary */ }
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error('Campaign blob write error:', e);

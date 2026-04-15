@@ -87,6 +87,13 @@ export default function PricingEditor({ config, onChange }: PricingEditorProps) 
       </div>
 
       <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" checked={config.option_blur_prices ?? false}
+          onChange={e => onChange({ ...config, option_blur_prices: e.target.checked })}
+          className="rounded border-gray-300" />
+        オプション料金もブラー
+      </label>
+
+      <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" checked={config.show_discount_badge}
           onChange={e => onChange({ ...config, show_discount_badge: e.target.checked })}
           className="rounded border-gray-300" />
