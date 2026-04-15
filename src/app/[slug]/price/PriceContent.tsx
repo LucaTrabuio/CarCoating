@@ -24,7 +24,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
   const base = `/${storeId}`;
 
   // Derive from store prop instead of useEffect fetch
-  const discountRate = store.discount_rate || 20;
+  const discountRate = store.discount_rate ?? 0;
   const blurFields = store.page_layout ? getBlurFieldsFromLayout(store.page_layout) : [];
   const priceOverrides = parsePriceOverrides(store.price_overrides);
 

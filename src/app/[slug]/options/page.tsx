@@ -33,7 +33,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
 
   // Resolve option discount from pricing block config
   const defaults = await getV3CampaignDefaults();
-  const storeDiscount = store.discount_rate || defaults.discount;
+  const storeDiscount = store.discount_rate ?? defaults.discount;
   const layout = parsePageLayout(store.page_layout, store);
   const pricingBlock = layout.blocks.find(b => b.type === 'pricing');
   const pricingConfig = pricingBlock?.config as PricingConfig | undefined;

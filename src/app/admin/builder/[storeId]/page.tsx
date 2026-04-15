@@ -26,6 +26,7 @@ import type { V3StoreData } from '@/lib/v3-types';
 import { coatingTiers } from '@/data/coating-tiers';
 import SortableBlockItem from '../components/SortableBlockItem';
 import BlockEditorSwitch from '../components/editors/BlockEditorSwitch';
+import ImageUploadField from '../components/ImageUploadField';
 
 // ─── Types ───
 
@@ -959,13 +960,13 @@ export default function BuilderPage() {
               <div className="bg-white border border-gray-200 rounded-lg p-4">
                 <h3 className="text-sm font-bold text-gray-800 mb-3">画像</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  <SettingsField label="ヒーロー画像URL" value={storeData.hero_image_url} onChange={v => updateStoreField('hero_image_url', v)} />
-                  <SettingsField label="ロゴURL" value={storeData.logo_url} onChange={v => updateStoreField('logo_url', v)} />
-                  <SettingsField label="スタッフ写真URL" value={storeData.staff_photo_url} onChange={v => updateStoreField('staff_photo_url', v)} />
-                  <SettingsField label="店舗外観URL" value={storeData.store_exterior_url} onChange={v => updateStoreField('store_exterior_url', v)} />
-                  <SettingsField label="店舗内装URL" value={storeData.store_interior_url} onChange={v => updateStoreField('store_interior_url', v)} />
-                  <SettingsField label="ビフォーアフターURL" value={storeData.before_after_url} onChange={v => updateStoreField('before_after_url', v)} />
-                  <SettingsField label="キャンペーンバナーURL" value={storeData.campaign_banner_url} onChange={v => updateStoreField('campaign_banner_url', v)} />
+                  <ImageUploadField label="ヒーロー画像" value={storeData.hero_image_url} onChange={v => updateStoreField('hero_image_url', v)} />
+                  <ImageUploadField label="ロゴ" value={storeData.logo_url} onChange={v => updateStoreField('logo_url', v)} />
+                  <ImageUploadField label="スタッフ写真" value={storeData.staff_photo_url} onChange={v => updateStoreField('staff_photo_url', v)} />
+                  <ImageUploadField label="店舗外観" value={storeData.store_exterior_url} onChange={v => updateStoreField('store_exterior_url', v)} />
+                  <ImageUploadField label="店舗内装" value={storeData.store_interior_url} onChange={v => updateStoreField('store_interior_url', v)} />
+                  <ImageUploadField label="ビフォーアフター" value={storeData.before_after_url} onChange={v => updateStoreField('before_after_url', v)} />
+                  <ImageUploadField label="キャンペーンバナー" value={storeData.campaign_banner_url} onChange={v => updateStoreField('campaign_banner_url', v)} />
                 </div>
               </div>
 

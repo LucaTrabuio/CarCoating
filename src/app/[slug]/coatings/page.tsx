@@ -16,10 +16,13 @@ import { KEEPER_BASE } from '@/lib/constants';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const resolved = await resolveSlugToStore(slug);
-  const storeName = resolved?.subCompanyName ?? resolved?.store.store_name ?? 'KeePer PRO SHOP';
+  const store = resolved?.store;
+  const storeName = resolved?.subCompanyName ?? store?.store_name ?? 'KeePer PRO SHOP';
+  const keywords = store?.seo_keywords?.split(/[,、\s]+/).filter(Boolean) ?? [];
   return {
     title: `コーティングメニュー一覧｜${storeName}`,
     description: `${storeName}のカーコーティング全8メニューを詳しく解説。各コースの特徴・構造・耐久年数・価格を比較できます。`,
+    ...(keywords.length > 0 ? { keywords } : {}),
   };
 }
 
@@ -42,7 +45,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
     getV3CampaignDefaults(),
     getMasterCoatingTiers(),
   ]);
-  const discountRate = store.discount_rate || defaults.discount;
+  const discountRate = store.discount_rate ?? defaults.discount;
   const base = `/${slug}`;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);
   const priceOverrides = parsePriceOverrides(store.price_overrides);

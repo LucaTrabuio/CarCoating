@@ -14,9 +14,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params;
     const store = await getV3StoreById(slug);
     if (store) {
+      const title = store.hero_title
+        ? `${store.hero_title}｜${store.store_name}`
+        : `${store.store_name}｜KeePer PRO SHOP`;
+      const description = store.meta_description || store.description || `${store.store_name}のカーコーティング。Web予約限定割引あり。`;
       return {
-        title: `${store.store_name}｜KeePer PRO SHOP`,
-        description: store.meta_description || `${store.store_name}のカーコーティング。Web予約限定割引あり。`,
+        title,
+        description,
+        ...(store.seo_keywords ? { keywords: store.seo_keywords.split(/[,、\s]+/).filter(Boolean) } : {}),
+        openGraph: { title, description },
       };
     }
     const subCompany = await getSubCompanyBySlug(slug);
@@ -60,7 +66,7 @@ function mergeCampaign(store: { campaign_title: string; campaign_deadline: strin
   }
   return {
     title: store.campaign_title || defaults.title,
-    discount_rate: store.discount_rate || defaults.discount,
+    discount_rate: store.discount_rate ?? defaults.discount,
     deadline: store.campaign_deadline || defaults.end,
     color: store.campaign_color_code || defaults.color,
     font: defaults.font,
@@ -82,6 +88,10 @@ export default async function SlugLayout({
     if (store && store.is_active) {
       const defaults = await getV3CampaignDefaults();
       const campaign = mergeCampaign(store, defaults);
+      // Auto-expire campaign if end date has passed
+      if (defaults.end && new Date(defaults.end) < new Date()) {
+        campaign.discount_rate = 0;
+      }
       const newsTitle = campaign.discount_rate > 0 ? undefined : getLatestNewsTitle(store.store_news);
 
       return (
@@ -126,6 +136,9 @@ export default async function SlugLayout({
       const primaryStore = scStores[0];
       const defaults = await getV3CampaignDefaults();
       const campaign = mergeCampaign(primaryStore, defaults);
+      if (defaults.end && new Date(defaults.end) < new Date()) {
+        campaign.discount_rate = 0;
+      }
       const scNewsTitle = campaign.discount_rate > 0 ? undefined : getLatestNewsTitle(primaryStore.store_news);
 
       return (

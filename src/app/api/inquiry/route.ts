@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       const tier = tiers.find(t => t.id === selectedTier);
       if (tier) {
         tierName = tier.name;
-        const discountRate = store.discount_rate || 20;
+        const discountRate = store.discount_rate ?? 0;
         const priceOverrides = parsePriceOverrides(store.price_overrides);
         const sizes = ['SS', 'S', 'M', 'L', 'LL', 'XL'] as const;
         const priceLines = sizes.map(size => {

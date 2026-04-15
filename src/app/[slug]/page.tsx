@@ -26,10 +26,13 @@ export default async function SlugPage({
       const basePath = `/${slug}`;
       const campaign = {
         title: primaryStore.campaign_title || defaults.title,
-        discount_rate: primaryStore.discount_rate || defaults.discount,
+        discount_rate: primaryStore.discount_rate ?? defaults.discount,
         deadline: primaryStore.campaign_deadline || defaults.end,
         color: primaryStore.campaign_color_code || defaults.color,
       };
+      if (defaults.end && new Date(defaults.end) < new Date()) {
+        campaign.discount_rate = 0;
+      }
       const layout = parsePageLayout(primaryStore.page_layout, primaryStore);
 
       return (
@@ -75,7 +78,8 @@ export default async function SlugPage({
   const store = await getV3StoreById(slug);
   if (store && store.is_active) {
     const defaults = await getV3CampaignDefaults();
-    const discountRate = store.discount_rate || defaults.discount;
+    let discountRate = store.discount_rate ?? defaults.discount;
+    if (defaults.end && new Date(defaults.end) < new Date()) discountRate = 0;
     const basePath = `/${slug}`;
     const layout = parsePageLayout(store.page_layout, store);
 
@@ -110,10 +114,13 @@ export default async function SlugPage({
 
     const campaign = {
       title: primaryStore.campaign_title || defaults.title,
-      discount_rate: primaryStore.discount_rate || defaults.discount,
+      discount_rate: primaryStore.discount_rate ?? defaults.discount,
       deadline: primaryStore.campaign_deadline || defaults.end,
       color: primaryStore.campaign_color_code || defaults.color,
     };
+    if (defaults.end && new Date(defaults.end) < new Date()) {
+      campaign.discount_rate = 0;
+    }
 
     const layout = parsePageLayout(primaryStore.page_layout, primaryStore);
 
