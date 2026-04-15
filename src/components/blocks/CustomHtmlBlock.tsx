@@ -1,5 +1,8 @@
+'use client';
+
 import type { CustomHtmlConfig } from '@/lib/block-types';
-import { sanitizeHtml, sanitizeCss } from '@/lib/sanitize';
+import { sanitizeHtml } from '@/lib/sanitize';
+import { sanitizeCss } from '@/lib/sanitize-css';
 
 interface CustomHtmlBlockProps {
   config: CustomHtmlConfig;

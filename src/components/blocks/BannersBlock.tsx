@@ -1,6 +1,6 @@
 import type { BannersConfig } from '@/lib/block-types';
 import { formatPrice, applyDiscount } from '@/lib/pricing';
-import { sanitizeCss } from '@/lib/sanitize';
+import { sanitizeCss } from '@/lib/sanitize-css';
 
 interface BannersBlockProps {
   config: BannersConfig;
