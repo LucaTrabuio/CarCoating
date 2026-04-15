@@ -108,4 +108,5 @@ export const campaignDefaultsSchema = z.object({
   end: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   discount: z.number().min(0).max(100),
   font: z.string().max(50).optional(),
+  force_hq_campaign: z.boolean().optional(),
 });

@@ -27,10 +27,11 @@ import { coatingTiers } from '@/data/coating-tiers';
 import SortableBlockItem from '../components/SortableBlockItem';
 import BlockEditorSwitch from '../components/editors/BlockEditorSwitch';
 import ImageUploadField from '../components/ImageUploadField';
+import ImageSlot from '../components/ImageSlot';
 
 // ─── Types ───
 
-type TabId = 'blocks' | 'settings' | 'pricing' | 'options' | 'news' | 'guide';
+type TabId = 'blocks' | 'settings' | 'pricing' | 'options' | 'news' | 'guide' | 'banners' | 'cases';
 
 interface ServiceOption {
   id: string;
@@ -788,6 +789,8 @@ export default function BuilderPage() {
     { id: 'blocks', label: 'ブロック編集' },
     { id: 'settings', label: '店舗設定' },
     { id: 'pricing', label: '料金・割引' },
+    { id: 'banners', label: 'バナー' },
+    { id: 'cases', label: '施工事例' },
     { id: 'options', label: 'オプション' },
     { id: 'news', label: 'お知らせ' },
     { id: 'guide', label: 'ガイド' },
@@ -1323,6 +1326,105 @@ export default function BuilderPage() {
               updateStoreField={updateStoreField}
             />
           )}
+
+          {/* Tab content: Banners */}
+          {activeTab === 'banners' && (() => {
+            const bannersBlock = blocks.find(b => b.type === 'banners');
+            const bannersConfig = (bannersBlock?.config || { banners: [] }) as import('@/lib/block-types').BannersConfig;
+            const banners = bannersConfig.banners || [];
+
+            function updateBanners(newBanners: import('@/lib/block-types').Banner[]) {
+              if (bannersBlock) {
+                setBlocks(prev => prev.map(b => b.id === bannersBlock.id ? { ...b, config: { ...bannersConfig, banners: newBanners } } : b));
+              } else {
+                const newBlock = createBlock('banners', blocks.length);
+                newBlock.config = { banners: newBanners };
+                setBlocks(prev => [...prev, newBlock]);
+              }
+              setDirty(true);
+            }
+
+            function addBanner() {
+              updateBanners([...banners, {
+                id: crypto.randomUUID(),
+                template_id: '',
+                custom_css: '',
+                title: '',
+                subtitle: '',
+                image_url: '',
+                original_price: 0,
+                discount_rate: 0,
+                link_url: '',
+                visible: true,
+              }]);
+            }
+
+            return (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-gray-800">プロモーションバナー</h3>
+                  <button onClick={addBanner} className="px-3 py-1.5 bg-amber-500 text-[#0C3290] rounded-lg text-xs font-bold hover:bg-amber-600">+ バナー追加</button>
+                </div>
+                {banners.length === 0 && (
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center text-gray-400 text-sm">
+                    バナーがありません。「+ バナー追加」で追加してください。
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-4">
+                  {banners.map((banner, i) => (
+                    <div key={banner.id} className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-600">バナー {i + 1}</span>
+                        <div className="flex items-center gap-2">
+                          <label className="flex items-center gap-1 text-[10px] text-gray-500">
+                            <input type="checkbox" checked={banner.visible} onChange={e => {
+                              const updated = [...banners];
+                              updated[i] = { ...banner, visible: e.target.checked };
+                              updateBanners(updated);
+                            }} className="rounded border-gray-300" />
+                            表示
+                          </label>
+                          <button onClick={() => updateBanners(banners.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-600 text-xs">削除</button>
+                        </div>
+                      </div>
+                      <ImageSlot
+                        label="バナー画像"
+                        value={banner.image_url}
+                        onChange={url => {
+                          const updated = [...banners];
+                          updated[i] = { ...banner, image_url: url };
+                          updateBanners(updated);
+                        }}
+                      />
+                      <input type="text" value={banner.title} placeholder="タイトル" onChange={e => {
+                        const updated = [...banners];
+                        updated[i] = { ...banner, title: e.target.value };
+                        updateBanners(updated);
+                      }} className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+                      <input type="text" value={banner.link_url} placeholder="リンクURL（任意）" onChange={e => {
+                        const updated = [...banners];
+                        updated[i] = { ...banner, link_url: e.target.value };
+                        updateBanners(updated);
+                      }} className="w-full px-2 py-1.5 border border-gray-200 rounded text-xs" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Tab content: Cases (施工事例) */}
+          {activeTab === 'cases' && (() => {
+            let cases: { id: string; car: string; coatingType: string; imageUrl: string; visible: boolean }[] = [];
+            try { cases = JSON.parse(storeData.custom_services?.includes('cases') ? '[]' : (storeData as Record<string, unknown>).store_cases as string || '[]'); } catch { /* empty */ }
+
+            return (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-gray-800">施工事例</h3>
+                <p className="text-xs text-gray-500">施工事例の画像管理は現在開発中です。ブロック編集タブの「施工事例」ブロックで表示件数を設定できます。</p>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Right panel: iframe preview */}

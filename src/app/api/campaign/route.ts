@@ -3,6 +3,7 @@ import { put, list, del } from '@vercel/blob';
 import { CampaignDefaults } from '@/lib/types';
 import { requireAuth } from '@/lib/auth';
 import { campaignDefaultsSchema } from '@/lib/validations';
+import { saveV3CampaignDefaults } from '@/lib/firebase-stores';
 
 const BLOB_KEY = 'campaign.json';
 
@@ -44,6 +45,8 @@ export async function POST(request: Request) {
       access: 'public',
       contentType: 'application/json',
     });
+    // Also save to Firebase so getV3CampaignDefaults() picks it up
+    try { await saveV3CampaignDefaults(parsed.data as CampaignDefaults); } catch { /* blob is primary */ }
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error('Campaign blob write error:', e);
