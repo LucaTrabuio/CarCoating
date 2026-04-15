@@ -85,6 +85,24 @@ const BENEFITS = [
   },
 ];
 
+interface TierVisual {
+  car: string;
+  logo: string;
+  bg: string;
+  detailsUrl?: string;
+}
+
+const TIER_VISUALS: Record<string, TierVisual> = {
+  crystal: { car: '/images/keeper-tiers/p_coating01.png', logo: '/images/keeper-tiers/p_idx_crystal_logo.png', bg: '#e8f6fb', detailsUrl: 'https://www.keepercoating.jp/lineup/coating/crystal/' },
+  fresh: { car: '/images/keeper-tiers/p_coating07.png', logo: '/images/keeper-tiers/p_idx_fresh_logo.png', bg: '#fff9d9', detailsUrl: 'https://www.keepercoating.jp/lineup/coating/fresh/' },
+  diamond: { car: '/images/keeper-tiers/p_coating02.png', logo: '/images/keeper-tiers/p_idx_dia2_series_logo.png', bg: '#f2edda', detailsUrl: 'https://www.keepercoating.jp/lineup/coating/dia2_series/' },
+  'diamond-premium': { car: '/images/keeper-tiers/p_coating02.png', logo: '/images/keeper-tiers/p_idx_dia2_series_logo.png', bg: '#f2edda', detailsUrl: 'https://www.keepercoating.jp/lineup/coating/dia2_series/' },
+  dia2: { car: '/images/keeper-tiers/p_coating09.png', logo: '/images/keeper-tiers/p_idx_dia2_logo.png', bg: '#fefae6', detailsUrl: 'https://www.keepercoating.jp/lineup/coating/dia2/' },
+  'dia2-premium': { car: '/images/keeper-tiers/p_coating09.png', logo: '/images/keeper-tiers/p_idx_dia2_logo.png', bg: '#fefae6', detailsUrl: 'https://www.keepercoating.jp/lineup/coating/dia2/' },
+  ex: { car: '/images/keeper-tiers/p_coating05.jpg', logo: '/images/keeper-tiers/p_idx_ex_logo.png', bg: '#ffffff', detailsUrl: 'https://www.keepercoating.jp/lineup/coating/exkeeper/' },
+  'ex-premium': { car: '/images/keeper-tiers/p_coating05.jpg', logo: '/images/keeper-tiers/p_idx_ex_logo.png', bg: '#ffffff', detailsUrl: 'https://www.keepercoating.jp/lineup/coating/exkeeper/' },
+};
+
 const TIER_GROUPS = [
   {
     label: 'エントリー',
@@ -305,7 +323,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
 
       {/* 4 tier groups overview */}
       <section id="tiers" className="py-16 px-5 bg-white">
-        <div className="max-w-[900px] mx-auto">
+        <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-[10px] text-amber-600 font-bold tracking-widest mb-2">THE 8 LINEUPS</div>
             <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
@@ -347,10 +365,28 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <div className="space-y-4">
             {tiers.map(tier => {
               const price = getPriceForSize(tier, 'SS', priceOverrides);
+              const visual = TIER_VISUALS[tier.id];
               return (
-                <div key={tier.id} className="border border-slate-200 rounded-xl overflow-hidden">
-                  <div className="grid md:grid-cols-[1fr_auto] gap-0">
-                    <div className="p-5 md:p-6 border-b md:border-b-0 md:border-r border-slate-100">
+                <div key={tier.id} id={`tier-${tier.id}`} className="flex gap-3 sm:gap-4 items-stretch scroll-mt-24">
+                  {visual && (
+                    <div className="shrink-0 self-stretch flex items-end w-20 sm:w-28 md:w-36" aria-hidden>
+                      <div
+                        className="relative w-full h-3/4 rounded-lg overflow-hidden"
+                        style={{
+                          background: `${visual.bg} url(${visual.car}) right bottom / auto 75% no-repeat`,
+                        }}
+                      >
+                        <img
+                          src={visual.logo}
+                          alt=""
+                          className="absolute top-1 left-1 right-1 sm:top-1.5 sm:left-1.5 sm:right-1.5 w-[calc(100%-0.5rem)] sm:w-[calc(100%-0.75rem)] h-auto object-contain"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0 border border-slate-200 rounded-xl overflow-hidden">
+                    <div className="grid md:grid-cols-[1fr_auto] gap-0">
+                      <div className="p-5 md:p-6 border-b md:border-b-0 md:border-r border-slate-100">
                       <div className="flex items-start justify-between flex-wrap gap-2 mb-2">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
@@ -392,11 +428,24 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                           <div className="text-xs font-semibold text-slate-700">{tier.application_time}</div>
                         </div>
                       </div>
+                      {visual?.detailsUrl && (
+                        <div className="mt-4 text-right">
+                          <a
+                            href={visual.detailsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block bg-[#0C3290] text-amber-500 px-4 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition-opacity"
+                          >
+                            詳しく見る →
+                          </a>
+                        </div>
+                      )}
                     </div>
-                    <div className="p-5 md:p-6 bg-slate-50/60 min-w-[200px]">
-                      <LayerDiagram tier={tier} />
-                      <div className="text-[10px] text-slate-500 mt-2">
-                        <strong>メンテナンス：</strong>{tier.maintenance_interval}
+                      <div className="p-5 md:p-6 bg-slate-50/60 min-w-[200px]">
+                        <LayerDiagram tier={tier} />
+                        <div className="text-[10px] text-slate-500 mt-2">
+                          <strong>メンテナンス：</strong>{tier.maintenance_interval}
+                        </div>
                       </div>
                     </div>
                   </div>

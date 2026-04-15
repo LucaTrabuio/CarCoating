@@ -21,7 +21,7 @@ function PriceBlurOverlay({ children, basePath, storeId, tierId }: { children: R
       {children}
       {/* Single backdrop-blur overlay: transparent at top (near ichiban ninki), full blur at bottom */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none select-none"
         aria-hidden="true"
         style={{
           backdropFilter: 'blur(7px)',
@@ -62,7 +62,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
 
   const pricingContent = (
     <div
-      className="grid md:grid-cols-3 gap-4 mb-6 pt-4"
+      className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 mb-6 pt-4"
       style={anyBlurred ? {
         maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
         WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
@@ -75,21 +75,41 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
         return (
           <div
             key={tier.id}
-            className={`bg-white rounded-xl p-6 text-center border-2 ${i === 1 ? 'border-amber-500 relative' : 'border-slate-200'}`}
+            className={`bg-white rounded-xl text-center border-2 min-w-0 ${i === 1 ? 'border-amber-500 relative' : 'border-slate-200'}`}
+            style={{ padding: 'clamp(0.5rem, 1.5vw, 1.5rem)' }}
           >
             {i === 1 && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-[#0C3290] text-xs font-bold px-3 py-0.5 rounded-full">
+              <span
+                className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-[#0C3290] font-bold px-2 sm:px-3 py-0.5 rounded-full whitespace-nowrap"
+                style={{ fontSize: 'clamp(0.55rem, 1.2vw, 0.75rem)' }}
+              >
                 一番人気
               </span>
             )}
-            <h3 className="font-bold text-lg text-[#0C3290] mb-1">{tier.name}</h3>
-            <p className="text-xs text-slate-500 mb-3">
+            <h3
+              className="font-bold text-[#0C3290] mb-1 leading-tight"
+              style={{ fontSize: 'clamp(0.65rem, 1.8vw, 1.125rem)' }}
+            >
+              {tier.name}
+            </h3>
+            <p
+              className="text-slate-500 leading-tight mb-2"
+              style={{ fontSize: 'clamp(0.5rem, 1.1vw, 0.75rem)' }}
+            >
               {tier.durability_years}持続 | {tier.application_time}
             </p>
-            <div className="text-2xl font-bold text-[#0C3290]">
+            <div
+              className="font-bold text-[#0C3290] select-none leading-tight"
+              style={{ fontSize: 'clamp(0.85rem, 2.6vw, 1.5rem)' }}
+            >
               {formatPrice(webPrice)}〜
             </div>
-            <p className="text-[10px] text-slate-400 mb-3">{blurred ? 'お問い合わせ後にメールでご案内' : 'SSサイズ・Web割後・税込'}</p>
+            <p
+              className="text-slate-400 leading-tight mb-2"
+              style={{ fontSize: 'clamp(0.45rem, 1vw, 0.625rem)' }}
+            >
+              {blurred ? 'お問い合わせ後にメールでご案内' : 'SSサイズ・Web割後・税込'}
+            </p>
           </div>
         );
       })}

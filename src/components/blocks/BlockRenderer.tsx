@@ -82,7 +82,7 @@ export default function BlockRenderer({ block, store, basePath, discountRate, al
       content = <GalleryBlock config={block.config as GalleryConfig} store={store} />;
       break;
     case 'usp':
-      content = <USPBlock config={block.config as USPConfig} />;
+      content = <USPBlock config={block.config as USPConfig} basePath={basePath} />;
       break;
     case 'concerns':
       content = <ConcernsBlock config={block.config as ConcernsConfig} />;
