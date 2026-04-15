@@ -104,6 +104,7 @@ export interface PricingConfig {
   show_size_chart: boolean;
   option_discount_sync: boolean; // true = use store's discount_rate for options too
   option_discount_rate: number;  // custom rate when sync is off (0 = no discount shown)
+  option_blur_prices?: boolean;  // separate blur toggle for option prices (independent of coating blur)
 }
 
 export interface StoreNewsItem {

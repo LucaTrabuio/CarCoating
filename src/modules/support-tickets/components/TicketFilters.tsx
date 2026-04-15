@@ -51,9 +51,7 @@ export default function TicketFilters({ filter, onChange, counts }: TicketFilter
       <div className="flex flex-wrap gap-2">
         {STATUS_OPTIONS.map((opt) => {
           const isActive = currentStatus === opt.value;
-          const count = opt.value === 'all'
-            ? Object.values(counts).reduce((sum, c) => sum + c, 0)
-            : (counts[opt.value] ?? 0);
+          const count = counts[opt.value] ?? 0;
 
           return (
             <button

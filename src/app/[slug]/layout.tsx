@@ -36,6 +36,17 @@ export async function generateStaticParams() {
   }
 }
 
+function getLatestNewsTitle(storeNewsJson: string | undefined): string | undefined {
+  try {
+    const items = JSON.parse(storeNewsJson || '[]');
+    if (!Array.isArray(items) || items.length === 0) return undefined;
+    const visible = items.filter((n: { visible?: boolean }) => n.visible !== false);
+    if (visible.length === 0) return undefined;
+    visible.sort((a: { date: string }, b: { date: string }) => b.date.localeCompare(a.date));
+    return visible[0].title;
+  } catch { return undefined; }
+}
+
 function mergeCampaign(store: { campaign_title: string; campaign_deadline: string; discount_rate: number; campaign_color_code: string }, defaults: { title: string; color: string; end: string; discount: number; font?: string; force_hq_campaign?: boolean }) {
   // When force_hq_campaign is enabled, ignore per-store campaign settings
   if (defaults.force_hq_campaign) {
@@ -71,6 +82,7 @@ export default async function SlugLayout({
     if (store && store.is_active) {
       const defaults = await getV3CampaignDefaults();
       const campaign = mergeCampaign(store, defaults);
+      const newsTitle = campaign.discount_rate > 0 ? undefined : getLatestNewsTitle(store.store_news);
 
       return (
         <>
@@ -88,6 +100,7 @@ export default async function SlugLayout({
               deadline={campaign.deadline}
               colorCode={campaign.color}
               fontId={campaign.font}
+              newsText={newsTitle}
             />
             {children}
           </div>
@@ -113,6 +126,7 @@ export default async function SlugLayout({
       const primaryStore = scStores[0];
       const defaults = await getV3CampaignDefaults();
       const campaign = mergeCampaign(primaryStore, defaults);
+      const scNewsTitle = campaign.discount_rate > 0 ? undefined : getLatestNewsTitle(primaryStore.store_news);
 
       return (
         <>
@@ -130,6 +144,7 @@ export default async function SlugLayout({
               deadline={campaign.deadline}
               colorCode={campaign.color}
               fontId={campaign.font}
+              newsText={scNewsTitle}
             />
             {children}
           </div>

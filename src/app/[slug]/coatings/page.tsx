@@ -89,7 +89,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                   <p className="text-[13px] text-slate-500 mt-1">{tier.tagline}</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-[10px] text-slate-400">SSサイズ〜・Web割後（税込）</div>
+                  <div className="text-[10px] text-slate-400">SSサイズ〜{discountRate > 0 ? '・Web割後' : ''}（税込）</div>
                   {isBlurred(tier.id, 'web_price', blurFields) ? (
                     <Link
                       href={`${base}/inquiry?tier=${tier.id}&prefill=price`}
@@ -99,7 +99,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                     </Link>
                   ) : (
                     <div>
-                      <div className="text-xs text-slate-400 line-through">{formatPrice(getPriceForSize(tier, 'SS', priceOverrides))}</div>
+                      {discountRate > 0 && <div className="text-xs text-slate-400 line-through">{formatPrice(getPriceForSize(tier, 'SS', priceOverrides))}</div>}
                       <div className="text-2xl font-bold text-[#0C3290]">{formatPrice(getWebPrice(tier, 'SS', discountRate, priceOverrides))}</div>
                     </div>
                   )}
@@ -121,7 +121,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                       <td className="px-4 py-2 bg-slate-100 font-semibold text-[11px] text-slate-500">メンテ</td>
                       <td className="px-4 py-2">{tier.maintenance_interval}</td>
                       <td className="px-4 py-2 bg-slate-100 font-semibold text-[11px] text-slate-500">Web割引</td>
-                      <td className="px-4 py-2 text-amber-700 font-bold">{discountRate}%OFF</td>
+                      <td className="px-4 py-2 text-amber-700 font-bold">{discountRate > 0 ? `${discountRate}%OFF` : '—'}</td>
                     </tr>
                     <tr className="border-b border-slate-100">
                       <td className="px-4 py-2 bg-slate-100 font-semibold text-[11px] text-slate-500">艶</td>
@@ -148,6 +148,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                     </tr>
                   </thead>
                   <tbody>
+                    {discountRate > 0 && (
                     <tr className="bg-white border-b border-slate-100">
                       <td className="px-2.5 py-2 font-semibold text-[11px] text-slate-400">通常価格</td>
                       {ALL_SIZES.map(size => (
@@ -158,8 +159,9 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                         </td>
                       ))}
                     </tr>
+                    )}
                     <tr className="bg-white">
-                      <td className="px-2.5 py-2 font-semibold text-[11px] text-amber-700">Web割価格</td>
+                      <td className="px-2.5 py-2 font-semibold text-[11px] text-amber-700">{discountRate > 0 ? 'Web割価格' : '価格'}</td>
                       {ALL_SIZES.map(size => (
                         <td key={size} className="px-2.5 py-2 text-center font-bold text-[11px] text-amber-700">
                           {isBlurred(tier.id, 'web_price', blurFields) ? (

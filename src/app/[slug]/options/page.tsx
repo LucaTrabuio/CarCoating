@@ -42,8 +42,8 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
   // When custom: show banner with custom rate
   const optionDiscount = syncWithStore ? storeDiscount : (pricingConfig?.option_discount_rate ?? 10);
   const showOptionBanner = !syncWithStore && optionDiscount > 0;
-  // If store-level pricing blur is on (all:web_price), blur all option prices too
-  const globalPriceBlur = blurFields.includes('all:web_price') || blurFields.includes('web_price');
+  // Option price blur uses its own toggle (independent of coating blur)
+  const globalPriceBlur = pricingConfig?.option_blur_prices ?? false;
 
   // Use custom options from Firebase if available, otherwise defaults
   let options: ServiceOption[] = DEFAULT_OPTIONS;

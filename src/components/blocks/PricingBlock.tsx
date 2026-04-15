@@ -81,7 +81,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
                 {formatPrice(webPrice)}〜
               </div>
             )}
-            <p className="text-[10px] text-slate-400 mb-3">{blurred ? 'お問い合わせ後にメールでご案内' : 'SSサイズ・Web割後・税込'}</p>
+            <p className="text-[10px] text-slate-400 mb-3">{blurred ? 'お問い合わせ後にメールでご案内' : `SSサイズ${discountRate > 0 ? '・Web割後' : ''}・税込`}</p>
           </div>
         );
       })}
@@ -95,7 +95,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
           <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
             コーティング料金
           </h2>
-          {config.show_discount_badge && (
+          {config.show_discount_badge && discountRate > 0 && (
             <p className="text-sm text-slate-400 mt-1">
               Web予約限定 最大{discountRate}%OFF
             </p>
