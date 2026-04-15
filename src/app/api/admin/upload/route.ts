@@ -31,17 +31,20 @@ export async function POST(req: NextRequest) {
   const ext = EXT_FROM_MIME[file.type];
   const key = `admin/${Date.now()}-${nanoid(10)}.${ext}`;
   try {
-    const blob = await put(key, file, {
-      access: 'public',
-      contentType: file.type,
-    });
+    // Try public access first, fall back to private if store is private
+    let blob;
+    try {
+      blob = await put(key, file, { access: 'public', contentType: file.type });
+    } catch (e) {
+      if (e instanceof Error && e.message.includes('private')) {
+        blob = await put(key, file, { access: 'private', contentType: file.type });
+      } else {
+        throw e;
+      }
+    }
     return NextResponse.json({ url: blob.url });
   } catch (err) {
     console.error('Blob upload error:', err);
-    const message = err instanceof Error ? err.message : 'Upload failed';
-    if (message.includes('BLOB_READ_WRITE_TOKEN') || message.includes('token')) {
-      return NextResponse.json({ error: 'Blob storage not configured. Set BLOB_READ_WRITE_TOKEN in environment variables.' }, { status: 500 });
-    }
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: err instanceof Error ? err.message : 'Upload failed' }, { status: 500 });
   }
 }
