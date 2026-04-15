@@ -36,7 +36,7 @@ export default function CampaignsPage() {
       color: bannerColor,
       start: campaignStart,
       end: campaignEnd,
-      discount: parseInt(campaignDiscount) || 20,
+      discount: Number.isFinite(parseInt(campaignDiscount)) ? parseInt(campaignDiscount) : 0,
       font: campaignFont || undefined,
       force_hq_campaign: forceHq,
     };
