@@ -2,14 +2,13 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { StoreData } from '@/lib/types';
+import { MAPS_API_KEY } from '@/lib/constants';
 
 interface StoreMapProps {
   stores: StoreData[];
   selectedStore: StoreData | null;
   onSelect: (store: StoreData) => void;
 }
-
-const MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 
 let mapsPromise: Promise<typeof google.maps> | null = null;
 

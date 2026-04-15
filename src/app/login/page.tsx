@@ -19,8 +19,10 @@ function AdminLoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawRedirect = searchParams.get('redirect') || '/admin';
-  // Sanitize: don't redirect back to login pages
-  const redirect = rawRedirect === '/admin/login' || rawRedirect === '/login' ? '/admin' : rawRedirect;
+  // Only allow same-origin admin paths (prevents open redirect)
+  const redirect = /^\/admin(\/[A-Za-z0-9/_\-\[\]]*)?$/.test(rawRedirect) && rawRedirect !== '/admin/login'
+    ? rawRedirect
+    : '/admin';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -136,7 +138,7 @@ function AdminLoginPageContent() {
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:border-transparent"
                 placeholder="admin@example.com"
               />
             </div>
@@ -151,7 +153,7 @@ function AdminLoginPageContent() {
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:border-transparent"
                 placeholder="••••••••"
               />
             </div>
@@ -159,7 +161,7 @@ function AdminLoginPageContent() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-500 text-[#0C3290] font-bold rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-[#0C3290] font-bold rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2"
             >
               {loading ? 'ログイン中...' : 'メールでログイン'}
             </button>

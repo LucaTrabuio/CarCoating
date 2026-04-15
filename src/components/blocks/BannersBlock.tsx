@@ -1,5 +1,6 @@
 import type { BannersConfig } from '@/lib/block-types';
 import { formatPrice, applyDiscount } from '@/lib/pricing';
+import { sanitizeCss } from '@/lib/sanitize';
 
 interface BannersBlockProps {
   config: BannersConfig;
@@ -60,7 +61,7 @@ export default function BannersBlock({ config }: BannersBlockProps) {
                   )}
                 </div>
                 {banner.custom_css && (
-                  <style dangerouslySetInnerHTML={{ __html: banner.custom_css }} />
+                  <style dangerouslySetInnerHTML={{ __html: sanitizeCss(banner.custom_css) }} />
                 )}
               </div>
             );

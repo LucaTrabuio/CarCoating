@@ -2,12 +2,19 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createSessionCookie } from '@/lib/auth';
 import { getAdminAuth, getAdminDb } from '@/lib/firebase-admin';
 import { cookies } from 'next/headers';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 // POST: Create session cookie from Firebase ID token
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const { allowed } = rateLimit(`session:${ip}`, 10);
+  if (!allowed) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   try {
     const { idToken } = await req.json();
-    if (!idToken) {
+    if (!idToken || typeof idToken !== 'string') {
       return NextResponse.json({ error: 'Missing idToken' }, { status: 400 });
     }
 
@@ -50,8 +57,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Session creation failed:', error);
-    const msg = error instanceof Error ? error.message : 'Failed to create session';
-    return NextResponse.json({ error: msg }, { status: 401 });
+    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
   }
 }
 

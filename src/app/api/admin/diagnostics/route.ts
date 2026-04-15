@@ -3,6 +3,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { requireAuth } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
+import nextPkg from 'next/package.json';
 
 type CheckStatus = 'ok' | 'warn' | 'error' | 'info';
 
@@ -33,7 +34,7 @@ function envStatus(name: string, required = true): Check {
   }
   const secretPatterns = [/KEY/, /SECRET/, /PASSWORD/, /TOKEN/, /CREDENTIAL/];
   const isSecret = secretPatterns.some(p => p.test(name));
-  const display = isSecret ? `set (${value.length} chars)` : value;
+  const display = isSecret ? 'set' : value;
   return { label: name, status: 'ok', value: display };
 }
 
@@ -57,7 +58,7 @@ export async function GET() {
       title: '環境',
       checks: [
         { label: 'Node version', status: 'info', value: process.version },
-        { label: 'Next.js version', status: 'info', value: '16.2.2' },
+        { label: 'Next.js version', status: 'info', value: nextPkg.version },
         { label: 'NODE_ENV', status: 'info', value: process.env.NODE_ENV || '(unset)' },
         envStatus('NEXT_PUBLIC_SITE_URL', false),
         envStatus('NEXT_PUBLIC_FIREBASE_PROJECT_ID'),
@@ -377,9 +378,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Diagnostics error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error', detail: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -1,14 +1,18 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { verifySession } from '@/lib/auth';
+import { requireAuth } from '@/lib/auth';
+
+const PATH_RE = /^\/[A-Za-z0-9/_\-\[\]]{0,200}$/;
 
 // POST: Revalidate a store page after admin edits
 export async function POST(req: NextRequest) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
 
   const { path } = await req.json();
-  if (!path) return NextResponse.json({ error: 'Missing path' }, { status: 400 });
+  if (typeof path !== 'string' || !PATH_RE.test(path)) {
+    return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+  }
 
   revalidatePath(path);
   return NextResponse.json({ revalidated: true, path });

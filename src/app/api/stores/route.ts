@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { put, list, del } from '@vercel/blob';
 import { stores as hardcodedStores } from '@/data/stores';
 import { StoreData } from '@/lib/types';
+import { requireAuth } from '@/lib/auth';
 
 const BLOB_KEY = 'stores.json';
 
@@ -26,8 +27,14 @@ export async function GET() {
 
 // POST: save imported stores to blob
 export async function POST(request: Request) {
+  const auth = await requireAuth('super_admin');
+  if (auth.error) return auth.error;
+
   try {
     const stores: StoreData[] = await request.json();
+    if (!Array.isArray(stores) || stores.length > 10000) {
+      return NextResponse.json({ error: 'Invalid stores payload' }, { status: 400 });
+    }
     // Clean up old blob
     const { blobs } = await list({ prefix: BLOB_KEY });
     for (const blob of blobs) await del(blob.url);

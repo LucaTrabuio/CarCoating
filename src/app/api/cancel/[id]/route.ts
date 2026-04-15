@@ -18,12 +18,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     const data = doc.data()!;
 
-    // Require cancel token for reservations that have one (legacy reservations without
-    // cancelToken can still be cancelled without — remove this fallback after the grace period).
-    if (data.cancelToken) {
-      if (!token || token !== data.cancelToken) {
-        return NextResponse.json({ error: 'Invalid or missing token' }, { status: 403 });
-      }
+    if (!data.cancelToken || !token || token !== data.cancelToken) {
+      return NextResponse.json({ error: 'Invalid or missing token' }, { status: 403 });
     }
 
     if (data.status === 'cancelled') return NextResponse.json({ error: 'Already cancelled' }, { status: 409 });

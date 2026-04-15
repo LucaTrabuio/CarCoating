@@ -1,4 +1,5 @@
 import type { CustomHtmlConfig } from '@/lib/block-types';
+import { sanitizeHtml, sanitizeCss } from '@/lib/sanitize';
 
 interface CustomHtmlBlockProps {
   config: CustomHtmlConfig;
@@ -7,15 +8,20 @@ interface CustomHtmlBlockProps {
 export default function CustomHtmlBlock({ config }: CustomHtmlBlockProps) {
   if (!config.html) return null;
 
+  const safeHtml = sanitizeHtml(config.html);
+  const safeCss = config.css ? sanitizeCss(config.css) : '';
+
+  if (!safeHtml) return null;
+
   return (
     <section className="py-14 px-5 bg-white">
       <div className="max-w-[900px] mx-auto">
-        {config.css && (
-          <style dangerouslySetInnerHTML={{ __html: config.css }} />
+        {safeCss && (
+          <style dangerouslySetInnerHTML={{ __html: safeCss }} />
         )}
         <div
           className="custom-html-block"
-          dangerouslySetInnerHTML={{ __html: config.html }}
+          dangerouslySetInnerHTML={{ __html: safeHtml }}
         />
       </div>
     </section>

@@ -1,10 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifySession, canManageStore } from '@/lib/auth';
+import { requireAuth, canManageStore } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 
 export async function GET(req: NextRequest) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+  const user = auth.user;
 
   const { searchParams } = req.nextUrl;
   const storeId = searchParams.get('storeId');

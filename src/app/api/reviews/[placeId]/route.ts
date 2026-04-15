@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { GoogleReview } from '@/lib/types';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
+
+const PLACE_ID_RE = /^[A-Za-z0-9_-]{16,256}$/;
 
 // Google Places API integration
 // Set GOOGLE_PLACES_API_KEY in .env.local for live reviews
@@ -37,15 +40,21 @@ const SAMPLE_REVIEWS: GoogleReview[] = [
 ];
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ placeId: string }> }
 ) {
   const { placeId } = await params;
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
 
-  if (apiKey && placeId && !placeId.startsWith('ChIJ_example')) {
+  if (apiKey && placeId && !placeId.startsWith('ChIJ_example') && PLACE_ID_RE.test(placeId)) {
+    const ip = getClientIp(request);
+    const { allowed } = rateLimit(`reviews:${ip}`, 30);
+    if (!allowed) {
+      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+    }
+
     try {
-      const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=rating,user_ratings_total,reviews&language=ja&key=${apiKey}`;
+      const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeId)}&fields=rating,user_ratings_total,reviews&language=ja&key=${apiKey}`;
       const res = await fetch(url, { next: { revalidate: 3600 } }); // Cache for 1 hour
       const data = await res.json();
 

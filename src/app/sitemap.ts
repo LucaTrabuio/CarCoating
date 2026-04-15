@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { getAllV3Stores } from '@/lib/firebase-stores';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { SITE_URL as siteUrl } from '@/lib/constants';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://car-coating.vercel.app';
   const entries: MetadataRoute.Sitemap = [];
 
   // Landing page
@@ -32,8 +32,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         });
       }
     }
-  } catch {
-    // Firestore unavailable — skip store pages
+  } catch (err) {
+    console.warn('sitemap: Firestore stores unavailable', err);
   }
 
   // Blog index
@@ -59,8 +59,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.5,
       });
     }
-  } catch {
-    // Firestore unavailable — skip blog posts
+  } catch (err) {
+    console.warn('sitemap: Firestore blog_posts unavailable', err);
   }
 
   return entries;

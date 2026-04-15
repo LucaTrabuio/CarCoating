@@ -7,10 +7,8 @@ import { coatingTiers } from '@/data/coating-tiers';
 import { blogArticles } from '@/data/blog-articles';
 import { news, CATEGORY_LABELS } from '@/data/news';
 import Image from 'next/image';
-import { KEEPER_BASE } from '@/lib/constants';
+import { KEEPER_BASE, MAPS_API_KEY } from '@/lib/constants';
 import ScrollFadeIn from '@/components/ScrollFadeIn';
-
-const MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371;

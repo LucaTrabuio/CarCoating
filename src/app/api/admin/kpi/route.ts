@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifySession, canManageStore } from '@/lib/auth';
+import { requireAuth, canManageStore } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 
 async function fetchKpiForStore(storeId: string, startDate: string | null, endDate: string | null) {
@@ -12,8 +12,9 @@ async function fetchKpiForStore(storeId: string, startDate: string | null, endDa
 }
 
 export async function GET(req: NextRequest) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+  const user = auth.user;
 
   const { searchParams } = req.nextUrl;
   const storeId = searchParams.get('storeId');
@@ -33,8 +34,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const user = await verifySession();
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+  const user = auth.user;
 
   const body = await req.json();
   const { storeId, date, phone_calls, inquiries, bookings } = body as {

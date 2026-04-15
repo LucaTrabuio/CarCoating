@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { blogArticles } from '@/data/blog-articles';
 import type { Metadata } from 'next';
+import { SITE_URL } from '@/lib/constants';
 
 interface BlogPostFull {
   slug: string;
@@ -44,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ articleSl
   const { articleSlug } = await params;
   const article = await getArticle(articleSlug);
   if (!article) return {};
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://car-coating.vercel.app';
+  const siteUrl = SITE_URL;
   const title = article.metaTitle || article.title;
   const description = article.metaDescription || article.summary;
   const ogImage = (article as unknown as Record<string, unknown>).og_image_url as string | undefined;
