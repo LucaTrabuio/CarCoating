@@ -24,7 +24,12 @@ export default async function SlugPage({
       const primaryStore = stores[0];
       const defaults = await getV3CampaignDefaults();
       const basePath = `/${slug}`;
-      const campaign = {
+      const campaign = defaults.force_hq_campaign ? {
+        title: defaults.title,
+        discount_rate: defaults.discount,
+        deadline: defaults.end,
+        color: defaults.color,
+      } : {
         title: primaryStore.campaign_title || defaults.title,
         discount_rate: primaryStore.discount_rate ?? defaults.discount,
         deadline: primaryStore.campaign_deadline || defaults.end,
@@ -78,7 +83,7 @@ export default async function SlugPage({
   const store = await getV3StoreById(slug);
   if (store && store.is_active) {
     const defaults = await getV3CampaignDefaults();
-    let discountRate = store.discount_rate ?? defaults.discount;
+    let discountRate = defaults.force_hq_campaign ? defaults.discount : (store.discount_rate ?? defaults.discount);
     if (defaults.end && new Date(defaults.end) < new Date()) discountRate = 0;
     const basePath = `/${slug}`;
     const layout = parsePageLayout(store.page_layout, store);

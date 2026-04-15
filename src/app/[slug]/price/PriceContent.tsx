@@ -259,10 +259,10 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
   );
 }
 
-export default function PriceContent({ store }: { store: V3StoreData }) {
+export default function PriceContent({ store, discountRateOverride }: { store: V3StoreData; discountRateOverride?: number }) {
   return (
     <Suspense fallback={<div className="py-20 text-center text-gray-400">読み込み中...</div>}>
-      <PriceContentInner store={store} />
+      <PriceContentInner store={discountRateOverride !== undefined ? { ...store, discount_rate: discountRateOverride } : store} />
     </Suspense>
   );
 }

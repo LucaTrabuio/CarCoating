@@ -45,7 +45,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
     getV3CampaignDefaults(),
     getMasterCoatingTiers(),
   ]);
-  const discountRate = store.discount_rate ?? defaults.discount;
+  const discountRate = defaults.force_hq_campaign ? defaults.discount : (store.discount_rate ?? defaults.discount);
   const base = `/${slug}`;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);
   const priceOverrides = parsePriceOverrides(store.price_overrides);

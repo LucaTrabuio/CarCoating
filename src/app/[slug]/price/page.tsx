@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { resolveSlugToStore } from '@/lib/firebase-stores';
+import { resolveSlugToStore, getV3CampaignDefaults } from '@/lib/firebase-stores';
 import type { Metadata } from 'next';
 import PriceContent from './PriceContent';
 
@@ -18,6 +18,8 @@ export default async function V3StorePricePage({ params }: { params: Promise<{ s
   const { slug } = await params;
   const resolved = await resolveSlugToStore(slug);
   if (!resolved) notFound();
+  const defaults = await getV3CampaignDefaults();
+  const discountRate = defaults.force_hq_campaign ? defaults.discount : (resolved.store.discount_rate ?? defaults.discount);
 
-  return <PriceContent store={resolved.store} />;
+  return <PriceContent store={resolved.store} discountRateOverride={discountRate} />;
 }

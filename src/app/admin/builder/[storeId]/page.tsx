@@ -1359,8 +1359,42 @@ export default function BuilderPage() {
               }]);
             }
 
+            // Promo banners (the big images on the store homepage below hero)
+            let promoBanners: { src: string; alt: string }[] = [];
+            try { promoBanners = JSON.parse(storeData.promo_banners || '[]'); } catch { /* empty */ }
+            // Ensure we always have 4 slots
+            while (promoBanners.length < 4) promoBanners.push({ src: '', alt: '' });
+
+            function updatePromoBanners(newBanners: { src: string; alt: string }[]) {
+              updateStoreField('promo_banners', JSON.stringify(newBanners.filter(b => b.src)));
+            }
+
             return (
-              <div className="space-y-4">
+              <div className="space-y-6">
+                {/* Promo banners — the big images on store homepage */}
+                <div>
+                  <h3 className="text-sm font-bold text-gray-800 mb-1">ホームページバナー画像</h3>
+                  <p className="text-[10px] text-gray-400 mb-3">ストアのトップページに表示される大きなバナー画像（4枚）。空欄はデフォルト画像が使用されます。</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {promoBanners.slice(0, 4).map((pb, i) => (
+                      <ImageSlot
+                        key={i}
+                        label={`バナー ${i + 1}`}
+                        value={pb.src || undefined}
+                        aspectRatio="16/7"
+                        onChange={url => {
+                          const updated = [...promoBanners];
+                          updated[i] = { src: url, alt: updated[i]?.alt || '' };
+                          updatePromoBanners(updated);
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <hr className="border-gray-200" />
+
+                {/* Promotional offer banners */}
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-bold text-gray-800">プロモーションバナー</h3>
                   <button onClick={addBanner} className="px-3 py-1.5 bg-amber-500 text-[#0C3290] rounded-lg text-xs font-bold hover:bg-amber-600">+ バナー追加</button>

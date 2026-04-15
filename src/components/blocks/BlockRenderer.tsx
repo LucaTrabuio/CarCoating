@@ -61,7 +61,7 @@ export default function BlockRenderer({ block, store, basePath, discountRate, al
     return (
       <>
         <HeroBlock config={block.config as HeroConfig} store={store} basePath={basePath} />
-        <PromoBannersBlock />
+        <PromoBannersBlock store={store} />
       </>
     );
   }

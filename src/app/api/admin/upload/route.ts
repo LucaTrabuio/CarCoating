@@ -13,7 +13,7 @@ const EXT_FROM_MIME: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
-  const auth = await requireAuth('super_admin');
+  const auth = await requireAuth('store_admin');
   if (auth.error) return auth.error;
 
   const formData = await req.formData();
