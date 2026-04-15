@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       addRandomSuffix: false,
     });
     // Return proxy URL that serves the private blob publicly
-    const proxyUrl = `/api/admin/image/${key.replace('admin/', '')}`;
+    const proxyUrl = `/api/images/${key.replace('admin/', '')}`;
     return NextResponse.json({ url: proxyUrl });
   } catch (err) {
     console.error('Upload error:', err);
