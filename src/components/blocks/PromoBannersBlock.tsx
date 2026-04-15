@@ -13,16 +13,12 @@ interface PromoBannersBlockProps {
 }
 
 export default function PromoBannersBlock({ store }: PromoBannersBlockProps) {
-  // Use store-specific promo banners if set, otherwise defaults
-  let banners = DEFAULT_BANNERS;
-  if (store) {
-    try {
-      const custom = JSON.parse(store.promo_banners || '[]');
-      if (Array.isArray(custom) && custom.length > 0 && custom.some((b: { src?: string }) => b.src)) {
-        banners = custom.filter((b: { src?: string }) => b.src);
-      }
-    } catch { /* use defaults */ }
-  }
+  // Merge per-slot: use custom image if uploaded, otherwise keep default
+  let custom: { src?: string; alt?: string }[] = [];
+  try { custom = JSON.parse(store?.promo_banners || '[]'); } catch { /* empty */ }
+  const banners = DEFAULT_BANNERS.map((def, i) =>
+    custom[i]?.src ? { src: custom[i].src!, alt: custom[i].alt || def.alt } : def
+  );
 
   return (
     <section className="py-10 px-5 bg-white">
