@@ -367,19 +367,19 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               const price = getPriceForSize(tier, 'SS', priceOverrides);
               const visual = TIER_VISUALS[tier.id];
               return (
-                <div key={tier.id} id={`tier-${tier.id}`} className="flex gap-3 sm:gap-4 items-stretch scroll-mt-24">
+                <div key={tier.id} id={`tier-${tier.id}`} className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-stretch scroll-mt-24">
                   {visual && (
-                    <div className="shrink-0 self-stretch flex items-end w-20 sm:w-28 md:w-36" aria-hidden>
+                    <div className="shrink-0 w-full h-24 sm:w-28 md:w-36 sm:h-auto sm:self-stretch sm:flex sm:items-end" aria-hidden>
                       <div
-                        className="relative w-full h-3/4 rounded-lg overflow-hidden"
+                        className="relative w-full h-full sm:h-3/4 rounded-lg overflow-hidden"
                         style={{
-                          background: `${visual.bg} url(${visual.car}) right bottom / auto 75% no-repeat`,
+                          background: `${visual.bg} url(${visual.car}) right bottom / auto 85% no-repeat`,
                         }}
                       >
                         <img
                           src={visual.logo}
                           alt=""
-                          className="absolute top-1 left-1 right-1 sm:top-1.5 sm:left-1.5 sm:right-1.5 w-[calc(100%-0.5rem)] sm:w-[calc(100%-0.75rem)] h-auto object-contain"
+                          className="absolute top-1.5 left-1.5 h-auto w-[40%] max-w-[140px] object-contain sm:top-1 sm:left-1 sm:right-1 sm:w-[calc(100%-0.5rem)] sm:max-w-none"
                         />
                       </div>
                     </div>

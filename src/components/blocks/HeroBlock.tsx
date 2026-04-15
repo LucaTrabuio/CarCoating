@@ -126,7 +126,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
     };
   }, []);
 
-  const imgSrc = config.image_url || store.hero_image_url || '/images/dia2-hero.jpg';
+  const imgSrc = config.image_url || store.hero_image_url || '/images/dia2-hero.png';
 
   return (
     <section
@@ -153,11 +153,15 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="absolute inset-0 w-full h-full object-cover will-change-transform animate-hero-zoom"
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+            className="absolute inset-0 w-full h-full object-cover will-change-transform animate-hero-zoom select-none pointer-events-none"
             style={{
               filter: isReblurred ? 'blur(20px) brightness(0.85) saturate(1.1)' : 'blur(0px) brightness(1)',
               transition: 'filter 0.8s ease-in-out',
-            }}
+              WebkitUserDrag: 'none',
+            } as React.CSSProperties}
           />
           <div
             ref={bubbleRef}
