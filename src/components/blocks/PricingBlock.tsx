@@ -97,24 +97,12 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
             >
               {tier.durability_years}持続 | {tier.application_time}
             </p>
-            {blurred ? (
-              <TrackedLink
-                href={`${basePath}/inquiry?tier=${tier.id}&prefill=price`}
-                storeId={store.store_id}
-                event="cta_inquiry"
-                meta={{ source: 'pricing_card', tier: tier.id }}
-                className="inline-block px-5 py-2 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors cursor-pointer"
-              >
-                要問合せ →
-              </TrackedLink>
-            ) : (
-              <div
-                className="font-bold text-[#0C3290] select-none leading-tight"
-                style={{ fontSize: 'clamp(0.85rem, 2.6vw, 1.5rem)' }}
-              >
-                {formatPrice(webPrice)}〜
-              </div>
-            )}
+            <div
+              className="font-bold text-[#0C3290] select-none leading-tight"
+              style={{ fontSize: 'clamp(0.85rem, 2.6vw, 1.5rem)' }}
+            >
+              {formatPrice(webPrice)}〜
+            </div>
             <p
               className="text-slate-400 leading-tight mb-2"
               style={{ fontSize: 'clamp(0.45rem, 1vw, 0.625rem)' }}
