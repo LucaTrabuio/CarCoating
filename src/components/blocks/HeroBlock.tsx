@@ -126,7 +126,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
     };
   }, []);
 
-  const imgSrc = config.image_url || store.hero_image_url || '/images/dia2-hero.jpg';
+  const imgSrc = config.image_url || store.hero_image_url || '/images/dia2-hero.png';
 
   return (
     <section
