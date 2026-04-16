@@ -3,6 +3,12 @@
 import { useRef, useState } from 'react';
 
 type FieldDiff = { field: string; before: unknown; after: unknown };
+type ImageResolution = {
+  field: string;
+  rawValue: string;
+  status: 'url' | 'file-ok' | 'file-missing' | 'no-zip';
+  resolvedUrl?: string;
+};
 type PreviewRow = {
   rowNumber: number;
   storeId: string | null;
@@ -10,6 +16,7 @@ type PreviewRow = {
   diff: FieldDiff[];
   errors: string[];
   unknownColumns: string[];
+  imageResolutions: ImageResolution[];
 };
 type PreviewResponse = {
   summary: { totalRows: number; willUpdate: number; willCreate: number; errors: number; forbidden: number };
@@ -17,7 +24,7 @@ type PreviewResponse = {
   unknownColumns: string[];
   parseErrors: string[];
 };
-type CommitResponse = { success: true; importId: string; committed: number; skipped: number };
+type CommitResponse = { success: true; importId: string; committed: number; skipped: number; imagesUploaded?: number };
 
 export default function StoreImportPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -121,11 +128,11 @@ export default function StoreImportPage() {
             現在の店舗データ（テンプレート）をダウンロード
           </a>
           <label className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg cursor-pointer">
-            CSV をアップロード
+            CSV または ZIP をアップロード
             <input
               ref={fileInputRef}
               type="file"
-              accept=".csv,text/csv"
+              accept=".csv,text/csv,.zip,application/zip,application/x-zip-compressed"
               className="hidden"
               onChange={handleFileSelect}
               disabled={busy}
@@ -239,7 +246,14 @@ export default function StoreImportPage() {
                           )}
                         </div>
                       )}
-                      {r.action === 'update' && r.diff.length === 0 && (
+                      {r.imageResolutions.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {r.imageResolutions.map((img, i) => (
+                            <ImageChip key={i} res={img} />
+                          ))}
+                        </div>
+                      )}
+                      {r.action === 'update' && r.diff.length === 0 && r.imageResolutions.length === 0 && (
                         <div className="text-xs text-gray-400">変更なし</div>
                       )}
                     </td>
@@ -278,4 +292,40 @@ function previewValue(v: unknown): string {
   }
   if (typeof v === 'object') return JSON.stringify(v).slice(0, 40);
   return String(v);
+}
+
+function ImageChip({ res }: { res: ImageResolution }) {
+  const base = 'px-2 py-1 rounded text-xs border flex items-center gap-1.5';
+  if (res.status === 'url') {
+    return (
+      <span className={`${base} border-blue-200 bg-blue-50 text-blue-800`} title={res.resolvedUrl}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={res.resolvedUrl} alt="" className="w-6 h-6 object-cover rounded" />
+        <span className="font-mono">{res.field}</span>
+        <span className="text-blue-500">(URL)</span>
+      </span>
+    );
+  }
+  if (res.status === 'file-ok') {
+    return (
+      <span className={`${base} border-green-200 bg-green-50 text-green-800`}>
+        <span className="font-mono">{res.field}</span>
+        <span className="text-green-600">← {res.rawValue} (ZIP)</span>
+      </span>
+    );
+  }
+  if (res.status === 'file-missing') {
+    return (
+      <span className={`${base} border-red-200 bg-red-50 text-red-700`}>
+        <span className="font-mono">{res.field}</span>
+        <span>✗ {res.rawValue} not in ZIP</span>
+      </span>
+    );
+  }
+  return (
+    <span className={`${base} border-amber-200 bg-amber-50 text-amber-800`}>
+      <span className="font-mono">{res.field}</span>
+      <span>needs ZIP (or full URL)</span>
+    </span>
+  );
 }

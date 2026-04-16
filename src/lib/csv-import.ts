@@ -28,7 +28,32 @@ const JSON_FIELDS = new Set([
   'store_news', 'banners', 'price_overrides', 'guide_config', 'promo_banners',
 ]);
 
-const KNOWN_STORE_COLUMNS = new Set<string>(V3_CSV_COLUMNS as readonly string[]);
+// Image URL fields. These accept either a full URL (kept as-is) or a
+// filename referencing an image inside the uploaded ZIP's images/ folder.
+export const IMAGE_SINGLE_COLUMNS = new Set<string>([
+  'hero_image_url', 'logo_url', 'staff_photo_url',
+  'store_exterior_url', 'store_interior_url',
+  'before_after_url', 'campaign_banner_url',
+]);
+
+// Convenience columns that get assembled into JSON fields.
+// banner1..4 → promo_banners JSON (unless promo_banners is explicitly set).
+// gallery    → gallery_images JSON (pipe-separated list; explicit gallery_images wins).
+export const BANNER_CONVENIENCE_COLUMNS = ['banner1', 'banner2', 'banner3', 'banner4'] as const;
+export const GALLERY_CONVENIENCE_COLUMN = 'gallery';
+
+const KNOWN_STORE_COLUMNS = new Set<string>([
+  ...(V3_CSV_COLUMNS as readonly string[]),
+  ...BANNER_CONVENIENCE_COLUMNS,
+  GALLERY_CONVENIENCE_COLUMN,
+]);
+
+/** Columns handled by Phase 6 image resolver; excluded from the generic validate/coerce pipeline. */
+const HANDLED_BY_IMAGE_RESOLVER = new Set<string>([
+  ...IMAGE_SINGLE_COLUMNS,
+  ...BANNER_CONVENIENCE_COLUMNS,
+  GALLERY_CONVENIENCE_COLUMN,
+]);
 
 // ─── Coercion ───
 
@@ -92,6 +117,8 @@ export function validateStoreRow(row: Record<string, string>, rowNumber: number)
       unknownColumns.push(col);
       continue;
     }
+    // Image + convenience columns are resolved separately (resolveImageRefs)
+    if (HANDLED_BY_IMAGE_RESOLVER.has(col)) continue;
     const res = coerceCell(col, val);
     if (res === null) continue;
     if ('error' in res) {
@@ -149,6 +176,54 @@ export function computeDiff(
     }
   }
   return diff;
+}
+
+// ─── Image reference extraction (Phase 6: ZIP bundle + URL) ───
+
+export type ImageRef = { field: string; value: string };
+
+export type ExtractedImages = {
+  /** Single-slot image columns: hero_image_url, logo_url, ... */
+  singles: ImageRef[];
+  /** banner1..banner4 (sparse — only slots with values present). */
+  banners: { slot: 1 | 2 | 3 | 4; value: string }[];
+  /** gallery convenience column, pipe-separated values. */
+  gallery: string[];
+  /** Explicit JSON cell in `promo_banners` (takes precedence over banner1..4). */
+  explicitPromoBannersJson?: string;
+  /** Explicit JSON cell in `gallery_images` (takes precedence over gallery). */
+  explicitGalleryJson?: string;
+};
+
+/** Extract raw image references from a CSV row. Does not resolve/upload. */
+export function extractImageRefs(row: Record<string, string>): ExtractedImages {
+  const singles: ImageRef[] = [];
+  for (const field of IMAGE_SINGLE_COLUMNS) {
+    const v = row[field]?.trim();
+    if (v) singles.push({ field, value: v });
+  }
+
+  const banners: { slot: 1 | 2 | 3 | 4; value: string }[] = [];
+  BANNER_CONVENIENCE_COLUMNS.forEach((col, i) => {
+    const v = row[col]?.trim();
+    if (v) banners.push({ slot: (i + 1) as 1 | 2 | 3 | 4, value: v });
+  });
+
+  const galleryRaw = row[GALLERY_CONVENIENCE_COLUMN]?.trim();
+  const gallery = galleryRaw ? galleryRaw.split('|').map((s) => s.trim()).filter(Boolean) : [];
+
+  const explicitPromoBannersJson = row.promo_banners?.trim() || undefined;
+  const explicitGalleryJson = row.gallery_images?.trim() || undefined;
+
+  return { singles, banners, gallery, explicitPromoBannersJson, explicitGalleryJson };
+}
+
+/** Classify a single image value: full URL, filename (needs ZIP lookup), or empty. */
+export function classifyImageValue(value: string): 'url' | 'file' | 'empty' {
+  const t = value.trim();
+  if (!t) return 'empty';
+  if (/^https?:\/\//i.test(t)) return 'url';
+  return 'file';
 }
 
 // ─── CSV generation (for template download) ───
