@@ -169,7 +169,7 @@ export default function StoreImportPage() {
             反映: {success.committed} 件 — Import ID: <code className="bg-white px-1 rounded">{success.importId}</code>
           </div>
           <div className="text-xs mt-1 text-gray-600">
-            問題があった場合は「インポート履歴」から元に戻せます（開発中）。
+            問題があった場合は<a href="/admin/imports" className="underline">「インポート履歴」</a>から元に戻せます。
           </div>
         </div>
       )}

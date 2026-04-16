@@ -23,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'KPIダッシュボード', href: '/admin/kpi', icon: '📊', storeAdminVisible: true },
   { label: 'チケット', href: '/admin/tickets', icon: '🎫', storeAdminVisible: true },
   { label: 'CSVインポート', href: '/admin/stores/import', icon: '📥', storeAdminVisible: true },
+  { label: 'インポート履歴', href: '/admin/imports', icon: '🕘', storeAdminVisible: true },
   // super_admin only
   { label: '店舗マスター', href: '/admin/stores', icon: '🏪', superAdminOnly: true },
   { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳', superAdminOnly: true },
