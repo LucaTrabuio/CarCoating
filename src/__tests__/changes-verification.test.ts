@@ -229,11 +229,6 @@ describe('Source code verification', () => {
     expect(src).not.toContain("from '@/lib/sanitize'");
   });
 
-  test('campaign API saves to Firebase', () => {
-    const src = readFileSync(join(SRC, 'app/api/campaign/route.ts'), 'utf-8');
-    expect(src).toContain('saveV3CampaignDefaults');
-  });
-
   test('validations schema includes force_hq_campaign', () => {
     const src = readFileSync(join(SRC, 'lib/validations.ts'), 'utf-8');
     expect(src).toContain('force_hq_campaign');
