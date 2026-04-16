@@ -6,6 +6,7 @@ import {
 } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getAuth as _getAuth, type Auth } from "firebase-admin/auth";
+import { getStorage as _getStorage, type Storage } from "firebase-admin/storage";
 
 function getPrivateKey(): string | undefined {
   const key = process.env.FIREBASE_PRIVATE_KEY;
@@ -29,7 +30,10 @@ function ensureApp() {
     privateKey: getPrivateKey(),
   };
 
-  return initializeApp({ credential: cert(serviceAccount) });
+  return initializeApp({
+    credential: cert(serviceAccount),
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  });
 }
 
 function getAdminDb(): Firestore {
@@ -44,4 +48,9 @@ function getAdminAuth(): Auth {
   return _getAuth(app);
 }
 
-export { getAdminDb, getAdminAuth };
+function getAdminStorage(): Storage {
+  const app = ensureApp();
+  return _getStorage(app);
+}
+
+export { getAdminDb, getAdminAuth, getAdminStorage };

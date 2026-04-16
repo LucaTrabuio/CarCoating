@@ -1,7 +1,8 @@
-import { put } from '@vercel/blob';
 import { NextResponse, type NextRequest } from 'next/server';
 import { requireAuth } from '@/lib/auth';
+import { getAdminStorage } from '@/lib/firebase-admin';
 import { nanoid } from 'nanoid';
+import { randomUUID } from 'node:crypto';
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -28,17 +29,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
   }
 
+  // Path convention: stores/<storeId>/<filename> if storeId provided; otherwise shared/<filename>
+  const storeId = (formData.get('storeId') as string | null)?.trim();
   const ext = EXT_FROM_MIME[file.type];
-  const key = `admin/${Date.now()}-${nanoid(10)}.${ext}`;
+  const filename = `${Date.now()}-${nanoid(10)}.${ext}`;
+  const key = storeId ? `stores/${storeId}/${filename}` : `shared/${filename}`;
+
   try {
-    await put(key, file, {
-      access: 'private',
+    const bucket = getAdminStorage().bucket();
+    const storageFile = bucket.file(key);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const downloadToken = randomUUID();
+
+    await storageFile.save(buffer, {
       contentType: file.type,
-      addRandomSuffix: false,
+      metadata: {
+        cacheControl: 'public, max-age=31536000, immutable',
+        metadata: { firebaseStorageDownloadTokens: downloadToken },
+      },
     });
-    // Return proxy URL that serves the private blob publicly
-    const proxyUrl = `/api/images/${key.replace('admin/', '')}`;
-    return NextResponse.json({ url: proxyUrl });
+
+    const url = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(key)}?alt=media&token=${downloadToken}`;
+    return NextResponse.json({ url });
   } catch (err) {
     console.error('Upload error:', err);
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Upload failed' }, { status: 500 });
