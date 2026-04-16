@@ -30,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'トップページ', href: '/admin/homepage', icon: '🏠', superAdminOnly: true },
   { label: 'キャンペーン', href: '/admin/campaigns', icon: '🎯', superAdminOnly: true },
   { label: 'ブログ管理', href: '/admin/blog', icon: '✏️', superAdminOnly: true },
+  { label: 'ブログ CSV', href: '/admin/blog/import', icon: '📝', superAdminOnly: true },
   { label: 'ユーザー管理', href: '/admin/users', icon: '👥', superAdminOnly: true },
   { label: 'マスターデータ', href: '/admin/master', icon: '⚙️', superAdminOnly: true },
   { label: '診断', href: '/admin/diagnostics', icon: '🩺', superAdminOnly: true },

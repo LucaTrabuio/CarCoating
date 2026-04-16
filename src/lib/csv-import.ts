@@ -226,6 +226,66 @@ export function classifyImageValue(value: string): 'url' | 'file' | 'empty' {
   return 'file';
 }
 
+// ─── Blog validation (Phase 7) ───
+
+export const BLOG_CSV_COLUMNS = [
+  'slug', 'title', 'summary', 'content', 'hero_image',
+  'category', 'published', 'publishDate', 'metaTitle', 'metaDescription',
+] as const;
+
+const BLOG_BOOLEAN_FIELDS = new Set(['published']);
+const BLOG_KNOWN_COLUMNS = new Set<string>(BLOG_CSV_COLUMNS as readonly string[]);
+const BLOG_IMAGE_FIELD = 'hero_image'; // resolved to hero_image_url in Firestore
+
+export type BlogRowResult = {
+  rowNumber: number;
+  slug: string | null;
+  updates: Record<string, unknown>;
+  heroImageRaw: string | null; // raw CSV value (URL or filename), null if empty
+  errors: string[];
+  unknownColumns: string[];
+};
+
+export function validateBlogRow(row: Record<string, string>, rowNumber: number): BlogRowResult {
+  const slug = row.slug?.trim() || null;
+  const updates: Record<string, unknown> = {};
+  const errors: string[] = [];
+  const unknownColumns: string[] = [];
+  let heroImageRaw: string | null = null;
+
+  if (!slug) errors.push('slug is required');
+  else if (!/^[a-z0-9][a-z0-9-]*$/i.test(slug)) {
+    errors.push('slug must be URL-safe (alphanumeric and dashes only)');
+  }
+
+  for (const [col, val] of Object.entries(row)) {
+    if (col === 'slug') continue;
+    if (col === BLOG_IMAGE_FIELD) {
+      const t = val.trim();
+      if (t) heroImageRaw = t;
+      continue;
+    }
+    if (!BLOG_KNOWN_COLUMNS.has(col)) {
+      unknownColumns.push(col);
+      continue;
+    }
+    const trimmed = val.trim();
+    if (trimmed === '') continue;
+
+    if (BLOG_BOOLEAN_FIELDS.has(col)) {
+      const lower = trimmed.toLowerCase();
+      if (['true', 'yes', '1'].includes(lower)) updates[col] = true;
+      else if (['false', 'no', '0'].includes(lower)) updates[col] = false;
+      else errors.push(`"${col}" must be true/false (got "${trimmed}")`);
+      continue;
+    }
+
+    updates[col] = trimmed;
+  }
+
+  return { rowNumber, slug, updates, heroImageRaw, errors, unknownColumns };
+}
+
 // ─── CSV generation (for template download) ───
 
 export function toCsv(rows: Record<string, unknown>[], columns: string[]): string {
