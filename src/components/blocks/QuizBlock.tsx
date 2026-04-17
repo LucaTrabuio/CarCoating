@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { trackEvent } from '@/lib/track';
 
@@ -142,24 +142,143 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
   const result = step === 4 ? tierResults[computeResult(answers)] : null;
   const progress = step >= 0 && step <= 4 ? Math.min(step, 4) / 4 : 0;
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const parallaxRafRef = useRef(0);
+  const parallaxTargetRef = useRef({ x: 0, y: 0 });
+  const parallaxPendingRef = useRef(false);
+  const [inView, setInView] = useState(false);
+  const [btnHover, setBtnHover] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setInView(true);
+            io.disconnect();
+            break;
+          }
+        }
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const applyParallax = () => {
+    parallaxPendingRef.current = false;
+    const el = bgRef.current;
+    if (!el) return;
+    const { x, y } = parallaxTargetRef.current;
+    el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(1.01)`;
+  };
+
+  const scheduleParallax = () => {
+    if (parallaxPendingRef.current) return;
+    parallaxPendingRef.current = true;
+    parallaxRafRef.current = requestAnimationFrame(applyParallax);
+  };
+
+  const onSectionMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const nx = (e.clientX - rect.left) / rect.width;  // 0..1
+    const ny = (e.clientY - rect.top) / rect.height;  // 0..1
+    const MAX = 2; // px
+    parallaxTargetRef.current = { x: -(nx - 0.5) * 2 * MAX, y: -(ny - 0.5) * 2 * MAX };
+    scheduleParallax();
+  };
+
+  const onSectionLeave = () => {
+    parallaxTargetRef.current = { x: 0, y: 0 };
+    scheduleParallax();
+  };
+
   return (
-    <section className="py-16 px-5 bg-white">
-      <div className="max-w-[600px] mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-4">
-            COATING QUIZ
-          </p>
-          <h2
-            className="text-[#0C3290] text-2xl md:text-5xl font-black tracking-tight whitespace-nowrap"
-            style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
+    <section
+      ref={sectionRef}
+      onMouseMove={onSectionMove}
+      onMouseLeave={onSectionLeave}
+      className="relative w-full overflow-hidden px-5 flex items-start justify-center"
+      style={{ aspectRatio: '3138 / 1044' }}
+    >
+      <div
+        ref={bgRef}
+        aria-hidden
+        className="absolute inset-[-3%] bg-cover bg-center bg-no-repeat will-change-transform"
+        style={{
+          backgroundImage: 'url(/images/quiz-bg.png)',
+          transition: 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), filter 3.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s',
+          transform: 'translate3d(0,0,0) scale(1.01)',
+          filter:
+            inView && step === -1
+              ? btnHover
+                ? 'blur(4px)'
+                : 'blur(2px)'
+              : 'blur(0px)',
+        }}
+      />
+      {/* Vignette + subtle dim — fades in with the intro button */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.45) 85%, rgba(0,0,0,0.65) 100%)',
+          opacity: inView && step === -1 ? 1 : 0,
+          transition: 'opacity 3.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s',
+        }}
+      />
+      {/* Intro button — absolutely centered over the section */}
+      {step === -1 && (
+        <div
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+          style={{
+            opacity: inView ? 1 : 0,
+            transform: inView ? 'translateY(0)' : 'translateY(28px)',
+            transition: 'opacity 3.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s, transform 3.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s',
+          }}
+        >
+          <button
+            onClick={handleStart}
+            onMouseEnter={() => setBtnHover(true)}
+            onMouseLeave={() => setBtnHover(false)}
+            className="pointer-events-auto px-8 py-4 bg-amber-500 text-[#0C3290] font-bold rounded-xl text-base cursor-pointer shadow-lg transition-transform duration-300 ease-out hover:scale-110 hover:shadow-2xl hover:bg-amber-400 active:scale-105"
           >
-            あなたにぴったりのコースは？
+            診断スタート
+          </button>
+        </div>
+      )}
+      <div className="relative w-full pt-4 md:pt-6 pb-10 text-center">
+        {/* Header */}
+        <div className="mb-10">
+          <h2
+            className="text-white font-black tracking-tight whitespace-nowrap leading-[1.05]"
+            style={{
+              fontFamily: '"Noto Sans JP", sans-serif',
+              fontSize: 'clamp(1.75rem, 6.5vw, 5rem)',
+              textShadow: '0 6px 16px rgba(0,0,0,0.95), 0 3px 6px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.85)',
+            }}
+          >
+            あなたに<span className="text-amber-400">ぴったり</span>の<span className="text-amber-400">コース</span>は？
           </h2>
-          <p className="text-sm text-slate-400 mt-3">
-            4つの質問に答えるだけ（30秒）
+          <p
+            className="text-white font-bold mt-4"
+            style={{
+              fontFamily: '"Noto Sans JP", sans-serif',
+              fontSize: 'clamp(0.85rem, 2vw, 1.5rem)',
+              textShadow: '0 4px 10px rgba(0,0,0,0.95), 0 2px 4px rgba(0,0,0,0.9), 0 0 3px rgba(0,0,0,0.85)',
+            }}
+          >
+            愛車に最適なカーコーティングを選ぼう
           </p>
         </div>
+
+        <div className="max-w-[600px] mx-auto">
 
         {/* Progress bar */}
         {step >= 0 && step <= 4 && (
@@ -178,17 +297,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
           </div>
         )}
 
-        {/* Intro */}
-        {step === -1 && (
-          <div className="text-center animate-[fadeIn_0.4s_ease-out]">
-            <button
-              onClick={handleStart}
-              className="px-8 py-4 bg-amber-500 text-[#0C3290] font-bold rounded-xl text-base hover:opacity-90 transition-opacity cursor-pointer"
-            >
-              診断スタート
-            </button>
-          </div>
-        )}
+        {/* Intro (non-intro path renders inline here) */}
 
         {/* Questions */}
         {step >= 0 && step <= 3 && (
@@ -266,6 +375,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
             </button>
           </div>
         )}
+        </div>
       </div>
 
       {/* Inline keyframes for animations */}
