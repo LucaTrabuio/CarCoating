@@ -12,7 +12,9 @@ import {
   type ExtractedImages,
 } from '@/lib/csv-import';
 import { createImport, snapshotDocs, markCommitted, markFailed, pruneOldImports } from '@/lib/import-backups';
-import JSZip from 'jszip';
+import { imageMimeFromFilename } from '@/lib/mime';
+import { isZipFile, loadZip, ZipBoundsExceededError } from '@/lib/zip-import';
+import type JSZip from 'jszip';
 import { randomUUID } from 'node:crypto';
 import { nanoid } from 'nanoid';
 
@@ -32,47 +34,6 @@ type PreviewRow = RowResult & {
   diff: FieldDiff[];
   imageResolutions: ImageResolution[];
 };
-
-/** Detect ZIP by content-type or filename extension. */
-function isZipFile(file: File): boolean {
-  if (file.type === 'application/zip' || file.type === 'application/x-zip-compressed') return true;
-  return /\.zip$/i.test(file.name);
-}
-
-async function loadZip(file: File): Promise<{ csvText: string | null; images: Map<string, JSZip.JSZipObject> }> {
-  const zip = await JSZip.loadAsync(await file.arrayBuffer());
-  const images = new Map<string, JSZip.JSZipObject>();
-  let csvText: string | null = null;
-
-  for (const [path, entry] of Object.entries(zip.files)) {
-    if (entry.dir) continue;
-    const lowerPath = path.toLowerCase();
-    // First .csv at any depth becomes the data CSV
-    if (csvText === null && lowerPath.endsWith('.csv')) {
-      csvText = await entry.async('text');
-      continue;
-    }
-    // Images under images/ folder (any case)
-    if (/^images\//i.test(path)) {
-      const filename = path.slice(path.indexOf('/') + 1); // strip "images/"
-      if (filename) images.set(filename.toLowerCase(), entry);
-    }
-  }
-  return { csvText, images };
-}
-
-const MIME_FROM_EXT: Record<string, string> = {
-  jpg: 'image/jpeg',
-  jpeg: 'image/jpeg',
-  png: 'image/png',
-  webp: 'image/webp',
-  gif: 'image/gif',
-};
-
-function extFromFilename(name: string): string | null {
-  const m = name.match(/\.([a-z0-9]+)$/i);
-  return m ? m[1].toLowerCase() : null;
-}
 
 /** Resolve image references for a single row. */
 function resolveRowImages(
@@ -118,8 +79,7 @@ async function uploadZipImage(
   filename: string,
 ): Promise<string> {
   const buffer = await entry.async('nodebuffer');
-  const ext = extFromFilename(filename) || 'jpg';
-  const contentType = MIME_FROM_EXT[ext] || 'image/jpeg';
+  const contentType = imageMimeFromFilename(filename);
   const bucket = getAdminStorage().bucket();
   // Path: stores/<storeId>/<nanoid>-<original> — avoids filename collisions on re-imports
   const key = `stores/${storeId}/${nanoid(10)}-${filename}`;
@@ -203,10 +163,17 @@ export async function POST(req: NextRequest) {
   let imagesManifest: Map<string, JSZip.JSZipObject> | null = null;
 
   if (isZipFile(file)) {
-    const zip = await loadZip(file);
-    if (!zip.csvText) return NextResponse.json({ error: 'ZIP does not contain a .csv file' }, { status: 400 });
-    csvText = zip.csvText;
-    imagesManifest = zip.images;
+    try {
+      const zip = await loadZip(file);
+      if (!zip.csvText) return NextResponse.json({ error: 'ZIP does not contain a .csv file' }, { status: 400 });
+      csvText = zip.csvText;
+      imagesManifest = zip.images;
+    } catch (err) {
+      if (err instanceof ZipBoundsExceededError) {
+        return NextResponse.json({ error: err.message }, { status: 413 });
+      }
+      throw err;
+    }
   } else {
     csvText = await file.text();
   }

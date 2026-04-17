@@ -56,9 +56,8 @@ export default function GoogleAutoFill({ onAutoFill }: Props) {
         setUser(u);
         try { localStorage.setItem(STORAGE_KEY, JSON.stringify(info)); } catch { /* blocked */ }
       }
-    } catch (err) {
-      // User cancelled or popup blocked — not an error to show
-      console.log('Google sign-in cancelled or failed:', err);
+    } catch {
+      // User cancelled or popup blocked — silently ignore
     }
     setLoading(false);
   }, [onAutoFill]);

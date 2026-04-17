@@ -33,6 +33,7 @@ export default function InquiryForm({ store: initialStore, stores, tiers, presel
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
+  const [confirmEmailFailed, setConfirmEmailFailed] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -54,6 +55,8 @@ export default function InquiryForm({ store: initialStore, stores, tiers, presel
         }),
       });
       if (!res.ok) throw new Error('Failed');
+      const data: { id: string; emailWarnings?: string[] } = await res.json().catch(() => ({ id: '' }));
+      setConfirmEmailFailed(Array.isArray(data.emailWarnings) && data.emailWarnings.includes('customer-confirmation'));
       trackEvent(store.store_id, 'inquiry');
       setDone(true);
     } catch {
@@ -68,7 +71,11 @@ export default function InquiryForm({ store: initialStore, stores, tiers, presel
         <div className="max-w-[500px] mx-auto">
           <div className="text-5xl mb-4 text-blue-500">&#9993;</div>
           <h2 className="text-2xl font-bold text-[#0f1c2e] mb-2">お問い合わせを受け付けました</h2>
-          <p className="text-sm text-gray-500 mb-2">確認メールをお送りしました。</p>
+          {confirmEmailFailed ? (
+            <p className="text-sm text-amber-600 mb-2">確認メールの送信に失敗しましたが、お問い合わせは正常に登録されています。</p>
+          ) : (
+            <p className="text-sm text-gray-500 mb-2">確認メールをお送りしました。</p>
+          )}
           <p className="text-sm text-gray-500 mb-6">店舗担当者より追ってご連絡いたします。</p>
           {store.tel && (
             <p className="text-xs text-gray-400">お急ぎの場合: <a href={`tel:${store.tel}`} className="text-amber-600 font-bold">{store.tel}</a></p>

@@ -29,11 +29,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
   }
 
-  // Path convention: stores/<storeId>/<filename> if storeId provided; otherwise shared/<filename>
-  const storeId = (formData.get('storeId') as string | null)?.trim();
+  // Path convention: stores/<storeId>/<filename> if storeId provided; otherwise shared/<filename>.
+  // storeId must match /^[a-z0-9_-]+$/ — reject anything else to prevent path traversal.
+  const rawStoreId = (formData.get('storeId') as string | null)?.trim();
+  if (rawStoreId && !/^[a-z0-9_-]+$/i.test(rawStoreId)) {
+    return NextResponse.json({ error: 'Invalid storeId' }, { status: 400 });
+  }
   const ext = EXT_FROM_MIME[file.type];
   const filename = `${Date.now()}-${nanoid(10)}.${ext}`;
-  const key = storeId ? `stores/${storeId}/${filename}` : `shared/${filename}`;
+  const key = rawStoreId ? `stores/${rawStoreId}/${filename}` : `shared/${filename}`;
 
   try {
     const bucket = getAdminStorage().bucket();

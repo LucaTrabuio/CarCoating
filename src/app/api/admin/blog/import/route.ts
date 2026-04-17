@@ -9,7 +9,10 @@ import {
   type FieldDiff,
 } from '@/lib/csv-import';
 import { createImport, snapshotDocs, markCommitted, markFailed, pruneOldImports } from '@/lib/import-backups';
-import JSZip from 'jszip';
+import { imageMimeFromFilename } from '@/lib/mime';
+import { isZipFile, loadZip, ZipBoundsExceededError } from '@/lib/zip-import';
+import { sanitizeHtml } from '@/lib/sanitize';
+import type JSZip from 'jszip';
 import { randomUUID } from 'node:crypto';
 import { nanoid } from 'nanoid';
 
@@ -28,41 +31,9 @@ type PreviewRow = {
   heroImage?: { raw: string; status: ImageResolutionStatus; resolvedUrl?: string };
 };
 
-function isZipFile(file: File): boolean {
-  if (file.type === 'application/zip' || file.type === 'application/x-zip-compressed') return true;
-  return /\.zip$/i.test(file.name);
-}
-
-async function loadZip(file: File): Promise<{ csvText: string | null; images: Map<string, JSZip.JSZipObject> }> {
-  const zip = await JSZip.loadAsync(await file.arrayBuffer());
-  const images = new Map<string, JSZip.JSZipObject>();
-  let csvText: string | null = null;
-  for (const [path, entry] of Object.entries(zip.files)) {
-    if (entry.dir) continue;
-    if (csvText === null && path.toLowerCase().endsWith('.csv')) {
-      csvText = await entry.async('text');
-      continue;
-    }
-    if (/^images\//i.test(path)) {
-      const filename = path.slice(path.indexOf('/') + 1);
-      if (filename) images.set(filename.toLowerCase(), entry);
-    }
-  }
-  return { csvText, images };
-}
-
-const MIME_FROM_EXT: Record<string, string> = {
-  jpg: 'image/jpeg',
-  jpeg: 'image/jpeg',
-  png: 'image/png',
-  webp: 'image/webp',
-  gif: 'image/gif',
-};
-
 async function uploadZipImage(entry: JSZip.JSZipObject, slug: string, filename: string): Promise<string> {
   const buffer = await entry.async('nodebuffer');
-  const ext = (filename.match(/\.([a-z0-9]+)$/i)?.[1] || 'jpg').toLowerCase();
-  const contentType = MIME_FROM_EXT[ext] || 'image/jpeg';
+  const contentType = imageMimeFromFilename(filename);
   const bucket = getAdminStorage().bucket();
   const key = `blog/${slug}/${nanoid(10)}-${filename}`;
   const downloadToken = randomUUID();
@@ -96,10 +67,17 @@ export async function POST(req: NextRequest) {
   let csvText: string;
   let imagesManifest: Map<string, JSZip.JSZipObject> | null = null;
   if (isZipFile(file)) {
-    const zip = await loadZip(file);
-    if (!zip.csvText) return NextResponse.json({ error: 'ZIP does not contain a .csv file' }, { status: 400 });
-    csvText = zip.csvText;
-    imagesManifest = zip.images;
+    try {
+      const zip = await loadZip(file);
+      if (!zip.csvText) return NextResponse.json({ error: 'ZIP does not contain a .csv file' }, { status: 400 });
+      csvText = zip.csvText;
+      imagesManifest = zip.images;
+    } catch (err) {
+      if (err instanceof ZipBoundsExceededError) {
+        return NextResponse.json({ error: err.message }, { status: 413 });
+      }
+      throw err;
+    }
   } else {
     csvText = await file.text();
   }
@@ -237,6 +215,7 @@ export async function POST(req: NextRequest) {
   let committed = 0;
   for (const r of commitable) {
     const updates = (r as PreviewRow & { _updates: Record<string, unknown> })._updates;
+    if (typeof updates.content === 'string') updates.content = sanitizeHtml(updates.content);
     const ref = db.collection(BLOG_COLLECTION).doc(r.targetDocId!);
     const data: Record<string, unknown> = { slug: r.slug, ...updates, updated_at: now };
     if (r.heroImage?.resolvedUrl) data.hero_image_url = r.heroImage.resolvedUrl;

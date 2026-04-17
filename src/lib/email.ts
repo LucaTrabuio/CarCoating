@@ -241,6 +241,15 @@ export async function sendCancellationNotificationEmail(opts: {
   });
 }
 
+/**
+ * Send the customer-facing acknowledgment after they submit /api/inquiry.
+ *
+ * Silently no-ops in environments without `GMAIL_USER` configured (used by local dev
+ * and Playwright runs). Throws if Gmail/SMTP is configured but the send fails — the
+ * caller (/api/inquiry) catches that and surfaces an `emailWarnings` field on the JSON
+ * response so the form can show the user a fallback "we got it but couldn't email you"
+ * notice rather than silently fooling them.
+ */
 export async function sendInquiryConfirmationEmail(opts: {
   customerEmail: string;
   customerName: string;

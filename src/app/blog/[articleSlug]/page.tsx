@@ -4,6 +4,8 @@ import { blogArticles } from '@/data/blog-articles';
 import type { Metadata } from 'next';
 import { SITE_URL } from '@/lib/constants';
 
+export const revalidate = 3600;
+
 interface BlogPostFull {
   slug: string;
   title: string;

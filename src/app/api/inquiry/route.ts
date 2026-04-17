@@ -80,11 +80,12 @@ export async function POST(request: Request) {
     // Get notification emails
     const settings = await getStoreSettings(storeId);
 
-    // Fire emails
-    const emailPromises: Promise<void>[] = [];
+    // Fire emails — track by kind so callers can show actionable warnings
+    const emailJobs: { kind: 'customer-confirmation' | 'staff-notification'; promise: Promise<void> }[] = [];
 
-    emailPromises.push(
-      sendInquiryConfirmationEmail({
+    emailJobs.push({
+      kind: 'customer-confirmation',
+      promise: sendInquiryConfirmationEmail({
         customerEmail: email.trim(),
         customerName: name.trim(),
         locationName,
@@ -93,12 +94,13 @@ export async function POST(request: Request) {
         message: (message || '').trim(),
         tierName,
         tierPrice,
-      })
-    );
+      }),
+    });
 
     if (settings.notificationEmails.length > 0) {
-      emailPromises.push(
-        sendInquiryNotificationEmail({
+      emailJobs.push({
+        kind: 'staff-notification',
+        promise: sendInquiryNotificationEmail({
           staffEmail: settings.notificationEmails,
           customerName: name.trim(),
           customerPhone: (phone || '').trim(),
@@ -107,14 +109,17 @@ export async function POST(request: Request) {
           message: (message || '').trim(),
           tierName,
           vehicleInfo: vehicleInfo?.trim(),
-        })
-      );
+        }),
+      });
     }
 
-    const emailResults = await Promise.allSettled(emailPromises);
+    const emailResults = await Promise.allSettled(emailJobs.map((j) => j.promise));
+    const emailWarnings: string[] = [];
     emailResults.forEach((result, i) => {
       if (result.status === 'rejected') {
-        console.error(`[inquiry ${docRef.id}] email ${i} failed:`, result.reason);
+        const kind = emailJobs[i].kind;
+        console.error(`[inquiry ${docRef.id}] ${kind} email failed:`, result.reason);
+        emailWarnings.push(kind);
       }
     });
 
@@ -128,7 +133,10 @@ export async function POST(request: Request) {
       );
     } catch { /* KPI tracking is best-effort */ }
 
-    return NextResponse.json({ id: docRef.id });
+    return NextResponse.json({
+      id: docRef.id,
+      ...(emailWarnings.length > 0 ? { emailWarnings } : {}),
+    });
   } catch (error) {
     console.error('Error creating inquiry:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

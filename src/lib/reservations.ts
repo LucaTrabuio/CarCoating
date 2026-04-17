@@ -24,6 +24,19 @@ export interface CreateReservationResult {
   cancelToken: string;
 }
 
+/**
+ * Create a Firestore reservation. Generates a `cancelToken` (returned to the caller)
+ * that the customer-facing cancel-by-link flow uses to authenticate without a session.
+ *
+ * - `autoConfirm: true` short-circuits the staff-approval step: status becomes
+ *   `'confirmed'` and `confirmedChoice` is set to `0`. Otherwise the reservation is
+ *   `'pending'` until staff confirms via /admin/bookings.
+ * - `choices` (legacy multi-slot picker) is preserved; if supplied, the first entry
+ *   wins for the top-level `date`/`time` fields.
+ *
+ * Calendar event creation and confirmation emails are NOT triggered here — they live
+ * in the staff-confirm path inside /api/admin/bookings PATCH.
+ */
 export async function createReservation(input: CreateReservationInput): Promise<CreateReservationResult> {
   const db = getAdminDb();
   const now = new Date().toISOString();

@@ -97,11 +97,11 @@ export default function BookingsPage() {
         : `/api/admin/bookings?store=${selectedStore}`;
       const res = await fetch(url, { cache: 'no-store' });
       const text = await res.text();
-      let data: { reservations?: Reservation[]; bookings?: Reservation[]; error?: string } = {};
+      let data: { reservations?: Reservation[]; error?: string } = {};
       try { data = JSON.parse(text); } catch { /* keep text for debug */ }
-      const list = data.reservations || data.bookings || [];
+      const list = data.reservations || [];
       setBookings(list);
-      setDebugInfo(`HTTP ${res.status} · url=${url} · items=${list.length}${data.error ? ' · error=' + data.error : ''}${!Array.isArray(data.reservations) && !Array.isArray(data.bookings) ? ' · raw=' + text.slice(0, 200) : ''}`);
+      setDebugInfo(`HTTP ${res.status} · url=${url} · items=${list.length}${data.error ? ' · error=' + data.error : ''}${!Array.isArray(data.reservations) ? ' · raw=' + text.slice(0, 200) : ''}`);
     } catch (err) {
       setBookings([]);
       setDebugInfo(`fetch failed: ${err instanceof Error ? err.message : String(err)}`);

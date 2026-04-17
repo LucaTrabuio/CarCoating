@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import type { V3StoreData } from '@/lib/v3-types';
 import type { SlotAvailability } from '@/lib/reservation-types';
 import { coatingTiers } from '@/data/coating-tiers';
@@ -50,29 +50,39 @@ export default function ReservationForm({ store }: Props) {
   const [coatings, setCoatings] = useState<string[]>(['']);
   const [options, setOptions] = useState<string[]>([]);
 
-  // Fetch available dates for the month
-  const fetchDates = useCallback(async () => {
+  // Fetch available dates for the month — abort superseded requests so a slow earlier
+  // response can't overwrite the latest month's data.
+  useEffect(() => {
+    const ctrl = new AbortController();
     setLoadingDates(true);
-    try {
-      const monthStr = `${calMonth.year}-${String(calMonth.month).padStart(2, '0')}`;
-      const res = await fetch(`/api/slots?store=${storeId}&month=${monthStr}`);
-      const data = await res.json();
-      setAvailableDates(data.dates || []);
-    } catch { setAvailableDates([]); }
-    setLoadingDates(false);
+    const monthStr = `${calMonth.year}-${String(calMonth.month).padStart(2, '0')}`;
+    fetch(`/api/slots?store=${storeId}&month=${monthStr}`, { signal: ctrl.signal })
+      .then(r => r.json())
+      .then(data => setAvailableDates(data.dates || []))
+      .catch((err) => {
+        if (err?.name !== 'AbortError') setAvailableDates([]);
+      })
+      .finally(() => {
+        if (!ctrl.signal.aborted) setLoadingDates(false);
+      });
+    return () => ctrl.abort();
   }, [storeId, calMonth]);
 
-  useEffect(() => { fetchDates(); }, [fetchDates]);
-
-  // Fetch slots for selected date
+  // Fetch slots for selected date — same abort guard against stale responses.
   useEffect(() => {
     if (!selectedDate) { setAvailableSlots([]); return; }
+    const ctrl = new AbortController();
     setLoadingSlots(true);
-    fetch(`/api/slots?store=${storeId}&date=${selectedDate}`)
+    fetch(`/api/slots?store=${storeId}&date=${selectedDate}`, { signal: ctrl.signal })
       .then(r => r.json())
       .then(data => setAvailableSlots(data.slots || []))
-      .catch(() => setAvailableSlots([]))
-      .finally(() => setLoadingSlots(false));
+      .catch((err) => {
+        if (err?.name !== 'AbortError') setAvailableSlots([]);
+      })
+      .finally(() => {
+        if (!ctrl.signal.aborted) setLoadingSlots(false);
+      });
+    return () => ctrl.abort();
   }, [storeId, selectedDate]);
 
   function formatDateTime(date: string, time: string) {

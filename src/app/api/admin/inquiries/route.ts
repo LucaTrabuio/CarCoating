@@ -4,6 +4,7 @@ import { getAdminDb } from '@/lib/firebase-admin';
 import { sendInquiryReplyEmail } from '@/lib/email';
 import { getV3StoreById } from '@/lib/firebase-stores';
 import { FieldValue } from 'firebase-admin/firestore';
+import { inquiryPatchSchema } from '@/lib/validations';
 import type { NextRequest } from 'next/server';
 
 // GET: List inquiries (store_admin sees own stores, super_admin sees all)
@@ -44,10 +45,11 @@ export async function PATCH(req: NextRequest) {
     if (auth.error) return auth.error;
     const { user } = auth;
 
-    const { inquiryId, status, replyText } = await req.json();
-    if (!inquiryId || !['open', 'replied', 'closed'].includes(status)) {
-      return NextResponse.json({ error: 'Invalid inquiryId or status' }, { status: 400 });
+    const parsed = inquiryPatchSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid input', issues: parsed.error.issues }, { status: 400 });
     }
+    const { inquiryId, status, replyText } = parsed.data;
 
     const db = getAdminDb();
     const doc = await db.collection('inquiries').doc(inquiryId).get();

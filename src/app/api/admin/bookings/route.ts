@@ -5,6 +5,7 @@ import { createCalendarEvent, deleteCalendarEvent } from '@/lib/google-calendar'
 import { sendConfirmationEmail, sendCancellationConfirmationEmail, sendCancellationNotificationEmail } from '@/lib/email';
 import { getV3StoreById } from '@/lib/firebase-stores';
 import { getStoreSettings } from '@/lib/store-settings';
+import { bookingPatchSchema } from '@/lib/validations';
 import type { Reservation } from '@/lib/reservation-types';
 
 // GET: Fetch reservations for a store, or all visible stores when no store param
@@ -66,15 +67,11 @@ export async function PATCH(req: NextRequest) {
     if (auth.error) return auth.error;
     const { user } = auth;
 
-    const body = await req.json();
-    const { reservationId, status, confirmChoiceIndex, adminMessage } = body;
-
-    if (!reservationId || !status) {
-      return NextResponse.json({ error: 'reservationId and status are required' }, { status: 400 });
+    const parsed = bookingPatchSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid input', issues: parsed.error.issues }, { status: 400 });
     }
-    if (!['pending', 'confirmed', 'completed', 'cancelled'].includes(status)) {
-      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
-    }
+    const { reservationId, status, confirmChoiceIndex, adminMessage } = parsed.data;
 
     const db = getAdminDb();
     const docRef = db.collection('reservations').doc(reservationId);

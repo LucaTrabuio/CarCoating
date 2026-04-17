@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { V3StoreData } from '@/lib/v3-types';
 import type { StoreIntroConfig } from '@/lib/block-types';
 
@@ -26,13 +27,27 @@ export default function StoreIntroBlock({ config, store }: StoreIntroBlockProps)
           <div className="grid md:grid-cols-2 gap-4">
             {hasExterior && (
               <div className="rounded-xl overflow-hidden">
-                <img src={store.store_exterior_url} alt={`${store.store_name} \u5916\u89B3`} className="w-full h-[220px] object-cover" />
+                <Image
+                  src={store.store_exterior_url}
+                  alt={`${store.store_name} \u5916\u89B3`}
+                  width={800}
+                  height={440}
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="w-full h-[220px] object-cover"
+                />
                 <p className="text-xs text-slate-400 text-center mt-2">{'\u5E97\u8217\u5916\u89B3'}</p>
               </div>
             )}
             {hasInterior && (
               <div className="rounded-xl overflow-hidden">
-                <img src={store.store_interior_url} alt={`${store.store_name} \u5185\u89B3`} className="w-full h-[220px] object-cover" />
+                <Image
+                  src={store.store_interior_url}
+                  alt={`${store.store_name} \u5185\u89B3`}
+                  width={800}
+                  height={440}
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="w-full h-[220px] object-cover"
+                />
                 <p className="text-xs text-slate-400 text-center mt-2">{'\u5E97\u8217\u5185\u89B3'}</p>
               </div>
             )}

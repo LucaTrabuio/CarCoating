@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { blogPostWriteSchema } from '@/lib/validations';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 export async function GET(
   _req: NextRequest,
@@ -28,7 +30,10 @@ export async function PUT(
   if (auth.error) return auth.error;
 
   const { postId } = await params;
-  const body = await req.json();
+  const parsed = blogPostWriteSchema.partial().safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Invalid input', issues: parsed.error.issues }, { status: 400 });
+  }
 
   const db = getAdminDb();
   const docRef = db.collection('blog_posts').doc(postId);
@@ -39,7 +44,8 @@ export async function PUT(
   }
 
   const updateData = {
-    ...body,
+    ...parsed.data,
+    ...(typeof parsed.data.content === 'string' ? { content: sanitizeHtml(parsed.data.content) } : {}),
     updated_at: new Date().toISOString(),
   };
 
