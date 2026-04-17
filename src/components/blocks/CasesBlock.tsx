@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import type { CasesConfig } from '@/lib/block-types';
 import { SAMPLE_CASES } from '@/data/cases-sample';
@@ -22,14 +21,10 @@ export default function CasesBlock({ config, basePath }: CasesBlockProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {cases.map((c, i) => (
             <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm">
-              <div className="aspect-[4/3] overflow-hidden relative">
-                <Image
-                  src={c.imageUrl}
-                  alt={c.car}
-                  fill
-                  sizes="(min-width: 768px) 25vw, 50vw"
-                  className="object-cover"
-                />
+              <div className="aspect-[4/3] overflow-hidden">
+                {/* Raw <img>: case sample data uses arbitrary third-party hosts that
+                    can't be enumerated in next/image remotePatterns. */}
+                <img src={c.imageUrl} alt={c.car} loading="lazy" className="w-full h-full object-cover" />
               </div>
               <div className="p-3">
                 <p className="text-[#0C3290] text-xs font-bold truncate">{c.car}</p>
