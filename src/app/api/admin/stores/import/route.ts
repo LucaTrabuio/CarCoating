@@ -7,6 +7,7 @@ import {
   computeDiff,
   extractImageRefs,
   classifyImageValue,
+  STAFF_CONVENIENCE_COLUMNS,
   type RowResult,
   type FieldDiff,
   type ExtractedImages,
@@ -68,6 +69,7 @@ function resolveRowImages(
   extracted.singles.forEach((r) => resolve(r.field, r.value));
   extracted.banners.forEach((b) => resolve(`banner${b.slot}`, b.value));
   extracted.gallery.forEach((v, i) => resolve(`gallery[${i}]`, v));
+  extracted.staffPhotos.forEach((s) => resolve(`staff_photo_${s.slot}`, s.value));
 
   return { resolutions, errors };
 }
@@ -138,6 +140,32 @@ function buildFinalUpdates(
     if (urls.length > 0) final.gallery_images = JSON.stringify(urls);
   }
 
+  // Staff: explicit JSON wins; else assemble from staff_*_1..6 + staff_photo_1..6
+  if (extracted.explicitStaffMembersJson) {
+    final.staff_members = extracted.explicitStaffMembersJson;
+  } else if (extracted.staffText.length > 0 || extracted.staffPhotos.length > 0) {
+    const slotMap = new Map<number, { name: string; role: string; bio: string; cert: string; photo: string }>();
+    for (const t of extracted.staffText) {
+      slotMap.set(t.slot, { name: t.name, role: t.role, bio: t.bio, cert: t.cert, photo: '' });
+    }
+    for (const p of extracted.staffPhotos) {
+      const cur = slotMap.get(p.slot) ?? { name: '', role: '', bio: '', cert: '', photo: '' };
+      cur.photo = urlByField.get(`staff_photo_${p.slot}`) || '';
+      slotMap.set(p.slot, cur);
+    }
+    const members = Array.from(slotMap.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([slot, v]) => ({
+        id: String(slot),
+        name: v.name,
+        role: v.role,
+        photo_url: v.photo,
+        bio: v.bio,
+        certifications: v.cert,
+      }));
+    if (members.length > 0) final.staff_members = JSON.stringify(members);
+  }
+
   return final;
 }
 
@@ -194,8 +222,11 @@ export async function POST(req: NextRequest) {
     'page_layout', 'blur_config', 'appeal_points', 'certifications', 'store_news', 'banners',
     'sub_company_id', 'store_slug', 'custom_css', 'estimate_enabled', 'qr_code_enabled',
     'font_family', 'price_overrides', 'guide_config', 'promo_banners',
+    'staff_members',
     // Phase 6 convenience columns
     'banner1', 'banner2', 'banner3', 'banner4', 'gallery',
+    // Staff convenience columns (staff_name_1..6, staff_role_1..6, staff_photo_1..6, staff_bio_1..6, staff_cert_1..6)
+    ...STAFF_CONVENIENCE_COLUMNS,
   ]);
   const headerUnknowns = columns.filter((c) => !knownColumns.has(c));
 

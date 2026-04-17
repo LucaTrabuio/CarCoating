@@ -6,6 +6,7 @@ export type BlockType =
   | 'hero'
   | 'store_intro'
   | 'staff_photo'
+  | 'staff'
   | 'before_after'
   | 'gallery'
   | 'usp'
@@ -51,6 +52,21 @@ export interface StoreIntroConfig {
 
 export interface StaffPhotoConfig {
   caption: string;
+}
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  role: string;       // e.g. "店長" or "1級コーティング技能士"
+  photo_url: string;  // populated later via ImageUploadField or CSV
+  bio: string;        // short blurb (1-2 sentences)
+  certifications: string; // free text e.g. "1級・2級" — small badge under name
+}
+
+export interface StaffBlockConfig {
+  heading: string;
+  subheading: string;
+  members: StaffMember[];
 }
 
 export interface BeforeAfterConfig {
@@ -249,6 +265,7 @@ export interface BlockConfigMap {
   hero: HeroConfig;
   store_intro: StoreIntroConfig;
   staff_photo: StaffPhotoConfig;
+  staff: StaffBlockConfig;
   before_after: BeforeAfterConfig;
   gallery: GalleryConfig;
   usp: USPConfig;
@@ -334,6 +351,15 @@ const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
   { id: '3', number: 3, title: '施工・お引き渡し', description: '専用ブースで丁寧に施工し、仕上がりをご確認いただきます。' },
 ];
 
+const DEFAULT_STAFF_MEMBERS: StaffMember[] = [
+  { id: '1', name: '\u4F50\u85E4 \u5065',     role: '\u5E97\u9577',                                 photo_url: '/staff/Sato_Takeshi.png',     bio: '', certifications: '1\u7D1A' },
+  { id: '2', name: '\u9234\u6728 \u5065\u53F8', role: '\u30C1\u30FC\u30D5\u30B3\u30FC\u30C6\u30A3\u30F3\u30B0\u6280\u80FD\u58EB', photo_url: '/staff/Suzuki_Kenji.png',     bio: '', certifications: '1\u7D1A' },
+  { id: '3', name: '\u9AD8\u6A4B \u6D77\u6597', role: '\u30B3\u30FC\u30C6\u30A3\u30F3\u30B0\u6280\u80FD\u58EB',                 photo_url: '/staff/Takahashi_Kaito.png',  bio: '', certifications: '2\u7D1A' },
+  { id: '4', name: '\u4E2D\u6751 \u6DBC',     role: '\u30B3\u30FC\u30C6\u30A3\u30F3\u30B0\u6280\u80FD\u58EB',                 photo_url: '/staff/Nakamura_Ryo.png',     bio: '', certifications: '2\u7D1A' },
+  { id: '5', name: '\u5C0F\u5DDD \u7F8E\u54B2', role: '\u30B9\u30BF\u30C3\u30D5',                                                photo_url: '/staff/Ogawa_Misaki.png',     bio: '', certifications: '' },
+  { id: '6', name: '\u6E21\u8FBA \u60A0\u6597', role: '\u30B9\u30BF\u30C3\u30D5',                                                photo_url: '/staff/Watanabe_Yuto.png',    bio: '', certifications: '' },
+];
+
 const DEFAULT_BENEFIT_ITEMS: BenefitItem[] = [
   { id: '1', text: 'Web予約限定の特別割引' },
   { id: '2', text: '技術認定スタッフによる施工' },
@@ -346,6 +372,7 @@ export const BLOCK_META: BlockMeta[] = [
   { type: 'hero', label: 'Hero Banner', labelJa: 'ヒーローバナー', icon: '🖼️', maxInstances: 1, defaultConfig: { title: '', subtitle: '', image_url: '', show_badges: true, show_cta_booking: true, show_cta_inquiry: true } },
   { type: 'store_intro', label: 'Store Introduction', labelJa: '店舗紹介', icon: '🏪', maxInstances: 1, defaultConfig: { show_exterior: true, show_interior: true } },
   { type: 'staff_photo', label: 'Staff Photo', labelJa: 'スタッフ写真', icon: '👥', maxInstances: 1, defaultConfig: { caption: '' } },
+  { type: 'staff', label: 'Staff Team', labelJa: 'スタッフ紹介', icon: '🧑‍🔧', maxInstances: 1, defaultConfig: { heading: 'スタッフ紹介', subheading: 'KeePer認定の技能士がお客様のお車を担当します', members: DEFAULT_STAFF_MEMBERS } },
   { type: 'before_after', label: 'Before / After', labelJa: 'ビフォーアフター', icon: '🔄', maxInstances: 1, defaultConfig: { show_link_to_cases: true } },
   { type: 'gallery', label: 'Photo Gallery', labelJa: 'フォトギャラリー', icon: '📸', maxInstances: 1, defaultConfig: { columns_desktop: 4, columns_mobile: 2, max_images: 8 } },
   { type: 'usp', label: 'Why Choose Us', labelJa: '選ばれる理由', icon: '⭐', maxInstances: 1, defaultConfig: { items: DEFAULT_USP_ITEMS } },
@@ -379,6 +406,7 @@ const DEFAULT_BLOCK_ORDER: BlockType[] = [
   'simulator',
   'cases',
   'pricing',
+  'staff',
   'news',
   'process',
   'benefits',
@@ -447,22 +475,39 @@ const TIER_ID_FIXES: Record<string, string> = {
 };
 
 function migrateLayout(layout: PageLayout): PageLayout {
-  return {
-    ...layout,
-    blocks: layout.blocks.map(block => {
-      if (block.type === 'pricing') {
-        const config = block.config as PricingConfig;
-        const fixedTierIds = config.featured_tier_ids.map(id => TIER_ID_FIXES[id] || id);
-        const fixedBlurFields = config.blur_fields.map(f => {
-          const [tierId, field] = f.split(':');
-          if (field && TIER_ID_FIXES[tierId]) return `${TIER_ID_FIXES[tierId]}:${field}`;
-          return f;
-        });
-        return { ...block, config: { ...config, featured_tier_ids: fixedTierIds, blur_fields: fixedBlurFields } };
-      }
-      return block;
-    }),
-  };
+  const fixedBlocks = layout.blocks.map(block => {
+    if (block.type === 'pricing') {
+      const config = block.config as PricingConfig;
+      const fixedTierIds = config.featured_tier_ids.map(id => TIER_ID_FIXES[id] || id);
+      const fixedBlurFields = config.blur_fields.map(f => {
+        const [tierId, field] = f.split(':');
+        if (field && TIER_ID_FIXES[tierId]) return `${TIER_ID_FIXES[tierId]}:${field}`;
+        return f;
+      });
+      return { ...block, config: { ...config, featured_tier_ids: fixedTierIds, blur_fields: fixedBlurFields } };
+    }
+    return block;
+  });
+
+  // Auto-insert the new `staff` block on legacy layouts that pre-date it.
+  // Place it directly after the pricing block (fall back: end of layout).
+  const hasStaff = fixedBlocks.some(b => b.type === 'staff');
+  if (!hasStaff) {
+    const meta = BLOCK_META.find(m => m.type === 'staff')!;
+    const staffBlock: PageBlock = {
+      id: generateBlockId(),
+      type: 'staff',
+      visible: true,
+      order: 0, // re-numbered below
+      config: structuredClone(meta.defaultConfig),
+    };
+    const pricingIdx = fixedBlocks.findIndex(b => b.type === 'pricing');
+    const insertAt = pricingIdx >= 0 ? pricingIdx + 1 : fixedBlocks.length;
+    fixedBlocks.splice(insertAt, 0, staffBlock);
+    fixedBlocks.forEach((b, i) => { b.order = i; });
+  }
+
+  return { ...layout, blocks: fixedBlocks };
 }
 
 export function parsePageLayout(json?: string, store?: Parameters<typeof generateDefaultLayout>[0]): PageLayout {

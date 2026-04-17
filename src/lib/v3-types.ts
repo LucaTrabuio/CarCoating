@@ -73,6 +73,7 @@ export interface V3StoreData {
   price_overrides?: string;     // JSON string: { [tierId]: { [size]: number } }
   guide_config?: string;        // JSON string: GuideConfig — hide_prices + per-tier text overrides on the guide page
   promo_banners?: string;       // JSON string: { src: string; alt: string }[] — store-specific promo banner images
+  staff_members?: string;       // JSON string: StaffMember[] — overrides Staff block config when set (CSV-driven)
 }
 
 /** All CSV columns in order */

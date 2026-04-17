@@ -1,12 +1,13 @@
 'use client';
 
-import type { PageBlock, HeroConfig, PricingConfig, USPConfig, CertificationsConfig, BannersConfig, CustomHtmlConfig } from '@/lib/block-types';
+import type { PageBlock, HeroConfig, PricingConfig, USPConfig, CertificationsConfig, BannersConfig, CustomHtmlConfig, StaffBlockConfig } from '@/lib/block-types';
 import HeroEditor from './HeroEditor';
 import PricingEditor from './PricingEditor';
 import USPEditor from './USPEditor';
 import CertificationsEditor from './CertificationsEditor';
 import BannersEditor from './BannersEditor';
 import CustomHtmlEditor from './CustomHtmlEditor';
+import StaffEditor from './StaffEditor';
 import GenericEditor from './GenericEditor';
 
 interface BlockEditorSwitchProps {
@@ -55,6 +56,13 @@ export default function BlockEditorSwitch({ block, onUpdateConfig }: BlockEditor
       return (
         <CustomHtmlEditor
           config={block.config as CustomHtmlConfig}
+          onChange={(c) => onUpdateConfig(c as unknown as Record<string, unknown>)}
+        />
+      );
+    case 'staff':
+      return (
+        <StaffEditor
+          config={block.config as StaffBlockConfig}
           onChange={(c) => onUpdateConfig(c as unknown as Record<string, unknown>)}
         />
       );

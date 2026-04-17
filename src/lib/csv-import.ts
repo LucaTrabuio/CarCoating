@@ -26,6 +26,7 @@ const JSON_FIELDS = new Set([
   'nearby_stations', 'gallery_images', 'custom_services',
   'page_layout', 'blur_config', 'appeal_points', 'certifications',
   'store_news', 'banners', 'price_overrides', 'guide_config', 'promo_banners',
+  'staff_members',
 ]);
 
 // Image URL fields. These accept either a full URL (kept as-is) or a
@@ -39,13 +40,27 @@ export const IMAGE_SINGLE_COLUMNS = new Set<string>([
 // Convenience columns that get assembled into JSON fields.
 // banner1..4 → promo_banners JSON (unless promo_banners is explicitly set).
 // gallery    → gallery_images JSON (pipe-separated list; explicit gallery_images wins).
+// staff_*_1..6 → staff_members JSON (unless staff_members is explicitly set).
 export const BANNER_CONVENIENCE_COLUMNS = ['banner1', 'banner2', 'banner3', 'banner4'] as const;
 export const GALLERY_CONVENIENCE_COLUMN = 'gallery';
+
+export const STAFF_SLOT_COUNT = 6;
+export const STAFF_PHOTO_COLUMNS = Array.from({ length: STAFF_SLOT_COUNT }, (_, i) => `staff_photo_${i + 1}`);
+export const STAFF_NAME_COLUMNS = Array.from({ length: STAFF_SLOT_COUNT }, (_, i) => `staff_name_${i + 1}`);
+export const STAFF_ROLE_COLUMNS = Array.from({ length: STAFF_SLOT_COUNT }, (_, i) => `staff_role_${i + 1}`);
+export const STAFF_BIO_COLUMNS = Array.from({ length: STAFF_SLOT_COUNT }, (_, i) => `staff_bio_${i + 1}`);
+export const STAFF_CERT_COLUMNS = Array.from({ length: STAFF_SLOT_COUNT }, (_, i) => `staff_cert_${i + 1}`);
+export const STAFF_CONVENIENCE_COLUMNS = [
+  ...STAFF_NAME_COLUMNS, ...STAFF_ROLE_COLUMNS, ...STAFF_PHOTO_COLUMNS,
+  ...STAFF_BIO_COLUMNS, ...STAFF_CERT_COLUMNS,
+];
 
 const KNOWN_STORE_COLUMNS = new Set<string>([
   ...(V3_CSV_COLUMNS as readonly string[]),
   ...BANNER_CONVENIENCE_COLUMNS,
   GALLERY_CONVENIENCE_COLUMN,
+  ...STAFF_CONVENIENCE_COLUMNS,
+  'staff_members',
 ]);
 
 /** Columns handled by Phase 6 image resolver; excluded from the generic validate/coerce pipeline. */
@@ -53,6 +68,12 @@ const HANDLED_BY_IMAGE_RESOLVER = new Set<string>([
   ...IMAGE_SINGLE_COLUMNS,
   ...BANNER_CONVENIENCE_COLUMNS,
   GALLERY_CONVENIENCE_COLUMN,
+  ...STAFF_PHOTO_COLUMNS,
+]);
+
+/** Staff text columns are assembled into staff_members JSON (separate from generic coerce). */
+const HANDLED_BY_STAFF_ASSEMBLER = new Set<string>([
+  ...STAFF_NAME_COLUMNS, ...STAFF_ROLE_COLUMNS, ...STAFF_BIO_COLUMNS, ...STAFF_CERT_COLUMNS,
 ]);
 
 // ─── Coercion ───
@@ -119,6 +140,7 @@ export function validateStoreRow(row: Record<string, string>, rowNumber: number)
     }
     // Image + convenience columns are resolved separately (resolveImageRefs)
     if (HANDLED_BY_IMAGE_RESOLVER.has(col)) continue;
+    if (HANDLED_BY_STAFF_ASSEMBLER.has(col)) continue;
     const res = coerceCell(col, val);
     if (res === null) continue;
     if ('error' in res) {
@@ -193,6 +215,12 @@ export type ExtractedImages = {
   explicitPromoBannersJson?: string;
   /** Explicit JSON cell in `gallery_images` (takes precedence over gallery). */
   explicitGalleryJson?: string;
+  /** staff_photo_1..6 (sparse — only slots with values present). */
+  staffPhotos: { slot: number; value: string }[];
+  /** Per-slot text fields: name/role/bio/cert (already coerced strings, may be empty). */
+  staffText: Array<{ slot: number; name: string; role: string; bio: string; cert: string }>;
+  /** Explicit JSON cell in `staff_members` (takes precedence over per-slot columns). */
+  explicitStaffMembersJson?: string;
 };
 
 /** Extract raw image references from a CSV row. Does not resolve/upload. */
@@ -215,7 +243,28 @@ export function extractImageRefs(row: Record<string, string>): ExtractedImages {
   const explicitPromoBannersJson = row.promo_banners?.trim() || undefined;
   const explicitGalleryJson = row.gallery_images?.trim() || undefined;
 
-  return { singles, banners, gallery, explicitPromoBannersJson, explicitGalleryJson };
+  const staffPhotos: { slot: number; value: string }[] = [];
+  STAFF_PHOTO_COLUMNS.forEach((col, i) => {
+    const v = row[col]?.trim();
+    if (v) staffPhotos.push({ slot: i + 1, value: v });
+  });
+
+  const staffText: Array<{ slot: number; name: string; role: string; bio: string; cert: string }> = [];
+  for (let i = 0; i < STAFF_SLOT_COUNT; i++) {
+    const slot = i + 1;
+    const name = row[STAFF_NAME_COLUMNS[i]]?.trim() || '';
+    const role = row[STAFF_ROLE_COLUMNS[i]]?.trim() || '';
+    const bio = row[STAFF_BIO_COLUMNS[i]]?.trim() || '';
+    const cert = row[STAFF_CERT_COLUMNS[i]]?.trim() || '';
+    if (name || role || bio || cert) staffText.push({ slot, name, role, bio, cert });
+  }
+
+  const explicitStaffMembersJson = row.staff_members?.trim() || undefined;
+
+  return {
+    singles, banners, gallery, explicitPromoBannersJson, explicitGalleryJson,
+    staffPhotos, staffText, explicitStaffMembersJson,
+  };
 }
 
 /** Classify a single image value: full URL, filename (needs ZIP lookup), or empty. */
