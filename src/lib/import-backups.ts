@@ -33,6 +33,7 @@ export type ImportMeta = {
   note?: string;
   storageBackupPath?: string;
   status: 'snapshotted' | 'committed' | 'restored' | 'failed';
+  failureReason?: string;
 };
 
 type SnapshotItem = {
@@ -121,6 +122,14 @@ export async function snapshotDocs(
 /** Mark an import as committed (optional; purely informational). */
 export async function markCommitted(importId: string): Promise<void> {
   await getAdminDb().collection(META_COLLECTION).doc(importId).update({ status: 'committed' });
+}
+
+/** Mark an import as failed after a partial write; `reason` is stored for forensics. */
+export async function markFailed(importId: string, reason: string): Promise<void> {
+  await getAdminDb()
+    .collection(META_COLLECTION)
+    .doc(importId)
+    .update({ status: 'failed', failureReason: reason.slice(0, 4000) });
 }
 
 /**

@@ -8,7 +8,7 @@ import {
   classifyImageValue,
   type FieldDiff,
 } from '@/lib/csv-import';
-import { createImport, snapshotDocs, markCommitted, pruneOldImports } from '@/lib/import-backups';
+import { createImport, snapshotDocs, markCommitted, markFailed, pruneOldImports } from '@/lib/import-backups';
 import JSZip from 'jszip';
 import { randomUUID } from 'node:crypto';
 import { nanoid } from 'nanoid';
@@ -227,6 +227,12 @@ export async function POST(req: NextRequest) {
 
   // Write Firestore
   const bulk = db.bulkWriter();
+  const writeFailures: string[] = [];
+  bulk.onWriteError((err) => {
+    if (err.failedAttempts < 5) return true;
+    writeFailures.push(`${err.documentRef.path}: ${err.message}`);
+    return false;
+  });
   const now = new Date().toISOString();
   let committed = 0;
   for (const r of commitable) {
@@ -242,6 +248,20 @@ export async function POST(req: NextRequest) {
     committed++;
   }
   await bulk.close();
+
+  if (writeFailures.length > 0) {
+    const reason = writeFailures.join('; ');
+    await markFailed(importId, reason);
+    return NextResponse.json(
+      {
+        error: `Partial commit — ${writeFailures.length} of ${committed} writes failed. Import ${importId} is marked "failed"; restore from /admin/imports to revert. Errors: ${reason}`,
+        importId,
+        failures: writeFailures,
+      },
+      { status: 500 },
+    );
+  }
+
   await markCommitted(importId);
   await pruneOldImports(10);
 
