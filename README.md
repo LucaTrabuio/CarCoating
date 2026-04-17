@@ -7,8 +7,7 @@ Multi-tenant storefront + admin builder for KeePer PRO SHOP car-coating stores. 
 - **Next.js 16** (App Router, React 19)
 - **TypeScript**
 - **Tailwind CSS 4**
-- **Firebase** — Auth (session cookies), Firestore (stores, reservations, inquiries, blog, KPI, tickets), Firebase Admin SDK
-- **Vercel Blob** — image uploads, campaign/stores JSON
+- **Firebase** — Auth (session cookies), Firestore (stores, reservations, inquiries, blog, KPI, tickets), Firebase Storage (image hosting), Firebase Admin SDK
 - **Google APIs** — Maps (client), Places (reviews), Calendar (booking events)
 - **Nodemailer + Gmail** — transactional email
 - **Zod** — request validation
@@ -18,7 +17,7 @@ Multi-tenant storefront + admin builder for KeePer PRO SHOP car-coating stores. 
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in Firebase, Blob, Gmail, Maps keys
+cp .env.example .env.local   # fill in Firebase, Gmail, Maps keys
 npm run dev                  # http://localhost:8080
 ```
 
@@ -34,8 +33,7 @@ npx playwright test  # e2e
 See `.env.example` for the full list. Required groups:
 
 - `FIREBASE_*` — Admin SDK service account
-- `NEXT_PUBLIC_FIREBASE_*` — client config
-- `BLOB_READ_WRITE_TOKEN` — Vercel Blob
+- `NEXT_PUBLIC_FIREBASE_*` — client config (includes `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` for image hosting)
 - `GMAIL_USER` / `GMAIL_APP_PASSWORD` — outbound email
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` / `GOOGLE_PLACES_API_KEY`
 - `NEXT_PUBLIC_SITE_URL` — canonical URL (emails, sitemap, OG)

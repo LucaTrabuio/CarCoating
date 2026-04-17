@@ -1,5 +1,4 @@
 import { CarSize, CoatingTier } from './types';
-import { coatingTiers } from '@/data/coating-tiers';
 
 export type PriceOverrides = Record<string, Record<string, number>>;
 
@@ -51,13 +50,6 @@ export function getTotalCostOverYears(
   const maintenanceCount = Math.floor((years - 1) / maintenanceInterval);
 
   return webPrice + maintenanceCount * maintenancePrice;
-}
-
-export function getRecommendedTiers(size: CarSize, discountRate: number): CoatingTier[] {
-  const crystal = coatingTiers.find(t => t.id === 'crystal')!;
-  const diamond = coatingTiers.find(t => t.id === 'diamond')!;
-  const ex = coatingTiers.find(t => t.id === 'ex')!;
-  return [crystal, diamond, ex];
 }
 
 export function formatPrice(price: number): string {

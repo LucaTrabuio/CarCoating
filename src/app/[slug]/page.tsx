@@ -12,17 +12,21 @@ export default async function SlugPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const appealPointsMaster = await getMasterAppealPoints();
+  // Fetch independent data in parallel; getV3CampaignDefaults was being called up to 3x sequentially.
+  const [appealPointsMaster, subCompany, store, defaults] = await Promise.all([
+    getMasterAppealPoints(),
+    getSubCompanyBySlug(slug),
+    getV3StoreById(slug),
+    getV3CampaignDefaults(),
+  ]);
 
   // Check sub-company first so multi-store groups (>1 store) win
   // over a single store that shares the same slug (e.g., "fussa").
-  const subCompany = await getSubCompanyBySlug(slug);
   if (subCompany) {
     const stores = await getStoresBySubCompany(subCompany.id);
     if (stores.length > 1) {
       // Multi-store sub-company — render group view with SubCompanyStoreMap
       const primaryStore = stores[0];
-      const defaults = await getV3CampaignDefaults();
       const basePath = `/${slug}`;
       const campaign = defaults.force_hq_campaign ? {
         title: defaults.title,
@@ -80,9 +84,7 @@ export default async function SlugPage({
   }
 
   // Single store (or single-store sub-company with matching store_id)
-  const store = await getV3StoreById(slug);
   if (store && store.is_active) {
-    const defaults = await getV3CampaignDefaults();
     let discountRate = defaults.force_hq_campaign ? defaults.discount : (store.discount_rate ?? defaults.discount);
     if (defaults.end && new Date(defaults.end) < new Date()) discountRate = 0;
     const basePath = `/${slug}`;
@@ -114,7 +116,6 @@ export default async function SlugPage({
     if (stores.length === 0) notFound();
 
     const primaryStore = stores[0];
-    const defaults = await getV3CampaignDefaults();
     const basePath = `/${slug}`;
 
     const campaign = {

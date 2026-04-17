@@ -22,7 +22,9 @@ export default function CasesBlock({ config, basePath }: CasesBlockProps) {
           {cases.map((c, i) => (
             <div key={i} className="bg-white rounded-xl overflow-hidden shadow-sm">
               <div className="aspect-[4/3] overflow-hidden">
-                <img src={c.imageUrl} alt={c.car} className="w-full h-full object-cover" />
+                {/* Raw <img>: case sample data uses arbitrary third-party hosts that
+                    can't be enumerated in next/image remotePatterns. */}
+                <img src={c.imageUrl} alt={c.car} loading="lazy" className="w-full h-full object-cover" />
               </div>
               <div className="p-3">
                 <p className="text-[#0C3290] text-xs font-bold truncate">{c.car}</p>

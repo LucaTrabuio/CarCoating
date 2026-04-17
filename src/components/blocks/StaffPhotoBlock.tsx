@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { V3StoreData } from '@/lib/v3-types';
 import type { StaffPhotoConfig } from '@/lib/block-types';
 
@@ -16,9 +17,12 @@ export default function StaffPhotoBlock({ config, store }: StaffPhotoBlockProps)
           {'\u30B9\u30BF\u30C3\u30D5\u7D39\u4ECB'}
         </h2>
         <div className="rounded-xl overflow-hidden">
-          <img
+          <Image
             src={store.staff_photo_url}
             alt={`${store.store_name} \u30B9\u30BF\u30C3\u30D5`}
+            width={1200}
+            height={800}
+            sizes="(min-width: 900px) 900px, 100vw"
             className="w-full max-h-[400px] object-cover"
           />
         </div>

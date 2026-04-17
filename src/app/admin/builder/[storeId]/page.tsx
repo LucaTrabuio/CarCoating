@@ -1366,7 +1366,8 @@ export default function BuilderPage() {
             while (promoBanners.length < 4) promoBanners.push({ src: '', alt: '' });
 
             function updatePromoBanners(newBanners: { src: string; alt: string }[]) {
-              updateStoreField('promo_banners', JSON.stringify(newBanners.filter(b => b.src)));
+              // Keep all 4 slots so position is preserved (empty src = use default)
+              updateStoreField('promo_banners', JSON.stringify(newBanners));
             }
 
             return (

@@ -22,6 +22,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'お知らせ管理', href: '/admin/news', icon: '📢', storeAdminVisible: true },
   { label: 'KPIダッシュボード', href: '/admin/kpi', icon: '📊', storeAdminVisible: true },
   { label: 'チケット', href: '/admin/tickets', icon: '🎫', storeAdminVisible: true },
+  { label: 'CSVインポート', href: '/admin/stores/import', icon: '📥', storeAdminVisible: true },
+  { label: 'インポート履歴', href: '/admin/imports', icon: '🕘', storeAdminVisible: true },
   // super_admin only
   { label: '店舗マスター', href: '/admin/stores', icon: '🏪', superAdminOnly: true },
   { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳', superAdminOnly: true },
@@ -29,6 +31,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'トップページ', href: '/admin/homepage', icon: '🏠', superAdminOnly: true },
   { label: 'キャンペーン', href: '/admin/campaigns', icon: '🎯', superAdminOnly: true },
   { label: 'ブログ管理', href: '/admin/blog', icon: '✏️', superAdminOnly: true },
+  { label: 'ブログ CSV', href: '/admin/blog/import', icon: '📝', superAdminOnly: true },
   { label: 'ユーザー管理', href: '/admin/users', icon: '👥', superAdminOnly: true },
   { label: 'マスターデータ', href: '/admin/master', icon: '⚙️', superAdminOnly: true },
   { label: '診断', href: '/admin/diagnostics', icon: '🩺', superAdminOnly: true },

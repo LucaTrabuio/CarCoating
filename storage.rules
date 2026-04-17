@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// Firebase Storage Security Rules
+// Public read for site images; writes go through Admin SDK server-side (bypasses rules).
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Publicly readable areas (images served to end users)
+    match /stores/{storeId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // server-only via Admin SDK
+    }
+
+    match /blog/{slug}/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Admin backups — never publicly readable
+    match /backups/{allPaths=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

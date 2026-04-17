@@ -3,6 +3,7 @@ import type {
   HeroConfig,
   StoreIntroConfig,
   StaffPhotoConfig,
+  StaffBlockConfig,
   BeforeAfterConfig,
   GalleryConfig,
   USPConfig,
@@ -25,6 +26,7 @@ import ScrollFadeIn from '@/components/ScrollFadeIn';
 import HeroBlock from './HeroBlock';
 import StoreIntroBlock from './StoreIntroBlock';
 import StaffPhotoBlock from './StaffPhotoBlock';
+import StaffBlock from './StaffBlock';
 import BeforeAfterBlock from './BeforeAfterBlock';
 import GalleryBlock from './GalleryBlock';
 import USPBlock from './USPBlock';
@@ -74,6 +76,9 @@ export default function BlockRenderer({ block, store, basePath, discountRate, al
       break;
     case 'staff_photo':
       content = <StaffPhotoBlock config={block.config as StaffPhotoConfig} store={store} />;
+      break;
+    case 'staff':
+      content = <StaffBlock config={block.config as StaffBlockConfig} store={store} />;
       break;
     case 'before_after':
       content = <BeforeAfterBlock config={block.config as BeforeAfterConfig} store={store} basePath={basePath} />;

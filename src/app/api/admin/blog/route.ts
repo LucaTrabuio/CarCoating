@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { blogPostWriteSchema } from '@/lib/validations';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 export async function GET() {
   const auth = await requireAuth('super_admin');
@@ -17,37 +19,26 @@ export async function POST(req: NextRequest) {
   if (auth.error) return auth.error;
   const user = auth.user;
 
-  const body = await req.json();
-  const { title, slug, content, published, summary, category, publishDate, metaTitle, metaDescription, sections } = body as {
-    title: string;
-    slug: string;
-    content: string;
-    published: boolean;
-    summary?: string;
-    category?: string;
-    publishDate?: string;
-    metaTitle?: string;
-    metaDescription?: string;
-    sections?: { heading: string; text: string }[];
-  };
-
-  if (!title || !slug) {
-    return NextResponse.json({ error: 'title and slug are required' }, { status: 400 });
+  const parsed = blogPostWriteSchema.safeParse(await req.json());
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'Invalid input', issues: parsed.error.issues }, { status: 400 });
   }
+  const { title, slug, content, published, summary, category, publishDate, metaTitle, metaDescription, sections, hero_image_url } = parsed.data;
 
   const db = getAdminDb();
   const now = new Date().toISOString();
   const data = {
     title,
     slug,
-    content: content ?? '',
-    published: published ?? false,
+    content: sanitizeHtml(content),
+    published,
     summary: summary ?? '',
     category: category ?? 'educational',
     publishDate: publishDate ?? now.slice(0, 10),
     metaTitle: metaTitle ?? title,
     metaDescription: metaDescription ?? summary ?? '',
     sections: sections ?? [],
+    ...(hero_image_url ? { hero_image_url } : {}),
     author_uid: user.uid,
     created_at: now,
     updated_at: now,

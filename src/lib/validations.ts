@@ -90,6 +90,7 @@ export const v3StoreWriteSchema = z.object({
   font_family: z.string().max(50).optional(),
   price_overrides: jsonString.optional(),
   guide_config: jsonString.optional(),
+  promo_banners: jsonString.optional(),
 });
 
 export type V3StoreWriteInput = z.infer<typeof v3StoreWriteSchema>;
@@ -110,3 +111,76 @@ export const campaignDefaultsSchema = z.object({
   font: z.string().max(50).optional(),
   force_hq_campaign: z.boolean().optional(),
 });
+
+// ─── Blog Post Schema (POST /api/admin/blog) ───
+
+export const blogPostWriteSchema = z.object({
+  title: z.string().min(1).max(300),
+  slug: z.string().min(1).max(200).regex(/^[a-z0-9][a-z0-9-]*$/, 'slug must be lowercase alphanumeric with hyphens'),
+  content: z.string().max(200_000).default(''),
+  published: z.boolean().default(false),
+  summary: z.string().max(2000).optional(),
+  category: z.string().max(100).optional(),
+  publishDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  metaTitle: z.string().max(300).optional(),
+  metaDescription: z.string().max(500).optional(),
+  hero_image_url: z.string().url().max(2000).optional(),
+  sections: z.array(z.object({
+    heading: z.string().max(300),
+    text: z.string().max(50_000),
+  })).max(50).optional(),
+});
+
+// ─── Booking PATCH Schema ───
+
+export const bookingPatchSchema = z.object({
+  reservationId: z.string().min(1).max(200),
+  status: z.enum(['pending', 'confirmed', 'completed', 'cancelled']),
+  confirmChoiceIndex: z.number().int().min(0).max(20).optional(),
+  adminMessage: z.string().max(2000).optional(),
+});
+
+// ─── Inquiry PATCH Schema ───
+
+export const inquiryPatchSchema = z.object({
+  inquiryId: z.string().min(1).max(200),
+  status: z.enum(['open', 'replied', 'closed']),
+  replyText: z.string().max(10_000).optional(),
+});
+
+// ─── Ticket Action Schema (POST /api/admin/tickets) ───
+
+export const ticketActionSchema = z.discriminatedUnion('action', [
+  z.object({
+    action: z.literal('create'),
+    subject: z.string().min(1).max(300),
+    text: z.string().min(1).max(20_000),
+    storeId: z.string().max(100).optional(),
+    type: z.string().max(50).optional(),
+    severity: z.enum(['low', 'medium', 'high', 'critical']).optional(),
+  }),
+  z.object({
+    action: z.literal('reply'),
+    ticketId: z.string().min(1).max(200),
+    text: z.string().min(1).max(20_000),
+  }),
+  z.object({
+    action: z.literal('status'),
+    ticketId: z.string().min(1).max(200),
+    status: z.enum(['open', 'in_progress', 'resolved', 'closed']),
+  }),
+  z.object({
+    action: z.literal('edit'),
+    ticketId: z.string().min(1).max(200),
+    subject: z.string().min(1).max(300),
+  }),
+  z.object({
+    action: z.literal('delete'),
+    ticketId: z.string().min(1).max(200),
+  }),
+  z.object({
+    action: z.literal('delete_message'),
+    ticketId: z.string().min(1).max(200),
+    messageIndex: z.number().int().min(0).max(10_000),
+  }),
+]);

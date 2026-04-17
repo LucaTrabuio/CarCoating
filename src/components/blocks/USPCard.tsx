@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRef } from 'react';
 
@@ -60,7 +61,14 @@ export default function USPCard({ imageSrc, title, description, icon, href, ctaL
       className="bg-white rounded-xl border border-gray-200 hover:shadow-xl transition-shadow overflow-hidden will-change-transform cursor-pointer flex flex-col h-full"
       style={{ transformStyle: 'preserve-3d', transition: 'transform 0.2s ease-out' }}
     >
-      <img src={imageSrc} alt={title} className="w-full aspect-[16/9] object-cover" />
+      <Image
+        src={imageSrc}
+        alt={title}
+        width={640}
+        height={360}
+        sizes="(min-width: 768px) 33vw, 100vw"
+        className="w-full aspect-[16/9] object-cover"
+      />
       <div className="p-5 flex flex-col flex-1">
         <h3
           className="text-gray-900 font-black tracking-tight text-base mb-1 text-center"

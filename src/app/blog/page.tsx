@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { blogArticles } from '@/data/blog-articles';
 import type { Metadata } from 'next';
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'ブログ・コラム｜KeePer PRO SHOP',
   description: 'カーコーティングの基礎知識、比較、季節の情報など。',
