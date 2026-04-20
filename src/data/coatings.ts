@@ -50,7 +50,7 @@ export const coatingsData: CoatingProduct[] = [
   {
     id: "fresh",
     name: "フレッシュキーパー",
-    subtitle: "",
+    subtitle: "FRESH KEEPER",
     catchphrase: "雨が降るたび勝手にキレイ",
     themeColor: { bg: "bg-[#FFF100]", text: "text-[#333333]", border: "border-[#FFF100]" },
     stars: 7,
@@ -95,7 +95,7 @@ export const coatingsData: CoatingProduct[] = [
     themeColor: { bg: "bg-[#333E85]", text: "text-white", border: "border-[#333E85]" },
     stars: 6,
     durationText: "3年間ノーメンテナンス\nまたは1年1回で5年",
-    isNew: true,
+    isNew: false,
     radar: [
       { subject: "洗車の減り方", A: 5, fullMark: 5 },
       { subject: "耐候力", A: 4, fullMark: 5 },

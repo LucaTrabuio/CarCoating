@@ -1,5 +1,5 @@
 import { CoatingProduct } from "../../data/coatings";
-import RadarGraph from "./RadarGraph";
+import BarGraph from "./BarGraph";
 import StarRating from "./StarRating";
 import LayerGraphic from "./LayerGraphic";
 
@@ -18,24 +18,63 @@ export default function CoatingCard({ coating }: Props) {
       {/* Top Banner */}
       <div className={`flex flex-col text-center justify-center pt-6 pb-4 relative ${coating.themeColor.bg}`}>
         {coating.isNew && (
-           <div className="absolute top-0 left-0 bg-red-600 text-white text-sm font-bold px-2 py-1 transform -translate-x-2 -translate-y-2 rounded-full z-10 w-12 h-12 flex items-center justify-center shadow-md">
-             NEW!
-           </div>
+          <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-black tracking-wider px-2.5 py-1 rounded-sm z-10 shadow-md uppercase">
+            NEW
+          </div>
         )}
-        <h2 className={`text-4xl font-black ${coating.themeColor.text}`}>{coating.name}</h2>
+        {(() => {
+          const splitIdx = coating.name.indexOf('・');
+          const twoLines = splitIdx > 0 && coating.name.length >= 11;
+          const sizeClass = twoLines
+            ? 'text-2xl'
+            : coating.name.length >= 9
+              ? 'text-2xl'
+              : coating.name.length >= 7
+                ? 'text-3xl'
+                : 'text-4xl';
+          return (
+            <h2
+              className={`${sizeClass} font-black ${twoLines ? 'leading-[1.05]' : 'leading-none whitespace-nowrap'} ${coating.themeColor.text}`}
+              style={{
+                fontFamily: '"Noto Sans JP", sans-serif',
+                fontWeight: 900,
+                letterSpacing: '-0.04em',
+                transform: 'scaleX(0.88)',
+                transformOrigin: 'center',
+                display: 'inline-block',
+              }}
+            >
+              {twoLines ? (
+                <>
+                  {coating.name.slice(0, splitIdx + 1)}
+                  <br />
+                  {coating.name.slice(splitIdx + 1)}
+                </>
+              ) : (
+                coating.name
+              )}
+            </h2>
+          );
+        })()}
         {coating.subtitle && (
-          <p className={`text-sm font-bold tracking-widest ${coating.themeColor.text} mt-1`}>
+          <p
+            className={`text-[13px] ${coating.themeColor.text} mt-2`}
+            style={{
+              fontFamily: '"Oswald", "Noto Sans JP", sans-serif',
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+            }}
+          >
             {coating.subtitle}
           </p>
         )}
       </div>
 
       <div className="p-2 space-y-2">
-        {/* Radar Section */}
-        <div className="bg-white rounded p-4 shadow-sm relative">
-          <p className="text-center font-bold text-sm mb-[-10px] text-gray-800 absolute w-full left-0 z-10">洗車の回数の減り方</p>
-          <RadarGraph data={coating.radar} color={strokeColor} />
-          <p className="text-center font-bold text-sm mt-[-10px] text-gray-800">持続時間</p>
+        {/* Graph Section */}
+        <div className="bg-white rounded p-4 shadow-sm relative pt-6">
+          <BarGraph data={coating.radar} color={strokeColor} isFreshKeeper={coating.name === 'フレッシュキーパー'} />
         </div>
 
         {/* Layers Section */}
@@ -44,7 +83,7 @@ export default function CoatingCard({ coating }: Props) {
         </div>
 
         {/* Rating Section */}
-        <div className="bg-white rounded p-3 shadow-sm flex items-center justify-center gap-6">
+        <div className="bg-white rounded p-3 shadow-sm flex items-center justify-center gap-4">
           <p className="font-bold text-gray-700">汚れにくさ</p>
           <StarRating rating={coating.stars} />
         </div>

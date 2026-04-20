@@ -36,7 +36,7 @@ export default function LayerGraphic({ layers }: Props) {
     const rightPts = `${w/2},${dy*2} ${w},${dy} ${w},${dy + h} ${w/2},${dy*2 + h}`;
 
     return (
-      <g transform={`translate(10, ${yOffset})`}>
+      <g transform={`translate(0, ${yOffset})`}>
         {/* Right face (darker) */}
         <polygon points={rightPts} fill={color} opacity={0.6} />
         {/* Left face (slightly darker) */}
@@ -52,8 +52,8 @@ export default function LayerGraphic({ layers }: Props) {
   let currentY = layers.length * 20; 
 
   return (
-    <div className="relative flex items-center justify-center w-full min-h-[140px]">
-      <svg width="150" height="120" className="drop-shadow-md">
+    <div className="flex items-center justify-center w-full min-h-[140px] gap-2 px-1">
+      <svg viewBox="0 0 130 120" className="w-[135px] drop-shadow-md shrink-0">
         {reversed.map((layer, idx) => {
           let h = 8;
           if (layer.thickness === "thick") h = 18;
@@ -65,15 +65,15 @@ export default function LayerGraphic({ layers }: Props) {
         })}
       </svg>
       
-      {/* Absolute positioned labels */}
-      <div className="absolute inset-y-0 right-0 left-[60%] flex flex-col items-start justify-center gap-2">
+      {/* Flow positioned labels */}
+      <div className="flex flex-col items-start justify-center gap-2">
         {layers.map((l, i) => (
-          <div key={i} className="text-xs text-gray-700 font-bold leading-tight flex flex-col pt-1">
+          <div key={i} className="text-[10px] text-gray-700 font-bold leading-tight flex flex-col pt-1">
              <div className="flex items-center">
-                <span className="inline-block w-4 h-px bg-gray-400 mr-1" />
+                <span className="inline-block w-3 h-px bg-gray-400 mr-1" />
                 {l.name}
              </div>
-             {l.note && <span className="text-[10px] text-gray-500 font-normal ml-5 whitespace-pre-wrap">{l.note}</span>}
+             {l.note && <span className="text-[9px] text-gray-500 font-normal ml-3 whitespace-pre-wrap">{l.note}</span>}
           </div>
         ))}
       </div>
