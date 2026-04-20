@@ -49,7 +49,17 @@ const questions: Question[] = [
       { label: '7万円以上', points: 'flagship' },
     ],
   },
+  {
+    question: 'お車の年式は？',
+    choices: [
+      { label: '新車・1年以内', points: 'flagship' },
+      { label: '2〜5年', points: 'premium' },
+      { label: '6年以上', points: 'standard' },
+    ],
+  },
 ];
+
+const TOTAL_QUESTIONS = questions.length;
 
 interface TierResult {
   name: string;
@@ -98,7 +108,7 @@ interface QuizBlockProps {
 }
 
 export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
-  const [step, setStep] = useState(-1); // -1 = intro, 0..3 = questions, 4 = result
+  const [step, setStep] = useState(-1); // -1 = intro, 0..N-1 = questions, N = result
   const [answers, setAnswers] = useState<Tier[]>([]);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
 
@@ -112,9 +122,9 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
       const next = [...answers, tier];
       setAnswers(next);
       setDirection('forward');
-      const nextStep = next.length >= 4 ? 4 : next.length;
+      const nextStep = next.length >= TOTAL_QUESTIONS ? TOTAL_QUESTIONS : next.length;
       setStep(nextStep);
-      if (nextStep === 4 && storeId) {
+      if (nextStep === TOTAL_QUESTIONS && storeId) {
         const result = computeResult(next);
         trackEvent(storeId, 'quiz_complete', { tier: result });
       }
@@ -139,8 +149,8 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
     setAnswers([]);
   }, []);
 
-  const result = step === 4 ? tierResults[computeResult(answers)] : null;
-  const progress = step >= 0 && step <= 4 ? Math.min(step, 4) / 4 : 0;
+  const result = step === TOTAL_QUESTIONS ? tierResults[computeResult(answers)] : null;
+  const progress = step >= 0 && step <= TOTAL_QUESTIONS ? Math.min(step, TOTAL_QUESTIONS) / TOTAL_QUESTIONS : 0;
 
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -276,12 +286,18 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
           >
             愛車に最適なカーコーティングを選ぼう
           </p>
+          <p
+            className="text-white/80 text-xs md:text-sm font-semibold mt-2"
+            style={{ textShadow: '0 2px 6px rgba(0,0,0,0.9)' }}
+          >
+            {TOTAL_QUESTIONS}つの質問に答えるだけ（30秒）
+          </p>
         </div>
 
         <div className="max-w-[600px] mx-auto">
 
         {/* Progress bar */}
-        {step >= 0 && step <= 4 && (
+        {step >= 0 && step <= TOTAL_QUESTIONS && (
           <div className="mb-6">
             <div className="h-1 bg-slate-200 rounded-full overflow-hidden">
               <div
@@ -289,9 +305,9 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
                 style={{ width: `${progress * 100}%` }}
               />
             </div>
-            {step < 4 && (
+            {step < TOTAL_QUESTIONS && (
               <p className="text-[10px] text-slate-400 font-bold mt-1 text-right">
-                {step + 1} / 4
+                {step + 1} / {TOTAL_QUESTIONS}
               </p>
             )}
           </div>
@@ -300,7 +316,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
         {/* Intro (non-intro path renders inline here) */}
 
         {/* Questions */}
-        {step >= 0 && step <= 3 && (
+        {step >= 0 && step <= TOTAL_QUESTIONS - 1 && (
           <div
             key={step}
             className={`bg-slate-50 rounded-xl p-6 ${
@@ -335,7 +351,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
         )}
 
         {/* Result */}
-        {step === 4 && result && (
+        {step === TOTAL_QUESTIONS && result && (
           <div className="bg-[#0C3290] rounded-xl p-8 text-center text-white animate-[fadeIn_0.5s_ease-out]">
             <p className="text-[#0C3290] text-xs font-bold tracking-widest mb-3">
               YOUR RECOMMENDATION

@@ -401,12 +401,12 @@ const DEFAULT_BLOCK_ORDER: BlockType[] = [
   'before_after',
   'gallery',
   'usp',
-  'concerns',
   'quiz',
   'simulator',
   'cases',
   'pricing',
   'staff',
+  'concerns',
   'news',
   'process',
   'benefits',
@@ -504,6 +504,20 @@ function migrateLayout(layout: PageLayout): PageLayout {
     const pricingIdx = fixedBlocks.findIndex(b => b.type === 'pricing');
     const insertAt = pricingIdx >= 0 ? pricingIdx + 1 : fixedBlocks.length;
     fixedBlocks.splice(insertAt, 0, staffBlock);
+    fixedBlocks.forEach((b, i) => { b.order = i; });
+  }
+
+  // Snap `concerns` to directly after `staff` ONLY if it's still in its
+  // legacy auto-default position (right after `usp`). This keeps default
+  // layouts in sync with the new ordering without overriding any user
+  // reordering done in the page builder.
+  const concernsIdx = fixedBlocks.findIndex(b => b.type === 'concerns');
+  const uspIdx = fixedBlocks.findIndex(b => b.type === 'usp');
+  const staffIdx = fixedBlocks.findIndex(b => b.type === 'staff');
+  if (concernsIdx >= 0 && staffIdx >= 0 && concernsIdx === uspIdx + 1 && concernsIdx !== staffIdx + 1) {
+    const [concernsBlock] = fixedBlocks.splice(concernsIdx, 1);
+    const newStaffIdx = fixedBlocks.findIndex(b => b.type === 'staff');
+    fixedBlocks.splice(newStaffIdx + 1, 0, concernsBlock);
     fixedBlocks.forEach((b, i) => { b.order = i; });
   }
 

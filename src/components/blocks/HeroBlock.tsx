@@ -20,7 +20,6 @@ const BUBBLE_ENABLED = false;
 export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
   const [showText, setShowText] = useState(false);
   const [showButtons, setShowButtons] = useState(false);
-  const [isReblurred, setIsReblurred] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -30,7 +29,6 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
   useEffect(() => {
     const t1 = setTimeout(() => {
       setShowText(true);
-      setIsReblurred(true);
     }, 2200);
     const t2 = setTimeout(() => setShowButtons(true), 3000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
@@ -126,21 +124,18 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
     };
   }, []);
 
-  const imgSrc = config.image_url || store.hero_image_url || '/images/dia2-hero.png';
+  const imgSrc = config.image_url || store.hero_image_url || '/images/hero-banner-bg.png';
 
   return (
     <section
       ref={sectionRef}
       suppressHydrationWarning
-      className="relative min-h-[360px] sm:min-h-[500px] md:min-h-[800px] flex items-center justify-center overflow-hidden"
+      className="relative w-full flex items-center justify-center overflow-hidden"
+      style={{ aspectRatio: '1960 / 558' }}
     >
       <div
         ref={wrapperRef}
         className="absolute inset-0 will-change-transform"
-        style={{
-          maskImage: 'linear-gradient(to bottom, black calc(100% - 10px), transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black calc(100% - 10px), transparent 100%)',
-        }}
       >
         <div
           ref={cursorRef}
@@ -157,18 +152,14 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
             onContextMenu={(e) => e.preventDefault()}
             onDragStart={(e) => e.preventDefault()}
             className="absolute inset-0 w-full h-full object-cover will-change-transform animate-hero-zoom select-none pointer-events-none"
-            style={{
-              filter: isReblurred ? 'blur(20px) brightness(0.85) saturate(1.1)' : 'blur(0px) brightness(1)',
-              transition: 'filter 0.8s ease-in-out',
-              WebkitUserDrag: 'none',
-            } as React.CSSProperties}
+            style={{ WebkitUserDrag: 'none' } as React.CSSProperties}
           />
           <div
             ref={bubbleRef}
             aria-hidden
             className="absolute inset-0 pointer-events-none"
             style={{
-              opacity: BUBBLE_ENABLED && isReblurred ? 1 : 0,
+              opacity: 0,
               display: BUBBLE_ENABLED ? undefined : 'none',
               transition: 'opacity 0.6s ease-in-out',
               maskImage: `radial-gradient(circle ${BUBBLE_RADIUS}px at var(--mx, -9999px) var(--my, -9999px), black 0%, black 40%, transparent 100%)`,
@@ -193,37 +184,43 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
         }}
       >
         <div className="max-w-[900px] mx-auto text-center">
-          <h1
-            className="text-white font-bold leading-tight mb-3 whitespace-nowrap"
-            style={{
-              fontFamily: '"Noto Sans JP", sans-serif',
-              fontSize: 'clamp(1.5rem, 6vw, 4rem)',
-              fontFeatureSettings: '"palt" 1',
-              paddingLeft: '0.5em',
-              textShadow: '0 2px 3px rgba(0,0,0,0.9)',
-            }}
-          >
-            {config.title || store.hero_title || '洗車だけで、この輝きが続く。'}
-          </h1>
-          <p
-            className="text-white text-sm mb-4"
-            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
-          >
-            {config.subtitle || store.hero_subtitle || `${store.store_name} ｜ KeePer PRO SHOP認定`}
-          </p>
-          <div style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.7))' }}>
-            {config.show_badges && <TrustBadges hasBooth={store.has_booth} level1Count={store.level1_staff_count} level2Count={store.level2_staff_count} />}
-          </div>
           <div
-            className="flex gap-3 justify-center mt-5"
+            className="inline-block px-6 py-5 md:px-10 md:py-7 rounded-2xl"
             style={{
-              opacity: showButtons ? 1 : 0,
-              transform: showButtons ? 'scale(1)' : 'scale(0.85)',
-              transition: 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              background: 'rgba(0,0,0,0.62)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)',
             }}
           >
-            {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
-            {config.show_cta_inquiry && <TrackedLink href={`${basePath}/booking?mode=inquiry`} storeId={store.store_id} event="cta_inquiry" className="px-7 py-3 bg-white border border-white text-[#0C3290] font-semibold rounded-lg text-sm hover:bg-gray-100 transition-colors shadow-lg">{'\u304A\u554F\u3044\u5408\u308F\u305B'}</TrackedLink>}
+            <h1
+              className="text-white font-bold leading-tight mb-3 whitespace-nowrap"
+              style={{
+                fontFamily: '"Noto Serif JP", serif',
+                fontSize: 'clamp(1.5rem, 6vw, 4rem)',
+                fontFeatureSettings: '"palt" 1',
+                textShadow: '0 2px 4px rgba(0,0,0,1), 0 1px 2px rgba(0,0,0,1), 0 0 1px rgba(0,0,0,1)',
+              }}
+            >
+              {config.title || store.hero_title || '洗車だけで、この輝きが続く。'}
+            </h1>
+            <p
+              className="text-white text-sm mb-4"
+              style={{ fontFamily: '"Noto Serif JP", serif' }}
+            >
+              {config.subtitle || store.hero_subtitle || `${store.store_name} ｜ KeePer PRO SHOP認定`}
+            </p>
+            {config.show_badges && <TrustBadges hasBooth={store.has_booth} level1Count={store.level1_staff_count} level2Count={store.level2_staff_count} />}
+            <div
+              className="flex gap-3 justify-center mt-5"
+              style={{
+                opacity: showButtons ? 1 : 0,
+                transform: showButtons ? 'scale(1)' : 'scale(0.85)',
+                transition: 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              }}
+            >
+              {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
+              {config.show_cta_inquiry && <TrackedLink href={`${basePath}/booking?mode=inquiry`} storeId={store.store_id} event="cta_inquiry" className="px-7 py-3 bg-white border border-white text-[#0C3290] font-semibold rounded-lg text-sm hover:bg-gray-100 transition-colors shadow-lg">{'\u304A\u554F\u3044\u5408\u308F\u305B'}</TrackedLink>}
+            </div>
           </div>
         </div>
       </div>
