@@ -18,6 +18,7 @@ import type {
   CertificationsConfig,
   AppealPointsConfig,
   BannersConfig,
+  BannerPresetConfig,
   CustomHtmlConfig,
 } from '@/lib/block-types';
 import type { V3StoreData } from '@/lib/v3-types';
@@ -43,6 +44,7 @@ import CTABlock from './CTABlock';
 import CertificationsBlock from './CertificationsBlock';
 import AppealPointsBlock from './AppealPointsBlock';
 import BannersBlock from './BannersBlock';
+import BannerPresetBlock from './BannerPresetBlock';
 import CustomHtmlBlock from './CustomHtmlBlock';
 import PromoBannersBlock from './PromoBannersBlock';
 
@@ -127,6 +129,9 @@ export default function BlockRenderer({ block, store, basePath, discountRate, al
       break;
     case 'banners':
       content = <BannersBlock config={block.config as BannersConfig} />;
+      break;
+    case 'banner_preset':
+      content = <BannerPresetBlock config={block.config as BannerPresetConfig} />;
       break;
     case 'custom_html':
       content = <CustomHtmlBlock config={block.config as CustomHtmlConfig} />;

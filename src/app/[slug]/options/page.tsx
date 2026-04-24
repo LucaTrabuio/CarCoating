@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { resolveSlugToStore, getV3CampaignDefaults } from '@/lib/firebase-stores';
+import { getGlobalDefaults, applyDefaults } from '@/lib/global-defaults';
 import { formatPrice, applyDiscount } from '@/lib/pricing';
 import { getBlurFieldsFromLayout } from '@/lib/blur-utils';
 import { parsePageLayout } from '@/lib/block-types';
@@ -26,7 +27,8 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const resolved = await resolveSlugToStore(slug);
   if (!resolved) notFound();
-  const { store } = resolved;
+  const globalDefaults = await getGlobalDefaults();
+  const store = applyDefaults(resolved.store, globalDefaults);
 
   const base = `/${slug}`;
   const blurFields = getBlurFieldsFromLayout(store.page_layout);

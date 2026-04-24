@@ -5,6 +5,7 @@ import BlockRenderer from '@/components/blocks/BlockRenderer';
 import PageViewTracker from '@/components/PageViewTracker';
 import SubCompanyStoreMap from '@/components/SubCompanyStoreMap';
 import { getMasterAppealPoints } from '@/lib/master-data';
+import { getGlobalDefaults, applyDefaults } from '@/lib/global-defaults';
 
 export default async function SlugPage({
   params,
@@ -13,17 +14,22 @@ export default async function SlugPage({
 }) {
   const { slug } = await params;
   // Fetch independent data in parallel; getV3CampaignDefaults was being called up to 3x sequentially.
-  const [appealPointsMaster, subCompany, store, defaults] = await Promise.all([
+  const [appealPointsMaster, subCompany, rawStore, defaults, globalDefaults] = await Promise.all([
     getMasterAppealPoints(),
     getSubCompanyBySlug(slug),
     getV3StoreById(slug),
     getV3CampaignDefaults(),
+    getGlobalDefaults(),
   ]);
+  // Resolve every defaultable section (page_layout, banners, staff_members, …)
+  // against the global-defaults + override-flags policy.
+  const store = rawStore ? applyDefaults(rawStore, globalDefaults) : null;
 
   // Check sub-company first so multi-store groups (>1 store) win
   // over a single store that shares the same slug (e.g., "fussa").
   if (subCompany) {
-    const stores = await getStoresBySubCompany(subCompany.id);
+    const rawStores = await getStoresBySubCompany(subCompany.id);
+    const stores = rawStores.map(s => applyDefaults(s, globalDefaults));
     if (stores.length > 1) {
       // Multi-store sub-company — render group view with SubCompanyStoreMap
       const primaryStore = stores[0];
@@ -112,7 +118,8 @@ export default async function SlugPage({
 
   // Fallback: single-store sub-company whose store_id doesn't match the slug
   if (subCompany) {
-    const stores = await getStoresBySubCompany(subCompany.id);
+    const rawStores = await getStoresBySubCompany(subCompany.id);
+    const stores = rawStores.map(s => applyDefaults(s, globalDefaults));
     if (stores.length === 0) notFound();
 
     const primaryStore = stores[0];

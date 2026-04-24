@@ -23,6 +23,7 @@ export type BlockType =
   | 'certifications'
   | 'appeal_points'
   | 'banners'
+  | 'banner_preset'
   | 'custom_html'
   // Homepage-specific blocks
   | 'hero_home'
@@ -193,6 +194,7 @@ export interface AppealPointsConfig {
 
 export interface Banner {
   id: string;
+  /** Provenance: id of the preset this banner was snapshotted from. Empty for hand-made banners. */
   template_id: string;
   custom_css: string;
   title: string;
@@ -202,10 +204,39 @@ export interface Banner {
   discount_rate: number;
   link_url: string;
   visible: boolean;
+  /**
+   * Optional render mode. Legacy banners (no mode) render as structured.
+   * - 'html' — render raw sanitized html + css instead of the card.
+   * - 'template' — render a parameterized template: substitute `template_values`
+   *   into cached_template_html / cached_template_css, then sanitize + render.
+   */
+  mode?: 'structured' | 'html' | 'template';
+  html?: string;
+  html_css?: string;
+
+  /** When mode='template', values for each field declared by the source preset. */
+  template_values?: Record<string, string>;
+  /**
+   * Cached HTML/CSS (the template's structure) at placement time. Lets the
+   * storefront render without re-fetching the preset on every request.
+   */
+  cached_template_html?: string;
+  cached_template_css?: string;
+  /** Cached field schema from the source preset, used for substitution. */
+  cached_template_fields?: import('./banner-presets-shared').TemplateField[];
 }
 
 export interface BannersConfig {
   banners: Banner[];
+}
+
+/**
+ * Single-banner block. A snapshotted preset lives in `banner`; `preset_id`
+ * carries the source preset's id for provenance (orphan-detection UI only).
+ */
+export interface BannerPresetConfig {
+  banner: Banner;
+  preset_id: string;
 }
 
 export interface CustomHtmlConfig {
@@ -282,6 +313,7 @@ export interface BlockConfigMap {
   certifications: CertificationsConfig;
   appeal_points: AppealPointsConfig;
   banners: BannersConfig;
+  banner_preset: BannerPresetConfig;
   custom_html: CustomHtmlConfig;
   hero_home: HeroHomeConfig;
   service_menu: ServiceMenuConfig;
@@ -389,6 +421,7 @@ export const BLOCK_META: BlockMeta[] = [
   { type: 'certifications', label: 'Certifications', labelJa: '認定・資格', icon: '🏆', defaultConfig: { certs: [] } },
   { type: 'appeal_points', label: 'Appeal Points', labelJa: 'アピールポイント', icon: '💪', maxInstances: 1, defaultConfig: { selected_ids: [], show_descriptions: true } },
   { type: 'banners', label: 'Promotional Banners', labelJa: 'プロモーションバナー', icon: '🎨', defaultConfig: { banners: [] } },
+  { type: 'banner_preset', label: 'Banner (from preset)', labelJa: 'バナー（プリセット）', icon: '📑', defaultConfig: { banner: { id: '', template_id: '', custom_css: '', title: '', subtitle: '', image_url: '', original_price: 0, discount_rate: 0, link_url: '', visible: true }, preset_id: '' } },
   { type: 'custom_html', label: 'Custom Content', labelJa: 'カスタムコンテンツ', icon: '✏️', defaultConfig: { html: '', css: '' } },
 ];
 

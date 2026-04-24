@@ -74,6 +74,12 @@ export interface V3StoreData {
   guide_config?: string;        // JSON string: GuideConfig — hide_prices + per-tier text overrides on the guide page
   promo_banners?: string;       // JSON string: { src: string; alt: string }[] — store-specific promo banner images
   staff_members?: string;       // JSON string: StaffMember[] — overrides Staff block config when set (CSV-driven)
+
+  // ─── Global-defaults override bookkeeping ───
+  // JSON string: { [key in DefaultableKey]?: true } — marks which sections this
+  // store has explicitly overridden. Unflagged sections inherit site_config/defaults.
+  // Managed by the global-defaults subsystem; see src/lib/global-defaults.ts.
+  override_flags?: string;
 }
 
 /** All CSV columns in order */

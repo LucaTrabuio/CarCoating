@@ -1,6 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { requireAuth, canManageStore } from '@/lib/auth';
+import {
+  getGlobalDefaults,
+  isSectionLocked,
+  parseOverrideFlags,
+  serializeOverrideFlags,
+} from '@/lib/global-defaults';
 
 // GET: Fetch page layout for a store
 export async function GET(
@@ -62,9 +68,28 @@ export async function PUT(
     return NextResponse.json({ error: 'Invalid layout JSON' }, { status: 400 });
   }
 
+  // Global-defaults enforcement: reject if page_layout is locked.
+  const defaults = await getGlobalDefaults();
+  if (isSectionLocked('page_layout', defaults)) {
+    return NextResponse.json(
+      { error: 'section_locked', key: 'page_layout', message: 'Page layout is locked by the super admin.' },
+      { status: 403 },
+    );
+  }
+
+  // Mark as an explicit override on this store.
   const db = getAdminDb();
-  await db.collection('stores').doc(storeId).set(
-    { page_layout: layout },
+  const ref = db.collection('stores').doc(storeId);
+  const existing = await ref.get();
+  const existingFlagsRaw = existing.exists ? (existing.data()?.override_flags as string | undefined) : undefined;
+  const flags = parseOverrideFlags(existingFlagsRaw);
+  flags.page_layout = true;
+
+  await ref.set(
+    {
+      page_layout: layout,
+      override_flags: serializeOverrideFlags(flags),
+    },
     { merge: true }
   );
 

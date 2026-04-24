@@ -28,6 +28,12 @@ import SortableBlockItem from '../components/SortableBlockItem';
 import BlockEditorSwitch from '../components/editors/BlockEditorSwitch';
 import ImageUploadField from '../components/ImageUploadField';
 import ImageSlot from '../components/ImageSlot';
+import OverrideStateBanner, { type OverrideState } from '@/components/admin/OverrideStateBanner';
+import BannerPresetPicker from '@/components/admin/BannerPresetPicker';
+import TemplateValuesModal from '@/components/admin/TemplateValuesModal';
+import { presetToBanner, type BannerPreset } from '@/lib/banner-presets-shared';
+import type { BannerPresetConfig } from '@/lib/block-types';
+import type { DefaultableKey, GlobalDefaults, OverrideFlags } from '@/lib/global-defaults-shared';
 
 // ─── Types ───
 
@@ -450,6 +456,15 @@ export default function BuilderPage() {
   const [iframeKey, setIframeKey] = useState(0);
   const [previewPath, setPreviewPath] = useState('');
 
+  // Global-defaults & override state
+  const [globalDefaults, setGlobalDefaults] = useState<GlobalDefaults | null>(null);
+  const [overrideFlags, setOverrideFlags] = useState<OverrideFlags>({});
+
+  // Banner preset picker (opens from Add Block palette → "banner_preset")
+  const [bannerPresetPickerOpen, setBannerPresetPickerOpen] = useState(false);
+  // When a template preset is picked, this opens the values-entry modal.
+  const [builderTemplatePreset, setBuilderTemplatePreset] = useState<BannerPreset | null>(null);
+
   // Options tab state
   const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>([]);
   // News tab state
@@ -459,9 +474,10 @@ export default function BuilderPage() {
   useEffect(() => {
     async function load() {
       try {
-        const [storeRes, layoutRes] = await Promise.all([
+        const [storeRes, layoutRes, defaultsRes] = await Promise.all([
           fetch(`/api/v3/stores/${storeId}`),
           fetch(`/api/admin/stores/${storeId}/layout`),
+          fetch(`/api/admin/defaults`),
         ]);
 
         if (!storeRes.ok) {
@@ -472,20 +488,57 @@ export default function BuilderPage() {
 
         const fetchedStoreData = await storeRes.json();
         setStoreName(fetchedStoreData.store_name || storeId);
-        setStoreData(fetchedStoreData);
 
-        // Parse custom_services — use defaults if empty
+        // Parse override_flags
+        let parsedFlags: Record<string, boolean> = {};
         try {
-          const parsed = JSON.parse(fetchedStoreData.custom_services || '[]');
+          const parsed = JSON.parse(fetchedStoreData.override_flags || '{}');
+          parsedFlags = parsed && typeof parsed === 'object' ? parsed : {};
+        } catch {
+          parsedFlags = {};
+        }
+        setOverrideFlags(parsedFlags);
+
+        // Load global defaults (non-fatal — just falls back to empty)
+        let loadedDefaults: GlobalDefaults | null = null;
+        if (defaultsRes.ok) {
+          loadedDefaults = await defaultsRes.json();
+          setGlobalDefaults(loadedDefaults);
+        }
+
+        // Overlay globally-defaulted values onto the store object for any key
+        // that's either locked or inheriting, so the builder renders what
+        // the storefront will actually render.
+        const overlayKeys: (keyof V3StoreData)[] = [
+          'promo_banners', 'banners', 'staff_members', 'custom_services',
+          'guide_config', 'appeal_points', 'certifications', 'store_news',
+          'blur_config', 'price_overrides',
+        ];
+        const effectiveStoreData: Record<string, unknown> = { ...fetchedStoreData };
+        if (loadedDefaults) {
+          for (const k of overlayKeys) {
+            const allow = loadedDefaults.policy?.[k as keyof typeof loadedDefaults.policy]?.allowOverride;
+            const globalVal = loadedDefaults.values?.[k as keyof typeof loadedDefaults.values];
+            if (globalVal === undefined) continue;
+            if (allow === false || parsedFlags[k as string] !== true) {
+              effectiveStoreData[k] = globalVal;
+            }
+          }
+        }
+        setStoreData(effectiveStoreData as Partial<V3StoreData>);
+
+        // Parse custom_services — use the overlay-resolved value
+        try {
+          const parsed = JSON.parse((effectiveStoreData.custom_services as string) || '[]');
           const opts = Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_SERVICE_OPTIONS;
           setServiceOptions(opts);
         } catch {
           setServiceOptions(DEFAULT_SERVICE_OPTIONS);
         }
 
-        // Parse store_news
+        // Parse store_news — overlay-resolved
         try {
-          const parsed = JSON.parse(fetchedStoreData.store_news || '[]');
+          const parsed = JSON.parse((effectiveStoreData.store_news as string) || '[]');
           setNewsItems(Array.isArray(parsed) ? parsed : []);
         } catch {
           setNewsItems([]);
@@ -495,6 +548,16 @@ export default function BuilderPage() {
         if (layoutRes.ok) {
           const layoutData = await layoutRes.json();
           pageLayoutJson = layoutData.page_layout ?? undefined;
+        }
+
+        // If the store is inheriting page_layout (no override flag) and global
+        // defaults have a page_layout value, seed the editor from the global
+        // default so the builder preview matches what renders on the storefront.
+        const layoutAllow = loadedDefaults?.policy?.page_layout?.allowOverride;
+        const inheritingLayout = layoutAllow === false || parsedFlags.page_layout !== true;
+        const globalLayoutJson = loadedDefaults?.values?.page_layout;
+        if (inheritingLayout && globalLayoutJson) {
+          pageLayoutJson = globalLayoutJson;
         }
 
         const layout = parsePageLayout(pageLayoutJson, {
@@ -547,6 +610,30 @@ export default function BuilderPage() {
       return { ...prev, [field]: parsed };
     });
     setDirty(true);
+  }
+
+  // ─── Override-state helper ───
+
+  function overrideStateFor(key: DefaultableKey): OverrideState {
+    const allow = globalDefaults?.policy?.[key]?.allowOverride;
+    if (allow === false) return 'locked';
+    if (overrideFlags[key] === true) return 'overridden';
+    return 'inheriting';
+  }
+
+  // Called when the user clicks "Customize for this store" — reload from server.
+  async function reloadAfterOverrideChange() {
+    const res = await fetch(`/api/v3/stores/${storeId}`);
+    if (res.ok) {
+      const data = await res.json();
+      setStoreData(data);
+      try {
+        const parsed = JSON.parse(data.override_flags || '{}');
+        setOverrideFlags(parsed && typeof parsed === 'object' ? parsed : {});
+      } catch {
+        setOverrideFlags({});
+      }
+    }
   }
 
   // ─── Pricing tab helpers ───
@@ -719,6 +806,11 @@ export default function BuilderPage() {
 
   // Add block
   function handleAddBlock(type: BlockType) {
+    if (type === 'banner_preset') {
+      setShowAddPalette(false);
+      setBannerPresetPickerOpen(true);
+      return;
+    }
     const newBlock = createBlock(type, blocks.length);
     updateBlocks((prev) => [...prev, newBlock]);
     setSelectedBlockId(newBlock.id);
@@ -859,6 +951,13 @@ export default function BuilderPage() {
           {/* Tab content: Blocks */}
           {activeTab === 'blocks' && (
             <div>
+              <OverrideStateBanner
+                state={overrideStateFor('page_layout')}
+                sectionLabel="ブロック構成（ページレイアウト）"
+                storeId={storeId}
+                overrideKey="page_layout"
+                onReset={reloadAfterOverrideChange}
+              />
               <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
                   {blocks.map((block) => (
@@ -1113,6 +1212,13 @@ export default function BuilderPage() {
           {/* Tab content: Options */}
           {activeTab === 'options' && (
             <div className="space-y-4">
+              <OverrideStateBanner
+                state={overrideStateFor('custom_services')}
+                sectionLabel="オプション（カスタムサービス）"
+                storeId={storeId}
+                overrideKey="custom_services"
+                onReset={reloadAfterOverrideChange}
+              />
               {/* Option discount settings */}
               <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
                 <h3 className="text-sm font-bold text-gray-800">オプション割引</h3>
@@ -1249,6 +1355,13 @@ export default function BuilderPage() {
           {/* Tab content: News */}
           {activeTab === 'news' && (
             <div className="space-y-4">
+              <OverrideStateBanner
+                state={overrideStateFor('store_news')}
+                sectionLabel="お知らせ"
+                storeId={storeId}
+                overrideKey="store_news"
+                onReset={reloadAfterOverrideChange}
+              />
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-gray-800">お知らせ一覧</h3>
                 <button
@@ -1321,10 +1434,19 @@ export default function BuilderPage() {
 
           {/* Tab content: Guide */}
           {activeTab === 'guide' && (
-            <GuideConfigEditor
-              storeData={storeData}
-              updateStoreField={updateStoreField}
-            />
+            <div>
+              <OverrideStateBanner
+                state={overrideStateFor('guide_config')}
+                sectionLabel="ガイド設定"
+                storeId={storeId}
+                overrideKey="guide_config"
+                onReset={reloadAfterOverrideChange}
+              />
+              <GuideConfigEditor
+                storeData={storeData}
+                updateStoreField={updateStoreField}
+              />
+            </div>
           )}
 
           {/* Tab content: Banners */}
@@ -1372,6 +1494,20 @@ export default function BuilderPage() {
 
             return (
               <div className="space-y-6">
+                <OverrideStateBanner
+                  state={overrideStateFor('promo_banners')}
+                  sectionLabel="ホームページバナー画像"
+                  storeId={storeId}
+                  overrideKey="promo_banners"
+                  onReset={reloadAfterOverrideChange}
+                />
+                <OverrideStateBanner
+                  state={overrideStateFor('banners')}
+                  sectionLabel="プロモーションバナー（キャンペーン）"
+                  storeId={storeId}
+                  overrideKey="banners"
+                  onReset={reloadAfterOverrideChange}
+                />
                 {/* Promo banners — the big images on store homepage */}
                 <div>
                   <h3 className="text-sm font-bold text-gray-800 mb-1">ホームページバナー画像</h3>
@@ -1510,6 +1646,59 @@ export default function BuilderPage() {
           </div>
         </div>
       </div>
+
+      <BannerPresetPicker
+        open={bannerPresetPickerOpen}
+        onClose={() => setBannerPresetPickerOpen(false)}
+        onPick={preset => {
+          setBannerPresetPickerOpen(false);
+          if (preset.is_template) {
+            setBuilderTemplatePreset(preset);
+            return;
+          }
+          const bannerId = (typeof crypto !== 'undefined' && 'randomUUID' in crypto)
+            ? crypto.randomUUID()
+            : `b-${Math.random().toString(36).slice(2)}`;
+          const banner = presetToBanner(preset, bannerId);
+          const newBlock = createBlock('banner_preset', blocks.length);
+          newBlock.config = { banner, preset_id: preset.id } as BannerPresetConfig;
+          updateBlocks(prev => [...prev, newBlock]);
+          setSelectedBlockId(newBlock.id);
+        }}
+      />
+
+      <TemplateValuesModal
+        open={builderTemplatePreset !== null}
+        onClose={() => setBuilderTemplatePreset(null)}
+        preset={builderTemplatePreset}
+        onSubmit={({ values, preset, cached_html, cached_css, cached_fields }) => {
+          const bannerId = (typeof crypto !== 'undefined' && 'randomUUID' in crypto)
+            ? crypto.randomUUID()
+            : `b-${Math.random().toString(36).slice(2)}`;
+          const banner = {
+            id: bannerId,
+            template_id: preset.id,
+            custom_css: '',
+            title: preset.name,
+            subtitle: '',
+            image_url: '',
+            original_price: 0,
+            discount_rate: 0,
+            link_url: '',
+            visible: true,
+            mode: 'template' as const,
+            template_values: values,
+            cached_template_html: cached_html,
+            cached_template_css: cached_css,
+            cached_template_fields: cached_fields,
+          };
+          const newBlock = createBlock('banner_preset', blocks.length);
+          newBlock.config = { banner, preset_id: preset.id } as BannerPresetConfig;
+          updateBlocks(prev => [...prev, newBlock]);
+          setSelectedBlockId(newBlock.id);
+          setBuilderTemplatePreset(null);
+        }}
+      />
     </div>
   );
 }

@@ -223,10 +223,10 @@ describe('Source code verification', () => {
     expect(src).toContain('discount_rate ?? 0');
   });
 
-  test('BannersBlock imports from sanitize-css not sanitize', () => {
+  test('BannersBlock uses sanitizeCss from sanitize-css', () => {
     const src = readFileSync(join(SRC, 'components/blocks/BannersBlock.tsx'), 'utf-8');
     expect(src).toContain("from '@/lib/sanitize-css'");
-    expect(src).not.toContain("from '@/lib/sanitize'");
+    // html-mode banners additionally import sanitizeHtml from @/lib/sanitize.
   });
 
   test('validations schema includes force_hq_campaign', () => {
