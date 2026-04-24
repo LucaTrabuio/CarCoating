@@ -253,16 +253,24 @@ export default function BannerMakerPage() {
 
           <div className="mt-10 pt-6 border-t border-gray-200">
             <div className="text-sm font-semibold text-gray-800 mb-3">スターターから作成</div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {STARTERS.map(s => (
                 <button
                   key={s.id}
                   type="button"
                   onClick={() => setDraft(fromStarter(s, isSuperAdmin, defaultStoreId))}
-                  className="group flex flex-col items-center text-center p-3 rounded-xl border border-gray-200 bg-white hover:border-blue-400 hover:shadow-sm transition"
+                  className="group text-left rounded-xl border border-gray-200 bg-white hover:border-[#0C3290] hover:shadow-sm transition overflow-hidden"
                 >
-                  <span className="text-2xl mb-1.5 transition-transform group-hover:scale-110">{s.emoji}</span>
-                  <span className="text-xs font-semibold text-gray-800">{s.name}</span>
+                  <StarterPreview starter={s} compact />
+                  <div className="p-3 flex items-center gap-2">
+                    <span className="text-lg shrink-0">{s.emoji}</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs font-semibold text-gray-800 truncate">{s.name}</div>
+                      {s.is_template && (
+                        <div className="text-[10px] text-emerald-700 font-semibold">🧩 テンプレート</div>
+                      )}
+                    </div>
+                  </div>
                 </button>
               ))}
             </div>
@@ -435,21 +443,82 @@ function EmptyStateWithStarters({ starters, onPickStarter, onBlank }: {
               key={s.id}
               type="button"
               onClick={() => onPickStarter(s)}
-              className="group text-left bg-white border border-gray-200 rounded-xl p-5 hover:border-[#0C3290] hover:shadow-lg transition"
+              className="group text-left bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-[#0C3290] hover:shadow-lg transition"
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-3xl transition-transform group-hover:scale-110">{s.emoji}</span>
-                <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${s.mode === 'html' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'}`}>
-                  {s.mode === 'html' ? 'HTML' : 'Structured'}
-                </span>
-              </div>
-              <div className="font-bold text-sm text-gray-900 mb-0.5">{s.name}</div>
-              <div className="text-xs text-gray-500 leading-relaxed">{s.description}</div>
-              <div className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#0C3290] opacity-0 group-hover:opacity-100 transition">
-                このテンプレートで始める →
+              <StarterPreview starter={s} />
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-xl shrink-0">{s.emoji}</span>
+                    <span className="font-bold text-sm text-gray-900 truncate">{s.name}</span>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    {s.is_template && (
+                      <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">🧩 Template</span>
+                    )}
+                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded ${
+                      s.mode === 'html' ? 'bg-purple-100 text-purple-700'
+                      : s.mode === 'combined' ? 'bg-indigo-100 text-indigo-700'
+                      : 'bg-amber-100 text-amber-700'
+                    }`}>
+                      {s.mode === 'html' ? 'HTML' : s.mode === 'combined' ? 'Combined' : 'Structured'}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-500 leading-relaxed">{s.description}</div>
+                <div className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#0C3290] opacity-0 group-hover:opacity-100 transition">
+                  このテンプレートで始める →
+                </div>
               </div>
             </button>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Compute the rendered HTML+CSS for a starter template — same path the banner
+ *  maker uses so previews reflect the final output. Returns null when the
+ *  starter is a structured one (rendered differently; caller skips). */
+function starterToPreview(s: StarterTemplate): { html: string; css: string } | null {
+  if (s.mode === 'structured') return null;
+  let html = '';
+  let css = '';
+  if (s.mode === 'combined' && s.combined_content) {
+    const split = splitCombinedSource(s.combined_content.source || '');
+    html = split.html;
+    css = split.css;
+  } else if (s.mode === 'html' && s.html_content) {
+    html = s.html_content.html;
+    css = s.html_content.css;
+  }
+  if (s.is_template && s.fields && s.fields.length > 0) {
+    const out = substitute(html, css, s.fields, {});
+    html = out.html;
+    css = out.css;
+  }
+  return {
+    html: sanitizeHtml(html),
+    css: sanitizeCss(css),
+  };
+}
+
+function StarterPreview({ starter, compact }: { starter: StarterTemplate; compact?: boolean }) {
+  const preview = starterToPreview(starter);
+  if (!preview) {
+    // Structured starter — simple placeholder card.
+    return (
+      <div className={`flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 text-gray-400 ${compact ? 'aspect-[16/9]' : 'aspect-[16/9]'} rounded-lg`}>
+        <span className="text-3xl">{starter.emoji}</span>
+      </div>
+    );
+  }
+  return (
+    <div className={`relative bg-gray-50 rounded-lg overflow-hidden ${compact ? 'aspect-[16/9]' : 'aspect-[16/9]'}`}>
+      <div className={`absolute inset-0 ${compact ? 'scale-[0.45]' : 'scale-[0.6]'} origin-center pointer-events-none flex items-center justify-center`}>
+        <div className="w-[600px]">
+          <ShadowPreview html={preview.html} css={preview.css} className="rounded-lg overflow-hidden" />
         </div>
       </div>
     </div>

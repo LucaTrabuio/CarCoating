@@ -34,14 +34,22 @@ export const STARTERS: StarterTemplate[] = [
     description: '大きな割引率を強調したキャンペーン向け',
     emoji: '🏷️',
     mode: 'html',
+    is_template: true,
+    fields: [
+      { key: 'badge', label: 'バッジ', type: 'text', default: 'SALE', editable: true, origin: 'html' },
+      { key: 'title', label: 'タイトル', type: 'text', default: '春のキャンペーン', editable: true, origin: 'html' },
+      { key: 'subtitle', label: 'サブタイトル', type: 'text', default: 'Web予約限定・期間中ずっと', editable: true, origin: 'html' },
+      { key: 'amount', label: '割引率（表示文言）', type: 'text', default: '最大20%', editable: true, origin: 'html' },
+      { key: 'off_label', label: 'OFF ラベル', type: 'text', default: 'OFF', editable: true, origin: 'html' },
+    ],
     html_content: {
       html: `<div class="sale-banner">
-  <div class="sale-badge">SALE</div>
-  <h3 class="sale-title">春のキャンペーン</h3>
-  <p class="sale-sub">Web予約限定・期間中ずっと</p>
+  <div class="sale-badge">{{badge}}</div>
+  <h3 class="sale-title">{{title}}</h3>
+  <p class="sale-sub">{{subtitle}}</p>
   <div class="sale-price">
-    <span class="sale-amount">最大20%</span>
-    <span class="sale-off">OFF</span>
+    <span class="sale-amount">{{amount}}</span>
+    <span class="sale-off">{{off_label}}</span>
   </div>
 </div>`,
       css: `.sale-banner {
@@ -106,13 +114,19 @@ export const STARTERS: StarterTemplate[] = [
     description: 'シンプルな告知・ニュース向け',
     emoji: '📣',
     mode: 'html',
+    is_template: true,
+    fields: [
+      { key: 'label', label: 'カテゴリ', type: 'text', default: 'お知らせ', editable: true, origin: 'html' },
+      { key: 'title', label: '見出し', type: 'text', default: '年末年始の営業時間について', editable: true, origin: 'html' },
+      { key: 'body', label: '本文', type: 'textarea', default: '12月29日〜1月3日は休業とさせていただきます。', editable: true, origin: 'html' },
+    ],
     html_content: {
       html: `<div class="ann-banner">
   <div class="ann-accent"></div>
   <div class="ann-body">
-    <div class="ann-label">お知らせ</div>
-    <h3 class="ann-title">年末年始の営業時間について</h3>
-    <p class="ann-text">12月29日〜1月3日は休業とさせていただきます。</p>
+    <div class="ann-label">{{label}}</div>
+    <h3 class="ann-title">{{title}}</h3>
+    <p class="ann-text">{{body}}</p>
   </div>
 </div>`,
       css: `.ann-banner {
@@ -162,11 +176,17 @@ export const STARTERS: StarterTemplate[] = [
     description: 'ボタン誘導型のコンパクトなバナー',
     emoji: '🎯',
     mode: 'html',
+    is_template: true,
+    fields: [
+      { key: 'title', label: '見出し', type: 'text', default: '無料で見積もりを試す', editable: true, origin: 'html' },
+      { key: 'description', label: '説明文', type: 'textarea', default: '車種とサイズを選ぶだけで、Web割引後の料金をその場で確認できます。', editable: true, origin: 'html' },
+      { key: 'button_text', label: 'ボタン文言', type: 'text', default: '見積もりシミュレーターへ →', editable: true, origin: 'html' },
+    ],
     html_content: {
       html: `<div class="cta-card">
-  <h3 class="cta-title">無料で見積もりを試す</h3>
-  <p class="cta-desc">車種とサイズを選ぶだけで、Web割引後の料金をその場で確認できます。</p>
-  <span class="cta-button">見積もりシミュレーターへ →</span>
+  <h3 class="cta-title">{{title}}</h3>
+  <p class="cta-desc">{{description}}</p>
+  <span class="cta-button">{{button_text}}</span>
 </div>`,
       css: `.cta-card {
   padding: 2rem;
@@ -217,13 +237,19 @@ export const STARTERS: StarterTemplate[] = [
     description: 'フルカラー背景＋大きな見出し',
     emoji: '✨',
     mode: 'html',
+    is_template: true,
+    fields: [
+      { key: 'tag', label: 'タグ', type: 'text', default: 'NEW', editable: true, origin: 'html' },
+      { key: 'title', label: '見出し', type: 'text', default: 'DIA Ⅱ コーティング登場', editable: true, origin: 'html' },
+      { key: 'subtitle', label: '説明文', type: 'textarea', default: '最新世代の超撥水被膜技術で、新車の輝きを最大5年間。', editable: true, origin: 'html' },
+    ],
     html_content: {
       html: `<div class="hero-banner">
   <div class="hero-grid"></div>
   <div class="hero-content">
-    <div class="hero-tag">NEW</div>
-    <h2 class="hero-title">DIA Ⅱ コーティング登場</h2>
-    <p class="hero-sub">最新世代の超撥水被膜技術で、新車の輝きを最大5年間。</p>
+    <div class="hero-tag">{{tag}}</div>
+    <h2 class="hero-title">{{title}}</h2>
+    <p class="hero-sub">{{subtitle}}</p>
   </div>
 </div>`,
       css: `.hero-banner {
@@ -274,10 +300,16 @@ export const STARTERS: StarterTemplate[] = [
   },
   {
     id: 'pasted-snippet',
-    name: '貼り付け用サンプル',
-    description: 'HTMLと<style>タグを1つのボックスに貼り付けられる「コンバイン」モードの例',
+    name: 'ウィンター限定カード',
+    description: 'HTMLと<style>を1つの入力に貼り付ける「コンバイン」モードの例',
     emoji: '🧷',
     mode: 'combined',
+    is_template: true,
+    fields: [
+      { key: 'title', label: '見出し', type: 'text', default: 'ウィンター限定コース', editable: true, origin: 'html' },
+      { key: 'description', label: '説明文', type: 'textarea', default: '冬季メンテナンス＋撥水処理を特別価格で', editable: true, origin: 'html' },
+      { key: 'button_text', label: 'ボタン文言', type: 'text', default: '予約する →', editable: true, origin: 'html' },
+    ],
     combined_content: {
       source: `<style>
   .p-card {
@@ -310,9 +342,9 @@ export const STARTERS: StarterTemplate[] = [
 </style>
 
 <div class="p-card">
-  <h3>ウィンター限定コース</h3>
-  <p>冬季メンテナンス＋撥水処理を特別価格で</p>
-  <a href="#">予約する →</a>
+  <h3>{{title}}</h3>
+  <p>{{description}}</p>
+  <a href="#">{{button_text}}</a>
 </div>`,
     },
   },
@@ -792,12 +824,18 @@ export const STARTERS: StarterTemplate[] = [
     description: '左上のリボンでアテンションを集める',
     emoji: '🎀',
     mode: 'html',
+    is_template: true,
+    fields: [
+      { key: 'ribbon_text', label: 'リボン文字', type: 'text', default: 'Featured', editable: true, origin: 'html' },
+      { key: 'title', label: '見出し', type: 'text', default: 'プロが選ぶ No.1 コース', editable: true, origin: 'html' },
+      { key: 'body', label: '本文', type: 'textarea', default: '耐久5年・プレミアムな艶と撥水を、一度の施工で。', editable: true, origin: 'html' },
+    ],
     html_content: {
       html: `<div class="rb-banner">
-  <div class="rb-ribbon">Featured</div>
+  <div class="rb-ribbon">{{ribbon_text}}</div>
   <div class="rb-body">
-    <h3 class="rb-title">プロが選ぶ No.1 コース</h3>
-    <p class="rb-text">耐久5年・プレミアムな艶と撥水を、一度の施工で。</p>
+    <h3 class="rb-title">{{title}}</h3>
+    <p class="rb-text">{{body}}</p>
   </div>
 </div>`,
       css: `.rb-banner {
