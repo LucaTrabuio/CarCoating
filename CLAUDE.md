@@ -1,4 +1,5 @@
 @AGENTS.md
+@NAVIGATION.md
 
 # car-coating — Claude Code project rules
 
