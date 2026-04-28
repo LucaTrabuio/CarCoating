@@ -1,21 +1,30 @@
-import DOMPurify from 'isomorphic-dompurify';
+import sanitizeHtmlLib from 'sanitize-html';
 
-const HTML_CONFIG = {
-  ALLOWED_TAGS: [
-    'a', 'b', 'br', 'div', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'i', 'img', 'li', 'ol', 'p', 'small', 'span', 'strong', 'sub', 'sup',
-    'table', 'tbody', 'td', 'th', 'thead', 'tr', 'ul', 'section', 'article',
-    'figure', 'figcaption', 'blockquote', 'hr', 'code', 'pre',
-  ],
-  ALLOWED_ATTR: ['href', 'title', 'target', 'rel', 'src', 'alt', 'class', 'style', 'width', 'height'],
-  ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
-  FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input', 'link', 'meta'],
-  FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur'],
+const ALLOWED_TAGS = [
+  'a', 'b', 'br', 'div', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+  'i', 'img', 'li', 'ol', 'p', 'small', 'span', 'strong', 'sub', 'sup',
+  'table', 'tbody', 'td', 'th', 'thead', 'tr', 'ul', 'section', 'article',
+  'figure', 'figcaption', 'blockquote', 'hr', 'code', 'pre',
+];
+
+const COMMON_ATTRS = ['class', 'style', 'title'];
+
+const HTML_OPTIONS: sanitizeHtmlLib.IOptions = {
+  allowedTags: ALLOWED_TAGS,
+  allowedAttributes: {
+    a: ['href', 'target', 'rel', ...COMMON_ATTRS],
+    img: ['src', 'alt', 'width', 'height', ...COMMON_ATTRS],
+    '*': COMMON_ATTRS,
+  },
+  allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+  allowedSchemesByTag: { img: ['http', 'https', 'data'] },
+  allowProtocolRelative: false,
+  disallowedTagsMode: 'discard',
 };
 
 export function sanitizeHtml(input: string): string {
   if (!input) return '';
-  return DOMPurify.sanitize(input, HTML_CONFIG);
+  return sanitizeHtmlLib(input, HTML_OPTIONS);
 }
 
 // CSS scoped to a container — strips @import, url(javascript:), expression(), behavior:, and any
