@@ -749,7 +749,7 @@ export default function BuilderPage() {
       date: new Date().toISOString().slice(0, 10),
       visible: true,
     };
-    updateNewsItems([...newsItems, newItem]);
+    updateNewsItems([newItem, ...newsItems]);
   }
 
   function updateNewsItem(id: string, field: keyof StoreNewsItem, value: string | boolean) {
