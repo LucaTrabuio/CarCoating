@@ -237,7 +237,99 @@ when **Tester is green AND Evaluator has no blocking findings**, or it
 escalates to the user when **the same root-cause failure repeats 3
 times** or **8 total iterations** elapse — whichever comes first.
 
+**Worktree cleanup is mandatory.** As soon as the loop's changes have
+been merged back into a real branch AND committed (i.e. the work is
+captured outside the worktree), remove the worktree in the same turn —
+do not wait for the user to ask. A `node_modules` install in the
+worktree is ~4 GB; leaving stale ones behind silently fills the disk.
+Use `git worktree remove .claude/worktrees/loop-<timestamp>` (add
+`--force` if there are leftover untracked files that are already
+captured in the merge commit). Do NOT run a destructive cleanup if
+you're unsure the changes were captured — verify with `git log`
+first, then remove.
+
+A `PostToolUse` hook in `.claude/settings.json` runs
+`.claude/hooks/cleanup-loop-worktrees.sh` after every `Bash` tool call.
+The script no-ops unless the command was a `git commit`, then drops any
+`loop-*` worktree whose HEAD is now an ancestor of the current branch's
+HEAD — so the disk reclaim happens automatically the moment the loop's
+work lands. The hook is a safety net, not a substitute: still call
+`git worktree remove` explicitly when the work is captured, because the
+hook only watches `.claude/` if a settings file existed at session
+start (a fresh `settings.json` won't fire in the session that creates
+it).
+
 Auto-trigger conditions are in the skill's `description` field; in
 short: fires for multi-file features, non-trivial bug fixes, and
 cross-file refactors. Skips for one-line edits, doc-only changes, and
 questions.
+
+### 7. Multi-agent patterns
+
+The `feature-loop` skill is a local instantiation of an
+**orchestrator-worker** (a.k.a. coordinator + specialists) pattern. The
+project's CLAUDE-side coordination — main thread delegating to
+`planner` / `generator` / `evaluator` / `tester` subagents under
+`.claude/agents/` — uses Claude Code's local `Agent` tool, NOT
+Anthropic's server-side Managed Agents Multiagent API
+(`/v1/agents` with `agent_toolset_20260401` and the
+`managed-agents-2026-04-01` beta header). They are different layers,
+but the same three patterns apply and are the right way to think about
+when (and how) to fan out:
+
+- **Parallelization.** Independent reads / lookups / analyses with no
+  ordering dependency should be sent in a single batch of `Agent` tool
+  calls in one assistant turn. Examples that already fit: surveying
+  several files for a bug repro, gathering "where does X live"
+  answers across two unrelated subsystems (e.g. one in
+  `src/app/[slug]/` and one in `src/app/admin/`), running an audit
+  across separate domains. Do NOT parallelize tasks where one's output
+  feeds another's input — that's sequential.
+- **Specialization.** Reach for a domain-focused subagent rather than
+  loading a generic one with extra context. The four feature-loop
+  agents are deliberately narrow: Planner only reads, Generator only
+  writes the smallest correct diff, Evaluator only checks rules,
+  Tester only runs lint/build/Vitest/Playwright. Don't ask the
+  Generator to also run the build — that confuses ownership and burns
+  iterations. The project-aware `explore` subagent is another
+  example: it starts from `NAVIGATION.md` instead of re-discovering
+  the repo on every run. When a new recurring task fits a tight
+  role, add a subagent under `.claude/agents/` rather than padding an
+  existing one's prompt.
+- **Escalation.** When a subtask exceeds a smaller model's reach,
+  hand it to a more capable model rather than retrying the same
+  cheaper one. In Claude Code today, that means picking a more
+  capable `subagent_type` or invoking the agent with `model: "opus"`;
+  in a future Managed Agents integration, that maps to having a
+  Haiku-based reviewer escalate to an Opus-based investigator via
+  the coordinator's roster.
+
+Anti-patterns (skip multi-agent for these):
+
+- One-shot edits or single-file diffs — the coordination overhead
+  exceeds the work.
+- Tasks that share state across steps so heavily that the agents
+  spend more time syncing context than producing output. Threads
+  have isolated context by design; if every step needs the previous
+  step's full output, keep it on the main thread.
+- Wiring a coordinator with > one level of delegation. Even
+  Anthropic's Managed Agents API caps depth at 1 (the coordinator
+  can only delegate to its declared roster, not to grand-child
+  agents). Mirror that: don't have one local subagent spawn another.
+
+Constraints worth remembering when scaling fan-out:
+
+- Local `Agent` tool calls in a single assistant turn run in
+  parallel; budget message-window context, since each subagent's
+  output is inlined back. Prefer "report in under 200 words" prompts
+  for survey-style work.
+- Anthropic's Managed Agents API caps a session at 25 concurrent
+  threads and a coordinator's roster at 20 unique agents (it can
+  spawn multiple copies of each). If we ever build a server-side
+  agentic feature into the product, those are the hard limits to
+  design against.
+
+When in doubt, fewer specialized agents beats one generalist with a
+giant prompt — and a coordinator that spawns 3 narrow workers in
+parallel is almost always faster, cheaper, and easier to debug than
+one wide-context worker doing the same job sequentially.

@@ -50,3 +50,8 @@ test-results/
 
 # downloaded case images (to be uploaded to Firebase Storage)
 /downloaded-case-images/
+
+# Claude Code feature-loop worktrees — each one carries ~4 GB of
+# node_modules; the cleanup hook removes them after merge, but never
+# track them.
+/.claude/worktrees/
