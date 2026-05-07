@@ -45,11 +45,48 @@ function normalizeStore(raw: Record<string, unknown>): V3StoreData {
   } as V3StoreData;
 }
 
+// ─── Visibility helpers ──────────────────────────────────────
+
+/** Returns the current date in JST as an MM-DD string. */
+function currentMmDdJst(now?: Date): string {
+  const d = now ?? new Date();
+  // JST = UTC+9
+  const jst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+  const mm = String(jst.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(jst.getUTCDate()).padStart(2, '0');
+  return `${mm}-${dd}`;
+}
+
+/**
+ * Returns true when `today` (MM-DD) falls within [start, end] inclusive.
+ * Handles wrap-around windows that cross year-end (e.g. 12-01 → 03-31).
+ */
+export function isWithinSeasonalWindow(today: string, start: string, end: string): boolean {
+  if (start <= end) {
+    // Same-year window: e.g. 06-01 → 08-31
+    return today >= start && today <= end;
+  }
+  // Wrap-around: e.g. 12-01 → 03-31 means Dec–Mar
+  return today >= start || today <= end;
+}
+
+function isHiddenNow(store: V3StoreData): boolean {
+  if (!store.hide_mode) return false;
+  if (store.hide_mode === 'manual') return true;
+  if (store.hide_mode === 'seasonal') {
+    const start = store.seasonal_hide_start;
+    const end = store.seasonal_hide_end;
+    if (!start || !end) return false;
+    return isWithinSeasonalWindow(currentMmDdJst(), start, end);
+  }
+  return false;
+}
+
 export async function getAllV3Stores(): Promise<V3StoreData[]> {
   const snapshot = await getAdminDb().collection(STORES_COLLECTION).get();
   return snapshot.docs
     .map(doc => normalizeStore(doc.data()))
-    .filter(s => s.is_active);
+    .filter(s => s.is_active && !isHiddenNow(s));
 }
 
 export async function getAllV3StoresIncludingInactive(): Promise<V3StoreData[]> {

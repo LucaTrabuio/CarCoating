@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { StoreVisibilityToggle } from '@/components/admin/StoreVisibilityToggle';
 
 interface Store {
   store_id: string;
@@ -16,6 +17,9 @@ interface Store {
   has_booth?: boolean;
   level1_staff_count?: number;
   level2_staff_count?: number;
+  hide_mode?: 'manual' | 'seasonal' | null;
+  seasonal_hide_start?: string;
+  seasonal_hide_end?: string;
 }
 
 interface SubCompany {
@@ -239,6 +243,13 @@ function StoreNode({
               <span>L2: {store.level2_staff_count}名</span>
             )}
           </div>
+          <StoreVisibilityToggle
+            storeId={store.store_id}
+            initialHideMode={store.hide_mode}
+            initialStart={store.seasonal_hide_start}
+            initialEnd={store.seasonal_hide_end}
+            showDateEditor={false}
+          />
         </div>
 
         {/* Actions */}

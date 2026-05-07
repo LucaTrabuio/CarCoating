@@ -80,6 +80,18 @@ export interface V3StoreData {
   // store has explicitly overridden. Unflagged sections inherit site_config/defaults.
   // Managed by the global-defaults subsystem; see src/lib/global-defaults.ts.
   override_flags?: string;
+
+  // ─── Market segmentation ───
+  shouken_group?: string;      // 商圏グループ名 (seeded from CSV)
+  local_market_area?: string;  // 商圏エリア名 (seeded from CSV)
+
+  // ─── Visibility controls ───
+  // hide_mode=null/undefined → always visible
+  // hide_mode='manual'       → hidden unconditionally by admin
+  // hide_mode='seasonal'     → hidden only when today falls within [seasonal_hide_start, seasonal_hide_end]
+  hide_mode?: 'manual' | 'seasonal' | null;
+  seasonal_hide_start?: string; // MM-DD, e.g. '12-01'
+  seasonal_hide_end?: string;   // MM-DD, e.g. '03-31' (may wrap past Dec 31)
 }
 
 /** All CSV columns in order */
@@ -98,6 +110,8 @@ export const V3_CSV_COLUMNS: (keyof V3StoreData)[] = [
   'page_layout', 'blur_config', 'appeal_points', 'certifications',
   'store_news', 'banners', 'sub_company_id', 'store_slug', 'custom_css',
   'estimate_enabled', 'qr_code_enabled', 'font_family', 'price_overrides', 'guide_config',
+  // Market segmentation (optional in CSV; visibility fields are NOT included in CSV)
+  'shouken_group', 'local_market_area',
 ];
 
 /** Default values for a new V3 store */

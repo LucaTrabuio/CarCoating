@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+// ─── Constants ───
+
+export const MM_DD_REGEX = /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+
 // ─── Helpers ───
 
 /** Validates that a non-empty string is valid JSON */
@@ -93,6 +97,13 @@ export const v3StoreWriteSchema = z.object({
   promo_banners: jsonString.optional(),
   staff_members: jsonString.optional(),
   override_flags: jsonString.optional(),
+
+  // Market segmentation
+  shouken_group: z.string().max(200).optional(),
+  local_market_area: z.string().max(200).optional(),
+
+  // Visibility controls (intentionally excluded from the general write schema —
+  // callers must use storeVisibilityPatchSchema for these fields)
 });
 
 export type V3StoreWriteInput = z.infer<typeof v3StoreWriteSchema>;
@@ -236,3 +247,23 @@ export const ticketActionSchema = z.discriminatedUnion('action', [
     messageIndex: z.number().int().min(0).max(10_000),
   }),
 ]);
+
+// ─── Store Visibility Patch Schema ───
+
+const mmDdString = z.string().regex(MM_DD_REGEX, 'Must be MM-DD (e.g. 03-31)');
+
+export const storeVisibilityPatchSchema = z.discriminatedUnion('hide_mode', [
+  z.object({
+    hide_mode: z.literal('manual'),
+  }),
+  z.object({
+    hide_mode: z.literal('seasonal'),
+    seasonal_hide_start: mmDdString,
+    seasonal_hide_end: mmDdString,
+  }),
+  z.object({
+    hide_mode: z.null(),
+  }),
+]);
+
+export type StoreVisibilityPatchInput = z.infer<typeof storeVisibilityPatchSchema>;
