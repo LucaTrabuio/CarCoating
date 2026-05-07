@@ -42,7 +42,7 @@ function buildChoicesHtml(choices: ReservationChoice[], confirmedIndex?: number)
   return choices.map((c, i) => {
     const label = `第${i + 1}希望: ${formatChoiceDate(c.date, c.time)}`;
     if (confirmedIndex === i) {
-      return `<div style="padding:8px 12px;margin:4px 0;background:#e8f5e9;border:2px solid #4caf50;border-radius:6px;font-weight:bold;color:#2e7d32">✓ ${label}（確定）</div>`;
+      return `<div style="padding:8px 12px;margin:4px 0;background:#e8f5e9;border:2px solid #4caf50;border-radius:6px;font-weight:bold;color:#2e7d32">[OK] ${label}（確定）</div>`;
     }
     return `<div style="padding:8px 12px;margin:4px 0;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:6px;color:#666">${label}</div>`;
   }).join('');

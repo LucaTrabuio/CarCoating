@@ -25,7 +25,11 @@ export default function CancelContent({ reservationId, token }: { reservationId:
   if (cancelled) {
     return (
       <div className="text-center py-6">
-        <div className="text-4xl mb-3">✓</div>
+        <div className="inline-flex items-center justify-center w-12 h-12 mb-3 rounded-full bg-green-50 text-green-600">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
         <p className="text-sm text-gray-600">予約をキャンセルしました。</p>
         <p className="text-xs text-gray-400 mt-2">確認メールをお送りしました。</p>
       </div>

@@ -203,7 +203,7 @@ export default function BookingStoreSelector({ stores, groupName }: { stores: V3
                     disabled={geoStatus === 'detecting'}
                     className="text-xs text-blue-600 font-semibold hover:underline disabled:opacity-50 cursor-pointer"
                   >
-                    {geoStatus === 'detecting' ? '検出中...' : geoStatus === 'done' ? '再検出' : '📍 現在地から探す'}
+                    {geoStatus === 'detecting' ? '検出中...' : geoStatus === 'done' ? '再検出' : '現在地から探す'}
                   </button>
                 </div>
                 <div className="divide-y divide-gray-100">
@@ -277,7 +277,6 @@ export default function BookingStoreSelector({ stores, groupName }: { stores: V3
           </div>
         ) : (
           <div className="py-16 px-5 text-center">
-            <div className="text-4xl opacity-20 mb-3">🏪</div>
             <p className="text-sm text-gray-400">上のマップから店舗を選択すると、予約フォームが表示されます。</p>
           </div>
         )}

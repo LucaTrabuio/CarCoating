@@ -81,15 +81,27 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
             <a href={`tel:${tel}`}
               onClick={() => trackEvent(storeId, 'phone_call')}
               className="hidden sm:inline-block text-[#0C3290] text-[11px] font-bold px-3 py-1.5 rounded-md bg-amber-500 whitespace-nowrap">
-              &#9742; {tel}
+              TEL {tel}
             </a>
           )}
           <button
-            className="md:hidden text-[#0C3290] text-xl ml-1"
+            className="md:hidden text-[#0C3290] w-11 h-11 inline-flex items-center justify-center -mr-1 rounded-md hover:bg-gray-100 transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="メニュー"
+            aria-expanded={menuOpen}
           >
-            {menuOpen ? '✕' : '☰'}
+            {menuOpen ? (
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="6" y1="6" x2="18" y2="18" />
+                <line x1="18" y1="6" x2="6" y2="18" />
+              </svg>
+            ) : (
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+              </svg>
+            )}
           </button>
         </div>
       </div>

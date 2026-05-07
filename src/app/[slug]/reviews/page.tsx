@@ -22,7 +22,7 @@ const FAQ = [
 ];
 
 function StarRating({ rating }: { rating: number }) {
-  return <span className="text-amber-500">{'★'.repeat(rating)}{'☆'.repeat(5 - rating)}</span>;
+  return <span className="font-semibold text-amber-600">{rating} / 5</span>;
 }
 
 export default function V3ReviewsPage() {

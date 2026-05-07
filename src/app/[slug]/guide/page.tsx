@@ -19,12 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 function Stars({ rating }: { rating: number }) {
-  return (
-    <span className="tracking-wider">
-      <span className="text-amber-500">{'★'.repeat(rating)}</span>
-      <span className="text-slate-200">{'★'.repeat(5 - rating)}</span>
-    </span>
-  );
+  return <span className="font-semibold text-amber-600">{rating} / 5</span>;
 }
 
 // CSS diagram of coating layers — more reliable than fetching remote images
@@ -64,22 +59,22 @@ function LayerDiagram({ tier }: { tier: CoatingTier }) {
 
 const BENEFITS = [
   {
-    icon: '✨',
+    num: '01',
     title: '圧倒的な艶と輝き',
     body: '塗装表面の微細な凹凸を埋め、光の反射を整えることで、深い透明感と艶を実現します。新車以上の仕上がりを生むコースもあります。',
   },
   {
-    icon: '🛡️',
+    num: '02',
     title: '塗装を長期間保護',
     body: '紫外線・酸性雨・鉄粉・黄砂・花粉などから塗装面を守り、クリア層の劣化を遅らせます。結果として再塗装のコストを抑えられます。',
   },
   {
-    icon: '💧',
+    num: '03',
     title: '洗車が驚くほどラクに',
     body: '撥水性によって水と一緒に汚れが流れ落ちやすくなり、洗車時間を大幅に短縮。水垢やイオンデポジットの発生も抑えます。',
   },
   {
-    icon: '💹',
+    num: '04',
     title: '下取り・査定で有利に',
     body: '塗装の劣化を防ぐことで、数年後の車両価値を維持。特に経年車では、施工の有無で査定額に差が出ることがあります。',
   },
@@ -268,7 +263,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <div className="grid sm:grid-cols-2 gap-4">
             {BENEFITS.map((b, i) => (
               <div key={i} className="bg-slate-50 border border-slate-200 rounded-xl p-5">
-                <div className="text-3xl mb-2">{b.icon}</div>
+                <div className="text-2xl font-bold text-amber-500 mb-2 tabular-nums">{b.num}</div>
                 <h3 className="text-base font-bold text-[#0C3290] mb-1.5">{b.title}</h3>
                 <p className="text-sm text-slate-600 leading-relaxed">{b.body}</p>
               </div>
@@ -356,7 +351,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                     const price = getPriceForSize(t, 'SS', priceOverrides);
                     return (
                       <li key={tid} className="text-sm flex items-center justify-between">
-                        <span className="font-medium">{t.is_popular && '★ '}{t.name}</span>
+                        <span className="font-medium">{t.is_popular && <span className="text-[10px] font-bold text-amber-600 mr-1.5 px-1 py-0.5 bg-amber-50 rounded">人気</span>}{t.name}</span>
                         {!hidePrices && (
                           <span className="text-xs text-slate-500 font-mono tabular-nums">{formatPrice(price)}〜</span>
                         )}

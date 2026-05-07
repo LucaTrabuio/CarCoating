@@ -360,12 +360,12 @@ export interface BlockMeta {
 }
 
 const DEFAULT_USP_ITEMS: USPItem[] = [
-  { id: '1', icon: '🛡️', title: '最高品質のコーティング', description: 'KeePer技研が開発した最先端のコーティング技術を使用' },
-  { id: '2', icon: '👨‍🔧', title: '技術認定スタッフ', description: '全スタッフがKeePer技術資格を保有' },
-  { id: '3', icon: '⏱️', title: '短時間施工', description: '最短2時間からの施工が可能' },
-  { id: '4', icon: '💰', title: 'Web限定割引', description: 'ホームページからのご予約で特別割引' },
-  { id: '5', icon: '🏢', title: '専用ブース完備', description: 'コーティング専用の施工ブースで丁寧に仕上げ' },
-  { id: '6', icon: '📋', title: 'アフターサポート', description: 'メンテナンスプログラムで美しさを長期維持' },
+  { id: '1', icon: '', title: '最高品質のコーティング', description: 'KeePer技研が開発した最先端のコーティング技術を使用' },
+  { id: '2', icon: '', title: '技術認定スタッフ', description: '全スタッフがKeePer技術資格を保有' },
+  { id: '3', icon: '', title: '短時間施工', description: '最短2時間からの施工が可能' },
+  { id: '4', icon: '', title: 'Web限定割引', description: 'ホームページからのご予約で特別割引' },
+  { id: '5', icon: '', title: '専用ブース完備', description: 'コーティング専用の施工ブースで丁寧に仕上げ' },
+  { id: '6', icon: '', title: 'アフターサポート', description: 'メンテナンスプログラムで美しさを長期維持' },
 ];
 
 const DEFAULT_CONCERN_ITEMS: ConcernItem[] = [

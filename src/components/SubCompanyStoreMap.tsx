@@ -189,7 +189,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
                   disabled={geoStatus === 'detecting'}
                   className="text-xs text-blue-600 font-semibold hover:underline disabled:opacity-50"
                 >
-                  {geoStatus === 'detecting' ? '検出中...' : geoStatus === 'done' ? '再検出' : '📍 現在地から探す'}
+                  {geoStatus === 'detecting' ? '検出中...' : geoStatus === 'done' ? '再検出' : '現在地から探す'}
                 </button>
               </div>
               <div className="divide-y divide-gray-100">

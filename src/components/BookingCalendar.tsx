@@ -205,7 +205,7 @@ export default function BookingCalendar({ holidays = [], onChoicesChange }: Book
                   {idx + 1}
                 </div>
                 <span className="text-sm">{choice.label}</span>
-                <button onClick={() => removeChoice(idx)} className="ml-auto text-gray-400 text-xs hover:text-red-500">✕ 取消</button>
+                <button onClick={() => removeChoice(idx)} className="ml-auto text-gray-400 text-xs hover:text-red-500">取消</button>
               </div>
             ))}
           </div>

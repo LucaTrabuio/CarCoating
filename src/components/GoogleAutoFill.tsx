@@ -65,7 +65,7 @@ export default function GoogleAutoFill({ onAutoFill }: Props) {
   if (user) {
     return (
       <div className="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
-        <span className="font-bold">✓</span>
+        <span className="font-bold">[OK]</span>
         <span>{user.displayName} ({user.email})</span>
       </div>
     );
@@ -74,7 +74,7 @@ export default function GoogleAutoFill({ onAutoFill }: Props) {
   if (restored) {
     return (
       <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-700">
-        <span className="font-bold">✓</span>
+        <span className="font-bold">[OK]</span>
         <span>前回の情報を自動入力しました</span>
       </div>
     );

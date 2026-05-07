@@ -88,7 +88,7 @@ export default async function V3OptionsPage({ params }: { params: Promise<{ slug
                     <div>
                       <span className="text-sm font-semibold text-[#0C3290]">
                         {opt.name}
-                        {opt.popular && <span className="text-[10px] text-amber-500 font-bold ml-1">★人気</span>}
+                        {opt.popular && <span className="text-[10px] text-amber-700 font-bold ml-1.5 px-1.5 py-0.5 bg-amber-50 rounded">人気</span>}
                       </span>
                       <div className="text-[11px] text-gray-400">{opt.description}{opt.time ? ` ｜ ${opt.time}` : ''}</div>
                     </div>

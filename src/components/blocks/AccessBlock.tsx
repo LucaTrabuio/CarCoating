@@ -81,7 +81,6 @@ export default function AccessBlock({ config, store, basePath }: AccessBlockProp
               href={subCompanyHref}
               className="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 rounded-lg text-sm font-semibold text-[#0C3290] hover:border-amber-500 hover:bg-amber-50 transition-colors"
             >
-              <span aria-hidden="true">&#128205;</span>
               他の店舗を見る
             </Link>
           </div>

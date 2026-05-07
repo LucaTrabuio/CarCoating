@@ -130,7 +130,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
     <section
       ref={sectionRef}
       suppressHydrationWarning
-      className="relative w-full flex items-center justify-center overflow-hidden"
+      className="relative w-full flex items-center justify-center overflow-hidden min-h-[400px] md:min-h-0"
       style={{ aspectRatio: '1960 / 558' }}
     >
       <div
@@ -176,7 +176,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
         </div>
       </div>
       <div
-        className="relative w-full p-8 z-10"
+        className="relative w-full px-4 py-8 md:p-8 z-10"
         style={{
           opacity: showText ? 1 : 0,
           transform: showText ? 'translateY(0px)' : 'translateY(20px)',
@@ -185,18 +185,20 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
       >
         <div className="max-w-[900px] mx-auto text-center">
           <div
-            className="inline-block px-6 py-5 md:px-10 md:py-7 rounded-2xl"
+            className="inline-block max-w-full px-4 py-5 md:px-10 md:py-7 rounded-2xl"
             style={{
               background: 'rgba(0,0,0,0.62)',
               backdropFilter: 'blur(4px)',
               WebkitBackdropFilter: 'blur(4px)',
+              wordBreak: 'keep-all',
+              overflowWrap: 'break-word',
             }}
           >
             <h1
-              className="text-white font-bold leading-tight mb-3 whitespace-nowrap"
+              className="text-white font-bold leading-tight mb-3 md:whitespace-nowrap"
               style={{
                 fontFamily: '"Noto Serif JP", serif',
-                fontSize: 'clamp(1.5rem, 6vw, 4rem)',
+                fontSize: 'clamp(1.25rem, 6vw, 4rem)',
                 fontFeatureSettings: '"palt" 1',
                 textShadow: '0 2px 4px rgba(0,0,0,1), 0 1px 2px rgba(0,0,0,1), 0 0 1px rgba(0,0,0,1)',
               }}

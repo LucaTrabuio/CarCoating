@@ -39,7 +39,7 @@ export default function PricingTable({ size, discountRate, storeId, blurFields =
               <tr key={tier.id} className={`border-b border-gray-100 hover:bg-amber-50/50 ${isPopular ? 'bg-amber-50/30' : ''}`}>
                 <td className="px-4 py-3">
                   <div className="font-bold text-[#0C3290]">
-                    {isPopular && <span className="text-amber-500">★ </span>}
+                    {isPopular && <span className="text-[10px] font-bold text-amber-700 mr-1.5 px-1.5 py-0.5 bg-amber-50 rounded align-middle">人気</span>}
                     {tier.name}
                   </div>
                   <div className="text-xs text-gray-400">{tier.application_time}</div>

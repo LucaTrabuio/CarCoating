@@ -18,7 +18,7 @@ export default function MobileCTA({ tel, lineUrl, storeId, basePath = '' }: Mobi
           onClick={() => storeId && trackEvent(storeId, 'phone_call')}
           className="flex-1 flex items-center justify-center gap-1.5 py-3 bg-[#0C3290] text-white text-[13px] font-bold"
         >
-          &#9742; 電話する
+          電話する
         </a>
       )}
       {lineUrl ? (
