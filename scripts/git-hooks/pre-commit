@@ -40,7 +40,7 @@ done < <(
     | grep -E '^src/app/api/.*/route\.ts$' || true
 )
 
-for f in "${NEW_ROUTES[@]}"; do
+for f in ${NEW_ROUTES[@]+"${NEW_ROUTES[@]}"}; do
   [[ -z "$f" ]] && continue
   # Read the staged version, not the working-tree version.
   content="$(git show ":$f" 2>/dev/null || true)"
