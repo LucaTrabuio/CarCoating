@@ -59,7 +59,13 @@ export default function NewsPage() {
       const res = await fetch(`/api/admin/stores/${storeId}/news`);
       const data = await res.json();
       const items = data.items ?? data.news ?? data;
-      setNews(Array.isArray(items) ? items : []);
+      const list = Array.isArray(items) ? items : [];
+      const sorted = [...list].sort((a, b) => {
+        const cmp = (b.date || '').localeCompare(a.date || '');
+        if (cmp !== 0) return cmp;
+        return (b.id || '').localeCompare(a.id || '');
+      });
+      setNews(sorted);
     } catch {
       setNews([]);
     } finally {
