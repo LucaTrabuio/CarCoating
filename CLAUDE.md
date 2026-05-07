@@ -251,11 +251,25 @@ first, then remove.
 A `PostToolUse` hook in `.claude/settings.json` runs
 `.claude/hooks/cleanup-loop-worktrees.sh` after every `Bash` tool call.
 The script no-ops unless the command was a `git commit`, then drops any
-`loop-*` worktree whose HEAD is now an ancestor of the current branch's
-HEAD — so the disk reclaim happens automatically the moment the loop's
-work lands. The hook is a safety net, not a substitute: still call
-`git worktree remove` explicitly when the work is captured, because the
-hook only watches `.claude/` if a settings file existed at session
+`loop-*` worktree that **(a)** carries a `.claude/.session-owner`
+marker matching the current Claude Code session id AND **(b)** has a
+HEAD that is now an ancestor of the current branch's HEAD — so the
+disk reclaim happens automatically the moment the loop's work lands.
+
+The session-ownership check is what makes concurrent sessions safe.
+Without it, a fresh worktree's HEAD is trivially an ancestor of its
+base commit, so any other session's commit on the parent repo would
+mistakenly delete it. The feature-loop skill writes
+`$worktree/.claude/.session-owner` containing `$CLAUDE_CODE_SESSION_ID`
+when the worktree is created; the hook reads `session_id` from its
+stdin payload (falling back to the env var) and only removes
+worktrees whose marker matches. Worktrees without a marker (legacy
+ones created before this hook learned about ownership) are left
+alone — clean them up by hand once you're sure they're idle.
+
+The hook is a safety net, not a substitute: still call
+`git worktree remove` explicitly when the work is captured, because
+the hook only watches `.claude/` if a settings file existed at session
 start (a fresh `settings.json` won't fire in the session that creates
 it).
 

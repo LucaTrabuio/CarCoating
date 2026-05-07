@@ -39,9 +39,24 @@ current branch. All four agents operate against this worktree path.
 ts=$(date +%Y%m%d-%H%M%S)
 worktree=".claude/worktrees/loop-$ts"
 git worktree add "$worktree" HEAD
+# Tag the worktree with the current Claude Code session id so the
+# cleanup hook can only remove worktrees that THIS session created.
+# Without this, a concurrent session committing on the parent repo
+# could mistakenly remove this worktree the moment its commits land
+# in the parent branch (because "is-ancestor" is also true when the
+# worktree is fresh).
+if [[ -n "${CLAUDE_CODE_SESSION_ID:-}" ]]; then
+  mkdir -p "$worktree/.claude"
+  printf '%s\n' "$CLAUDE_CODE_SESSION_ID" > "$worktree/.claude/.session-owner"
+fi
 # Install deps so the Tester can run npm scripts / vitest / playwright
 (cd "$worktree" && npm install --prefer-offline --no-audit --no-fund)
 ```
+
+`CLAUDE_CODE_SESSION_ID` is exported by Claude Code into every shell.
+Worktrees without a `.session-owner` marker (legacy ones from before
+this change) are treated as un-owned and left alone by the cleanup
+hook — remove them by hand once you're sure they're idle.
 
 If the host has Playwright browsers cached they'll be reused
 automatically. If `npx playwright test` later reports missing
