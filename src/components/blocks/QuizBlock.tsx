@@ -110,10 +110,8 @@ interface QuizBlockProps {
 export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
   const [step, setStep] = useState(-1); // -1 = intro, 0..N-1 = questions, N = result
   const [answers, setAnswers] = useState<Tier[]>([]);
-  const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
 
   const handleStart = useCallback(() => {
-    setDirection('forward');
     setStep(0);
   }, []);
 
@@ -121,7 +119,6 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
     (tier: Tier) => {
       const next = [...answers, tier];
       setAnswers(next);
-      setDirection('forward');
       const nextStep = next.length >= TOTAL_QUESTIONS ? TOTAL_QUESTIONS : next.length;
       setStep(nextStep);
       if (nextStep === TOTAL_QUESTIONS && storeId) {
@@ -138,13 +135,11 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
       setAnswers([]);
       return;
     }
-    setDirection('backward');
     setAnswers((prev) => prev.slice(0, -1));
     setStep((prev) => prev - 1);
   }, [step]);
 
   const handleReset = useCallback(() => {
-    setDirection('forward');
     setStep(-1);
     setAnswers([]);
   }, []);
@@ -319,16 +314,12 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
 
         {/* Intro (non-intro path renders inline here) */}
 
-        {/* Questions */}
+        {/* Questions — no entry animation. An earlier slide/fade animation
+            could swallow the first click on a freshly-mounted choice button
+            on slow devices because hit-testing happens at the in-flight
+            (transformed/zero-opacity) state. Render directly. */}
         {step >= 0 && step <= TOTAL_QUESTIONS - 1 && (
-          <div
-            key={step}
-            className={`bg-slate-50 rounded-xl p-6 ${
-              direction === 'forward'
-                ? 'animate-[slideInRight_0.35s_ease-out]'
-                : 'animate-[slideInLeft_0.35s_ease-out]'
-            }`}
-          >
+          <div key={step} className="bg-slate-50 rounded-xl p-6">
             <h3 className="text-lg font-bold text-[#0C3290] mb-5">
               {questions[step].question}
             </h3>
@@ -336,6 +327,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
               {questions[step].choices.map((choice) => (
                 <button
                   key={choice.label}
+                  type="button"
                   onClick={() => handleAnswer(choice.points)}
                   className="w-full text-left px-5 py-4 bg-white border border-slate-200 rounded-lg text-[14px] font-semibold text-[#0C3290] hover:border-amber-500 hover:bg-amber-50 transition-colors cursor-pointer"
                 >
@@ -346,6 +338,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
 
             {/* Back button */}
             <button
+              type="button"
               onClick={handleBack}
               className="mt-4 text-xs text-slate-400 hover:text-slate-600 cursor-pointer"
             >
@@ -398,23 +391,13 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
         </div>
       </div>
 
-      {/* Inline keyframes for animations.
-          NOTE: question-card entry intentionally animates opacity only (no
-          transform). A previous translateX-based slide caused the first
-          click on a freshly-mounted choice button to miss because hit-testing
-          uses the animated (offset) position, not the final one. */}
+      {/* Inline keyframes for the result card fadeIn. The question card no
+          longer animates on entry — that animation was swallowing the first
+          click on freshly-mounted choice buttons. */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideInRight {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-        @keyframes slideInLeft {
-          from { opacity: 0; }
-          to   { opacity: 1; }
         }
       `}</style>
     </section>

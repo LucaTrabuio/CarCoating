@@ -28,7 +28,7 @@ export default function NewsBlock({ config, store, basePath }: NewsBlockProps) {
     <section className="py-14 px-5 bg-white">
       <div className="max-w-[1100px] mx-auto">
         <h2
-          className="text-xl font-bold text-[#0C3290] text-center mb-8"
+          className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] text-center mb-8"
           style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}
         >
           お知らせ

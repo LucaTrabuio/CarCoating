@@ -173,7 +173,7 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
     <section className="py-14 px-5 bg-slate-50">
       <div className="max-w-[1100px] mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-xl md:text-2xl font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
             店舗一覧・アクセス
           </h2>
           <p className="text-sm text-gray-500 mt-1">{groupName} — {stores.length}店舗</p>

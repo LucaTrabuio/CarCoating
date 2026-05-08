@@ -61,7 +61,7 @@ export default function V3ReviewsPage() {
 
       <section className="py-10 px-5 bg-gray-50">
         <div className="max-w-[800px] mx-auto">
-          <h2 className="text-xl font-bold text-[#0C3290] text-center mb-8" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>よくあるご質問</h2>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] text-center mb-8" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>よくあるご質問</h2>
           <div className="space-y-2">
             {FAQ.map((item, i) => (
               <div key={i} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
