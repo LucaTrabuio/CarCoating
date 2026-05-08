@@ -96,6 +96,19 @@ export default async function SlugPage({
     const basePath = `/${slug}`;
     const layout = parsePageLayout(store.page_layout, store);
 
+    // If this single store belongs to a sub-company, surface its sibling
+    // stores so the access map can show every store in the same area
+    // (matches the multi-store sub-company branch above).
+    let siblingStores: typeof store[] | undefined;
+    if (store.sub_company_id) {
+      try {
+        const rawSiblings = await getStoresBySubCompany(store.sub_company_id);
+        siblingStores = rawSiblings.map(s => applyDefaults(s, globalDefaults));
+      } catch {
+        siblingStores = undefined;
+      }
+    }
+
     return (
       <main>
         <PageViewTracker storeId={slug} />
@@ -109,6 +122,7 @@ export default async function SlugPage({
               store={store}
               basePath={basePath}
               discountRate={discountRate}
+              allStores={siblingStores}
               appealPointsMaster={appealPointsMaster}
             />
           ))}

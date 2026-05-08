@@ -116,7 +116,7 @@ export default function BlockRenderer({ block, store, basePath, discountRate, al
       content = <BenefitsBlock config={block.config as BenefitsConfig} basePath={basePath} discountRate={discountRate} />;
       break;
     case 'access':
-      content = <AccessBlock config={block.config as AccessConfig} store={store} basePath={basePath} />;
+      content = <AccessBlock config={block.config as AccessConfig} store={store} basePath={basePath} allStores={allStores} />;
       break;
     case 'cta':
       content = <CTABlock config={block.config as CTAConfig} store={store} allStores={allStores} />;

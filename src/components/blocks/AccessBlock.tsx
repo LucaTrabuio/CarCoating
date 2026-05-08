@@ -2,11 +2,13 @@ import Link from 'next/link';
 import type { AccessConfig } from '@/lib/block-types';
 import type { V3StoreData } from '@/lib/v3-types';
 import TrackedPhoneLink from '@/components/TrackedPhoneLink';
+import SubCompanyStoreMap from '@/components/SubCompanyStoreMap';
 
 interface AccessBlockProps {
   config: AccessConfig;
   store: V3StoreData;
   basePath?: string;
+  allStores?: V3StoreData[];
 }
 
 interface NearbyStation {
@@ -14,11 +16,16 @@ interface NearbyStation {
   time: string;
 }
 
-export default function AccessBlock({ config, store, basePath }: AccessBlockProps) {
+export default function AccessBlock({ config, store, basePath, allStores }: AccessBlockProps) {
   let stations: NearbyStation[] = [];
   try {
     stations = JSON.parse(store.nearby_stations || '[]');
   } catch { /* empty */ }
+
+  // When the store belongs to a multi-store sub-company, show the same
+  // interactive multi-store map used on the sub-company landing page so the
+  // access section reflects every sibling location rather than just this one.
+  const siblingStores = allStores && allStores.length > 1 ? allStores : null;
 
   // Build parent sub-company link for "see other stores"
   const subCompanyHref =
@@ -36,7 +43,30 @@ export default function AccessBlock({ config, store, basePath }: AccessBlockProp
           アクセス
         </h2>
 
-        {config.show_map && store.lat !== 0 && store.lng !== 0 && (
+        {config.show_map && siblingStores && (
+          <div className="mb-8">
+            <SubCompanyStoreMap
+              stores={siblingStores.map(s => ({
+                store_id: s.store_id,
+                store_name: s.store_name,
+                address: s.address,
+                tel: s.tel,
+                business_hours: s.business_hours,
+                regular_holiday: s.regular_holiday,
+                parking_spaces: s.parking_spaces,
+                landmark: s.landmark,
+                nearby_stations: s.nearby_stations,
+                has_booth: s.has_booth,
+                lat: s.lat,
+                lng: s.lng,
+              }))}
+              groupName={`${siblingStores.length}店舗`}
+              embedded
+            />
+          </div>
+        )}
+
+        {config.show_map && !siblingStores && store.lat !== 0 && store.lng !== 0 && (
           <div className="rounded-xl overflow-hidden mb-8">
             <iframe
               src={`https://www.google.com/maps?q=${store.lat},${store.lng}&z=15&output=embed`}

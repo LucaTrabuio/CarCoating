@@ -5,13 +5,11 @@ export default function NewsSection() {
   const items = news.slice(0, 5);
 
   return (
-    <section className="py-12 px-5 bg-white">
+    <section className="py-14 px-5 bg-white">
       <div className="max-w-[700px] mx-auto">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
-            お知らせ
-          </h2>
-        </div>
+        <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] text-center mb-8" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
+          お知らせ
+        </h2>
         <div className="divide-y divide-slate-100">
           {items.map(item => {
             const cat = CATEGORY_LABELS[item.category];

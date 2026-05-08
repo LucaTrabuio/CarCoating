@@ -54,7 +54,18 @@ function loadGoogleMaps(): Promise<typeof google.maps> {
   return mapsPromise;
 }
 
-export default function SubCompanyStoreMap({ stores, groupName }: { stores: StoreLocation[]; groupName: string }) {
+export default function SubCompanyStoreMap({
+  stores,
+  groupName,
+  embedded = false,
+}: {
+  stores: StoreLocation[];
+  groupName: string;
+  /** When true, render map + store list only — no outer section, no
+      "店舗一覧・アクセス" heading. Used inside AccessBlock so the access
+      section header is not duplicated. */
+  embedded?: boolean;
+}) {
   const [sortedStores, setSortedStores] = useState<(StoreLocation & { distance: number | null })[]>(
     stores.map(s => ({ ...s, distance: null }))
   );
@@ -169,18 +180,10 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
 
   // Geolocation is opt-in: user clicks "現在地から探す" to trigger detectLocation().
 
-  return (
-    <section className="py-14 px-5 bg-slate-50">
-      <div className="max-w-[1100px] mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
-            店舗一覧・アクセス
-          </h2>
-          <p className="text-sm text-gray-500 mt-1">{groupName} — {stores.length}店舗</p>
-        </div>
-
-        {/* Map + Store list layout */}
-        <div className="rounded-xl overflow-hidden border border-gray-200 bg-white mb-6">
+  const mapAndList = (
+    <>
+      {/* Map + Store list layout */}
+      <div className="rounded-xl overflow-hidden border border-gray-200 bg-white mb-6">
           <div className="flex flex-col md:flex-row" style={{ height: '500px' }}>
             {/* Map */}
             <div ref={mapRef} className="flex-1 min-h-[300px]" />
@@ -259,6 +262,23 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
             </div>
           </div>
         </div>
+    </>
+  );
+
+  if (embedded) {
+    return mapAndList;
+  }
+
+  return (
+    <section className="py-14 px-5 bg-slate-50">
+      <div className="max-w-[1100px] mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
+            店舗一覧・アクセス
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">{groupName} — {stores.length}店舗</p>
+        </div>
+        {mapAndList}
       </div>
     </section>
   );
