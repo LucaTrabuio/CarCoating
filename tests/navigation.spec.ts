@@ -9,7 +9,7 @@ test.describe('Site Navigation', () => {
 
     test('header has store logo/name link', async ({ page }) => {
       await page.goto('/eniwa');
-      const logoLink = page.locator('header a[href="/eniwa"]');
+      const logoLink = page.locator('header a[href="/eniwa"]').first();
       await expect(logoLink).toBeVisible();
     });
 
@@ -20,32 +20,32 @@ test.describe('Site Navigation', () => {
 
     test('desktop nav has booking link', async ({ page }) => {
       await page.goto('/eniwa');
-      await expect(page.locator('nav a[href="/eniwa/booking"]')).toBeVisible();
+      await expect(page.locator('nav a[href="/eniwa/booking"]').first()).toBeVisible();
     });
 
     test('desktop nav has inquiry link', async ({ page }) => {
       await page.goto('/eniwa');
-      await expect(page.locator('nav a[href="/eniwa/inquiry"]')).toBeVisible();
+      await expect(page.locator('nav a[href="/eniwa/inquiry"]').first()).toBeVisible();
     });
 
     test('desktop nav has guide link', async ({ page }) => {
       await page.goto('/eniwa');
-      await expect(page.locator('nav a[href="/eniwa/guide"]')).toBeVisible();
+      await expect(page.locator('nav a[href="/eniwa/guide"]').first()).toBeVisible();
     });
 
     test('desktop nav has price/estimate link', async ({ page }) => {
       await page.goto('/eniwa');
-      await expect(page.locator('nav a[href="/eniwa/price"]')).toBeVisible();
+      await expect(page.locator('nav a[href="/eniwa/price"]').first()).toBeVisible();
     });
 
     test('desktop nav has cases link', async ({ page }) => {
       await page.goto('/eniwa');
-      await expect(page.locator('nav a[href="/eniwa/cases"]')).toBeVisible();
+      await expect(page.locator('nav a[href="/eniwa/cases"]').first()).toBeVisible();
     });
 
     test('desktop nav has reviews link', async ({ page }) => {
       await page.goto('/eniwa');
-      await expect(page.locator('nav a[href="/eniwa/reviews"]')).toBeVisible();
+      await expect(page.locator('nav a[href="/eniwa/reviews"]').first()).toBeVisible();
     });
 
     test('header nav link navigates to coatings page', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Site Navigation', () => {
 
     test('header nav link navigates to booking page', async ({ page }) => {
       await page.goto('/eniwa');
-      await page.locator('nav a[href="/eniwa/booking"]').click();
+      await page.locator('nav a[href="/eniwa/booking"]').first().click();
       await page.waitForURL('**/eniwa/booking');
       expect(page.url()).toContain('/eniwa/booking');
     });
