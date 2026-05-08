@@ -71,13 +71,19 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
   const initMap = useCallback(() => {
     if (!mapRef.current || mapReady || stores.length === 0) return;
     loadGoogleMaps().then(maps => {
-      // Center on the midpoint of all stores
-      const avgLat = stores.reduce((sum, s) => sum + s.lat, 0) / stores.length;
-      const avgLng = stores.reduce((sum, s) => sum + s.lng, 0) / stores.length;
+      const validStores = stores.filter(s => s.lat && s.lng);
+      const fallbackCenter = { lat: 35.681236, lng: 139.767125 }; // Tokyo Station
+      const center = validStores.length
+        ? {
+            lat: validStores.reduce((sum, s) => sum + s.lat, 0) / validStores.length,
+            lng: validStores.reduce((sum, s) => sum + s.lng, 0) / validStores.length,
+          }
+        : fallbackCenter;
 
       const map = new maps.Map(mapRef.current!, {
-        center: { lat: avgLat, lng: avgLng },
-        zoom: 10,
+        center,
+        zoom: validStores.length === 1 ? 13 : 11,
+        maxZoom: 15,
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
@@ -85,7 +91,6 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
       mapInstanceRef.current = map;
       infoWindowRef.current = new maps.InfoWindow();
 
-      // Fit bounds to show all stores
       const bounds = new maps.LatLngBounds();
       stores.forEach(store => {
         if (!store.lat || !store.lng) return;
@@ -114,8 +119,8 @@ export default function SubCompanyStoreMap({ stores, groupName }: { stores: Stor
         markersRef.current.push(marker);
       });
 
-      if (stores.length > 1) {
-        map.fitBounds(bounds, 50);
+      if (validStores.length > 1) {
+        map.fitBounds(bounds, 80);
       }
       setMapReady(true);
     });

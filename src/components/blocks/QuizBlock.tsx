@@ -214,7 +214,11 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
       onMouseMove={onSectionMove}
       onMouseLeave={onSectionLeave}
       className="relative w-full overflow-hidden px-5 flex items-start justify-center"
-      style={{ aspectRatio: '3138 / 1044' }}
+      style={
+        step === -1
+          ? { aspectRatio: '3138 / 1044' }
+          : { minHeight: 'min(33vw, 520px)' }
+      }
     >
       <div
         ref={bgRef}

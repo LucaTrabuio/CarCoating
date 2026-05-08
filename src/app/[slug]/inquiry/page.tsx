@@ -40,7 +40,7 @@ export default async function InquiryPage({
   return (
     <main>
       <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>
           お問い合わせ
         </h1>
         <p className="text-white/40 text-sm mt-1">
