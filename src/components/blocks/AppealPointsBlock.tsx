@@ -46,7 +46,7 @@ export default function AppealPointsBlock({ config, store, appealPointsMaster }:
       <div className="max-w-[900px] mx-auto">
         <h2
           className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] text-center mb-8"
-          style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
+          style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}
         >
           当店のポイント
         </h2>

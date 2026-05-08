@@ -52,7 +52,7 @@ export default function V3CasesPage() {
   return (
     <main>
       <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>施工事例</h1>
+        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>施工事例</h1>
         <p className="text-white/40 text-sm mt-1">ビフォーアフターで見るKeePer品質</p>
       </section>
 
@@ -121,7 +121,7 @@ export default function V3CasesPage() {
 
       <section className="py-10 px-5 bg-[#0C3290]">
         <div className="max-w-[500px] mx-auto text-center text-white">
-          <h2 className="text-lg font-bold mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コーティングをご検討中の方へ</h2>
+          <h2 className="text-lg font-bold mb-4" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>コーティングをご検討中の方へ</h2>
           <div className="flex gap-3 justify-center">
             <Link href={`${base}/booking`} className="px-6 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-md text-sm hover:bg-amber-500">予約する →</Link>
             <Link href={`${base}/booking?mode=inquiry`} className="px-6 py-2.5 bg-white/10 border border-white/15 text-white font-semibold rounded-md text-sm hover:bg-white/20">お問い合わせ</Link>

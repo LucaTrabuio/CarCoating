@@ -31,6 +31,8 @@ export interface GlobalDefaults {
   updated_by?: string;
   values: Partial<Record<DefaultableKey, string>>;
   policy: Partial<Record<DefaultableKey, PolicyEntry>>;
+  /** Site-wide font preset id (see FONT_PRESETS). Applies to every storefront page. */
+  siteFont?: string;
 }
 
 /** Per-key empty sentinel used when resetting a store's override. */

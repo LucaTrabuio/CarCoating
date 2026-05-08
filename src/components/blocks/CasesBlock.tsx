@@ -15,7 +15,7 @@ export default function CasesBlock({ config, basePath }: CasesBlockProps) {
   return (
     <section className="py-14 px-5 bg-slate-50">
       <div className="max-w-[1100px] mx-auto">
-        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight text-center mb-8" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight text-center mb-8" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
           {'\u6700\u8FD1\u306E\u65BD\u5DE5\u4E8B\u4F8B'}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

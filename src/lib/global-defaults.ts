@@ -62,6 +62,7 @@ export async function getGlobalDefaults(): Promise<GlobalDefaults> {
       updated_by: data?.updated_by,
       values: data?.values ?? {},
       policy: data?.policy ?? {},
+      siteFont: data?.siteFont,
     };
   } catch (err) {
     console.error('getGlobalDefaults failed, returning empty defaults:', err);
@@ -70,7 +71,11 @@ export async function getGlobalDefaults(): Promise<GlobalDefaults> {
 }
 
 export async function saveGlobalDefaults(
-  patch: { values?: Partial<Record<DefaultableKey, string>>; policy?: Partial<Record<DefaultableKey, PolicyEntry>> },
+  patch: {
+    values?: Partial<Record<DefaultableKey, string>>;
+    policy?: Partial<Record<DefaultableKey, PolicyEntry>>;
+    siteFont?: string | null;
+  },
   uid: string,
 ): Promise<void> {
   const current = await getGlobalDefaults();
@@ -78,6 +83,7 @@ export async function saveGlobalDefaults(
     version: 1,
     values: { ...current.values, ...(patch.values ?? {}) },
     policy: { ...current.policy, ...(patch.policy ?? {}) },
+    siteFont: patch.siteFont === null ? undefined : (patch.siteFont ?? current.siteFont),
     updated_at: new Date().toISOString(),
     updated_by: uid,
   };

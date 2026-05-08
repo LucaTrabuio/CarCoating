@@ -70,7 +70,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
       <section className="bg-[#0C3290] pt-8 pb-10 px-5">
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-6">
-            <h1 className="text-white text-xl md:text-2xl font-bold" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>見積もりシミュレーター</h1>
+            <h1 className="text-white text-xl md:text-2xl font-bold" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>見積もりシミュレーター</h1>
             <p className="text-white/50 text-sm mt-1">車種を選ぶか、サイズで直接料金を確認できます。</p>
           </div>
           <div className="flex justify-center gap-2 mb-6">
@@ -106,7 +106,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           <section className="py-12 px-5">
             <div className="max-w-[1100px] mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>{sizeHeading}</h2>
+                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>{sizeHeading}</h2>
                 <p className="text-sm text-gray-500 mt-1">Web予約限定割引 ｜ 税込価格</p>
               </div>
               <PricingTable size={selectedSize} discountRate={discountRate} storeId={storeId} blurFields={blurFields} priceOverrides={priceOverrides} />
@@ -116,7 +116,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           <section className="py-12 px-5 bg-gray-50">
             <div className="max-w-[1100px] mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>おすすめコース</h2>
+                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>おすすめコース</h2>
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 {[
@@ -155,7 +155,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           <section className="py-12 px-5">
             <div className="max-w-[1100px] mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>プラン比較マトリクス</h2>
+                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>プラン比較マトリクス</h2>
                 <p className="text-sm text-gray-500 mt-1">横スクロールで全プランを比較 ｜ {selectedSize}サイズの場合</p>
               </div>
               <ComparisonMatrix size={selectedSize} discountRate={discountRate} blurFields={blurFields} priceOverrides={priceOverrides} />
@@ -165,7 +165,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
           <section className="py-12 px-5 bg-gray-50">
             <div className="max-w-[800px] mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>5年間の総コスト比較</h2>
+                <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>5年間の総コスト比較</h2>
                 <p className="text-sm text-gray-500 mt-1">長く乗るほど上位プランがお得</p>
               </div>
               <div className="overflow-x-auto border border-gray-200 rounded-xl">
@@ -220,7 +220,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
             <section className="py-12 px-5">
               <div className="max-w-[700px] mx-auto">
                 <div className="text-center mb-8">
-                  <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>オプション追加</h2>
+                  <h2 className="text-xl font-bold text-[#0C3290]" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>オプション追加</h2>
                   <p className="text-sm text-gray-500 mt-1">チェックすると合計額がリアルタイムで更新されます</p>
                 </div>
                 <OptionCalculator basePlanPrice={getWebPrice(selectedTier, selectedSize, discountRate)} basePlanName={`${selectedTier.name}（${selectedSize}サイズ）`} optionDiscountRate={optionDiscountRate} showDiscountBanner={!optionDiscountSync && optionDiscountRate > 0} />
@@ -237,7 +237,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
 
           <section className="py-8 px-5 bg-gray-50">
             <div className="max-w-[600px] mx-auto bg-[#0C3290] rounded-xl p-8 text-center text-white">
-              <h3 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>コース選びに迷ったら</h3>
+              <h3 className="font-bold text-lg mb-1" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>コース選びに迷ったら</h3>
               <p className="text-sm opacity-60 mb-4">お車の状態を見て最適なコースをご提案します</p>
               <div className="flex gap-3 justify-center flex-wrap">
                 <a href="#" onClick={() => trackEvent(storeId, 'line_click')} className="px-5 py-2.5 bg-[#06c755] text-white font-bold rounded-lg text-sm">LINEで相談</a>

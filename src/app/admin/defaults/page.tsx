@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
 import { DEFAULTABLE_KEYS, type DefaultableKey, type GlobalDefaults } from '@/lib/global-defaults-shared';
+import { FONT_PRESETS } from '@/lib/types';
 import LayoutBlocksEditor from '@/components/admin/section-editors/LayoutBlocksEditor';
 import BannersEditor from '@/components/admin/section-editors/BannersEditor';
 import PromoBannersEditor from '@/components/admin/section-editors/PromoBannersEditor';
@@ -38,6 +39,9 @@ export default function GlobalDefaultsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [overridingStores, setOverridingStores] = useState<OverridingStore[]>([]);
+  const [siteFontDraft, setSiteFontDraft] = useState<string>('');
+  const [siteFontSaving, setSiteFontSaving] = useState(false);
+  const [siteFontSaved, setSiteFontSaved] = useState(false);
 
   const loadDefaults = useCallback(async () => {
     try {
@@ -65,6 +69,11 @@ export default function GlobalDefaultsPage() {
     setEditedValid(true);
   }, [activeKey, defaults]);
 
+  // Reset the site-font draft whenever defaults reload.
+  useEffect(() => {
+    setSiteFontDraft(defaults?.siteFont ?? '');
+  }, [defaults]);
+
   // Load overriding-stores list for the active section.
   useEffect(() => {
     let cancelled = false;
@@ -88,6 +97,29 @@ export default function GlobalDefaultsPage() {
   }
 
   if (loading) return <div className="p-8 text-gray-400">読み込み中...</div>;
+
+  async function saveSiteFont() {
+    setSiteFontSaving(true);
+    setError(null);
+    try {
+      const payload: { siteFont: string | null } = {
+        siteFont: siteFontDraft ? siteFontDraft : null,
+      };
+      const res = await fetch('/api/admin/defaults', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await loadDefaults();
+      setSiteFontSaved(true);
+      setTimeout(() => setSiteFontSaved(false), 2500);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'フォント設定の保存に失敗しました');
+    } finally {
+      setSiteFontSaving(false);
+    }
+  }
 
   async function saveValue() {
     if (!isValidJson && editedValue) {
@@ -177,6 +209,49 @@ export default function GlobalDefaultsPage() {
 
       {/* Main panel */}
       <main className="flex-1 min-w-0 space-y-4">
+        {/* Global site font selector — applies across the whole site. */}
+        <div className="rounded-lg border border-gray-200 bg-white px-4 py-3">
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-800">サイト全体のフォント</h2>
+              <p className="text-xs text-gray-500 mt-0.5">
+                すべてのストアフロント・お問い合わせ・見積もりシミュレーター等で使用される基本フォントを切り替えます。
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {siteFontSaved && <span className="text-xs text-green-600 font-semibold">✓ 保存しました</span>}
+              <button
+                type="button"
+                onClick={saveSiteFont}
+                disabled={siteFontSaving || siteFontDraft === (defaults?.siteFont ?? '')}
+                className="text-xs px-3 py-1.5 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50"
+              >
+                {siteFontSaving ? '保存中…' : '保存'}
+              </button>
+            </div>
+          </div>
+          <select
+            value={siteFontDraft}
+            onChange={e => setSiteFontDraft(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+          >
+            <option value="">（未設定 — 既定の Noto Sans JP）</option>
+            {FONT_PRESETS.map(f => (
+              <option key={f.id} value={f.id}>{f.label}</option>
+            ))}
+          </select>
+          <div
+            className="mt-2 px-3 py-2 rounded border border-gray-200 bg-slate-50 text-base"
+            style={{
+              fontFamily:
+                FONT_PRESETS.find(f => f.id === siteFontDraft)?.family ||
+                'var(--font-noto-sans-jp), "Noto Sans JP", sans-serif',
+            }}
+          >
+            プレビュー: あなたにぴったりのコースは？ — KeePer PRO SHOP
+          </div>
+        </div>
+
         <div>
           <h2 className="text-xl font-bold text-gray-900">{SECTION_LABELS[activeKey].label}</h2>
           <p className="text-xs text-gray-500 mt-1">{SECTION_LABELS[activeKey].description}</p>

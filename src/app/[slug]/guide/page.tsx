@@ -253,7 +253,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-xs text-amber-600 font-bold tracking-[0.2em] mb-2">WHY COATING?</div>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
               なぜカーコーティングするのか？
             </h2>
             <p className="text-base text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
@@ -277,7 +277,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-xs text-amber-600 font-bold tracking-[0.2em] mb-2">HOW IT WORKS</div>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
               KeePerコーティングの仕組み
             </h2>
           </div>
@@ -325,7 +325,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[1100px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-xs text-amber-600 font-bold tracking-[0.2em] mb-2">THE 8 LINEUPS</div>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
               8種類のKeePerコーティング
             </h2>
             <p className="text-base text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
@@ -342,7 +342,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                     {group.subLabel.toUpperCase()}
                   </span>
                 </div>
-                <h3 className="text-xl font-black mb-1 tracking-tight" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>{group.label}</h3>
+                <h3 className="text-xl font-black mb-1 tracking-tight" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>{group.label}</h3>
                 <p className="text-sm leading-relaxed text-slate-600 mb-3">{group.description}</p>
                 <ul className="space-y-1">
                   {group.tierIds.map(tid => {
@@ -393,7 +393,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
                       <div className="flex items-start justify-between flex-wrap gap-2 mb-2">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-lg md:text-xl font-black text-[#0C3290] tracking-tight" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+                            <h3 className="text-lg md:text-xl font-black text-[#0C3290] tracking-tight" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
                               {tier.name}
                             </h3>
                             {tier.is_popular && (
@@ -464,7 +464,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-xs text-amber-600 font-bold tracking-[0.2em] mb-2">HOW TO CHOOSE</div>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
               選び方ガイド
             </h2>
             <p className="text-base text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
@@ -490,7 +490,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-xs text-amber-600 font-bold tracking-[0.2em] mb-2">MAINTENANCE</div>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
               施工後のお手入れ
             </h2>
             <p className="text-base text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">
@@ -500,7 +500,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <div className="space-y-3">
             {MAINTENANCE_TIPS.map(tip => (
               <div key={tip.num} className="flex gap-4 bg-slate-50 border border-slate-200 rounded-xl p-5">
-                <div className="shrink-0 w-12 h-12 rounded-full bg-[#0C3290] text-white flex items-center justify-center text-base font-black tabular-nums" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+                <div className="shrink-0 w-12 h-12 rounded-full bg-[#0C3290] text-white flex items-center justify-center text-base font-black tabular-nums" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
                   {tip.num}
                 </div>
                 <div>
@@ -518,7 +518,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         <div className="max-w-[900px] mx-auto">
           <div className="text-center mb-10">
             <div className="text-xs text-amber-600 font-bold tracking-[0.2em] mb-2">FAQ</div>
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290] after:content-[''] after:block after:w-12 after:h-1 after:bg-amber-500 after:mx-auto after:mt-3" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
               よくある質問
             </h2>
           </div>
@@ -543,7 +543,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
       <section className="py-16 px-5 bg-[#0C3290] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0d1b2a] via-[#14253a] to-[#0C3290]" />
         <div className="relative max-w-[700px] mx-auto text-center">
-          <h2 className="text-xl md:text-2xl font-bold text-white mb-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+          <h2 className="text-xl md:text-2xl font-bold text-white mb-3" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
             あなたのお車に最適な一枚を
           </h2>
           <p className="text-white/70 text-sm mb-8 leading-relaxed">

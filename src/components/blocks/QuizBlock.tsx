@@ -273,7 +273,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
           <h2
             className="text-white font-black tracking-tight whitespace-nowrap leading-[1.05]"
             style={{
-              fontFamily: '"Noto Sans JP", sans-serif',
+              fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)',
               fontSize: 'clamp(1.75rem, 6.5vw, 5rem)',
               textShadow: '0 6px 16px rgba(0,0,0,0.95), 0 3px 6px rgba(0,0,0,0.9), 0 0 4px rgba(0,0,0,0.85)',
             }}
@@ -283,7 +283,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
           <p
             className="text-white font-bold mt-4"
             style={{
-              fontFamily: '"Noto Sans JP", sans-serif',
+              fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)',
               fontSize: 'clamp(0.85rem, 2vw, 1.5rem)',
               textShadow: '0 4px 10px rgba(0,0,0,0.95), 0 2px 4px rgba(0,0,0,0.9), 0 0 3px rgba(0,0,0,0.85)',
             }}
@@ -362,7 +362,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
             </p>
             <h3
               className="text-2xl font-bold mb-1"
-              style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
+              style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}
             >
               {result.name}
             </h3>

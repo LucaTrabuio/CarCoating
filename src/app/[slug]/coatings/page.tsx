@@ -53,7 +53,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
         <div className="relative max-w-[900px] mx-auto">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <Image src={`${KEEPER_BASE}/img/lineup/p_keeper_logo.png`} alt="KeePer" width={80} height={28} className="h-7 w-auto mx-auto mb-5 opacity-50" />
-          <h1 className="text-white text-2xl md:text-4xl font-bold mb-3" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>カーコーティングメニュー</h1>
+          <h1 className="text-white text-2xl md:text-4xl font-bold mb-3" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>カーコーティングメニュー</h1>
           <p className="text-white/40 text-sm max-w-md mx-auto leading-relaxed">
             全8種類のKeePer コーティングを詳しく解説。あなたの車と目的に合った最適なコースをお選びください。
           </p>
@@ -83,7 +83,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
                   <div className="flex items-center gap-2 mb-1.5">
                     {tier.is_popular && <span className="text-[9px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded font-bold">人気</span>}
                   </div>
-                  <h2 className="text-xl md:text-2xl font-bold text-[#0C3290] leading-tight" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>{tier.name}</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-[#0C3290] leading-tight" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>{tier.name}</h2>
                   <p className="text-[13px] text-slate-500 mt-1">{tier.tagline}</p>
                 </div>
                 <div className="text-right">
@@ -199,7 +199,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
 
       <section className="py-14 px-5 bg-[#0C3290]">
         <div className="max-w-[520px] mx-auto text-center text-white">
-          <h2 className="text-lg font-bold mb-2" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>コース選びに迷ったら</h2>
+          <h2 className="text-lg font-bold mb-2" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>コース選びに迷ったら</h2>
           <p className="text-sm text-white/40 mb-6">お車の状態やご予算に合わせて最適なコースをご提案します。</p>
           <div className="flex gap-3 justify-center">
             <Link href={`${base}/price`} className="px-6 py-2.5 bg-amber-500 text-[#0C3290] font-bold rounded-md text-sm hover:bg-amber-500 transition-colors">見積もりシミュレーター →</Link>

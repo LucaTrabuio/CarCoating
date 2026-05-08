@@ -45,7 +45,7 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
   return (
     <main>
       <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
           {isInquiry ? 'お問い合わせ' : 'ご予約'}
         </h1>
         <p className="text-white/40 text-sm mt-1">{store.store_name}</p>
@@ -64,13 +64,13 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
         <div className="max-w-[700px] mx-auto">
           {!isInquiry && (
             <div className="mb-8">
-              <h2 className="text-lg font-bold text-[#0C3290] mb-4" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>希望日時を選択</h2>
+              <h2 className="text-lg font-bold text-[#0C3290] mb-4" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>希望日時を選択</h2>
               <BookingCalendar />
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <h2 className="text-lg font-bold text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+            <h2 className="text-lg font-bold text-[#0C3290]" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
               {isInquiry ? 'お問い合わせ内容' : 'お客様情報'}
             </h2>
             <div>

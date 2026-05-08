@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Serif_JP, Noto_Sans_JP, M_PLUS_Rounded_1c, Zen_Maru_Gothic, Shippori_Mincho, Kosugi_Maru } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
+import { getGlobalDefaults } from "@/lib/global-defaults";
+import { resolveFontFamily } from "@/lib/types";
 import "./globals.css";
 
 const notoSerif = Noto_Serif_JP({
@@ -68,11 +70,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let siteFontFamily: string | undefined;
+  try {
+    const defaults = await getGlobalDefaults();
+    siteFontFamily = resolveFontFamily(defaults.siteFont);
+  } catch {
+    siteFontFamily = undefined;
+  }
+
   return (
     <html lang="ja" className={`${fontVariables} antialiased`}>
       <head>
@@ -80,7 +90,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
       </head>
-      <body className="min-h-screen font-sans">
+      <body
+        className="min-h-screen font-sans"
+        style={siteFontFamily ? ({ ['--site-font' as string]: siteFontFamily } as React.CSSProperties) : undefined}
+      >
         {children}
         <SpeedInsights />
         <Analytics />

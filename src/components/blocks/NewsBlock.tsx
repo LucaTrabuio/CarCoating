@@ -29,7 +29,7 @@ export default function NewsBlock({ config, store, basePath }: NewsBlockProps) {
       <div className="max-w-[1100px] mx-auto">
         <h2
           className="text-xl font-bold text-[#0C3290] text-center mb-8"
-          style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
+          style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}
         >
           お知らせ
         </h2>

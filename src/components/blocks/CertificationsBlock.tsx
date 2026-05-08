@@ -15,7 +15,7 @@ export default function CertificationsBlock({ config }: CertificationsBlockProps
             <div key={cert.id} className="text-center">
               <h2
                 className="text-lg font-bold text-[#0C3290] mb-1"
-                style={{ fontFamily: '"Noto Sans JP", sans-serif' }}
+                style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}
               >
                 {cert.title}
               </h2>

@@ -41,7 +41,7 @@ export default function USPBlock({ config, basePath }: USPBlockProps) {
   return (
     <section className="py-14 px-5 bg-[#0C3290]">
       <div className="max-w-[1100px] mx-auto">
-        <h2 className="text-white text-3xl md:text-5xl font-black tracking-tight text-center mb-8" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+        <h2 className="text-white text-3xl md:text-5xl font-black tracking-tight text-center mb-8" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
           {'\u9078\u3070\u308C\u308B6\u3064\u306E\u7406\u7531'}
         </h2>
         <div className="grid md:grid-cols-3 gap-5">

@@ -8,6 +8,7 @@ import {
   type DefaultableKey,
   type PolicyEntry,
 } from '@/lib/global-defaults';
+import { FONT_PRESETS } from '@/lib/types';
 
 // GET: any authenticated user — values are public (they render on storefronts);
 // store admins need to know policy + current defaults to render their builder.
@@ -33,10 +34,12 @@ export async function PUT(request: Request) {
     const body = (await request.json()) as {
       values?: Partial<Record<string, string>>;
       policy?: Partial<Record<string, PolicyEntry>>;
+      siteFont?: string | null;
     };
 
     // Whitelist keys to prevent arbitrary writes.
     const allowed = new Set<string>(DEFAULTABLE_KEYS as readonly string[]);
+    const allowedFontIds = new Set(FONT_PRESETS.map(f => f.id as string));
     const values: Partial<Record<DefaultableKey, string>> = {};
     const policy: Partial<Record<DefaultableKey, PolicyEntry>> = {};
 
@@ -55,9 +58,17 @@ export async function PUT(request: Request) {
       }
     }
 
-    await saveGlobalDefaults({ values, policy }, auth.user.uid);
+    let siteFont: string | null | undefined;
+    if (body.siteFont === null || body.siteFont === '') {
+      siteFont = null;
+    } else if (typeof body.siteFont === 'string' && allowedFontIds.has(body.siteFont)) {
+      siteFont = body.siteFont;
+    }
+
+    await saveGlobalDefaults({ values, policy, siteFont }, auth.user.uid);
     auditLog('global_defaults_update', auth.user.uid, {
       keysChanged: [...Object.keys(values), ...Object.keys(policy)],
+      siteFont: siteFont === undefined ? undefined : siteFont,
     });
     return NextResponse.json({ success: true });
   } catch (error) {

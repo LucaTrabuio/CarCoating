@@ -23,7 +23,7 @@ export default function ConcernsBlock({ config }: ConcernsBlockProps) {
   return (
     <section className="py-14 px-5 bg-white">
       <div className="max-w-[800px] mx-auto">
-        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight text-center mb-8" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight text-center mb-8" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
           {'\u3088\u304F\u3042\u308B\u3054\u8CEA\u554F'}
         </h2>
         <div className="space-y-3">

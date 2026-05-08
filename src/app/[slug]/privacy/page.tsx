@@ -16,7 +16,7 @@ export default async function V3PrivacyPage({ params }: { params: Promise<{ slug
   return (
     <main className="py-14 px-5">
       <div className="max-w-[700px] mx-auto">
-        <h1 className="text-2xl font-bold text-[#0C3290] mb-8" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>プライバシーポリシー</h1>
+        <h1 className="text-2xl font-bold text-[#0C3290] mb-8" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>プライバシーポリシー</h1>
 
         <div className="space-y-6 text-sm text-gray-700 leading-relaxed">
           <section>

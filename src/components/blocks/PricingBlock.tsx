@@ -124,7 +124,7 @@ export default function PricingBlock({ config, store, basePath, discountRate }: 
     >
       <div className="max-w-[1100px] mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#0C3290]" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
             コーティング料金
           </h2>
           {config.show_discount_badge && discountRate > 0 && (

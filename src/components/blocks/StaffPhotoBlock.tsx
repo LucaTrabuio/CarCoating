@@ -13,7 +13,7 @@ export default function StaffPhotoBlock({ config, store }: StaffPhotoBlockProps)
   return (
     <section className="py-14 px-5 bg-slate-50">
       <div className="max-w-[900px] mx-auto text-center">
-        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight mb-6" style={{ fontFamily: '"Noto Sans JP", sans-serif' }}>
+        <h2 className="text-[#0C3290] text-3xl md:text-5xl font-black tracking-tight mb-6" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>
           {'\u30B9\u30BF\u30C3\u30D5\u7D39\u4ECB'}
         </h2>
         <div className="rounded-xl overflow-hidden">

@@ -126,7 +126,7 @@ export default function InquiryForm({ store: initialStore, stores, tiers, presel
             </select>
           </div>
 
-          <h2 className="text-lg font-bold text-[#0f1c2e] pt-2" style={{ fontFamily: 'var(--font-noto-serif-jp), serif' }}>お客様情報</h2>
+          <h2 className="text-lg font-bold text-[#0f1c2e] pt-2" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>お客様情報</h2>
           <GoogleAutoFill onAutoFill={({ name: n, email: e }) => { setName(n); setEmail(e); setEmailConfirm(e); }} />
 
           <div>

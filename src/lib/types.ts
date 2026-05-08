@@ -138,10 +138,19 @@ export interface CampaignDefaults {
 }
 
 export const FONT_PRESETS = [
-  { id: 'noto-serif-jp', label: 'Noto Serif JP', family: '"Noto Serif JP", serif' },
-  { id: 'noto-sans-jp', label: 'Noto Sans JP', family: '"Noto Sans JP", sans-serif' },
-  { id: 'm-plus-rounded-1c', label: 'M PLUS Rounded 1c', family: '"M PLUS Rounded 1c", sans-serif' },
-  { id: 'zen-maru-gothic', label: 'Zen Maru Gothic', family: '"Zen Maru Gothic", sans-serif' },
-  { id: 'shippori-mincho', label: 'Shippori Mincho', family: '"Shippori Mincho", serif' },
-  { id: 'kosugi-maru', label: 'Kosugi Maru', family: '"Kosugi Maru", sans-serif' },
+  { id: 'noto-sans-jp', label: 'Noto Sans JP', family: 'var(--font-noto-sans-jp), "Noto Sans JP", sans-serif' },
+  { id: 'noto-serif-jp', label: 'Noto Serif JP（明朝）', family: 'var(--font-noto-serif-jp), "Noto Serif JP", serif' },
+  { id: 'm-plus-rounded-1c', label: 'M PLUS Rounded 1c', family: 'var(--font-m-plus-rounded-1c), "M PLUS Rounded 1c", sans-serif' },
+  { id: 'zen-maru-gothic', label: 'Zen Maru Gothic', family: 'var(--font-zen-maru-gothic), "Zen Maru Gothic", sans-serif' },
+  { id: 'shippori-mincho', label: 'Shippori Mincho', family: 'var(--font-shippori-mincho), "Shippori Mincho", serif' },
+  { id: 'kosugi-maru', label: 'Kosugi Maru', family: 'var(--font-kosugi-maru), "Kosugi Maru", sans-serif' },
+  { id: 'meiryo', label: 'Meiryo（メイリオ）', family: '"Meiryo", "メイリオ", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif' },
 ] as const;
+
+export type FontPresetId = (typeof FONT_PRESETS)[number]['id'];
+
+export function resolveFontFamily(id: string | undefined): string | undefined {
+  if (!id) return undefined;
+  const preset = FONT_PRESETS.find(f => f.id === id);
+  return preset?.family;
+}

@@ -69,7 +69,7 @@ export default function StaffBlock({ config, store }: StaffBlockProps) {
           <h2
             className="font-black tracking-tight leading-[1.05]"
             style={{
-              fontFamily: '"Noto Serif JP", "Noto Sans JP", serif',
+              fontFamily: 'var(--site-font, "Noto Serif JP", "Noto Sans JP", serif)',
               fontSize: 'clamp(2rem, 6.5vw, 4.75rem)',
               backgroundImage:
                 'linear-gradient(180deg, #FFF8C8 0%, #FFE27A 30%, #FFC94A 60%, #A9772A 90%)',
@@ -87,7 +87,7 @@ export default function StaffBlock({ config, store }: StaffBlockProps) {
             <p
               className="text-white text-2xl md:text-4xl font-black tracking-tight mt-8 md:mt-10"
               style={{
-                fontFamily: '"Noto Sans JP", sans-serif',
+                fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)',
                 textShadow: '0 2px 6px rgba(0,0,0,0.55)',
               }}
             >
@@ -105,7 +105,7 @@ export default function StaffBlock({ config, store }: StaffBlockProps) {
           <p
             className="text-white/90 font-bold mt-3"
             style={{
-              fontFamily: '"Noto Sans JP", sans-serif',
+              fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)',
               fontSize: 'clamp(0.85rem, 1.8vw, 1.125rem)',
               textShadow: '0 2px 6px rgba(0,0,0,0.55)',
             }}
@@ -155,7 +155,7 @@ export default function StaffBlock({ config, store }: StaffBlockProps) {
               <p
                 className="text-white font-black mt-5 leading-tight"
                 style={{
-                  fontFamily: '"Noto Sans JP", sans-serif',
+                  fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)',
                   fontSize: 'clamp(0.95rem, 1.6vw, 1.125rem)',
                   textShadow: '0 2px 6px rgba(0,0,0,0.55)',
                 }}
