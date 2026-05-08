@@ -27,12 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 function Stars({ rating }: { rating: number }) {
-  return (
-    <span className="tracking-wider">
-      <span className="text-amber-500">{'★'.repeat(rating)}</span>
-      <span className="text-slate-200">{'★'.repeat(5 - rating)}</span>
-    </span>
-  );
+  return <span className="font-semibold text-amber-600">{rating} / 5</span>;
 }
 
 export default async function V3CoatingsPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -71,7 +66,7 @@ export default async function V3CoatingsPage({ params }: { params: Promise<{ slu
             {coatingTiers.map(tier => (
               <a key={tier.id} href={`#${tier.id}`}
                 className={`px-3 py-1.5 rounded-md text-[11px] font-semibold transition-colors ${tier.is_popular ? 'bg-amber-50 text-amber-700 hover:bg-amber-100 ring-1 ring-amber-200' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}>
-                {tier.is_popular && '★ '}{tier.name}
+                {tier.name}
               </a>
             ))}
           </div>

@@ -1,0 +1,99 @@
+name: NAVIGATION.md staleness check
+
+# Mirror of manual-staleness, but for NAVIGATION.md — the project map
+# the `explore` subagent uses as its starting point. When the structure
+# under src/app/, src/lib/, or src/modules/ changes (new top-level
+# folders, new feature areas, renamed shared modules) the map should
+# usually be touched too. This is advisory: it does NOT block builds.
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  navigation-staleness:
+    name: Detect NAVIGATION.md staleness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute changed structural paths
+        id: changes
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+
+          # Heuristic: a structural change is a new directory under
+          # src/app/, src/lib/, src/modules/, or src/components/blocks/.
+          # We approximate "new directory" by checking for added files
+          # whose parent path didn't exist on BASE_SHA.
+          STRUCT_TOUCHED=""
+          while IFS= read -r f; do
+            [[ -z "$f" ]] && continue
+            case "$f" in
+              src/app/*/page.tsx|src/app/*/route.ts|src/lib/*.ts|src/modules/*/index.ts|src/components/blocks/*.tsx)
+                if ! git cat-file -e "$BASE_SHA:$f" 2>/dev/null; then
+                  STRUCT_TOUCHED="$STRUCT_TOUCHED$f"$'\n'
+                fi
+                ;;
+            esac
+          done <<< "$CHANGED"
+
+          NAV_TOUCHED=$(echo "$CHANGED" | grep -E '^NAVIGATION\.md$' || true)
+
+          {
+            echo "struct_touched<<EOF"
+            echo "$STRUCT_TOUCHED"
+            echo "EOF"
+            echo "nav_touched<<EOF"
+            echo "$NAV_TOUCHED"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Warn if NAVIGATION.md is stale
+        if: steps.changes.outputs.struct_touched != '' && steps.changes.outputs.nav_touched == ''
+        run: |
+          echo "::warning title=NAVIGATION.md likely stale::This PR adds new top-level routes / libs / modules / blocks but does not update NAVIGATION.md."
+          echo "Newly added structural files:"
+          echo "${{ steps.changes.outputs.struct_touched }}"
+
+      - name: Comment on PR
+        if: steps.changes.outputs.struct_touched != '' && steps.changes.outputs.nav_touched == ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '🗺️ **NAVIGATION.md likely stale**',
+              '',
+              'This PR adds new files under `src/app/`, `src/lib/`, `src/modules/`, or `src/components/blocks/` but does not touch `NAVIGATION.md`.',
+              '',
+              'If the change introduces a new feature area, route family, or shared module, please update the relevant table in `NAVIGATION.md` so the `explore` subagent and future readers can find it. Bug fixes and refactors that stay within an existing area can ignore this warning.',
+            ].join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+            const existing = comments.find((c) => c.user.type === 'Bot' && c.body.includes('NAVIGATION.md likely stale'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }

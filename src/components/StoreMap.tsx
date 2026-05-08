@@ -79,9 +79,9 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
       const infoContent = `<div style="padding:8px 4px;min-width:200px;font-family:sans-serif;">
         <div style="font-size:14px;font-weight:bold;color:${isSelected ? '#d97706' : '#0C3290'};margin-bottom:6px;">${store.store_name}</div>
         <div style="font-size:11px;color:#555;margin-bottom:4px;">${store.address}</div>
-        ${store.tel ? `<div style="font-size:11px;color:#555;margin-bottom:4px;">📞 ${store.tel}</div>` : ''}
-        ${store.email ? `<div style="font-size:11px;color:#555;margin-bottom:4px;">✉️ ${store.email}</div>` : ''}
-        <div style="font-size:10px;color:#999;margin-bottom:4px;">🕐 ${store.business_hours} ｜ ${store.regular_holiday}</div>
+        ${store.tel ? `<div style="font-size:11px;color:#555;margin-bottom:4px;">TEL: ${store.tel}</div>` : ''}
+        ${store.email ? `<div style="font-size:11px;color:#555;margin-bottom:4px;">MAIL: ${store.email}</div>` : ''}
+        <div style="font-size:10px;color:#999;margin-bottom:4px;">営業 ${store.business_hours} ｜ 休 ${store.regular_holiday}</div>
         ${store.has_booth ? '<div style="font-size:10px;color:#d97706;font-weight:bold;">専用ブース完備</div>' : ''}
         ${store.parking_spaces > 0 ? `<div style="font-size:10px;color:#999;">駐車場 ${store.parking_spaces}台</div>` : ''}
       </div>`;
@@ -178,7 +178,15 @@ export default function StoreMap({ stores, selectedStore, onSelect }: StoreMapPr
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold ${
                   isSelected ? 'bg-amber-500 text-[#0C3290]' : 'bg-slate-100 text-slate-500'
                 }`}>
-                  {isSelected ? '✓' : '📍'}
+                  {isSelected ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/>
+                    </svg>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className={`font-bold text-sm ${isSelected ? 'text-amber-700' : 'text-[#0C3290]'}`}>

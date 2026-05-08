@@ -20,14 +20,20 @@ export default function DynamicBanner({ title, discountRate, deadline, fontId, n
     ? `お知らせ ｜ ${newsText || `${title}についての最新情報はこちら`}`
     : `${title} ｜ 最大${discountRate}%OFF ｜ Web予約限定 ｜ ${deadline}まで`;
 
-  // Build one "set" of text that fills the viewport, then duplicate it for seamless loop
-  // Short text needs more repetitions per set to fill the screen
-  const perSet = bannerText.length < 30 ? 6 : bannerText.length < 50 ? 4 : 3;
+  // Build one "set" of text that fills the viewport, then duplicate it for seamless loop.
+  // Each set is forced to span at least 100vw so the marquee never leaves an empty
+  // gap on wide displays. justify-around distributes the repeated text evenly within
+  // each set, so the duplicate set picks up exactly where the first ends.
+  const perSet = bannerText.length < 30 ? 8 : bannerText.length < 50 ? 5 : 4;
   const gap = bannerText.length < 30 ? 'mx-6' : 'mx-10';
 
-  const oneSet = Array.from({ length: perSet }).map((_, i) => (
-    <span key={i} className={`${gap} shrink-0`}>{bannerText}</span>
-  ));
+  const renderSet = (keyPrefix: string) => (
+    <div className="flex shrink-0 min-w-[100vw] justify-around">
+      {Array.from({ length: perSet }).map((_, i) => (
+        <span key={`${keyPrefix}-${i}`} className={`${gap} shrink-0`}>{bannerText}</span>
+      ))}
+    </div>
+  );
 
   return (
     <div
@@ -35,10 +41,8 @@ export default function DynamicBanner({ title, discountRate, deadline, fontId, n
       style={{ background: isNews ? '#0C3290' : '#F0EA01', color: isNews ? '#F0EA01' : '#0C3290', ...fontStyle }}
     >
       <div className="flex w-max animate-marquee py-3">
-        {/* First set */}
-        {oneSet}
-        {/* Duplicate set for seamless loop (-50% translation) */}
-        {oneSet.map((el, i) => <span key={`dup-${i}`} className={`${gap} shrink-0`}>{bannerText}</span>)}
+        {renderSet('a')}
+        {renderSet('b')}
       </div>
     </div>
   );

@@ -17,14 +17,14 @@ export interface MasterAppealPoint {
 
 // Default appeal points — same as the hardcoded ones in AppealPointsBlock
 const DEFAULT_APPEAL_POINTS: Record<string, MasterAppealPoint> = {
-  booth: { id: 'booth', label: 'コーティング専用ブース完備', icon: '🏢', description: '天候に左右されない専用施工環境' },
-  certified: { id: 'certified', label: '技術認定スタッフ在籍', icon: '👨‍🔧', description: 'KeePer技術資格保有のプロが対応' },
-  warranty: { id: 'warranty', label: '施工保証付き', icon: '🛡️', description: '安心の施工品質保証' },
-  quick: { id: 'quick', label: '即日施工対応', icon: '⏱️', description: '当日のご予約にも可能な限り対応' },
-  shuttle: { id: 'shuttle', label: '送迎サービスあり', icon: '🚗', description: '施工中のお待ち時間に送迎サービス' },
-  loaner: { id: 'loaner', label: '代車無料', icon: '🔑', description: '施工中は無料で代車をご利用いただけます' },
-  card: { id: 'card', label: 'カード・電子マネー対応', icon: '💳', description: '各種お支払い方法に対応' },
-  weekend: { id: 'weekend', label: '土日祝日営業', icon: '📅', description: 'お仕事帰りや休日にもご来店いただけます' },
+  booth: { id: 'booth', label: 'コーティング専用ブース完備', icon: '', description: '天候に左右されない専用施工環境' },
+  certified: { id: 'certified', label: '技術認定スタッフ在籍', icon: '', description: 'KeePer技術資格保有のプロが対応' },
+  warranty: { id: 'warranty', label: '施工保証付き', icon: '', description: '安心の施工品質保証' },
+  quick: { id: 'quick', label: '即日施工対応', icon: '', description: '当日のご予約にも可能な限り対応' },
+  shuttle: { id: 'shuttle', label: '送迎サービスあり', icon: '', description: '施工中のお待ち時間に送迎サービス' },
+  loaner: { id: 'loaner', label: '代車無料', icon: '', description: '施工中は無料で代車をご利用いただけます' },
+  card: { id: 'card', label: 'カード・電子マネー対応', icon: '', description: '各種お支払い方法に対応' },
+  weekend: { id: 'weekend', label: '土日祝日営業', icon: '', description: 'お仕事帰りや休日にもご来店いただけます' },
 };
 
 /** Get appeal points as a lookup map. Firestore first, hardcoded fallback. */

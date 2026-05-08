@@ -28,7 +28,11 @@ export default function BookingContent({ store }: { store: V3StoreData }) {
     return (
       <main className="py-20 px-5 text-center">
         <div className="max-w-[500px] mx-auto">
-          <div className="text-5xl mb-4">&#10003;</div>
+          <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-full bg-green-50 text-green-600">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
           <h1 className="text-2xl font-bold text-[#0C3290] mb-2">
             {isInquiry ? 'お問い合わせを受け付けました' : '仮予約を受け付けました'}
           </h1>

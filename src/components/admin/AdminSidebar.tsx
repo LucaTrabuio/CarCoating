@@ -19,6 +19,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: '予約管理', href: '/admin/bookings', icon: '📅', storeAdminVisible: true },
   { label: 'お問い合わせ', href: '/admin/inquiries', icon: '💬', storeAdminVisible: true },
   { label: 'ページビルダー', href: '/admin/builder', icon: '🧱', storeAdminVisible: true },
+  { label: 'バナーメーカー', href: '/admin/banners', icon: '📑', storeAdminVisible: true },
   { label: 'お知らせ管理', href: '/admin/news', icon: '📢', storeAdminVisible: true },
   { label: 'KPIダッシュボード', href: '/admin/kpi', icon: '📊', storeAdminVisible: true },
   { label: 'チケット', href: '/admin/tickets', icon: '🎫', storeAdminVisible: true },
@@ -29,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳', superAdminOnly: true },
   { label: '施工事例', href: '/admin/cases', icon: '📸', superAdminOnly: true },
   { label: 'トップページ', href: '/admin/homepage', icon: '🏠', superAdminOnly: true },
+  { label: 'グローバルデフォルト', href: '/admin/defaults', icon: '🌐', superAdminOnly: true },
   { label: 'キャンペーン', href: '/admin/campaigns', icon: '🎯', superAdminOnly: true },
   { label: 'ブログ管理', href: '/admin/blog', icon: '✏️', superAdminOnly: true },
   { label: 'ブログ CSV', href: '/admin/blog/import', icon: '📝', superAdminOnly: true },
@@ -80,21 +82,22 @@ export function AdminSidebar() {
 
   return (
     <aside
-      className="flex h-screen w-60 flex-shrink-0 flex-col justify-between"
+      className="sticky top-0 flex h-screen w-60 flex-shrink-0 flex-col self-start"
       style={{ backgroundColor: '#0C3290' }}
     >
-      {/* Header */}
-      <div>
-        <div className="px-5 py-5">
-          <h1 className="text-lg font-bold text-white">管理画面</h1>
-          <p className="mt-1 truncate text-xs text-gray-400">{user.email}</p>
-          {!isSuper && (
-            <p className="mt-0.5 text-[10px] text-amber-400">店舗管理者</p>
-          )}
-        </div>
+      {/* Header — pinned to top */}
+      <div className="shrink-0 px-5 py-5">
+        <h1 className="text-lg font-bold text-white">管理画面</h1>
+        <p className="mt-1 truncate text-xs text-gray-400">{user.email}</p>
+        {!isSuper && (
+          <p className="mt-0.5 text-[10px] text-amber-400">店舗管理者</p>
+        )}
+      </div>
 
-        {/* Navigation */}
-        <nav className="mt-2 flex flex-col gap-0.5 px-3">
+      {/* Navigation — scrolls internally when viewport is short,
+          so the sidebar's blue background always fills full height */}
+      <nav className="flex-1 overflow-y-auto px-3 pb-2">
+        <div className="flex flex-col gap-0.5">
           {visibleItems.map((item) => {
             const active = isActive(item.href);
             return (
@@ -117,11 +120,11 @@ export function AdminSidebar() {
               </Link>
             );
           })}
-        </nav>
-      </div>
+        </div>
+      </nav>
 
-      {/* Bottom actions */}
-      <div className="border-t border-white/10 px-3 py-4">
+      {/* Bottom actions — pinned to bottom */}
+      <div className="shrink-0 border-t border-white/10 px-3 py-4">
         <Link
           href="/"
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-white/10 hover:text-white"

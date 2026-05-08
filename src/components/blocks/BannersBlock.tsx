@@ -1,6 +1,9 @@
 import type { BannersConfig } from '@/lib/block-types';
 import { formatPrice, applyDiscount } from '@/lib/pricing';
 import { sanitizeCss } from '@/lib/sanitize-css';
+import { sanitizeHtml } from '@/lib/sanitize';
+import ShadowPreview from '@/components/ShadowPreview';
+import { substitute } from '@/lib/banner-template';
 
 interface BannersBlockProps {
   config: BannersConfig;
@@ -16,6 +19,67 @@ export default function BannersBlock({ config }: BannersBlockProps) {
       <div className="max-w-[900px] mx-auto">
         <div className="grid md:grid-cols-2 gap-6">
           {visibleBanners.map(banner => {
+            // Template-mode: substitute values into the cached template html/css, then
+            // render in a Shadow DOM. Cached at placement time so storefront doesn't
+            // need to fetch banner_presets on every request.
+            if (banner.mode === 'template') {
+              const rawHtml = banner.cached_template_html || '';
+              const rawCss = banner.cached_template_css || '';
+              const fields = banner.cached_template_fields || [];
+              const values = banner.template_values || {};
+              const { html: subHtml, css: subCss } = substitute(rawHtml, rawCss, fields, values);
+              const safeHtml = sanitizeHtml(subHtml);
+              const safeCss = sanitizeCss(subCss);
+              const inner = (
+                <ShadowPreview
+                  html={safeHtml}
+                  css={safeCss}
+                  className="rounded-xl overflow-hidden border border-slate-200"
+                />
+              );
+              if (banner.link_url) {
+                return (
+                  <a
+                    key={banner.id}
+                    href={banner.link_url}
+                    className="block"
+                    target={banner.link_url.startsWith('http') ? '_blank' : undefined}
+                    rel={banner.link_url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  >
+                    {inner}
+                  </a>
+                );
+              }
+              return <div key={banner.id}>{inner}</div>;
+            }
+
+            // HTML-mode banner: render in a Shadow DOM so its CSS cannot leak out.
+            if (banner.mode === 'html') {
+              const safeHtml = sanitizeHtml(banner.html || '');
+              const safeCss = sanitizeCss(banner.html_css || '');
+              const inner = (
+                <ShadowPreview
+                  html={safeHtml}
+                  css={safeCss}
+                  className="rounded-xl overflow-hidden border border-slate-200"
+                />
+              );
+              if (banner.link_url) {
+                return (
+                  <a
+                    key={banner.id}
+                    href={banner.link_url}
+                    className="block"
+                    target={banner.link_url.startsWith('http') ? '_blank' : undefined}
+                    rel={banner.link_url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  >
+                    {inner}
+                  </a>
+                );
+              }
+              return <div key={banner.id}>{inner}</div>;
+            }
+
             const discountedPrice = banner.original_price > 0 && banner.discount_rate > 0
               ? applyDiscount(banner.original_price, banner.discount_rate)
               : null;

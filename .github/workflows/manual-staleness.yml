@@ -1,0 +1,158 @@
+name: Manual staleness check + PDF rebuild
+
+# Runs on every push and PR. Two jobs:
+#   1. staleness — warns when src/** code changed but the manual MD
+#      didn't, since the LLM-rendered prose in docs/USER_MANUAL*.md
+#      gets out of sync with shipped features unless someone re-runs
+#      the /manual skill.
+#   2. rebuild-pdf — regenerates docs/USER_MANUAL*.pdf from the
+#      current MD on every push to main, then commits the result back
+#      so the PDFs always match the markdown source.
+#
+# The PDF regen is deterministic (markdown-it + Chromium print) so
+# it's safe to run unattended. The staleness warning is advisory —
+# it does not block the build.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  staleness:
+    name: Detect manual staleness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute changed files
+        id: changes
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE_SHA="${{ github.event.before }}"
+            HEAD_SHA="${{ github.sha }}"
+          fi
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "first push or shallow ref — skipping staleness check"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Diffing $BASE_SHA..$HEAD_SHA"
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          echo "$CHANGED"
+          SRC_TOUCHED=$(echo "$CHANGED" | grep -E '^src/(app|components|lib|modules)/' || true)
+          MANUAL_TOUCHED=$(echo "$CHANGED" | grep -E '^docs/USER_MANUAL(_JA)?\.md$' || true)
+          {
+            echo "src_touched<<EOF"
+            echo "$SRC_TOUCHED"
+            echo "EOF"
+            echo "manual_touched<<EOF"
+            echo "$MANUAL_TOUCHED"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Warn if manual is stale
+        if: steps.changes.outputs.skip != 'true' && steps.changes.outputs.src_touched != '' && steps.changes.outputs.manual_touched == ''
+        run: |
+          echo "::warning title=Manual likely stale::src/** changed but docs/USER_MANUAL*.md was not updated. Re-run the /manual skill to regenerate the manual prose, then run \`npm run docs:pdf\`."
+          echo "Changed src files:"
+          echo "${{ steps.changes.outputs.src_touched }}"
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && steps.changes.outputs.skip != 'true' && steps.changes.outputs.src_touched != '' && steps.changes.outputs.manual_touched == ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '⚠️ **Manual likely stale**',
+              '',
+              'This PR touches `src/**` but does not update `docs/USER_MANUAL.md` / `docs/USER_MANUAL_JA.md`.',
+              '',
+              'If the change is user-visible, re-run the `/manual` skill in Claude Code to refresh the manual prose, then push. CI will rebuild the PDFs automatically once the MD lands on `main`. Pure internal refactors and bug fixes can ignore this warning.',
+            ].join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+            const existing = comments.find((c) => c.user.type === 'Bot' && c.body.includes('Manual likely stale'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }
+
+  rebuild-pdf:
+    name: Rebuild manual PDFs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Skip if no manual sources changed
+        id: should_run
+        run: |
+          if git log -1 --pretty=%B | grep -qiE '\[skip pdf\]|\[no pdf\]'; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Only rebuild if the MD source or the build script itself changed.
+          CHANGED=$(git diff --name-only HEAD~1 HEAD || true)
+          if echo "$CHANGED" | grep -qE '^docs/USER_MANUAL(_JA)?\.md$|^scripts/build-manual-pdf\.mjs$'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.should_run.outputs.run == 'true'
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.should_run.outputs.run == 'true'
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        if: steps.should_run.outputs.run == 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Regenerate PDFs
+        if: steps.should_run.outputs.run == 'true'
+        run: npm run docs:pdf
+
+      - name: Commit rebuilt PDFs
+        if: steps.should_run.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/USER_MANUAL.pdf docs/USER_MANUAL_JA.pdf docs/.manual-build.json
+          if git diff --cached --quiet; then
+            echo "No PDF changes to commit"
+            exit 0
+          fi
+          git commit -m "chore(docs): rebuild manual PDFs from MD [skip pdf]"
+          git push

@@ -69,7 +69,12 @@ export default function InquiryForm({ store: initialStore, stores, tiers, presel
     return (
       <div className="py-20 px-5 text-center">
         <div className="max-w-[500px] mx-auto">
-          <div className="text-5xl mb-4 text-blue-500">&#9993;</div>
+          <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-full bg-blue-50 text-blue-600">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </div>
           <h2 className="text-2xl font-bold text-[#0f1c2e] mb-2">お問い合わせを受け付けました</h2>
           {confirmEmailFailed ? (
             <p className="text-sm text-amber-600 mb-2">確認メールの送信に失敗しましたが、お問い合わせは正常に登録されています。</p>

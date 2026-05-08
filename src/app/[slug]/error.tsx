@@ -6,7 +6,7 @@ export default function V3StoreError({ reset }: { reset: () => void }) {
   return (
     <main className="min-h-[60vh] flex items-center justify-center px-5">
       <div className="text-center max-w-md">
-        <div className="text-5xl mb-4">⚠</div>
+        <div className="inline-block px-3 py-1 mb-4 text-xs font-bold text-amber-700 bg-amber-100 rounded">エラー</div>
         <h1 className="text-xl font-bold text-[#0C3290] mb-2">ページの読み込みに失敗しました</h1>
         <p className="text-sm text-gray-500 mb-6">店舗データの取得中にエラーが発生しました。しばらくしてから再度お試しください。</p>
         <div className="flex gap-3 justify-center">

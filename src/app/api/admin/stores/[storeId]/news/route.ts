@@ -70,7 +70,7 @@ export async function POST(
     date,
     visible: visible ?? true,
   };
-  items.push(newItem);
+  items.unshift(newItem);
 
   await docRef.set({ store_news: JSON.stringify(items) }, { merge: true });
   return NextResponse.json({ item: newItem }, { status: 201 });

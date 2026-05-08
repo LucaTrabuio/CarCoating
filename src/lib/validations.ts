@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+// ─── Constants ───
+
+export const MM_DD_REGEX = /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+
 // ─── Helpers ───
 
 /** Validates that a non-empty string is valid JSON */
@@ -91,6 +95,15 @@ export const v3StoreWriteSchema = z.object({
   price_overrides: jsonString.optional(),
   guide_config: jsonString.optional(),
   promo_banners: jsonString.optional(),
+  staff_members: jsonString.optional(),
+  override_flags: jsonString.optional(),
+
+  // Market segmentation
+  shouken_group: z.string().max(200).optional(),
+  local_market_area: z.string().max(200).optional(),
+
+  // Visibility controls (intentionally excluded from the general write schema —
+  // callers must use storeVisibilityPatchSchema for these fields)
 });
 
 export type V3StoreWriteInput = z.infer<typeof v3StoreWriteSchema>;
@@ -99,6 +112,56 @@ export type V3StoreWriteInput = z.infer<typeof v3StoreWriteSchema>;
 export const v3StorePartialSchema = v3StoreWriteSchema.partial().extend({
   store_id: z.string().min(1).max(100),
 });
+
+// ─── Banner Preset Schema ───
+
+export const bannerPresetStructuredSchema = z.object({
+  title: z.string().max(500).default(''),
+  subtitle: z.string().max(500).default(''),
+  image_url: z.string().max(2000).default(''),
+  original_price: z.number().min(0).max(100_000_000).default(0),
+  discount_rate: z.number().min(0).max(100).default(0),
+  link_url: z.string().max(2000).default(''),
+  custom_css: z.string().max(20_000).default(''),
+});
+
+export const bannerPresetHtmlSchema = z.object({
+  html: z.string().max(50_000).default(''),
+  css: z.string().max(20_000).default(''),
+});
+
+export const bannerPresetCombinedSchema = z.object({
+  source: z.string().max(70_000).default(''),
+});
+
+export const bannerTemplateFieldSchema = z.object({
+  key: z.string().min(1).max(80).regex(/^[a-zA-Z_][a-zA-Z0-9_-]*$/, 'key must be alphanumeric/_/-'),
+  label: z.string().min(1).max(200),
+  type: z.enum(['text', 'textarea', 'color', 'number', 'select', 'image_url', 'url']),
+  default: z.string().max(2000).default(''),
+  placeholder: z.string().max(200).optional(),
+  options: z.array(z.string().max(200)).max(50).optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  unit: z.string().max(10).optional(),
+  editable: z.boolean().optional(),
+  origin: z.enum(['html', 'css']).optional(),
+});
+
+export const bannerPresetWriteSchema = z.object({
+  name: z.string().min(1).max(200),
+  scope: z.enum(['global', 'store']),
+  owner_store_id: z.string().max(100).default(''),
+  mode: z.enum(['structured', 'html', 'combined']),
+  preview_image_url: z.string().max(2000).default(''),
+  structured: bannerPresetStructuredSchema.default({} as never),
+  html_content: bannerPresetHtmlSchema.default({} as never),
+  combined_content: bannerPresetCombinedSchema.default({} as never),
+  is_template: z.boolean().default(false),
+  fields: z.array(bannerTemplateFieldSchema).max(50).default([]),
+});
+
+export type BannerPresetWriteInput = z.infer<typeof bannerPresetWriteSchema>;
 
 // ─── Campaign Defaults Schema ───
 
@@ -184,3 +247,23 @@ export const ticketActionSchema = z.discriminatedUnion('action', [
     messageIndex: z.number().int().min(0).max(10_000),
   }),
 ]);
+
+// ─── Store Visibility Patch Schema ───
+
+const mmDdString = z.string().regex(MM_DD_REGEX, 'Must be MM-DD (e.g. 03-31)');
+
+export const storeVisibilityPatchSchema = z.discriminatedUnion('hide_mode', [
+  z.object({
+    hide_mode: z.literal('manual'),
+  }),
+  z.object({
+    hide_mode: z.literal('seasonal'),
+    seasonal_hide_start: mmDdString,
+    seasonal_hide_end: mmDdString,
+  }),
+  z.object({
+    hide_mode: z.null(),
+  }),
+]);
+
+export type StoreVisibilityPatchInput = z.infer<typeof storeVisibilityPatchSchema>;

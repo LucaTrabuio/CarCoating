@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { StoreVisibilityToggle } from '@/components/admin/StoreVisibilityToggle';
 
 function parseCSVLineSimple(line: string): string[] {
   const result: string[] = [];
@@ -295,6 +296,7 @@ function StoreHierarchy({ stores, loading }: { stores: Record<string, unknown>[]
 function StoreCard({ store: s, companySlug }: { store: Record<string, unknown>; companySlug?: string }) {
   const storeId = String(s.store_id);
   const previewUrl = companySlug ? `/${companySlug}` : `/${storeId}/`;
+  const hideMode = (s.hide_mode as 'manual' | 'seasonal' | null | undefined) ?? null;
 
   return (
     <div className={`border rounded-lg p-4 ${s.is_active === false ? 'bg-gray-50 border-gray-200 opacity-50' : 'border-gray-200'}`}>
@@ -311,6 +313,15 @@ function StoreCard({ store: s, companySlug }: { store: Record<string, unknown>; 
       <div className="flex gap-2 mt-2">
         <Link href={previewUrl} target="_blank" className="text-xs text-amber-500 font-semibold hover:underline">プレビュー →</Link>
         <Link href={`/admin/builder/${storeId}`} className="text-xs text-blue-600 font-semibold hover:underline">ビルダー →</Link>
+      </div>
+      <div className="mt-2">
+        <StoreVisibilityToggle
+          storeId={storeId}
+          initialHideMode={hideMode}
+          initialStart={s.seasonal_hide_start as string | undefined}
+          initialEnd={s.seasonal_hide_end as string | undefined}
+          showDateEditor={true}
+        />
       </div>
     </div>
   );

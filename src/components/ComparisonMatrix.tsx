@@ -13,11 +13,7 @@ interface ComparisonMatrixProps {
 }
 
 function Stars({ count }: { count: number }) {
-  return (
-    <span className="text-amber-400 tracking-wider text-xs">
-      {'★'.repeat(count)}{'☆'.repeat(5 - count)}
-    </span>
-  );
+  return <span className="text-amber-600 font-semibold text-xs tabular-nums">{count} / 5</span>;
 }
 
 export default function ComparisonMatrix({ size, discountRate, blurFields = [], priceOverrides }: ComparisonMatrixProps) {
@@ -31,7 +27,7 @@ export default function ComparisonMatrix({ size, discountRate, blurFields = [], 
             <th className="px-3 py-3 text-left font-semibold text-[#0C3290] bg-gray-50 sticky left-0 z-10 border-r border-gray-200">比較項目</th>
             {tiers.map(t => (
               <th key={t.id} className={`px-3 py-3 text-center font-semibold text-[#0C3290] ${t.id === 'diamond' ? 'bg-amber-50/50' : 'bg-gray-50'}`}>
-                {t.id === 'diamond' && <span className="text-amber-500">★ </span>}
+                {t.id === 'diamond' && <span className="text-[9px] font-bold text-amber-700 mr-1 px-1 py-0.5 bg-amber-50 rounded align-middle">人気</span>}
                 {t.name.replace('キーパー', '').replace('プレミアム', 'P')}
               </th>
             ))}

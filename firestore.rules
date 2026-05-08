@@ -24,6 +24,20 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.token.role == 'super_admin';
     }
 
+    // Site config (homepage layout, global defaults): public read so values can
+    // render on public storefronts. Writes go through the admin SDK server-side.
+    match /site_config/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.role == 'super_admin';
+    }
+
+    // Banner presets: authed admins read. Writes via admin SDK only (server
+    // enforces scope-based ownership); client writes are rejected here.
+    match /banner_presets/{presetId} {
+      allow read: if request.auth != null && request.auth.token.role in ['super_admin', 'store_admin'];
+      allow write: if false;
+    }
+
     // Users: self-read or super admin
     match /users/{userId} {
       allow read: if request.auth != null && (

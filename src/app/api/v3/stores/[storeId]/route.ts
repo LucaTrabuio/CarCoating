@@ -4,6 +4,14 @@ import { requireAuth, canManageStore } from '@/lib/auth';
 import { v3StorePartialSchema } from '@/lib/validations';
 import { auditLog } from '@/lib/audit';
 import type { V3StoreData } from '@/lib/v3-types';
+import {
+  getGlobalDefaults,
+  isSectionLocked,
+  parseOverrideFlags,
+  serializeOverrideFlags,
+  DEFAULTABLE_KEYS,
+  type DefaultableKey,
+} from '@/lib/global-defaults';
 
 export async function GET(
   _request: Request,
@@ -42,8 +50,30 @@ export async function PUT(
       return NextResponse.json({ error: 'Validation failed', issues: result.error.issues.map(i => i.message) }, { status: 400 });
     }
 
-    await upsertV3Store(result.data as V3StoreData);
-    auditLog('store_update', auth.user.uid, { storeId });
+    // Global-defaults enforcement: reject writes to locked sections, and mark
+    // any touched defaultable field as an explicit override on the store.
+    const data = result.data as V3StoreData;
+    const defaults = await getGlobalDefaults();
+    const touchedKeys: DefaultableKey[] = [];
+    for (const key of DEFAULTABLE_KEYS) {
+      if (body[key] === undefined) continue;
+      if (isSectionLocked(key, defaults)) {
+        return NextResponse.json(
+          { error: 'section_locked', key, message: `Section "${key}" is locked by the super admin.` },
+          { status: 403 },
+        );
+      }
+      touchedKeys.push(key);
+    }
+    if (touchedKeys.length > 0) {
+      const existing = await getV3StoreById(storeId);
+      const flags = parseOverrideFlags(existing?.override_flags ?? data.override_flags);
+      for (const k of touchedKeys) flags[k] = true;
+      data.override_flags = serializeOverrideFlags(flags);
+    }
+
+    await upsertV3Store(data);
+    auditLog('store_update', auth.user.uid, { storeId, overrideKeys: touchedKeys });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(`PUT /api/v3/stores/${storeId} error:`, error);

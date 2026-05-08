@@ -188,7 +188,6 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
         className="fixed bottom-20 sm:bottom-24 right-3 sm:right-4 z-40 bg-amber-500 text-[#0C3290] px-3 py-2 sm:px-4 sm:py-3 rounded-full hover:bg-amber-600 transition-all text-[11px] sm:text-sm font-bold flex items-center gap-1.5 sm:gap-2 cursor-pointer animate-pop-in"
         style={{ boxShadow: '0 0 10px 1px rgba(240, 234, 1, 0.9), 0 6px 16px rgba(0, 0, 0, 0.35)' }}
       >
-        <span className="text-sm sm:text-lg">🚗</span>
         コーティング診断
       </button>
     );

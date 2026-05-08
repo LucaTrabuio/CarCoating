@@ -49,7 +49,11 @@ function getLatestNewsTitle(storeNewsJson: string | undefined): string | undefin
     const visible = items.filter((n: { visible?: boolean }) => n.visible !== false);
     if (visible.length === 0) return undefined;
     visible.sort((a: { date: string }, b: { date: string }) => b.date.localeCompare(a.date));
-    return visible[0].title;
+    const latest = visible[0] as { title?: string; content?: string; body?: string };
+    const title = (latest.title || '').trim();
+    const content = (latest.content || latest.body || '').replace(/\s+/g, ' ').trim();
+    if (!title) return content || undefined;
+    return content ? `${title} — ${content}` : title;
   } catch { return undefined; }
 }
 

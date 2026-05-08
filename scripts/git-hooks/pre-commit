@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# car-coating pre-commit guardrail.
+#
+# Fast-fails commits that violate the project's two cheapest-to-check
+# security rules from CLAUDE.md §4:
+#
+#   1. Every NEW src/app/api/**/route.ts must contain a `requireAuth(`
+#      call. Public read-only routes can opt out with the marker
+#      comment `// eslint-disable-line car-coating/require-auth`
+#      (the marker is recognised by this hook only — there's no real
+#      ESLint rule yet, but using ESLint syntax keeps it greppable).
+#
+#   2. Every NEW src/app/api/**/route.ts that exports a mutating verb
+#      handler (POST / PUT / PATCH / DELETE) must import from
+#      "@/lib/validations" or "../lib/validations" (relative path
+#      acceptable) so request bodies get parsed with Zod.
+#
+# Lints are scoped to ADDED files only — existing handlers are
+# grandfathered. Run `npm run hooks:install` once after cloning to
+# install this as .git/hooks/pre-commit.
+#
+# Override (only when intentional, e.g. a webhook receiver where the
+# remote signs the request): `git commit --no-verify`. We don't make
+# bypassing a habit, but the hook is advisory, not policy enforcement.
+set -euo pipefail
+
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+RESET='\033[0m'
+
+fail=0
+warn=0
+
+# Collect newly added route.ts files under src/app/api/.
+NEW_ROUTES=()
+while IFS= read -r line; do
+  [[ -n "$line" ]] && NEW_ROUTES+=("$line")
+done < <(
+  git diff --cached --name-only --diff-filter=A \
+    | grep -E '^src/app/api/.*/route\.ts$' || true
+)
+
+for f in ${NEW_ROUTES[@]+"${NEW_ROUTES[@]}"}; do
+  [[ -z "$f" ]] && continue
+  # Read the staged version, not the working-tree version.
+  content="$(git show ":$f" 2>/dev/null || true)"
+  [[ -z "$content" ]] && continue
+
+  # Rule 1: requireAuth presence.
+  if ! grep -qE 'requireAuth\s*\(' <<<"$content"; then
+    if grep -qE 'car-coating/require-auth' <<<"$content"; then
+      printf "${YELLOW}[pre-commit]${RESET} %s opts out of requireAuth via marker comment.\n" "$f" >&2
+      warn=$((warn+1))
+    else
+      printf "${RED}[pre-commit] BLOCK${RESET} %s defines a route handler with no requireAuth() call.\n" "$f" >&2
+      printf "  fix: add 'const auth = await requireAuth(...); if (auth.error) return auth.error;' to each mutating handler\n" >&2
+      printf "  or:  add a marker comment '// eslint-disable-line car-coating/require-auth' if this is intentionally public read-only\n" >&2
+      fail=$((fail+1))
+    fi
+  fi
+
+  # Rule 2: mutating handlers must use a Zod schema.
+  if grep -qE '^\s*export\s+(async\s+)?(function\s+(POST|PUT|PATCH|DELETE)|const\s+(POST|PUT|PATCH|DELETE)\s*=)' <<<"$content"; then
+    if ! grep -qE '(@/lib/validations|\.\./lib/validations|\.\./\.\./lib/validations|\.\./\.\./\.\./lib/validations)' <<<"$content"; then
+      printf "${RED}[pre-commit] BLOCK${RESET} %s exports a mutating handler but does not import from lib/validations.\n" "$f" >&2
+      printf "  fix: parse the request body with a Zod schema from src/lib/validations.ts before use.\n" >&2
+      fail=$((fail+1))
+    fi
+  fi
+done
+
+if (( fail > 0 )); then
+  printf "\n${RED}[pre-commit] %d guardrail violation(s). Fix or run with --no-verify if you have a real reason.${RESET}\n" "$fail" >&2
+  exit 1
+fi
+
+if (( warn > 0 )); then
+  printf "${YELLOW}[pre-commit] %d advisory warning(s).${RESET}\n" "$warn" >&2
+fi
+
+exit 0

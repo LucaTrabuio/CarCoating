@@ -291,7 +291,7 @@ export default function V3HomePage() {
                           <div className="flex-1">
                             <h3 className="font-bold text-[#0C3290] text-base">
                               {tier.name}
-                              {tier.is_popular && <span className="text-[10px] text-blue-600 font-bold ml-2">★人気</span>}
+                              {tier.is_popular && <span className="text-[10px] text-blue-600 font-bold ml-2 px-1.5 py-0.5 bg-blue-50 rounded">人気</span>}
                             </h3>
                             <p className="text-xs text-gray-500 mt-0.5">{tier.tagline}</p>
                           </div>
@@ -304,7 +304,7 @@ export default function V3HomePage() {
                         <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
                           <span>{tier.durability_years}持続</span>
                           <span>{tier.application_time}</span>
-                          <span>艶 {'★'.repeat(tier.gloss_rating)}{'☆'.repeat(5 - tier.gloss_rating)}</span>
+                          <span>艶 {tier.gloss_rating} / 5</span>
                         </div>
                       </a>
                     );
@@ -331,15 +331,15 @@ export default function V3HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { icon: '🏆', title: '特許技術', desc: 'KeePer独自の特許技術による被膜構造。一般的なコーティングとは根本的に異なる科学的アプローチ。' },
-              { icon: '👨‍🔬', title: '認定技術者', desc: '1級・2級資格認定制度。全国統一の技術基準で、どの店舗でも同じ品質をお約束。' },
-              { icon: '🔬', title: '研究開発力', desc: 'KeePer技研の研究所で開発されたコーティング剤。科学的データに基づく確かな性能。' },
-              { icon: '💰', title: 'Web予約割引', desc: 'Web予約限定で最大20%OFF。オプションも全メニュー10%OFFで施工可能。' },
-              { icon: '🚿', title: '無料アフターケア', desc: '施工後の手洗い洗車＆点検を2回無料。コーティングの状態をプロが確認。' },
-              { icon: '📋', title: '完全予約制', desc: '一台一台を丁寧に施工。完全予約制で待ち時間なし。朝預けて夕方お引渡し。' },
+              { num: '01', title: '特許技術', desc: 'KeePer独自の特許技術による被膜構造。一般的なコーティングとは根本的に異なる科学的アプローチ。' },
+              { num: '02', title: '認定技術者', desc: '1級・2級資格認定制度。全国統一の技術基準で、どの店舗でも同じ品質をお約束。' },
+              { num: '03', title: '研究開発力', desc: 'KeePer技研の研究所で開発されたコーティング剤。科学的データに基づく確かな性能。' },
+              { num: '04', title: 'Web予約割引', desc: 'Web予約限定で最大20%OFF。オプションも全メニュー10%OFFで施工可能。' },
+              { num: '05', title: '無料アフターケア', desc: '施工後の手洗い洗車＆点検を2回無料。コーティングの状態をプロが確認。' },
+              { num: '06', title: '完全予約制', desc: '一台一台を丁寧に施工。完全予約制で待ち時間なし。朝預けて夕方お引渡し。' },
             ].map(item => (
               <div key={item.title} className="bg-white rounded-xl p-6 border border-gray-200">
-                <div className="text-3xl mb-3">{item.icon}</div>
+                <div className="text-2xl font-bold text-amber-500 mb-3 tabular-nums">{item.num}</div>
                 <h3 className="font-bold text-[#0C3290] mb-2">{item.title}</h3>
                 <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
               </div>

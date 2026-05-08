@@ -57,7 +57,7 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
                 <input type="checkbox" checked={selected.has(opt.id)} onChange={() => toggle(opt.id)} className="accent-amber-500 w-4 h-4" />
                 <div>
                   <span className="text-sm">{opt.name}</span>
-                  <span className="text-[10px] text-amber-500 font-bold ml-1">★人気</span>
+                  <span className="text-[10px] text-amber-700 font-bold ml-1.5 px-1.5 py-0.5 bg-amber-50 rounded">人気</span>
                   <div className="text-[11px] text-gray-400">{opt.description} ｜ {opt.time}</div>
                 </div>
               </div>
@@ -80,7 +80,7 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
                     <div>
                       <span className="text-sm">
                         {opt.name}
-                        {opt.popular && <span className="text-[10px] text-amber-500 font-bold ml-1">★人気</span>}
+                        {opt.popular && <span className="text-[10px] text-amber-700 font-bold ml-1.5 px-1.5 py-0.5 bg-amber-50 rounded">人気</span>}
                       </span>
                       <div className="text-[11px] text-gray-400">{opt.description} ｜ {opt.time}</div>
                     </div>
@@ -119,10 +119,10 @@ export default function OptionCalculator({ basePlanPrice, basePlanName, optionDi
       {/* Export buttons */}
       <div className="flex gap-3 mt-3 flex-wrap">
         <button className="px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold bg-white hover:bg-gray-50">
-          📄 見積もりをPDFダウンロード
+          見積もりをPDFダウンロード
         </button>
         <button className="px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold bg-white hover:bg-gray-50">
-          ✉️ 見積もりをメールで送る
+          見積もりをメールで送る
         </button>
       </div>
     </div>
