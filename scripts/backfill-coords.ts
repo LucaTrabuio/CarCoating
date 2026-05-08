@@ -60,13 +60,13 @@ type GeocodeResult = {
   error_message?: string;
 };
 
-async function geocode(address: string): Promise<{
+async function geocodeOnce(address: string): Promise<{
   ok: true;
   lat: number;
   lng: number;
   precision: string;
   formatted: string;
-} | { ok: false; reason: string }> {
+} | { ok: false; reason: string; transient: boolean }> {
   const url = new URL('https://maps.googleapis.com/maps/api/geocode/json');
   url.searchParams.set('address', address);
   url.searchParams.set('region', 'jp');
@@ -74,17 +74,25 @@ async function geocode(address: string): Promise<{
   url.searchParams.set('key', API_KEY!);
 
   const res = await fetch(url.toString());
-  if (!res.ok) return { ok: false, reason: `HTTP ${res.status}` };
+  if (!res.ok) return { ok: false, reason: `HTTP ${res.status}`, transient: res.status >= 500 };
   const data = (await res.json()) as GeocodeResult;
   if (data.status !== 'OK') {
-    return { ok: false, reason: `${data.status}${data.error_message ? `: ${data.error_message}` : ''}` };
+    const reason = `${data.status}${data.error_message ? `: ${data.error_message}` : ''}`;
+    // Google occasionally returns REQUEST_DENIED with "API key is expired"
+    // text under transient quota pressure even when the key is valid; same
+    // for OVER_QUERY_LIMIT and UNKNOWN_ERROR. Treat these as retryable.
+    const transient =
+      data.status === 'OVER_QUERY_LIMIT' ||
+      data.status === 'UNKNOWN_ERROR' ||
+      (data.status === 'REQUEST_DENIED' && /expired/i.test(data.error_message || ''));
+    return { ok: false, reason, transient };
   }
   if (!data.results || data.results.length === 0) {
-    return { ok: false, reason: 'no results' };
+    return { ok: false, reason: 'no results', transient: false };
   }
   const top = data.results[0];
   if (top.geometry.location_type === 'APPROXIMATE') {
-    return { ok: false, reason: 'precision=APPROXIMATE (rejected)' };
+    return { ok: false, reason: 'precision=APPROXIMATE (rejected)', transient: false };
   }
   return {
     ok: true,
@@ -93,6 +101,20 @@ async function geocode(address: string): Promise<{
     precision: top.geometry.location_type,
     formatted: top.formatted_address,
   };
+}
+
+async function geocode(address: string) {
+  // Up to 3 attempts with exponential backoff for transient errors. Permanent
+  // errors (no results, APPROXIMATE precision, malformed key) fail immediately.
+  const delays = [400, 1200, 3000];
+  let last: Awaited<ReturnType<typeof geocodeOnce>> | null = null;
+  for (let attempt = 0; attempt < delays.length; attempt++) {
+    last = await geocodeOnce(address);
+    if (last.ok) return last;
+    if (!last.transient) return last;
+    await sleep(delays[attempt]);
+  }
+  return last!;
 }
 
 function pad(s: string, n: number) {
