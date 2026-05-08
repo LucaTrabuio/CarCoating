@@ -130,8 +130,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
     <section
       ref={sectionRef}
       suppressHydrationWarning
-      className="relative w-full flex items-center justify-center overflow-hidden min-h-[400px] md:min-h-0"
-      style={{ aspectRatio: '1960 / 558' }}
+      className="relative w-full flex items-center justify-center overflow-hidden [aspect-ratio:17/10] md:[aspect-ratio:1960/558]"
     >
       <div
         ref={wrapperRef}
@@ -142,6 +141,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
           className="absolute inset-0 will-change-transform"
           style={{ transition: 'transform 0.4s ease-out' }}
         >
+          <div className="absolute inset-0 -translate-y-6 md:translate-y-0">
           <img
             src={imgSrc}
             alt={store.store_name}
@@ -173,6 +173,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
               className="absolute inset-0 w-full h-full object-cover animate-hero-zoom"
             />
           </div>
+          </div>
         </div>
       </div>
       <div
@@ -185,35 +186,44 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
       >
         <div className="max-w-[900px] mx-auto text-center">
           <div
-            className="inline-block max-w-full px-4 py-5 md:px-10 md:py-7 rounded-2xl"
+            className="relative inline-block max-w-full px-3 py-3 md:px-10 md:py-7 rounded-xl md:rounded-2xl"
             style={{
-              background: 'rgba(0,0,0,0.62)',
-              backdropFilter: 'blur(4px)',
-              WebkitBackdropFilter: 'blur(4px)',
               wordBreak: 'keep-all',
               overflowWrap: 'break-word',
             }}
           >
+            <div
+              aria-hidden
+              className="absolute inset-0 rounded-xl md:rounded-2xl pointer-events-none"
+              style={{
+                background: 'rgba(0,0,0,0.62)',
+                backdropFilter: 'blur(4px)',
+                WebkitBackdropFilter: 'blur(4px)',
+                opacity: showText ? 1 : 0,
+                transition: 'opacity 1.5s ease-out 0.15s',
+              }}
+            />
+            <div className="relative">
             <h1
-              className="text-white font-bold leading-tight mb-3 md:whitespace-nowrap"
+              className="text-white font-bold leading-tight mb-2 md:mb-3 md:whitespace-nowrap"
               style={{
                 fontFamily: '"Noto Serif JP", serif',
-                fontSize: 'clamp(1.25rem, 6vw, 4rem)',
+                fontSize: 'clamp(1rem, 4.6vw, 4rem)',
                 fontFeatureSettings: '"palt" 1',
                 textShadow: '0 2px 4px rgba(0,0,0,1), 0 1px 2px rgba(0,0,0,1), 0 0 1px rgba(0,0,0,1)',
               }}
             >
-              {config.title || store.hero_title || '洗車だけで、この輝きが続く。'}
+              {config.title || store.hero_title || '洗車だけで、この輝きが続く'}
             </h1>
             <p
-              className="text-white text-sm mb-4"
+              className="text-white text-xs md:text-sm mb-0 md:mb-4"
               style={{ fontFamily: '"Noto Serif JP", serif' }}
             >
               {config.subtitle || store.hero_subtitle || `${store.store_name} ｜ KeePer PRO SHOP認定`}
             </p>
             {config.show_badges && <TrustBadges hasBooth={store.has_booth} level1Count={store.level1_staff_count} level2Count={store.level2_staff_count} />}
             <div
-              className="flex gap-3 justify-center mt-5"
+              className="hidden md:flex gap-3 justify-center mt-5"
               style={{
                 opacity: showButtons ? 1 : 0,
                 transform: showButtons ? 'scale(1)' : 'scale(0.85)',
@@ -223,8 +233,21 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
               {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="px-7 py-3 bg-amber-500 text-[#0C3290] font-bold rounded-lg text-sm hover:bg-amber-500 transition-colors shadow-lg">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
               {config.show_cta_inquiry && <TrackedLink href={`${basePath}/booking?mode=inquiry`} storeId={store.store_id} event="cta_inquiry" className="px-7 py-3 bg-white border border-white text-[#0C3290] font-semibold rounded-lg text-sm hover:bg-gray-100 transition-colors shadow-lg">{'\u304A\u554F\u3044\u5408\u308F\u305B'}</TrackedLink>}
             </div>
+            </div>
           </div>
         </div>
+      </div>
+      {/* Mobile-only buttons pinned to the very bottom of the hero, edge-to-edge */}
+      <div
+        className="absolute bottom-0 left-0 right-0 flex md:hidden z-20"
+        style={{
+          opacity: showButtons ? 1 : 0,
+          transform: showButtons ? 'translateY(0)' : 'translateY(20px)',
+          transition: 'opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        }}
+      >
+        {config.show_cta_booking && <TrackedLink href={`${basePath}/booking`} storeId={store.store_id} event="cta_booking" className="flex-1 flex items-center justify-center py-4 bg-amber-500 text-[#0C3290] font-bold text-base shadow-[0_-2px_8px_rgba(0,0,0,0.25)]">{'\u4E88\u7D04\u3059\u308B'}</TrackedLink>}
+        {config.show_cta_inquiry && <TrackedLink href={`${basePath}/booking?mode=inquiry`} storeId={store.store_id} event="cta_inquiry" className="flex-1 flex items-center justify-center py-4 bg-white text-[#0C3290] font-semibold text-base shadow-[0_-2px_8px_rgba(0,0,0,0.25)]">{'\u304A\u554F\u3044\u5408\u308F\u305B'}</TrackedLink>}
       </div>
     </section>
   );
