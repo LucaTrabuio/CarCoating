@@ -398,19 +398,23 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
         </div>
       </div>
 
-      {/* Inline keyframes for animations */}
+      {/* Inline keyframes for animations.
+          NOTE: question-card entry intentionally animates opacity only (no
+          transform). A previous translateX-based slide caused the first
+          click on a freshly-mounted choice button to miss because hit-testing
+          uses the animated (offset) position, not the final one. */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(40px); }
-          to   { opacity: 1; transform: translateX(0); }
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
         @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-40px); }
-          to   { opacity: 1; transform: translateX(0); }
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
       `}</style>
     </section>

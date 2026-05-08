@@ -71,7 +71,10 @@ export default function USPCard({ imageSrc, title, description, icon, href, ctaL
       />
       <div className="p-5 flex flex-col flex-1">
         <h3
-          className="text-gray-900 font-black tracking-tight text-base mb-1 text-center"
+          // text-base + font-black smashes Japanese characters at small sizes
+          // (especially with Meiryo / system Bold). Drop to font-bold (700) so
+          // it stays legible regardless of the global font preset.
+          className="text-gray-900 font-bold tracking-tight text-base mb-1 text-center"
           style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}
         >
           {title} <span className="text-xl align-middle">{icon}</span>
