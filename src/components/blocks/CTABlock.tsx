@@ -19,12 +19,12 @@ export default function CTABlock({ config, store, allStores }: CTABlockProps) {
 
   return (
     <section className="py-14 px-5 bg-[#0C3290]">
-      <div className="max-w-[600px] mx-auto text-center">
+      <div className="max-w-[720px] mx-auto text-center">
         <h2
           className="font-black tracking-tight text-white mb-2 whitespace-nowrap"
           style={{
-            fontFamily: '"Noto Sans JP", sans-serif',
-            fontSize: 'clamp(1.5rem, 5vw, 2.5rem)',
+            fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)',
+            fontSize: 'clamp(1.4rem, 5.5vw, 3rem)',
           }}
         >
           お気軽にお問い合わせください
