@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { requireAuth } from '@/lib/auth';
 import { auditLog } from '@/lib/audit';
 import {
@@ -70,6 +71,11 @@ export async function PUT(request: Request) {
       keysChanged: [...Object.keys(values), ...Object.keys(policy)],
       siteFont: siteFont === undefined ? undefined : siteFont,
     });
+    // Bust the root layout cache so the new --site-font CSS variable
+    // (and any other site-wide default) reaches every page on next load.
+    if (siteFont !== undefined) {
+      try { revalidatePath('/', 'layout'); } catch (e) { console.error('revalidatePath after font save failed:', e); }
+    }
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('PUT /api/admin/defaults error:', error);

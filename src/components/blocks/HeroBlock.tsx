@@ -197,7 +197,9 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
             <h1
               className="text-white font-bold leading-tight mb-3 md:whitespace-nowrap"
               style={{
-                fontFamily: 'var(--site-font, "Noto Serif JP", serif)',
+                // Hero title is intentionally locked to Noto Serif JP regardless of the
+                // site-wide font preset (it's a designed brand element, not body copy).
+                fontFamily: '"Noto Serif JP", serif',
                 fontSize: 'clamp(1.25rem, 6vw, 4rem)',
                 fontFeatureSettings: '"palt" 1',
                 textShadow: '0 2px 4px rgba(0,0,0,1), 0 1px 2px rgba(0,0,0,1), 0 0 1px rgba(0,0,0,1)',
@@ -207,7 +209,7 @@ export default function HeroBlock({ config, store, basePath }: HeroBlockProps) {
             </h1>
             <p
               className="text-white text-sm mb-4"
-              style={{ fontFamily: 'var(--site-font, "Noto Serif JP", serif)' }}
+              style={{ fontFamily: '"Noto Serif JP", serif' }}
             >
               {config.subtitle || store.hero_subtitle || `${store.store_name} ｜ KeePer PRO SHOP認定`}
             </p>

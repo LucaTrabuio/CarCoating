@@ -57,6 +57,12 @@ const fontVariables = [
   kosugiMaru.variable,
 ].join(' ');
 
+// Revalidate the root layout periodically so site-wide settings (e.g. the
+// global font selector under /admin/defaults) propagate to every page within
+// 60 s without a redeploy. The admin save also triggers an explicit
+// revalidatePath('/', 'layout') for instant propagation.
+export const revalidate = 60;
+
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
