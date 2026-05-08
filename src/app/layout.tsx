@@ -16,7 +16,10 @@ const notoSerif = Noto_Serif_JP({
 const notoSans = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  // Load 900 too — many headings use Tailwind's `font-black` (900). Without the
+  // real 900 face, the browser synthesizes a heavier weight from 700, which
+  // looks crudely overbold (the issue users reported with Meiryo / Noto Sans).
+  weight: ["400", "500", "700", "900"],
   display: "swap",
 });
 

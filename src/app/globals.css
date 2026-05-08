@@ -114,6 +114,11 @@ body {
   letter-spacing: 0.04em;
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
+  /* Prevent the browser from faux-bolding fonts that lack a real 900 weight
+     (Meiryo only ships Regular + Bold; Noto Sans JP next/font face). When
+     `font-black` is requested, fall back to the heaviest real weight available
+     instead of synthesizing — keeps headings legible across all presets. */
+  font-synthesis-weight: none;
 }
 
 /* Mobile font scale: base = 16px. @theme inline bakes desktop values
