@@ -63,6 +63,7 @@ export async function getGlobalDefaults(): Promise<GlobalDefaults> {
       values: data?.values ?? {},
       policy: data?.policy ?? {},
       siteFont: data?.siteFont,
+      campaignOverridesNews: data?.campaignOverridesNews,
     };
   } catch (err) {
     console.error('getGlobalDefaults failed, returning empty defaults:', err);
@@ -75,6 +76,7 @@ export async function saveGlobalDefaults(
     values?: Partial<Record<DefaultableKey, string>>;
     policy?: Partial<Record<DefaultableKey, PolicyEntry>>;
     siteFont?: string | null;
+    campaignOverridesNews?: boolean;
   },
   uid: string,
 ): Promise<void> {
@@ -84,6 +86,8 @@ export async function saveGlobalDefaults(
     values: { ...current.values, ...(patch.values ?? {}) },
     policy: { ...current.policy, ...(patch.policy ?? {}) },
     siteFont: patch.siteFont === null ? undefined : (patch.siteFont ?? current.siteFont),
+    campaignOverridesNews:
+      patch.campaignOverridesNews === undefined ? current.campaignOverridesNews : patch.campaignOverridesNews,
     updated_at: new Date().toISOString(),
     updated_by: uid,
   };

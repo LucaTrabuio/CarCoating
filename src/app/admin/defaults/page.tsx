@@ -42,6 +42,8 @@ export default function GlobalDefaultsPage() {
   const [siteFontDraft, setSiteFontDraft] = useState<string>('');
   const [siteFontSaving, setSiteFontSaving] = useState(false);
   const [siteFontSaved, setSiteFontSaved] = useState(false);
+  const [bannerPrioritySaving, setBannerPrioritySaving] = useState(false);
+  const [bannerPrioritySaved, setBannerPrioritySaved] = useState(false);
 
   const loadDefaults = useCallback(async () => {
     try {
@@ -97,6 +99,26 @@ export default function GlobalDefaultsPage() {
   }
 
   if (loading) return <div className="p-8 text-gray-400">読み込み中...</div>;
+
+  async function setCampaignOverridesNews(next: boolean) {
+    setBannerPrioritySaving(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/admin/defaults', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ campaignOverridesNews: next }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await loadDefaults();
+      setBannerPrioritySaved(true);
+      setTimeout(() => setBannerPrioritySaved(false), 2500);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'バナー設定の保存に失敗しました');
+    } finally {
+      setBannerPrioritySaving(false);
+    }
+  }
 
   async function saveSiteFont() {
     setSiteFontSaving(true);
@@ -249,6 +271,45 @@ export default function GlobalDefaultsPage() {
             }}
           >
             プレビュー: あなたにぴったりのコースは？ — KeePer PRO SHOP
+          </div>
+        </div>
+
+        {/* Top-banner priority: campaign vs お知らせ */}
+        <div className="rounded-lg border border-gray-200 bg-white px-4 py-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-800">
+                ヘッダー直下のバナー — キャンペーン優先表示
+              </h2>
+              <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+                キャンペーン割引率が 0% を超えているとき、ヘッダー直下のスクロールバナーをキャンペーン表示にし、お知らせを非表示にします。
+                オフにすると、キャンペーン中でもお知らせバナーが表示され続けます。
+                <br />
+                <span className="text-gray-400">
+                  ※ ページ内の長文「お知らせ」セクション（NewsBlock）には影響しません。
+                </span>
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {bannerPrioritySaved && <span className="text-xs text-green-600 font-semibold">✓ 保存しました</span>}
+              <label className="inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  // Default = true when unset → mark checked unless explicitly false.
+                  checked={defaults?.campaignOverridesNews !== false}
+                  disabled={bannerPrioritySaving}
+                  onChange={e => setCampaignOverridesNews(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <span className={`relative w-11 h-6 rounded-full transition-colors ${
+                  defaults?.campaignOverridesNews !== false ? 'bg-blue-600' : 'bg-gray-300'
+                } ${bannerPrioritySaving ? 'opacity-50' : ''}`}>
+                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                    defaults?.campaignOverridesNews !== false ? 'translate-x-5' : ''
+                  }`} />
+                </span>
+              </label>
+            </div>
           </div>
         </div>
 

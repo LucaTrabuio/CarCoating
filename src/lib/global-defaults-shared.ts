@@ -33,6 +33,13 @@ export interface GlobalDefaults {
   policy: Partial<Record<DefaultableKey, PolicyEntry>>;
   /** Site-wide font preset id (see FONT_PRESETS). Applies to every storefront page. */
   siteFont?: string;
+  /**
+   * When true (default), an active campaign (discount > 0) replaces the
+   * お知らせ marquee under the header. When false, the お知らせ banner is
+   * shown even while a campaign is active. Affects only the top scrolling
+   * banner — the long-form NewsBlock page section is unaffected.
+   */
+  campaignOverridesNews?: boolean;
 }
 
 /** Per-key empty sentinel used when resetting a store's override. */

@@ -8,6 +8,7 @@ import MobileCTA from '@/components/MobileCTA';
 import DynamicBanner from '@/components/DynamicBanner';
 import QuizPopup from '@/components/QuizPopup';
 import { getV3StoreById, getAllV3StoreIds, getV3CampaignDefaults, getSubCompanyBySlug, getStoresBySubCompany } from '@/lib/firebase-stores';
+import { getGlobalDefaults } from '@/lib/global-defaults';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   try {
@@ -87,6 +88,12 @@ export default async function SlugLayout({
   const { slug } = await params;
 
   try {
+    // Load site-wide defaults once; cheap (single Firestore doc) and used
+    // in both the single-store and sub-company branches below.
+    const globalDefaults = await getGlobalDefaults();
+    // Default to true: an active campaign hides the お知らせ marquee.
+    const campaignWins = globalDefaults.campaignOverridesNews !== false;
+
     // Check if this is a store
     const store = await getV3StoreById(slug);
     if (store && store.is_active) {
@@ -96,7 +103,10 @@ export default async function SlugLayout({
       if (defaults.end && new Date(defaults.end) < new Date()) {
         campaign.discount_rate = 0;
       }
-      const newsTitle = campaign.discount_rate > 0 ? undefined : getLatestNewsTitle(store.store_news);
+      const newsTitle =
+        campaignWins && campaign.discount_rate > 0
+          ? undefined
+          : getLatestNewsTitle(store.store_news);
 
       return (
         <>
@@ -143,7 +153,10 @@ export default async function SlugLayout({
       if (defaults.end && new Date(defaults.end) < new Date()) {
         campaign.discount_rate = 0;
       }
-      const scNewsTitle = campaign.discount_rate > 0 ? undefined : getLatestNewsTitle(primaryStore.store_news);
+      const scNewsTitle =
+        campaignWins && campaign.discount_rate > 0
+          ? undefined
+          : getLatestNewsTitle(primaryStore.store_news);
 
       return (
         <>

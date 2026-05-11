@@ -36,6 +36,7 @@ export async function PUT(request: Request) {
       values?: Partial<Record<string, string>>;
       policy?: Partial<Record<string, PolicyEntry>>;
       siteFont?: string | null;
+      campaignOverridesNews?: boolean;
     };
 
     // Whitelist keys to prevent arbitrary writes.
@@ -66,15 +67,19 @@ export async function PUT(request: Request) {
       siteFont = body.siteFont;
     }
 
-    await saveGlobalDefaults({ values, policy, siteFont }, auth.user.uid);
+    const campaignOverridesNews =
+      typeof body.campaignOverridesNews === 'boolean' ? body.campaignOverridesNews : undefined;
+
+    await saveGlobalDefaults({ values, policy, siteFont, campaignOverridesNews }, auth.user.uid);
     auditLog('global_defaults_update', auth.user.uid, {
       keysChanged: [...Object.keys(values), ...Object.keys(policy)],
       siteFont: siteFont === undefined ? undefined : siteFont,
+      campaignOverridesNews,
     });
-    // Bust the root layout cache so the new --site-font CSS variable
-    // (and any other site-wide default) reaches every page on next load.
-    if (siteFont !== undefined) {
-      try { revalidatePath('/', 'layout'); } catch (e) { console.error('revalidatePath after font save failed:', e); }
+    // Bust the root layout cache so site-wide settings (site font, banner
+    // priority, …) reach every page on next load.
+    if (siteFont !== undefined || campaignOverridesNews !== undefined) {
+      try { revalidatePath('/', 'layout'); } catch (e) { console.error('revalidatePath after defaults save failed:', e); }
     }
     return NextResponse.json({ success: true });
   } catch (error) {
