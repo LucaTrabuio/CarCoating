@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getV3CampaignDefaults, saveV3CampaignDefaults } from '@/lib/firebase-stores';
 import { requireAuth } from '@/lib/auth';
 import { campaignDefaultsSchema } from '@/lib/validations';
@@ -27,6 +28,19 @@ export async function POST(request: Request) {
 
     await saveV3CampaignDefaults(result.data);
     auditLog('campaign_update', auth.user.uid);
+    // The HQ campaign defaults feed every storefront's banner via the root
+    // and per-store layouts (both have `revalidate = 60`). Without this
+    // bust, a saved change to discount / force_hq_campaign / title / dates
+    // would stay invisible on every cached page until the 60-second ISR
+    // window naturally rolled over for that specific path — which only
+    // happens lazily on traffic and explains why the toggle "worked on
+    // localhost" (dev mode = no cache) "but not on the live version"
+    // (every prod store page had a fresh cached HTML).
+    try {
+      revalidatePath('/', 'layout');
+    } catch (e) {
+      console.error('revalidatePath after campaign save failed:', e);
+    }
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('POST /api/v3/campaign error:', error);
