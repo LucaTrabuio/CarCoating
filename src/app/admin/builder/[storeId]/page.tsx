@@ -891,7 +891,7 @@ export default function BuilderPage() {
   const blurFields = getPricingBlurFields();
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -1599,7 +1599,7 @@ export default function BuilderPage() {
         </div>
 
         {/* Right panel: iframe preview */}
-        <div className="w-[400px] flex-shrink-0 hidden lg:block">
+        <div className="w-[420px] xl:w-[520px] 2xl:w-[640px] flex-shrink-0 hidden lg:block">
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden h-[calc(100vh-120px)] lg:sticky lg:top-6 flex flex-col">
             <div className="flex items-center justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
               <div className="flex items-center gap-2">
