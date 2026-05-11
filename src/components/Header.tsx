@@ -20,15 +20,19 @@ export default function Header({ storeId, storeName, tel, lineUrl, basePath }: H
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/97 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-[1100px] mx-auto px-5 flex items-center justify-between h-14">
-        <Link href={base} className="flex items-center gap-2 text-[#0C3290] min-w-0">
+        <Link href={base} className="flex items-center gap-2 text-[#0C3290] min-w-0 shrink">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/keeper-logo-header.png" alt="KeePer" className="h-8 sm:h-10 shrink-0" />
-          <span className="hidden sm:inline text-[13px] font-bold leading-tight truncate max-w-[180px] md:max-w-none">
+          {/* Cap width per-breakpoint so long sub-company names like
+              "東京多摩中央（立川・府中・国分寺）エリア" (20 chars) can't push the
+              desktop nav off the line. Truncate (white-space:nowrap +
+              ellipsis) keeps it visually clean within each cap. */}
+          <span className="hidden sm:inline text-[13px] font-bold leading-tight truncate max-w-[140px] md:max-w-[160px] lg:max-w-[260px] xl:max-w-[360px]">
             {storeName}
           </span>
         </Link>
 
-        <nav className="hidden md:flex gap-5 items-center">
+        <nav className="hidden md:flex gap-5 items-center shrink-0 whitespace-nowrap">
           <Link href={base} className="text-gray-600 text-[13px] hover:text-[#0C3290] transition-colors">ホーム</Link>
 
           {/* Menu dropdown */}
