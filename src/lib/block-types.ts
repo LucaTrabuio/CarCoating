@@ -103,10 +103,12 @@ export interface ConcernsConfig {
 
 export interface QuizConfig {
   // pass-through to RecommendationQuiz for now
+  _reserved?: never;
 }
 
 export interface SimulatorConfig {
   // pass-through to HomeSimulatorLink for now
+  _reserved?: never;
 }
 
 export interface CasesConfig {

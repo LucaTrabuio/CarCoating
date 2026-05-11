@@ -54,6 +54,7 @@ export default function InquiriesPage() {
     setLoading(false);
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetchInquiries sets state once data resolves; fetch-on-mount pattern
   useEffect(() => { fetchInquiries(); }, [fetchInquiries]);
 
   const storeNameById = useMemo(() => {

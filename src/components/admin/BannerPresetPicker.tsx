@@ -23,6 +23,7 @@ export default function BannerPresetPicker({ open, onClose, onPick }: BannerPres
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset on each modal open before refetch; intentional UX
     setPresets(null);
     setError(null);
     fetch('/api/admin/banner-presets', { cache: 'no-store' })

@@ -28,6 +28,7 @@ export default function GoogleAutoFill({ onAutoFill }: Props) {
         const info = JSON.parse(saved) as CustomerInfo;
         if (info.name && info.email) {
           onAutoFill(info);
+          // eslint-disable-next-line react-hooks/set-state-in-effect -- post-mount localStorage hydration; SSR cannot see localStorage
           setRestored(true);
         }
       }

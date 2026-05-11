@@ -109,6 +109,7 @@ export default function BookingsPage() {
     setLoading(false);
   }, [selectedStore]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetchBookings sets state once data resolves; intentional fetch-on-mount/store-change pattern
   useEffect(() => { fetchBookings(); }, [fetchBookings]);
 
   // Map of reservations by date (excluding cancelled for the dot count)

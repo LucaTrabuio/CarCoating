@@ -54,6 +54,7 @@ export function DiagnosticsClient() {
         setError(json.error ? `${json.error}${json.detail ? ': ' + json.detail : ''}` : `HTTP ${res.status}`);
         setData(null);
       } else {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional state update after async fetch resolves
         setData(json);
       }
     } catch (e) {
@@ -62,6 +63,7 @@ export function DiagnosticsClient() {
     setLoading(false);
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- fetchDiagnostics sets state once data resolves; fetch-on-mount pattern
   useEffect(() => { fetchDiagnostics(); }, [fetchDiagnostics]);
 
   function toggleExpand(key: string) {

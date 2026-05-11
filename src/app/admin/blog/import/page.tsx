@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Link from 'next/link';
 
 type FieldDiff = { field: string; before: unknown; after: unknown };
 type HeroImage = {
@@ -109,8 +110,10 @@ export default function BlogImportPage() {
 
       <div className="bg-white border border-gray-200 rounded-xl p-5 mb-5">
         <div className="flex flex-wrap gap-3 items-center">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- API endpoint serving a CSV download, not a Next page */}
           <a
             href="/api/admin/blog/import/template"
+            download
             className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-sm font-semibold rounded-lg"
           >
             現在のブログ一覧（テンプレート）をダウンロード
@@ -147,7 +150,7 @@ export default function BlogImportPage() {
           <div className="font-semibold">インポート完了 ✓</div>
           <div className="text-xs mt-1">反映: {success.committed} 件 — Import ID: <code className="bg-white px-1 rounded">{success.importId}</code></div>
           <div className="text-xs mt-1 text-gray-600">
-            問題があった場合は<a href="/admin/imports" className="underline">「インポート履歴」</a>から元に戻せます。
+            問題があった場合は<Link href="/admin/imports" className="underline">「インポート履歴」</Link>から元に戻せます。
           </div>
         </div>
       )}

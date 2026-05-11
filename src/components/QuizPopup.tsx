@@ -86,6 +86,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
   // Show floating button after 3s (sync with hero CTA pop-in), or immediately if already past the hero, or as soon as user scrolls
   useEffect(() => {
     if (window.scrollY > window.innerHeight * 0.5) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- post-mount window.scrollY check; SSR cannot read scroll position
       setShowFloatingButton(true);
       return;
     }
@@ -103,6 +104,7 @@ export default function QuizPopup({ storeId, basePath }: { storeId: string; base
   // Auto-open popup after 4 seconds of scrolling, unless dismissed this session
   useEffect(() => {
     try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- post-mount sessionStorage hydration; SSR cannot see sessionStorage
       if (sessionStorage.getItem(STORAGE_KEY)) { setDismissed(true); return; }
     } catch { /* SSR or blocked */ }
 

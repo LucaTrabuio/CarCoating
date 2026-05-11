@@ -45,6 +45,7 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
     const make = searchParams.get('make');
     const model = searchParams.get('model');
     if (size && ALL_SIZES.includes(size)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs URL searchParams into local state on mount/change
       setSelectedSize(size);
       if (make) setSelectedMake(make);
       if (model) setSelectedModel(model);

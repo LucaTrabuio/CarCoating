@@ -60,7 +60,8 @@ export default function LayerGraphic({ layers }: Props) {
           if (layer.thickness === "extra-thick") h = 26;
           // Adjust overlap: move top layer down slightly so they look stacked
           const yPos = currentY;
-          currentY -= (h + 5); 
+          // eslint-disable-next-line react-hooks/immutability -- single-pass render-time accumulator for SVG y-offsets; not observed across renders
+          currentY -= (h + 5);
           return <g key={idx}>{drawLayer(layer.color, layer.thickness, yPos)}</g>;
         })}
       </svg>

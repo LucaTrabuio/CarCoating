@@ -107,6 +107,7 @@ export default function V3HomePage() {
   // Init map when section is visible
   const userPosRef = useRef<{ lat: number; lng: number } | null>(null);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization -- intentional manual useCallback over Google Maps init; closure capture is desired
   const initMap = useCallback(() => {
     if (storesLoading || !mapRef.current || mapReady) return;
     loadGoogleMaps().then(maps => {
@@ -221,6 +222,7 @@ export default function V3HomePage() {
   // Auto-detect location on mount
   useEffect(() => {
     if (!storesLoading && stores.length > 0 && geoStatus === 'idle') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- detectLocation triggers async geolocation; setState happens after user permission
       detectLocation();
     }
   }, [storesLoading, stores.length, geoStatus, detectLocation]);
