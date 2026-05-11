@@ -14,6 +14,11 @@
 #     in-flight work isn't dropped). NOTE: a fresh worktree's HEAD is
 #     trivially an ancestor of its base, so the ownership check above
 #     is what actually prevents accidental cleanup of new worktrees.
+#   • DIRTY-WORK GUARD: refuse to remove if the worktree has any
+#     uncommitted or untracked changes (`git status --porcelain` non-
+#     empty, gitignored paths excluded). Without this, an unrelated
+#     commit on the parent repo would silently destroy in-flight work
+#     in the worktree even when the same session owns both.
 #   • silent on no-op so it doesn't spam every commit
 #
 # Worktrees with NO .session-owner marker (legacy ones created before
@@ -48,6 +53,7 @@ CURRENT="$(git rev-parse HEAD 2>/dev/null || true)"
 REMOVED=()
 SKIPPED_FOREIGN=()
 SKIPPED_UNOWNED=()
+SKIPPED_DIRTY=()
 
 while IFS=$'\t' read -r WT_PATH WT_SHA; do
   [[ "$WT_PATH" == "$REPO" ]] && continue
@@ -66,6 +72,15 @@ while IFS=$'\t' read -r WT_PATH WT_SHA; do
   fi
 
   if git merge-base --is-ancestor "$WT_SHA" "$CURRENT" 2>/dev/null; then
+    # Dirty-work guard: if the worktree has uncommitted or untracked
+    # changes (`git status --porcelain` non-empty; gitignored paths
+    # excluded), leave it alone. Better to leak ~4 GB of node_modules
+    # than to lose the user's in-flight diff.
+    DIRTY="$(git -C "$WT_PATH" status --porcelain 2>/dev/null || echo "ERR")"
+    if [[ -n "$DIRTY" ]]; then
+      SKIPPED_DIRTY+=("$WT_PATH")
+      continue
+    fi
     if git worktree remove --force "$WT_PATH" >/dev/null 2>&1; then
       REMOVED+=("$WT_PATH")
     fi
@@ -80,6 +95,12 @@ done < <(
 if [[ ${#REMOVED[@]} -gt 0 ]]; then
   printf '[claude/cleanup-loop-worktrees] removed %d merged worktree(s) owned by this session:\n' "${#REMOVED[@]}" >&2
   for p in "${REMOVED[@]}"; do printf '  • %s\n' "$p" >&2; done
+fi
+# Skipped-dirty IS surfaced — the user almost certainly wants to know
+# their loop worktree was left in place because it has unsaved work.
+if [[ ${#SKIPPED_DIRTY[@]} -gt 0 ]]; then
+  printf '[claude/cleanup-loop-worktrees] left %d worktree(s) in place — uncommitted/untracked changes present:\n' "${#SKIPPED_DIRTY[@]}" >&2
+  for p in "${SKIPPED_DIRTY[@]}"; do printf '  • %s (commit/discard then it will clean up automatically)\n' "$p" >&2; done
 fi
 # Foreign / unowned cases are deliberately silent on the happy path.
 # Uncomment to debug:

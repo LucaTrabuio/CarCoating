@@ -252,9 +252,11 @@ A `PostToolUse` hook in `.claude/settings.json` runs
 `.claude/hooks/cleanup-loop-worktrees.sh` after every `Bash` tool call.
 The script no-ops unless the command was a `git commit`, then drops any
 `loop-*` worktree that **(a)** carries a `.claude/.session-owner`
-marker matching the current Claude Code session id AND **(b)** has a
-HEAD that is now an ancestor of the current branch's HEAD — so the
-disk reclaim happens automatically the moment the loop's work lands.
+marker matching the current Claude Code session id, **(b)** has a
+HEAD that is now an ancestor of the current branch's HEAD, AND
+**(c)** has a clean tree (`git status --porcelain` empty in the
+worktree) — so the disk reclaim happens automatically the moment the
+loop's work lands without ever destroying in-flight diffs.
 
 The session-ownership check is what makes concurrent sessions safe.
 Without it, a fresh worktree's HEAD is trivially an ancestor of its
@@ -266,6 +268,16 @@ stdin payload (falling back to the env var) and only removes
 worktrees whose marker matches. Worktrees without a marker (legacy
 ones created before this hook learned about ownership) are left
 alone — clean them up by hand once you're sure they're idle.
+
+The dirty-work guard (c) was added after a real incident: an
+unrelated `chore(lint)` commit on `main` made the loop worktree's
+HEAD an ancestor of `HEAD`, and the same session that owned the
+worktree had its uncommitted refactor force-removed by the hook. The
+guard now runs `git -C "$worktree" status --porcelain`; any output
+(modified, staged, or untracked files — gitignored paths excluded)
+keeps the worktree in place and the hook surfaces a one-line
+"left in place — uncommitted changes present" message so you know
+why disk wasn't reclaimed.
 
 The hook is a safety net, not a substitute: still call
 `git worktree remove` explicitly when the work is captured, because
