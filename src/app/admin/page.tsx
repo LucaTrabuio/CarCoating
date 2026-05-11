@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useAdminAuth } from '@/components/admin/AdminAuthProvider';
+import { useNavBadges } from '@/components/admin/NavBadges';
 
 interface StoreInfo {
   store_id: string;
@@ -21,13 +22,12 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetch('/api/v3/stores?all=true')
-      .then(r => r.ok ? r.json() : [])
+      .then(r => (r.ok ? r.json() : []))
       .then(data => setStores(Array.isArray(data) ? data : []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  // Filter stores for store_admin
   const visibleStores = useMemo(() => {
     if (isSuper) return stores;
     return stores.filter(s => user.managed_stores.includes(s.store_id));
@@ -44,7 +44,9 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* Stats */}
+      <TodayTasks />
+
+      {/* Background context: store inventory */}
       <div className={`grid ${isSuper ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2'} gap-4 mb-8`}>
         <StatCard label={isSuper ? '登録店舗' : '担当店舗'} value={loading ? '...' : String(visibleStores.length)} />
         <StatCard label="アクティブ" value={loading ? '...' : String(activeStores.length)} />
@@ -56,27 +58,7 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* Quick actions — only show pages the user can access */}
-      <div className="grid md:grid-cols-3 gap-4 mb-8">
-        <QuickAction href="/admin/bookings" icon="📅" title="予約管理" desc="予約リクエストの確認" />
-        <QuickAction href="/admin/inquiries" icon="💬" title="お問い合わせ" desc="お問い合わせの管理" />
-        <QuickAction href="/admin/builder" icon="🎨" title="ページビルダー" desc="店舗ページの編集" />
-        <QuickAction href="/admin/news" icon="📰" title="お知らせ管理" desc="お知らせを管理" />
-        <QuickAction href="/admin/kpi" icon="📊" title="KPIダッシュボード" desc="電話・問い合わせ・予約の集計" />
-        <QuickAction href="/admin/tickets" icon="🎫" title="チケット" desc="サポートチケット" />
-        {isSuper && (
-          <>
-            <QuickAction href="/admin/stores" icon="🏪" title="店舗管理" desc="店舗データの確認・CSV管理" />
-            <QuickAction href="/admin/campaigns" icon="🏷️" title="キャンペーン" desc="キャンペーン設定の変更" />
-            <QuickAction href="/admin/users" icon="👥" title="ユーザー管理" desc="管理者アカウントの管理" />
-            <QuickAction href="/admin/blog" icon="✍️" title="ブログ管理" desc="ブログ記事の作成・編集" />
-            <QuickAction href="/admin/master" icon="⚙️" title="マスターデータ" desc="コース・アピールポイント管理" />
-            <QuickAction href="/admin/diagnostics" icon="🩺" title="診断" desc="システム状態の確認" />
-          </>
-        )}
-      </div>
-
-      {/* Store list — only managed stores for store_admin */}
+      {/* Active store list — unchanged limits (8 super / 20 store_admin) */}
       {!loading && activeStores.length > 0 && (
         <div className="bg-white border border-gray-200 rounded-xl p-5">
           <div className="flex items-center justify-between mb-3">
@@ -104,21 +86,48 @@ export default function AdminDashboard() {
   );
 }
 
+// "Today's tasks" panel — replaces the old QuickAction grid that simply
+// duplicated the sidebar. Surfaces actionable counts from the same
+// polled endpoints the sidebar badges use.
+function TodayTasks() {
+  const counts = useNavBadges();
+  return (
+    <div className="mb-8">
+      <h2 className="font-bold text-sm text-gray-700 mb-3">今日のタスク</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <TaskCard href="/admin/inquiries" label="新着お問い合わせ" count={counts.inquiries} icon="💬" />
+        <TaskCard href="/admin/bookings" label="確認待ちの予約" count={counts.bookings} icon="📅" />
+        <TaskCard href="/admin/tickets" label="未対応チケット" count={counts.tickets} icon="🎫" />
+      </div>
+    </div>
+  );
+}
+
+function TaskCard({ href, label, count, icon }: { href: string; label: string; count: number; icon: string }) {
+  const isEmpty = count <= 0;
+  return (
+    <Link
+      href={href}
+      className={`bg-white border rounded-xl p-4 transition-colors flex items-center gap-4 ${
+        isEmpty ? 'border-gray-200 hover:border-gray-300' : 'border-amber-300 hover:border-amber-400'
+      }`}
+    >
+      <div className="text-2xl" aria-hidden="true">{icon}</div>
+      <div className="flex-1 min-w-0">
+        <div className="text-xs text-gray-500">{label}</div>
+        <div className={`text-2xl font-bold ${isEmpty ? 'text-gray-400' : 'text-[#0C3290]'}`}>
+          {isEmpty ? '0件' : `${count}件`}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
       <div className="text-2xl font-bold text-[#0C3290]">{value}</div>
       <div className="text-xs text-gray-500 mt-1">{label}</div>
     </div>
-  );
-}
-
-function QuickAction({ href, icon, title, desc }: { href: string; icon: string; title: string; desc: string }) {
-  return (
-    <Link href={href} className="bg-white border border-gray-200 rounded-xl p-4 hover:border-blue-400 transition-colors">
-      <div className="text-xl mb-1">{icon}</div>
-      <div className="font-bold text-sm text-[#0C3290]">{title}</div>
-      <div className="text-xs text-gray-500 mt-0.5">{desc}</div>
-    </Link>
   );
 }

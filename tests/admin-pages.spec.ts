@@ -46,6 +46,8 @@ test.describe('Admin API routes — auth check', () => {
     { method: 'GET', path: '/api/admin/inquiries' },
     { method: 'GET', path: '/api/admin/tickets' },
     { method: 'GET', path: '/api/admin/tickets/count' },
+    { method: 'GET', path: '/api/admin/inquiries/count' },
+    { method: 'GET', path: '/api/admin/bookings/count' },
     { method: 'GET', path: '/api/admin/kpi?storeId=eniwa' },
     { method: 'GET', path: '/api/admin/diagnostics' },
     { method: 'GET', path: '/api/admin/template?store=eniwa' },

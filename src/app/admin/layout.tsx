@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { verifySession } from '@/lib/auth';
 import { AdminAuthProvider } from '@/components/admin/AdminAuthProvider';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminShell } from '@/components/admin/AdminShell';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await verifySession();
@@ -12,10 +12,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <AdminAuthProvider user={session}>
-      <div className="flex min-h-screen">
-        <AdminSidebar />
-        <main className="flex-1 bg-gray-50 p-6">{children}</main>
-      </div>
+      <AdminShell>{children}</AdminShell>
     </AdminAuthProvider>
   );
 }
