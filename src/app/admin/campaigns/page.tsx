@@ -99,20 +99,28 @@ export default function CampaignsPage() {
           </select>
         </div>
 
-        {/* Live Preview */}
+        {/* Live Preview — held back until the saved settings have
+            loaded so the banner doesn't flash the initial-state color
+            (e.g. blue) before snapping to the saved color (e.g. yellow). */}
         <div className="mt-4 mb-4">
           <p className="text-xs text-gray-400 mb-2">プレビュー（リアルタイム）:</p>
-          <div
-            className="text-center py-3 px-5 font-bold text-sm rounded-lg"
-            style={{
-              background: bannerColor,
-              color: '#0C3290',
-              ...previewFontStyle,
-            }}
-          >
-            {campaignTitle || 'キャンペーンタイトル'} ｜ 最大{campaignDiscount || '0'}%OFF
-            <div className="text-[11px] font-normal opacity-80 mt-0.5">Web予約限定 ｜ {campaignEnd ? new Date(campaignEnd + 'T00:00:00').toLocaleDateString('ja-JP') : '—'}まで</div>
-          </div>
+          {campaignLoaded ? (
+            <div
+              className="text-center py-3 px-5 font-bold text-sm rounded-lg"
+              style={{
+                background: bannerColor,
+                color: '#0C3290',
+                ...previewFontStyle,
+              }}
+            >
+              {campaignTitle || 'キャンペーンタイトル'} ｜ 最大{campaignDiscount || '0'}%OFF
+              <div className="text-[11px] font-normal opacity-80 mt-0.5">Web予約限定 ｜ {campaignEnd ? new Date(campaignEnd + 'T00:00:00').toLocaleDateString('ja-JP') : '—'}まで</div>
+            </div>
+          ) : (
+            <div className="text-center py-3 px-5 font-bold text-sm rounded-lg bg-gray-100 text-gray-400">
+              読み込み中...
+            </div>
+          )}
         </div>
 
         {/* Force override checkbox */}
