@@ -74,17 +74,17 @@ export default function USPCard({ imageSrc, title, description, icon, href, ctaL
           // text-base + font-black smashes Japanese characters at small sizes
           // (especially with Meiryo / system Bold). Drop to font-bold (700) so
           // it stays legible regardless of the global font preset.
-          className="text-gray-900 font-bold tracking-tight text-base mb-1 text-center"
+          className="text-gray-900 font-bold tracking-tight text-lg md:text-base mb-1 text-center"
           style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}
         >
-          {title} <span className="text-xl align-middle">{icon}</span>
+          {title} <span className="text-2xl md:text-xl align-middle">{icon}</span>
         </h3>
-        <p className="text-gray-500 text-xs text-center">{description}</p>
+        <p className="text-gray-500 text-sm md:text-xs text-center">{description}</p>
         {href && (
           <div className="text-right mt-auto pt-3">
             <Link
               href={href}
-              className="inline-block bg-amber-500 text-[#0C3290] px-4 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition-opacity"
+              className="inline-block bg-amber-500 text-[#0C3290] px-4 py-1.5 rounded-lg text-sm md:text-xs font-bold hover:opacity-90 transition-opacity"
             >
               {ctaLabel ?? '詳しく見る →'}
             </Link>

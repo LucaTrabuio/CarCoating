@@ -5,6 +5,7 @@ import BlockRenderer from '@/components/blocks/BlockRenderer';
 import PageViewTracker from '@/components/PageViewTracker';
 import SubCompanyStoreMap from '@/components/SubCompanyStoreMap';
 import { getMasterAppealPoints } from '@/lib/master-data';
+import CoatingComparisonSection from '@/components/CoatingCard/CoatingComparisonSection';
 import { getGlobalDefaults, applyDefaults } from '@/lib/global-defaults';
 
 export default async function SlugPage({
@@ -84,6 +85,7 @@ export default async function SlugPage({
             }))}
             groupName={subCompany.name}
           />
+          <CoatingComparisonSection />
         </main>
       );
     }
@@ -126,6 +128,7 @@ export default async function SlugPage({
               appealPointsMaster={appealPointsMaster}
             />
           ))}
+        <CoatingComparisonSection />
       </main>
     );
   }
@@ -184,6 +187,7 @@ export default async function SlugPage({
           }))}
           groupName={subCompany.name}
         />
+        <CoatingComparisonSection />
       </main>
     );
   }

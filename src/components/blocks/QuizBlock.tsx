@@ -208,17 +208,15 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
       ref={sectionRef}
       onMouseMove={onSectionMove}
       onMouseLeave={onSectionLeave}
-      className="relative w-full overflow-hidden px-5 flex items-start justify-center"
-      style={
-        step === -1
-          ? { aspectRatio: '3138 / 1044' }
-          : { minHeight: 'min(33vw, 520px)' }
-      }
+      className={`relative w-full overflow-hidden px-5 flex items-start justify-center${
+        step === -1 ? ' [aspect-ratio:16/9] md:[aspect-ratio:3138/1044]' : ''
+      }`}
+      style={step === -1 ? undefined : { minHeight: 'min(33vw, 520px)' }}
     >
       <div
         ref={bgRef}
         aria-hidden
-        className="absolute inset-[-3%] bg-cover bg-center bg-no-repeat will-change-transform"
+        className="absolute inset-[-3%] bg-cover bg-[position:85%_50%] md:bg-center bg-no-repeat will-change-transform"
         style={{
           backgroundImage: 'url(/images/quiz-bg.png)',
           transition: 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), filter 3.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s',
@@ -245,7 +243,7 @@ export default function QuizBlock({ storeId, basePath = '' }: QuizBlockProps) {
       {/* Intro button — absolutely centered over the section */}
       {step === -1 && (
         <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+          className="absolute left-0 right-0 top-1/2 bottom-[20px] md:top-0 md:bottom-0 flex items-center justify-center pointer-events-none z-10"
           style={{
             opacity: inView ? 1 : 0,
             transform: inView ? 'translateY(0)' : 'translateY(28px)',

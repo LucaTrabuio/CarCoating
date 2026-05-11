@@ -75,9 +75,22 @@
   100% { transform: scale(1.05); }
 }
 
+@keyframes hero-zoom-continuous {
+  0% { transform: scale(1.25); }
+  100% { transform: scale(1, 0.93); }
+}
+
 .animate-hero-zoom {
   animation: hero-zoom-out 3s ease-out both;
   transform: scale(1.15);
+}
+
+@media (max-width: 767px) {
+  .animate-hero-zoom {
+    animation: hero-zoom-continuous 5s ease-out both;
+    transform: scale(1.25);
+    transform-origin: bottom center;
+  }
 }
 
 @keyframes slide-in-right {
