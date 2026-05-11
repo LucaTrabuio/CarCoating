@@ -22,10 +22,10 @@ interface Store {
   store_name: string;
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  open: { label: '未対応', color: 'bg-amber-100 text-amber-800' },
-  replied: { label: '返信済み', color: 'bg-green-100 text-green-800' },
-  closed: { label: '完了', color: 'bg-gray-100 text-gray-600' },
+const STATUS_CONFIG: Record<string, { label: string; badgeClass: string }> = {
+  open:    { label: '未対応',   badgeClass: 'badge warn' },
+  replied: { label: '返信済み', badgeClass: 'badge ok' },
+  closed:  { label: '完了',     badgeClass: 'badge' },
 };
 
 export default function InquiriesPage() {
@@ -100,16 +100,23 @@ export default function InquiriesPage() {
 
   return (
     <div className="max-w-[1100px] mx-auto space-y-4">
-      <h1 className="text-xl font-bold text-gray-900">お問い合わせ管理</h1>
+      <div className="page-head">
+        <div>
+          <h1 className="page-title">お問い合わせ管理</h1>
+          <p className="page-subtitle">お客様からの問い合わせを確認・返信します。</p>
+        </div>
+      </div>
 
-      {/* Filter chips */}
-      <div className="flex gap-2">
+      <div className="v-tabs">
         {([['all', 'すべて'], ['open', '未対応'], ['replied', '返信済み'], ['closed', '完了']] as const).map(([key, label]) => (
-          <button key={key} onClick={() => setStatusFilter(key)}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer ${
-              statusFilter === key ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}>
-            {label} ({filterCounts[key] || 0})
+          <button
+            key={key}
+            type="button"
+            onClick={() => setStatusFilter(key)}
+            className={`v-tab ${statusFilter === key ? 'active' : ''}`}
+          >
+            {label}
+            <span className="ct">{filterCounts[key] || 0}</span>
           </button>
         ))}
       </div>
@@ -117,28 +124,32 @@ export default function InquiriesPage() {
       <div className="flex gap-4 flex-wrap lg:flex-nowrap">
         {/* List */}
         <div className="w-full lg:w-[400px] shrink-0 space-y-2">
-          {loading && <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-400 text-sm">読み込み中...</div>}
+          {loading && <div className="card text-center text-gray-400 text-sm py-8">読み込み中...</div>}
           {!loading && filtered.length === 0 && (
-            <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-400 text-sm">お問い合わせがありません</div>
+            <div className="card text-center text-gray-400 text-sm py-8">お問い合わせがありません</div>
           )}
           {filtered.map(inq => {
             const isSelected = selectedId === inq.id;
             const sc = STATUS_CONFIG[inq.status] || STATUS_CONFIG.open;
             return (
-              <button key={inq.id} type="button"
+              <button
+                key={inq.id}
+                type="button"
                 onClick={() => setSelectedId(inq.id)}
-                className={`w-full text-left bg-white border rounded-xl p-4 cursor-pointer transition-colors ${
-                  isSelected ? 'border-blue-400 border-2' : 'border-gray-200 hover:border-gray-300'
-                }`}>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${sc.color}`}>{sc.label}</span>
+                className={`card w-full text-left cursor-pointer transition-colors ${
+                  isSelected ? 'ring-2 ring-[#0C3290]' : 'hover:shadow-lg'
+                }`}
+                style={{ padding: '14px 16px' }}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className={sc.badgeClass}>{sc.label}</span>
                   <span className="text-[10px] text-gray-400">{inq.createdAt?.slice(0, 10)}</span>
-                  <span className="text-[10px] text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">{storeNameById.get(inq.storeId) || inq.storeId}</span>
+                  <span className="badge">{storeNameById.get(inq.storeId) || inq.storeId}</span>
                 </div>
-                <div className="text-sm font-bold text-[#0f1c2e]">{inq.customerName}</div>
+                <div className="text-sm font-bold text-[#1A1A1A]">{inq.customerName}</div>
                 <div className="text-xs text-gray-500 mt-0.5 truncate">{inq.message}</div>
                 {inq.selectedTier && (
-                  <div className="text-[10px] text-blue-600 mt-1">検討コース: {inq.selectedTier}</div>
+                  <div className="text-[10px] text-[#0C3290] mt-1 font-semibold">検討コース: {inq.selectedTier}</div>
                 )}
               </button>
             );
@@ -148,74 +159,83 @@ export default function InquiriesPage() {
         {/* Detail */}
         <div className="flex-1 min-w-0">
           {!selected && (
-            <div className="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-400 text-sm min-h-[300px] flex items-center justify-center">
+            <div className="card text-center text-gray-400 text-sm min-h-[300px] flex items-center justify-center">
               お問い合わせを選択してください
             </div>
           )}
           {selected && (
-            <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+            <div className="card space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-lg font-bold text-[#0f1c2e]">{selected.customerName}</h2>
+                  <h2 className="text-lg font-bold text-[#1A1A1A]">{selected.customerName}</h2>
                   <div className="text-xs text-gray-400 mt-0.5">{selected.createdAt?.slice(0, 16).replace('T', ' ')}</div>
                 </div>
-                <select value={selected.status}
+                <select
+                  value={selected.status}
                   onChange={e => changeStatus(selected.id, e.target.value)}
-                  className="text-xs border border-gray-300 rounded px-2 py-1">
+                  className="set-input"
+                  style={{ width: 'auto', padding: '6px 10px', fontSize: 12 }}
+                >
                   <option value="open">未対応</option>
                   <option value="replied">返信済み</option>
                   <option value="closed">完了</option>
                 </select>
               </div>
 
-              <div className="space-y-1.5 text-xs">
-                <div><span className="text-gray-400 w-16 inline-block">店舗</span><span className="text-gray-700">{storeNameById.get(selected.storeId) || selected.storeId}</span></div>
-                <div><span className="text-gray-400 w-16 inline-block">電話</span><a href={`tel:${selected.customerPhone}`} className="text-blue-600">{selected.customerPhone || '—'}</a></div>
-                <div><span className="text-gray-400 w-16 inline-block">メール</span><a href={`mailto:${selected.customerEmail}`} className="text-blue-600">{selected.customerEmail}</a></div>
-                {selected.vehicleInfo && (
-                  <div><span className="text-gray-400 w-16 inline-block">車種</span><span className="text-gray-700">{selected.vehicleInfo}</span></div>
-                )}
-                {selected.selectedTier && (
-                  <div><span className="text-gray-400 w-16 inline-block">コース</span><span className="text-blue-700 font-bold">{selected.selectedTier}</span></div>
-                )}
+              <div>
+                <h3 className="sec-label sm">お客様情報</h3>
+                <div className="space-y-1.5 text-xs">
+                  <div><span className="text-gray-400 w-16 inline-block">店舗</span><span className="text-gray-700">{storeNameById.get(selected.storeId) || selected.storeId}</span></div>
+                  <div><span className="text-gray-400 w-16 inline-block">電話</span><a href={`tel:${selected.customerPhone}`} className="text-[#0C3290]">{selected.customerPhone || '—'}</a></div>
+                  <div><span className="text-gray-400 w-16 inline-block">メール</span><a href={`mailto:${selected.customerEmail}`} className="text-[#0C3290]">{selected.customerEmail}</a></div>
+                  {selected.vehicleInfo && (
+                    <div><span className="text-gray-400 w-16 inline-block">車種</span><span className="text-gray-700">{selected.vehicleInfo}</span></div>
+                  )}
+                  {selected.selectedTier && (
+                    <div><span className="text-gray-400 w-16 inline-block">コース</span><span className="text-[#0C3290] font-bold">{selected.selectedTier}</span></div>
+                  )}
+                </div>
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="text-[10px] text-blue-600 font-bold mb-1">お問い合わせ内容</div>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{selected.message}</p>
+              <div>
+                <h3 className="sec-label sm">お問い合わせ内容</h3>
+                <div className="bg-[#E8EEFB] border border-[#0C3290]/20 rounded-md p-4">
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{selected.message}</p>
+                </div>
               </div>
 
-              {/* Reply history */}
               {Array.isArray((selected as unknown as Record<string, unknown>).replies) && (
-                <div className="space-y-2">
-                  <div className="text-[10px] text-gray-500 font-bold">返信履歴</div>
-                  {((selected as unknown as Record<string, unknown>).replies as Array<{ email: string; text: string; createdAt: string }>).map((r: { email: string; text: string; createdAt: string }, i: number) => (
-                    <div key={i} className="bg-green-50 border border-green-200 rounded-lg p-3">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-bold text-green-800">{r.email}</span>
-                        <span className="text-[10px] text-gray-400">{r.createdAt?.slice(0, 16).replace('T', ' ')}</span>
+                <div>
+                  <h3 className="sec-label sm">返信履歴</h3>
+                  <div className="space-y-2">
+                    {((selected as unknown as Record<string, unknown>).replies as Array<{ email: string; text: string; createdAt: string }>).map((r: { email: string; text: string; createdAt: string }, i: number) => (
+                      <div key={i} className="bg-green-50 border border-green-200 rounded-md p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-bold text-green-800">{r.email}</span>
+                          <span className="text-[10px] text-gray-400">{r.createdAt?.slice(0, 16).replace('T', ' ')}</span>
+                        </div>
+                        <p className="text-sm text-gray-700 whitespace-pre-wrap">{r.text}</p>
                       </div>
-                      <p className="text-sm text-gray-700 whitespace-pre-wrap">{r.text}</p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
 
-              {/* Reply form */}
               {selected.status !== 'closed' && (
-                <div className="border-t border-gray-100 pt-3">
-                  <div className="text-[10px] text-gray-500 font-bold mb-2">お客様に返信</div>
+                <div className="border-t border-[#EBEBEB] pt-3">
+                  <h3 className="sec-label sm">お客様に返信</h3>
                   <textarea
                     rows={3}
                     value={replyText}
                     onChange={e => setReplyText(e.target.value)}
                     placeholder="返信内容を入力..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-2"
+                    className="set-input mb-2"
                   />
                   <button
+                    type="button"
                     onClick={() => sendReply(selected.id)}
                     disabled={replying || !replyText.trim()}
-                    className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+                    className="px-4 py-2 bg-[#0C3290] hover:bg-[#081f5e] text-white text-xs font-bold rounded-md disabled:opacity-50 cursor-pointer"
                   >
                     {replying ? '送信中...' : '返信を送信（メール送付）'}
                   </button>

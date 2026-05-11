@@ -1,0 +1,392 @@
+/*
+ * Admin theme — structural patterns adapted from
+ * /Users/lucatrabuio/Desktop/SRC/designGuidelines/ADMIN_DESIGN_GUIDELINES.md
+ *
+ * Brand color override: spec calls for crimson #B0000F, but car-coating
+ * is a KeePer-licensed brand whose storefront uses #0C3290. Admin and
+ * storefront stay visually consistent — the structural patterns
+ * (3px left bar, 24×3 underline, .card/.badge/.v-table chrome) are
+ * color-agnostic and translate cleanly.
+ *
+ * Scoped under [data-admin="true"] on the admin layout root so the
+ * tokens never leak into the public storefront.
+ */
+
+[data-admin="true"] {
+  /* Brand */
+  --primary:        #0C3290;       /* was crimson #B0000F in spec */
+  --primary-dark:   #081f5e;
+  --primary-pale:   #E8EEFB;
+
+  /* Text */
+  --text:           #1A1A1A;
+  --text-mid:       #444444;
+  --gray:           #888888;
+
+  /* Surfaces */
+  --bg:             #F5F5F5;
+  --bg-2:           #F0F0F0;
+  --border:         #DDDDDD;
+  --border-light:   #EBEBEB;
+
+  /* Status (storefront-aligned green/amber/blue) */
+  --green:          #1E8F4E;  --green-soft:  #E8F5EE;
+  --yellow:         #B8860B;  --yellow-soft: #FFF7E0;
+  --blue:           #1F5FB0;  --blue-soft:   #E8F0FA;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 4px  rgba(0,0,0,.08);
+  --shadow-md: 0 2px 12px rgba(0,0,0,.10);
+  --shadow-lg: 0 4px 24px rgba(0,0,0,.12);
+
+  /* Geometry */
+  --r-sm: 3px;
+  --r-md: 6px;
+}
+
+/* ============================================================
+ * Cards (§4)
+ * ============================================================ */
+
+[data-admin="true"] .card {
+  background: #fff;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  padding: 22px;
+}
+[data-admin="true"] .card.flush { padding: 0; }
+[data-admin="true"] .card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border-light);
+}
+[data-admin="true"] .card-body { padding: 22px; }
+
+/* ============================================================
+ * Section label (§14.1) — sub-heading inside a card
+ * ============================================================ */
+
+[data-admin="true"] .sec-label {
+  position: relative;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  padding-bottom: 8px;
+  margin-bottom: 18px;
+  color: var(--text);
+}
+[data-admin="true"] .sec-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 24px;
+  height: 3px;
+  background: var(--primary);
+}
+[data-admin="true"] .sec-label.lg { font-size: 18px; }
+[data-admin="true"] .sec-label.sm {
+  font-size: 12px;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+[data-admin="true"] .sec-label.sm::after { width: 18px; height: 2px; }
+
+/* ============================================================
+ * Page head (title + subtitle + actions)
+ * ============================================================ */
+
+[data-admin="true"] .page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+[data-admin="true"] .page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: .01em;
+  line-height: 1.2;
+}
+[data-admin="true"] .page-subtitle {
+  font-size: 13px;
+  color: var(--gray);
+  margin-top: 4px;
+}
+
+/* ============================================================
+ * Badges & pills (§4)
+ * ============================================================ */
+
+[data-admin="true"] .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  background: var(--bg-2);
+  color: var(--gray);
+}
+[data-admin="true"] .badge.ok    { background: var(--green-soft);  color: var(--green); }
+[data-admin="true"] .badge.warn  { background: var(--yellow-soft); color: var(--yellow); }
+[data-admin="true"] .badge.info  { background: var(--blue-soft);   color: var(--blue); }
+[data-admin="true"] .badge.brand { background: var(--primary-pale); color: var(--primary); }
+[data-admin="true"] .badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ============================================================
+ * Quick-action grid (§4 / §14.9)
+ * ============================================================ */
+
+[data-admin="true"] .qa-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+[data-admin="true"] .qa-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #fff;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-light);
+  text-align: left;
+  transition: border-color .15s, box-shadow .15s;
+}
+[data-admin="true"] .qa-btn:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+[data-admin="true"] .qa-btn.has-work { border-color: var(--primary); }
+[data-admin="true"] .qa-ico {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: var(--primary-pale);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+[data-admin="true"] .qa-label {
+  font-size: 11px;
+  color: var(--gray);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+[data-admin="true"] .qa-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.1;
+  margin-top: 2px;
+}
+[data-admin="true"] .qa-value.empty { color: var(--gray); font-weight: 600; }
+@media (max-width: 640px) {
+  [data-admin="true"] .qa-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+ * Pill tabs (§14.2) — for switching between same-shape datasets
+ * ============================================================ */
+
+[data-admin="true"] .v-tabs {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--bg-2);
+  border-radius: var(--r-md);
+  padding: 3px;
+}
+[data-admin="true"] .v-tab {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mid);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+[data-admin="true"] .v-tab:hover { color: var(--text); }
+[data-admin="true"] .v-tab.active {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+[data-admin="true"] .v-tab .ct {
+  display: inline-block;
+  font-size: 10px;
+  background: rgba(0,0,0,.08);
+  padding: 1px 5px;
+  border-radius: 8px;
+  margin-left: 5px;
+  font-weight: 700;
+}
+[data-admin="true"] .v-tab.active .ct {
+  background: var(--primary-pale);
+  color: var(--primary);
+}
+
+/* ============================================================
+ * Tables (§14.4)
+ * ============================================================ */
+
+[data-admin="true"] .v-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+[data-admin="true"] .v-table thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--gray);
+  background: #FAFAFA;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+[data-admin="true"] .v-table tbody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text);
+  vertical-align: middle;
+}
+[data-admin="true"] .v-table tbody tr {
+  transition: background .1s;
+}
+[data-admin="true"] .v-table tbody tr:hover {
+  background: #FAFAFA;
+}
+[data-admin="true"] .v-table tbody tr:hover .row-actions {
+  opacity: 1;
+}
+[data-admin="true"] .row-actions {
+  display: inline-flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity .12s;
+}
+
+/* ============================================================
+ * Save bar (§2) — fixed-bottom unsaved-changes guard
+ * Not currently wired anywhere; available for future page rewrites.
+ * Sidebar width matches AdminSidebar's w-60 (240px).
+ * ============================================================ */
+
+[data-admin="true"] .save-bar {
+  position: fixed;
+  bottom: 0;
+  left: 240px;
+  right: 0;
+  padding: 14px 32px;
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-light);
+  box-shadow: 0 -2px 12px rgba(0,0,0,.05);
+  transform: translateY(100%);
+  transition: transform .22s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+[data-admin="true"] .save-bar.visible { transform: translateY(0); }
+[data-admin="true"] .save-bar-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+[data-admin="true"] .save-bar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+  animation: save-pulse 1800ms infinite alternate;
+}
+@keyframes save-pulse {
+  from { opacity: 1; }
+  to   { opacity: .35; }
+}
+@media (max-width: 768px) {
+  [data-admin="true"] .save-bar { left: 0; padding: 12px 16px; }
+}
+
+/* ============================================================
+ * Settings row (§4) — for forms with override-tag column
+ * Not currently wired anywhere; available for future page rewrites.
+ * ============================================================ */
+
+[data-admin="true"] .set-row {
+  display: grid;
+  grid-template-columns: 180px 1fr auto;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--border-light);
+  align-items: flex-start;
+}
+[data-admin="true"] .set-row:first-child { border-top: none; }
+[data-admin="true"] .set-label {
+  font-size: 13px;
+  font-weight: 600;
+  padding-top: 8px;
+  color: var(--text);
+}
+[data-admin="true"] .set-hint {
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 3px;
+}
+[data-admin="true"] .set-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  background: #fff;
+  color: var(--text);
+}
+[data-admin="true"] .set-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(12, 50, 144, .12);
+}
+[data-admin="true"] .override-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  background: var(--bg-2);
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  align-self: center;
+}
+[data-admin="true"] .override-tag.active {
+  background: var(--primary-pale);
+  color: var(--primary);
+}
+@media (max-width: 768px) {
+  [data-admin="true"] .set-row { grid-template-columns: 1fr; gap: 6px; }
+  [data-admin="true"] .set-label { padding-top: 0; }
+}
