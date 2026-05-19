@@ -3,6 +3,7 @@ import { getAdminDb } from '@/lib/firebase-admin';
 import { daysUntilExpiry, PASSWORD_WARN_DAYS } from '@/lib/password-policy';
 import { generateToken, hashToken } from '@/lib/tokens';
 import { sendPasswordExpiryWarning } from '@/lib/admin-security-emails';
+import { systemAlerts } from '@/lib/system-alerts-instance';
 
 // Authorized by CRON_SECRET Bearer token instead of session auth. // eslint-disable-line car-coating/require-auth
 export async function GET(req: NextRequest) {
@@ -74,6 +75,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: true, processed: results.length, results });
   } catch (error) {
     console.error('[cron] password-expiry-cron failed:', error);
+    try {
+      await systemAlerts.recordAlert({
+        source: 'cron',
+        severity: 'critical',
+        title: 'Password expiry cron crashed',
+        payload: { error: String(error) },
+        dedupeKey: 'cron:password-expiry-cron',
+      });
+    } catch { /* never let alert recording corrupt the response */ }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

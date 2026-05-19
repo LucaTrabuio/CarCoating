@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createReservation } from '@/lib/reservations';
+import { systemAlerts } from '@/lib/system-alerts-instance';
 import { sendConfirmationEmail, sendStaffNotificationEmail } from '@/lib/email';
 import { getV3StoreById } from '@/lib/firebase-stores';
 import { getStoreSettings } from '@/lib/store-settings';
@@ -15,10 +16,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
   }
 
+  let _storeIdForAlert = 'unknown';
+
   try {
     const body = await request.json();
     const { type, storeId, name, phone, email, notes, date, time, autoConfirm,
             vehicleInfo, selectedCoatings, selectedOptions } = body;
+    if (storeId && typeof storeId === 'string') _storeIdForAlert = storeId;
 
     // Validate required fields
     if (!type || !['visit', 'inquiry'].includes(type)) {
@@ -173,6 +177,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ id: reservationId });
   } catch (error) {
     console.error('Error creating reservation:', error);
+    try {
+      await systemAlerts.recordAlert({
+        source: 'reservation',
+        severity: 'error',
+        title: 'Reservation write failed',
+        payload: { error: String(error), storeId: _storeIdForAlert },
+        dedupeKey: `reservation:write:${_storeIdForAlert}`,
+      });
+    } catch { /* never let alert recording corrupt the response */ }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

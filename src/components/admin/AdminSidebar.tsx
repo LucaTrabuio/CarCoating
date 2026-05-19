@@ -38,7 +38,7 @@ export const NAV_ITEMS: NavItem[] = [
   // Stores & organisation
   { label: '店舗マスター', href: '/admin/stores', icon: '🏪', group: 'org', superAdminOnly: true },
   { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳', group: 'org', superAdminOnly: true },
-  { label: 'ユーザー管理', href: '/admin/users', icon: '👥', group: 'org', superAdminOnly: true },
+  { label: 'ユーザー管理', href: '/admin/users', icon: '👥', group: 'org', storeAdminVisible: true },
   { label: '顧客管理', href: '/admin/customers', icon: '🙋', group: 'org', storeAdminVisible: true },
   { label: 'CSVインポート', href: '/admin/stores/import', icon: '📥', group: 'org', storeAdminVisible: true },
   { label: 'インポート履歴', href: '/admin/imports', icon: '🕘', group: 'org', storeAdminVisible: true },
@@ -49,6 +49,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'グローバルデフォルト', href: '/admin/defaults', icon: '🌐', group: 'system', superAdminOnly: true },
   { label: 'マスターデータ', href: '/admin/master', icon: '⚙️', group: 'system', superAdminOnly: true },
   { label: '診断', href: '/admin/diagnostics', icon: '🩺', group: 'system', superAdminOnly: true },
+  { label: 'システムアラート', href: '/admin/system-alerts', icon: '🚨', group: 'system', superAdminOnly: true },
 ];
 
 const GROUP_ORDER: NavGroup[] = ['daily', 'content', 'org', 'system'];

@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { systemAlerts } from './system-alerts-instance';
 
 const HTML_ENTITIES: Record<string, string> = {
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -15,6 +16,26 @@ const transporter = nodemailer.createTransport({
     pass: process.env.GMAIL_APP_PASSWORD,
   },
 });
+
+async function sendMailWithAlert(
+  templateName: string,
+  opts: Parameters<typeof transporter.sendMail>[0],
+): Promise<void> {
+  try {
+    await transporter.sendMail(opts);
+  } catch (err) {
+    try {
+      await systemAlerts.recordAlert({
+        source: 'email',
+        severity: 'error',
+        title: `Admin security email send failed: ${templateName}`,
+        payload: { template: templateName, to: String(opts.to), error: String(err) },
+        dedupeKey: `email:${templateName}`,
+      });
+    } catch { /* never let alert recording corrupt the calling flow */ }
+    throw err;
+  }
+}
 
 function getResetBaseUrl(): string {
   return (
@@ -62,7 +83,7 @@ export async function sendPasswordExpiryWarning(opts: {
     </div>
   `;
 
-  await transporter.sendMail({
+  await sendMailWithAlert('password-expiry-warning', {
     from: `"KeePer PRO SHOP" <${process.env.GMAIL_USER}>`,
     to: opts.adminEmail,
     subject: `${urgency.label}パスワードが${urgency.subject} — KeePer PRO SHOP 管理画面`,
@@ -91,7 +112,7 @@ export async function sendPasswordChangedConfirmation(opts: {
     </div>
   `;
 
-  await transporter.sendMail({
+  await sendMailWithAlert('password-changed-confirmation', {
     from: `"KeePer PRO SHOP" <${process.env.GMAIL_USER}>`,
     to: opts.adminEmail,
     subject: 'パスワード変更完了 — KeePer PRO SHOP 管理画面',
@@ -130,7 +151,7 @@ export async function sendTempPasswordEmail(opts: {
     </div>
   `;
 
-  await transporter.sendMail({
+  await sendMailWithAlert('temp-password', {
     from: `"KeePer PRO SHOP" <${process.env.GMAIL_USER}>`,
     to: opts.adminEmail,
     subject: '管理画面アカウント作成のお知らせ — KeePer PRO SHOP',
@@ -165,7 +186,7 @@ export async function sendForgotPasswordEmail(opts: {
     </div>
   `;
 
-  await transporter.sendMail({
+  await sendMailWithAlert('forgot-password', {
     from: `"KeePer PRO SHOP" <${process.env.GMAIL_USER}>`,
     to: opts.adminEmail,
     subject: 'パスワードリセット — KeePer PRO SHOP 管理画面',

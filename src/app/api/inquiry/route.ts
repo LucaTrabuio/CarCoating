@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { systemAlerts } from '@/lib/system-alerts-instance';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import { getV3StoreById } from '@/lib/firebase-stores';
 import { getStoreSettings } from '@/lib/store-settings';
@@ -15,9 +16,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
   }
 
+  let _storeIdForAlert = 'unknown';
+
   try {
     const body = await request.json();
     const { storeId, name, phone, email, message, selectedTier, vehicleInfo } = body;
+    if (storeId && typeof storeId === 'string') _storeIdForAlert = storeId;
 
     if (!storeId || typeof storeId !== 'string' || !storeId.trim()) {
       return NextResponse.json({ error: 'storeId is required' }, { status: 400 });
@@ -153,6 +157,15 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error('Error creating inquiry:', error);
+    try {
+      await systemAlerts.recordAlert({
+        source: 'inquiry',
+        severity: 'error',
+        title: 'Inquiry write failed',
+        payload: { error: String(error), storeId: _storeIdForAlert },
+        dedupeKey: `inquiry:write:${_storeIdForAlert}`,
+      });
+    } catch { /* never let alert recording corrupt the response */ }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -4,6 +4,14 @@
     {
       "path": "/api/admin/security/password-expiry-cron",
       "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/admin/cron/daily-report-morning",
+      "schedule": "0 22 * * *"
+    },
+    {
+      "path": "/api/admin/cron/daily-report-evening",
+      "schedule": "0 12 * * *"
     }
   ]
 }

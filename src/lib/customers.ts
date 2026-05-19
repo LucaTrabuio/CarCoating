@@ -1,5 +1,6 @@
 import { getAdminDb } from './firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { systemAlerts } from './system-alerts-instance';
 
 export interface CustomerRecord {
   email: string;
@@ -44,6 +45,7 @@ export async function upsertCustomer(input: UpsertCustomerInput): Promise<void> 
 
   const now = new Date().toISOString();
 
+  try {
   await db.runTransaction(async (tx) => {
     const snap = await tx.get(ref);
 
@@ -101,6 +103,18 @@ export async function upsertCustomer(input: UpsertCustomerInput): Promise<void> 
 
     tx.update(ref, updates);
   });
+  } catch (err) {
+    try {
+      await systemAlerts.recordAlert({
+        source: 'customer-sync',
+        severity: 'warning',
+        title: 'Customer upsert failed',
+        payload: { storeId, error: String(err) },
+        dedupeKey: `customer-sync:${storeId}`,
+      });
+    } catch { /* never let alert recording corrupt the calling flow */ }
+    throw err;
+  }
 }
 
 export interface GetCustomersOptions {

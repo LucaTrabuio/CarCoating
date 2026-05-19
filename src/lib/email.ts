@@ -22,13 +22,13 @@ const HTML_ENTITIES: Record<string, string> = {
 };
 
 /** Escape user-supplied text before interpolating into HTML email bodies. */
-function esc(s: string | undefined | null): string {
+export function esc(s: string | undefined | null): string {
   if (s === undefined || s === null) return '';
   return String(s).replace(/[&<>"']/g, (c) => HTML_ENTITIES[c]);
 }
 
 /** Escape text and convert newlines to <br> for multi-line display. */
-function escMultiline(s: string | undefined | null): string {
+export function escMultiline(s: string | undefined | null): string {
   return esc(s).replace(/\n/g, '<br>');
 }
 

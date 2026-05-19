@@ -10,14 +10,17 @@ interface UserRecord {
   role: 'super_admin' | 'store_admin';
   managed_stores: string[];
   disabled: boolean;
+  notificationOptIn?: boolean;
 }
 
 export default function UsersPage() {
   const admin = useAdminAuth();
+  const isSuper = admin.role === 'super_admin';
+
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Create form
+  // Create form (super_admin only)
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<'super_admin' | 'store_admin'>('store_admin');
@@ -29,12 +32,15 @@ export default function UsersPage() {
   const [resetResult, setResetResult] = useState<string | null>(null);
   const [resetting, setResetting] = useState(false);
 
+  const [togglingOptIn, setTogglingOptIn] = useState<string | null>(null);
+
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/users');
+      // Use the new scoped endpoint that filters by role
+      const res = await fetch('/api/admin/users');
       const data = await res.json();
-      setUsers(data.users ?? data ?? []);
+      setUsers(data.users ?? []);
     } catch {
       setUsers([]);
     } finally {
@@ -43,24 +49,21 @@ export default function UsersPage() {
   }, []);
 
   useEffect(() => {
-    if (admin.role === 'super_admin') {
-      fetchUsers();
+    fetchUsers();
+    if (isSuper) {
       fetch('/api/v3/stores?all=true')
         .then(r => r.json())
-        .then(data => { if (Array.isArray(data)) setAllStores(data.map((s: { store_id: string; store_name: string }) => ({ store_id: s.store_id, store_name: s.store_name }))); })
+        .then(data => {
+          if (Array.isArray(data)) {
+            setAllStores(data.map((s: { store_id: string; store_name: string }) => ({
+              store_id: s.store_id,
+              store_name: s.store_name,
+            })));
+          }
+        })
         .catch(() => {});
     }
-  }, [admin.role, fetchUsers]);
-
-  if (admin.role !== 'super_admin') {
-    return (
-      <div className="mx-auto max-w-2xl">
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <p className="text-sm text-gray-600">アクセス権限がありません</p>
-        </div>
-      </div>
-    );
-  }
+  }, [isSuper, fetchUsers]);
 
   async function handleCreate() {
     if (!email) {
@@ -72,12 +75,7 @@ export default function UsersPage() {
       const res = await fetch('/api/auth/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          displayName,
-          role,
-          managedStores,
-        }),
+        body: JSON.stringify({ email, displayName, role, managedStores }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -135,6 +133,36 @@ export default function UsersPage() {
     }
   }
 
+  async function handleToggleOptIn(u: UserRecord) {
+    const isOwnRow = u.uid === admin.uid;
+    const endpoint =
+      isSuper
+        ? `/api/admin/users/${u.uid}/notification-opt-in`
+        : `/api/admin/users/me/notification-opt-in`;
+
+    setTogglingOptIn(u.uid);
+    try {
+      const res = await fetch(endpoint, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ optIn: !u.notificationOptIn }),
+      });
+      if (!res.ok) throw new Error('更新に失敗しました');
+      setUsers(prev =>
+        prev.map(x => x.uid === u.uid ? { ...x, notificationOptIn: !u.notificationOptIn } : x)
+      );
+    } catch (e) {
+      alert(e instanceof Error ? e.message : '更新に失敗しました');
+    } finally {
+      setTogglingOptIn(null);
+    }
+  }
+
+  function canToggleOptIn(u: UserRecord): boolean {
+    if (isSuper) return true;
+    return u.uid === admin.uid;
+  }
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <h1 className="text-xl font-bold text-gray-900">ユーザー管理</h1>
@@ -143,77 +171,83 @@ export default function UsersPage() {
         パスワードポリシー: 90日ごとに変更が必要です。新規ユーザーには仮パスワードがメールで送信されます。
       </div>
 
-      {/* Create form */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
-        <h2 className="text-sm font-bold text-gray-900">新しいユーザーを作成</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">メールアドレス</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">表示名</label>
-            <input
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">ロール</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as 'super_admin' | 'store_admin')}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            >
-              <option value="store_admin">store_admin</option>
-              <option value="super_admin">super_admin</option>
-            </select>
-          </div>
-          {role === 'store_admin' && (
-            <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm text-gray-700">管理店舗</label>
-              <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-300 p-2 space-y-1">
-                {allStores.length === 0 ? (
-                  <p className="text-xs text-gray-400 p-1">店舗を読み込み中...</p>
-                ) : (
-                  allStores.map(s => (
-                    <label key={s.store_id} className="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50 cursor-pointer text-sm">
-                      <input
-                        type="checkbox"
-                        checked={managedStores.includes(s.store_id)}
-                        onChange={(e) => {
-                          if (e.target.checked) setManagedStores(prev => [...prev, s.store_id]);
-                          else setManagedStores(prev => prev.filter(id => id !== s.store_id));
-                        }}
-                        className="rounded"
-                      />
-                      <span className="text-gray-700">{s.store_name}</span>
-                      <span className="text-xs text-gray-400">({s.store_id})</span>
-                    </label>
-                  ))
+      <div className="rounded-xl border border-blue-100 bg-blue-50 p-3 text-xs text-blue-700">
+        通知設定をオンにすると、システムアラートと日次レポートをメールで受け取ります。
+      </div>
+
+      {/* Create form — super_admin only */}
+      {isSuper && (
+        <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
+          <h2 className="text-sm font-bold text-gray-900">新しいユーザーを作成</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm text-gray-700">メールアドレス</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm text-gray-700">表示名</label>
+              <input
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm text-gray-700">ロール</label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value as 'super_admin' | 'store_admin')}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              >
+                <option value="store_admin">store_admin</option>
+                <option value="super_admin">super_admin</option>
+              </select>
+            </div>
+            {role === 'store_admin' && (
+              <div className="sm:col-span-2">
+                <label className="mb-1 block text-sm text-gray-700">管理店舗</label>
+                <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-300 p-2 space-y-1">
+                  {allStores.length === 0 ? (
+                    <p className="text-xs text-gray-400 p-1">店舗を読み込み中...</p>
+                  ) : (
+                    allStores.map(s => (
+                      <label key={s.store_id} className="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50 cursor-pointer text-sm">
+                        <input
+                          type="checkbox"
+                          checked={managedStores.includes(s.store_id)}
+                          onChange={(e) => {
+                            if (e.target.checked) setManagedStores(prev => [...prev, s.store_id]);
+                            else setManagedStores(prev => prev.filter(id => id !== s.store_id));
+                          }}
+                          className="rounded"
+                        />
+                        <span className="text-gray-700">{s.store_name}</span>
+                        <span className="text-xs text-gray-400">({s.store_id})</span>
+                      </label>
+                    ))
+                  )}
+                </div>
+                {managedStores.length > 0 && (
+                  <p className="text-xs text-gray-500 mt-1">{managedStores.length}店舗選択中</p>
                 )}
               </div>
-              {managedStores.length > 0 && (
-                <p className="text-xs text-gray-500 mt-1">{managedStores.length}店舗選択中</p>
-              )}
-            </div>
-          )}
+            )}
+          </div>
+          <button
+            onClick={handleCreate}
+            disabled={saving}
+            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500 disabled:opacity-50"
+          >
+            {saving ? '作成中...' : 'ユーザーを作成'}
+          </button>
         </div>
-        <button
-          onClick={handleCreate}
-          disabled={saving}
-          className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500 disabled:opacity-50"
-        >
-          {saving ? '作成中...' : 'ユーザーを作成'}
-        </button>
-      </div>
+      )}
 
       {/* User list */}
       <div className="rounded-xl border border-gray-200 bg-white p-5">
@@ -231,54 +265,73 @@ export default function UsersPage() {
                   <th className="pb-2 pr-4">ロール</th>
                   <th className="pb-2 pr-4">管理店舗</th>
                   <th className="pb-2 pr-4">状態</th>
-                  <th className="pb-2">操作</th>
+                  <th className="pb-2 pr-4">通知</th>
+                  {isSuper && <th className="pb-2">操作</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {users.map((u) => (
-                  <tr key={u.uid}>
-                    <td className="py-2 pr-4 text-gray-700">{u.email}</td>
-                    <td className="py-2 pr-4">
-                      <span
-                        className={`inline-block rounded px-1.5 py-0.5 text-xs font-medium ${
-                          u.role === 'super_admin'
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-gray-100 text-gray-700'
-                        }`}
-                      >
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="py-2 pr-4 text-gray-600">
-                      {u.managed_stores?.join(', ') || '-'}
-                    </td>
-                    <td className="py-2 pr-4">
-                      <span
-                        className={`text-xs ${u.disabled ? 'text-red-500' : 'text-green-600'}`}
-                      >
-                        {u.disabled ? '無効' : '有効'}
-                      </span>
-                    </td>
-                    <td className="py-2 flex items-center gap-2">
-                      <button
-                        onClick={() => handleDisable(u.uid, u.disabled)}
-                        className={`rounded-lg border px-3 py-1 text-xs ${
-                          u.disabled
-                            ? 'border-green-200 text-green-600 hover:bg-green-50'
-                            : 'border-red-200 text-red-600 hover:bg-red-50'
-                        }`}
-                      >
-                        {u.disabled ? '有効化' : '無効化'}
-                      </button>
-                      <button
-                        onClick={() => { setResetModal({ uid: u.uid, email: u.email }); setResetResult(null); setResetDelivery('email'); }}
-                        className="rounded-lg border border-amber-200 px-3 py-1 text-xs text-amber-700 hover:bg-amber-50"
-                      >
-                        PW リセット
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {users.map((u) => {
+                  const toggleable = canToggleOptIn(u);
+                  const isToggling = togglingOptIn === u.uid;
+                  return (
+                    <tr key={u.uid}>
+                      <td className="py-2 pr-4 text-gray-700">{u.email}</td>
+                      <td className="py-2 pr-4">
+                        <span
+                          className={`inline-block rounded px-1.5 py-0.5 text-xs font-medium ${
+                            u.role === 'super_admin'
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-gray-100 text-gray-700'
+                          }`}
+                        >
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="py-2 pr-4 text-gray-600">
+                        {u.managed_stores?.join(', ') || '-'}
+                      </td>
+                      <td className="py-2 pr-4">
+                        <span className={`text-xs ${u.disabled ? 'text-red-500' : 'text-green-600'}`}>
+                          {u.disabled ? '無効' : '有効'}
+                        </span>
+                      </td>
+                      <td className="py-2 pr-4">
+                        <input
+                          type="checkbox"
+                          checked={!!u.notificationOptIn}
+                          disabled={!toggleable || isToggling}
+                          onChange={() => handleToggleOptIn(u)}
+                          title={toggleable ? '通知の受け取り設定' : '変更権限がありません'}
+                          className={`rounded ${toggleable ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
+                        />
+                      </td>
+                      {isSuper && (
+                        <td className="py-2 flex items-center gap-2">
+                          <button
+                            onClick={() => handleDisable(u.uid, u.disabled)}
+                            className={`rounded-lg border px-3 py-1 text-xs ${
+                              u.disabled
+                                ? 'border-green-200 text-green-600 hover:bg-green-50'
+                                : 'border-red-200 text-red-600 hover:bg-red-50'
+                            }`}
+                          >
+                            {u.disabled ? '有効化' : '無効化'}
+                          </button>
+                          <button
+                            onClick={() => {
+                              setResetModal({ uid: u.uid, email: u.email });
+                              setResetResult(null);
+                              setResetDelivery('email');
+                            }}
+                            className="rounded-lg border border-amber-200 px-3 py-1 text-xs text-amber-700 hover:bg-amber-50"
+                          >
+                            PW リセット
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

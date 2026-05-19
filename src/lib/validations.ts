@@ -311,3 +311,13 @@ export const createAdminUserSchema = z.object({
   role: z.enum(['super_admin', 'store_admin']),
   managedStores: z.array(z.string().max(100)).max(500).default([]),
 }).strict();
+
+// ─── Notification Opt-In Schema ───
+
+export const notificationOptInSchema = z.object({
+  optIn: z.boolean(),
+}).strict();
+
+// ─── Cron Empty Body Schema (passthrough so GET-style crons can import) ───
+
+export const cronEmptyBodySchema = z.object({}).passthrough();

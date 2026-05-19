@@ -98,5 +98,10 @@ service cloud.firestore {
     match /rateLimits/{key} {
       allow read, write: if false;
     }
+
+    // System alerts: server-side only (Admin SDK via system-alerts-instance.ts)
+    match /systemAlerts/{alertId} {
+      allow read, write: if false;
+    }
   }
 }
