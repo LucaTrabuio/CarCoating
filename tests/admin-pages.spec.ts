@@ -22,6 +22,9 @@ const ADMIN_PAGES = [
   '/admin/cases',
   '/admin/news',
   '/admin/builder/eniwa',
+  '/admin/security',
+  '/admin/customers',
+  '/admin/change-password',
 ];
 
 test.describe('Admin Pages — route existence', () => {

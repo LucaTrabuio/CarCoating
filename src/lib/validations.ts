@@ -267,3 +267,47 @@ export const storeVisibilityPatchSchema = z.discriminatedUnion('hide_mode', [
 ]);
 
 export type StoreVisibilityPatchInput = z.infer<typeof storeVisibilityPatchSchema>;
+
+// ─── Security / Password Schemas ───
+
+export const resetPasswordRequestSchema = z.object({
+  token: z.string().min(1).max(200),
+  newPassword: z.string().min(1).max(200),
+}).strict();
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email().max(300),
+}).strict();
+
+export const passwordChangedHookSchema = z.object({}).strict();
+
+export const stepUpSchema = z.object({
+  method: z.enum(['password', 'google-recent-auth']),
+  password: z.string().min(1).max(200).optional(),
+}).strict();
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1).max(200),
+  newPassword: z.string().min(1).max(200),
+}).strict();
+
+export const superAdminResetUserSchema = z.object({
+  deliveryMode: z.enum(['email', 'shown']),
+}).strict();
+
+export const customerListQuerySchema = z.object({
+  storeId: z.string().min(1).max(100),
+  q: z.string().max(200).optional(),
+  limit: z.coerce.number().int().min(1).max(200).optional(),
+});
+
+export const customerDetailParamsSchema = z.object({
+  storeId: z.string().min(1).max(100),
+});
+
+export const createAdminUserSchema = z.object({
+  email: z.string().email().max(300),
+  displayName: z.string().min(1).max(200),
+  role: z.enum(['super_admin', 'store_admin']),
+  managedStores: z.array(z.string().max(100)).max(500).default([]),
+}).strict();

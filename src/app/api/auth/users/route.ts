@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { requireAuth, createUser, type UserRole } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { sendTempPasswordEmail } from '@/lib/admin-security-emails';
+import { createAdminUserSchema } from '@/lib/validations';
 
 // GET: List all users (super_admin only)
 export async function GET() {
@@ -19,24 +21,39 @@ export async function POST(req: NextRequest) {
   const auth = await requireAuth('super_admin');
   if (auth.error) return auth.error;
 
-  const { email, password, displayName, role, managedStores } = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
 
-  if (!email || !password || !displayName || !role) {
+  const parsed = createAdminUserSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
-  if (!['super_admin', 'store_admin'].includes(role)) {
-    return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
-  }
+  const { email, displayName, role, managedStores } = parsed.data;
 
   try {
-    const uid = await createUser(
+    const { uid, tempPassword } = await createUser(
       email,
-      password,
       displayName,
       role as UserRole,
-      managedStores || [],
+      managedStores,
     );
+
+    // Send temp password email (best-effort)
+    try {
+      await sendTempPasswordEmail({
+        adminEmail: email,
+        adminName: displayName,
+        tempPassword,
+      });
+    } catch (emailErr) {
+      console.error('Failed to send temp password email:', emailErr);
+    }
+
     return NextResponse.json({ success: true, uid });
   } catch (error) {
     console.error('Create user failed:', error);

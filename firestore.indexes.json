@@ -40,6 +40,28 @@
         { "fieldPath": "storeId", "order": "ASCENDING" },
         { "fieldPath": "status", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "customers",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "lastInteractionAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "passwordResetTokens",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "adminUid", "order": "ASCENDING" },
+        { "fieldPath": "usedAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "email", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

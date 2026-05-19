@@ -6,6 +6,7 @@ import { getStoreSettings } from '@/lib/store-settings';
 import { createCalendarEvent } from '@/lib/google-calendar';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { upsertCustomer } from '@/lib/customers';
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
 
     // Create the reservation (auto-confirmed by default)
     const shouldConfirm = autoConfirm !== false && type === 'visit';
-    const { id: reservationId, cancelToken } = await createReservation({
+    const reservationCreated = await createReservation({
       type,
       storeId,
       date: date || '',
@@ -76,6 +77,20 @@ export async function POST(request: Request) {
       selectedCoatings: Array.isArray(selectedCoatings) ? selectedCoatings : undefined,
       selectedOptions: Array.isArray(selectedOptions) ? selectedOptions : undefined,
     });
+    const { id: reservationId, cancelToken } = reservationCreated;
+
+    // Upsert customer record (best-effort — failure must not fail this request)
+    try {
+      await upsertCustomer({
+        storeId,
+        email: email.trim(),
+        name: name.trim(),
+        phone: phone.trim() || undefined,
+        source: 'booking',
+      });
+    } catch (customerErr) {
+      console.error(`[reservation ${reservationId}] customer upsert failed:`, customerErr);
+    }
 
     // Get store info for emails
     const store = await getV3StoreById(storeId);

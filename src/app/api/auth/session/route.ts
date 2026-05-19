@@ -3,6 +3,7 @@ import { createSessionCookie } from '@/lib/auth';
 import { getAdminAuth, getAdminDb } from '@/lib/firebase-admin';
 import { cookies } from 'next/headers';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { mintAdminActive, ADMIN_ACTIVE_COOKIE } from '@/lib/admin-active';
 
 // POST: Create session cookie from Firebase ID token
 export async function POST(req: NextRequest) {
@@ -53,6 +54,31 @@ export async function POST(req: NextRequest) {
       path: '/',
       maxAge: 60 * 60 * 24 * 14, // 14 days
     });
+
+    // Read user doc for password policy fields, then mint Layer-2 cookie
+    try {
+      const db = getAdminDb();
+      const userDoc = await db.collection('users').doc(decoded.uid).get();
+      const userData = userDoc.exists ? userDoc.data()! : {};
+      const role = userData.role || decoded.role || 'store_admin';
+      const adminActiveCookie = await mintAdminActive({
+        uid: decoded.uid,
+        email: decoded.email || '',
+        role,
+        passwordChangedAt: userData.passwordChangedAt || null,
+        mustChangePassword: userData.mustChangePassword === true,
+      });
+      cookieStore.set(ADMIN_ACTIVE_COOKIE, adminActiveCookie.value, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60,
+      });
+    } catch (adminActiveErr) {
+      console.error('Failed to mint __admin_active cookie:', adminActiveErr);
+      // Non-fatal — Layer 2 check in proxy handles missing cookie gracefully
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

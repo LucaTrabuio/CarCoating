@@ -6,6 +6,7 @@ import { getStoreSettings } from '@/lib/store-settings';
 import { sendInquiryConfirmationEmail, sendInquiryNotificationEmail } from '@/lib/email';
 import { getMasterCoatingTiers } from '@/lib/master-data';
 import { formatPrice, getWebPrice, parsePriceOverrides } from '@/lib/pricing';
+import { upsertCustomer } from '@/lib/customers';
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
@@ -51,6 +52,19 @@ export async function POST(request: Request) {
     };
 
     const docRef = await db.collection('inquiries').add(inquiryData);
+
+    // Upsert customer record (best-effort — failure must not fail this request)
+    try {
+      await upsertCustomer({
+        storeId,
+        email: email.trim(),
+        name: name.trim(),
+        phone: (phone || '').trim() || undefined,
+        source: 'inquiry',
+      });
+    } catch (customerErr) {
+      console.error(`[inquiry ${docRef.id}] customer upsert failed:`, customerErr);
+    }
 
     // Get store info for emails
     const store = await getV3StoreById(storeId);

@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '@/lib/firebase-client';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -165,6 +166,11 @@ function AdminLoginPageContent() {
             >
               {loading ? 'ログイン中...' : 'メールでログイン'}
             </button>
+            <div className="text-center">
+              <Link href="/admin/forgot-password" className="text-sm text-gray-500 hover:text-gray-700 hover:underline">
+                パスワードをお忘れですか？
+              </Link>
+            </div>
           </form>
         </div>
       </div>

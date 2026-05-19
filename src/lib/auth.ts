@@ -1,6 +1,8 @@
 import { getAdminAuth, getAdminDb } from './firebase-admin';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { generateTempPasswordNode } from './password-policy';
+import { requirePiiAccessFromCookieStore } from './pii-session';
 
 // ─── Types ───
 
@@ -11,7 +13,11 @@ export interface SessionUser {
   email: string;
   role: UserRole;
   managed_stores: string[];
+  passwordChangedAt?: string;
+  mustChangePassword?: boolean;
 }
+
+export { requirePiiAccessFromCookieStore as requirePiiAccess };
 
 export interface UserClaims {
   role: UserRole;
@@ -32,11 +38,28 @@ export async function verifySession(): Promise<SessionUser | null> {
     const role = (decoded.role as UserRole) || 'store_admin';
     const managed_stores = (decoded.managed_stores as string[]) || [];
 
+    // Load password policy fields from Firestore
+    let passwordChangedAt: string | undefined;
+    let mustChangePassword: boolean | undefined;
+    try {
+      const db = getAdminDb();
+      const userDoc = await db.collection('users').doc(decoded.uid).get();
+      if (userDoc.exists) {
+        const data = userDoc.data()!;
+        passwordChangedAt = data.passwordChangedAt || undefined;
+        mustChangePassword = data.mustChangePassword === true ? true : undefined;
+      }
+    } catch {
+      // non-critical — proceed without policy fields
+    }
+
     return {
       uid: decoded.uid,
       email: decoded.email || '',
       role,
       managed_stores,
+      passwordChangedAt,
+      mustChangePassword,
     };
   } catch {
     return null;
@@ -88,15 +111,15 @@ export async function setUserClaims(uid: string, claims: UserClaims): Promise<vo
 
 export async function createUser(
   email: string,
-  password: string,
   displayName: string,
   role: UserRole,
   managedStores: string[] = [],
-): Promise<string> {
+): Promise<{ uid: string; tempPassword: string }> {
+  const tempPassword = generateTempPasswordNode();
   const auth = getAdminAuth();
   const user = await auth.createUser({
     email,
-    password,
+    password: tempPassword,
     displayName,
   });
   await auth.setCustomUserClaims(user.uid, {
@@ -104,15 +127,48 @@ export async function createUser(
     managed_stores: managedStores,
   });
 
-  // Also store in Firestore users collection
+  const now = new Date().toISOString();
   const db = getAdminDb();
   await db.collection('users').doc(user.uid).set({
     email,
     display_name: displayName,
     role,
     managed_stores: managedStores,
-    created_at: new Date().toISOString(),
+    created_at: now,
+    passwordChangedAt: now,
+    mustChangePassword: true,
   });
 
-  return user.uid;
+  return { uid: user.uid, tempPassword };
+}
+
+export async function resetUserPassword(targetUid: string, byUid: string): Promise<{ tempPassword: string }> {
+  const tempPassword = generateTempPasswordNode();
+  const auth = getAdminAuth();
+  await auth.updateUser(targetUid, { password: tempPassword });
+
+  const now = new Date().toISOString();
+  const db = getAdminDb();
+
+  // Invalidate any pending reset tokens for this user
+  const tokensSnap = await db
+    .collection('passwordResetTokens')
+    .where('adminUid', '==', targetUid)
+    .where('usedAt', '==', null)
+    .get();
+  const batch = db.batch();
+  tokensSnap.docs.forEach((doc) => {
+    batch.update(doc.ref, { usedAt: now });
+  });
+
+  // Update user doc
+  batch.update(db.collection('users').doc(targetUid), {
+    mustChangePassword: true,
+    sessionInvalidAfter: now,
+    passwordChangedAt: now,
+  });
+
+  await batch.commit();
+
+  return { tempPassword };
 }

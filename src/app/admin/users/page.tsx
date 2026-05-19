@@ -19,12 +19,15 @@ export default function UsersPage() {
 
   // Create form
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<'super_admin' | 'store_admin'>('store_admin');
   const [managedStores, setManagedStores] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [allStores, setAllStores] = useState<{ store_id: string; store_name: string }[]>([]);
+  const [resetModal, setResetModal] = useState<{ uid: string; email: string } | null>(null);
+  const [resetDelivery, setResetDelivery] = useState<'email' | 'shown'>('email');
+  const [resetResult, setResetResult] = useState<string | null>(null);
+  const [resetting, setResetting] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -60,8 +63,8 @@ export default function UsersPage() {
   }
 
   async function handleCreate() {
-    if (!email || !password) {
-      alert('メールアドレスとパスワードは必須です');
+    if (!email) {
+      alert('メールアドレスは必須です');
       return;
     }
     setSaving(true);
@@ -71,10 +74,9 @@ export default function UsersPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
-          password,
           displayName,
           role,
-          managed_stores: managedStores,
+          managedStores,
         }),
       });
       if (!res.ok) {
@@ -82,7 +84,6 @@ export default function UsersPage() {
         throw new Error(err.error ?? '作成に失敗しました');
       }
       setEmail('');
-      setPassword('');
       setDisplayName('');
       setRole('store_admin');
       setManagedStores([]);
@@ -91,6 +92,31 @@ export default function UsersPage() {
       alert(e instanceof Error ? e.message : '作成に失敗しました');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleResetPassword() {
+    if (!resetModal) return;
+    setResetting(true);
+    setResetResult(null);
+    try {
+      const res = await fetch(`/api/admin/users/${resetModal.uid}/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deliveryMode: resetDelivery }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? '失敗しました');
+      if (resetDelivery === 'shown' && data.tempPassword) {
+        setResetResult(data.tempPassword);
+      } else {
+        alert('仮パスワードをメールで送信しました');
+        setResetModal(null);
+      }
+    } catch (e) {
+      alert(e instanceof Error ? e.message : '失敗しました');
+    } finally {
+      setResetting(false);
     }
   }
 
@@ -113,6 +139,10 @@ export default function UsersPage() {
     <div className="mx-auto max-w-4xl space-y-6">
       <h1 className="text-xl font-bold text-gray-900">ユーザー管理</h1>
 
+      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+        パスワードポリシー: 90日ごとに変更が必要です。新規ユーザーには仮パスワードがメールで送信されます。
+      </div>
+
       {/* Create form */}
       <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
         <h2 className="text-sm font-bold text-gray-900">新しいユーザーを作成</h2>
@@ -123,15 +153,6 @@ export default function UsersPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm text-gray-700">パスワード</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
             />
           </div>
@@ -238,7 +259,7 @@ export default function UsersPage() {
                         {u.disabled ? '無効' : '有効'}
                       </span>
                     </td>
-                    <td className="py-2">
+                    <td className="py-2 flex items-center gap-2">
                       <button
                         onClick={() => handleDisable(u.uid, u.disabled)}
                         className={`rounded-lg border px-3 py-1 text-xs ${
@@ -249,6 +270,12 @@ export default function UsersPage() {
                       >
                         {u.disabled ? '有効化' : '無効化'}
                       </button>
+                      <button
+                        onClick={() => { setResetModal({ uid: u.uid, email: u.email }); setResetResult(null); setResetDelivery('email'); }}
+                        className="rounded-lg border border-amber-200 px-3 py-1 text-xs text-amber-700 hover:bg-amber-50"
+                      >
+                        PW リセット
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -257,6 +284,67 @@ export default function UsersPage() {
           </div>
         )}
       </div>
+
+      {resetModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl space-y-4">
+            <h2 className="text-lg font-bold text-gray-900">パスワードリセット</h2>
+            <p className="text-sm text-gray-600">{resetModal.email}</p>
+            {!resetResult ? (
+              <>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      name="deliveryMode"
+                      checked={resetDelivery === 'email'}
+                      onChange={() => setResetDelivery('email')}
+                    />
+                    メールで送信
+                  </label>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      name="deliveryMode"
+                      checked={resetDelivery === 'shown'}
+                      onChange={() => setResetDelivery('shown')}
+                    />
+                    画面に表示
+                  </label>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleResetPassword}
+                    disabled={resetting}
+                    className="flex-1 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 disabled:opacity-50"
+                  >
+                    {resetting ? 'リセット中...' : 'リセット実行'}
+                  </button>
+                  <button
+                    onClick={() => setResetModal(null)}
+                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    キャンセル
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="rounded-lg bg-amber-50 border border-amber-200 p-4">
+                  <p className="text-xs text-amber-700 mb-1">仮パスワード（一度しか表示されません）</p>
+                  <p className="font-mono text-lg font-bold text-amber-900">{resetResult}</p>
+                </div>
+                <button
+                  onClick={() => setResetModal(null)}
+                  className="w-full rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+                >
+                  閉じる
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -73,5 +73,30 @@ service cloud.firestore {
       allow read: if request.auth != null && request.auth.token.role in ['super_admin', 'store_admin'];
       allow update, delete: if false;
     }
+
+    // Customer PII: server-side only (Admin SDK bypasses rules)
+    match /stores/{storeId}/customers/{email} {
+      allow read, write: if false;
+    }
+
+    // Password reset tokens: server-side only
+    match /passwordResetTokens/{tokenHash} {
+      allow read, write: if false;
+    }
+
+    // Password reset log: server-side only
+    match /passwordResetLog/{logId} {
+      allow read, write: if false;
+    }
+
+    // PII access audit log: server-side only
+    match /piiAccessLog/{logId} {
+      allow read, write: if false;
+    }
+
+    // Firestore rate limits: server-side only
+    match /rateLimits/{key} {
+      allow read, write: if false;
+    }
   }
 }
