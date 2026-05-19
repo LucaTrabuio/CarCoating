@@ -295,11 +295,17 @@ export const superAdminResetUserSchema = z.object({
   deliveryMode: z.enum(['email', 'shown']),
 }).strict();
 
-export const customerListQuerySchema = z.object({
-  storeId: z.string().min(1).max(100),
-  q: z.string().max(200).optional(),
-  limit: z.coerce.number().int().min(1).max(200).optional(),
-});
+export const customerListQuerySchema = z
+  .object({
+    storeId: z.string().min(1).max(100).optional(),
+    allStores: z.coerce.boolean().optional(),
+    q: z.string().max(200).optional(),
+    limit: z.coerce.number().int().min(1).max(200).optional(),
+  })
+  .refine(
+    (data) => Boolean(data.storeId) !== Boolean(data.allStores),
+    { message: 'Provide exactly one of storeId or allStores' },
+  );
 
 export const customerDetailParamsSchema = z.object({
   storeId: z.string().min(1).max(100),

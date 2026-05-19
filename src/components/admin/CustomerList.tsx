@@ -13,7 +13,11 @@ interface CustomerRecord {
   bookingCount: number;
   inquiryCount: number;
   lastInteractionAt: string;
+  storeId?: string;
 }
+
+// Sentinel value for the "全店舗" picker option (super_admin only).
+const ALL_STORES = '__all__';
 
 export function CustomerList() {
   const admin = useAdminAuth();
@@ -25,7 +29,12 @@ export function CustomerList() {
   const [piiUnlocked, setPiiUnlocked] = useState(false);
   const [showReprompt, setShowReprompt] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
   const mountedRef = useRef(true);
+
+  const isAllStores = storeId === ALL_STORES;
+  const storeNameById = (id: string) =>
+    stores.find((s) => s.store_id === id)?.store_name ?? id;
 
   // Clear PII flag on unmount (nav away)
   useEffect(() => {
@@ -46,18 +55,26 @@ export function CustomerList() {
             store_name: s.store_name,
           }));
           setStores(list);
-          if (list.length > 0 && !storeId) setStoreId(list[0].store_id);
+          if (!storeId) {
+            // Super_admin defaults to the aggregated 全店舗 view; store_admin
+            // defaults to the first store in their managed list.
+            if (admin.role === 'super_admin') setStoreId(ALL_STORES);
+            else if (list.length > 0) setStoreId(list[0].store_id);
+          }
         }
       })
       .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [admin.role]);
 
   const fetchCustomers = useCallback(async () => {
     if (!storeId || !piiUnlocked) return;
     setLoading(true);
     try {
-      const url = `/api/admin/customers?storeId=${encodeURIComponent(storeId)}${q ? `&q=${encodeURIComponent(q)}` : ''}`;
+      const scopeQs = isAllStores
+        ? 'allStores=1'
+        : `storeId=${encodeURIComponent(storeId)}`;
+      const url = `/api/admin/customers?${scopeQs}${q ? `&q=${encodeURIComponent(q)}` : ''}`;
       const res = await fetch(url);
       if (res.status === 403) {
         setPiiUnlocked(false);
@@ -72,7 +89,7 @@ export function CustomerList() {
     } finally {
       if (mountedRef.current) setLoading(false);
     }
-  }, [storeId, q, piiUnlocked]);
+  }, [storeId, q, piiUnlocked, isAllStores]);
 
   useEffect(() => {
     if (piiUnlocked) fetchCustomers();
@@ -102,6 +119,9 @@ export function CustomerList() {
             onChange={(e) => setStoreId(e.target.value)}
             className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
           >
+            {admin.role === 'super_admin' && (
+              <option value={ALL_STORES}>全店舗</option>
+            )}
             {stores.map((s) => (
               <option key={s.store_id} value={s.store_id}>
                 {s.store_name}
@@ -129,7 +149,11 @@ export function CustomerList() {
           </button>
           {admin.role === 'super_admin' && (
             <a
-              href={`/api/admin/customers/export?storeId=${encodeURIComponent(storeId)}`}
+              href={
+                isAllStores
+                  ? `/api/admin/customers/export?allStores=1`
+                  : `/api/admin/customers/export?storeId=${encodeURIComponent(storeId)}`
+              }
               className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
             >
               CSV出力
@@ -149,6 +173,7 @@ export function CustomerList() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-medium uppercase text-gray-500">
+                {isAllStores && <th className="px-4 py-2">店舗</th>}
                 <th className="px-4 py-2">メール</th>
                 <th className="px-4 py-2">名前</th>
                 <th className="px-4 py-2">電話</th>
@@ -160,10 +185,18 @@ export function CustomerList() {
             <tbody className="divide-y divide-gray-100">
               {customers.map((c) => (
                 <tr
-                  key={c.email}
+                  key={`${c.storeId ?? storeId}:${c.email}`}
                   className="hover:bg-gray-50 cursor-pointer"
-                  onClick={() => setSelectedEmail(c.email)}
+                  onClick={() => {
+                    setSelectedStoreId(c.storeId ?? storeId);
+                    setSelectedEmail(c.email);
+                  }}
                 >
+                  {isAllStores && (
+                    <td className="px-4 py-2 text-gray-700 text-xs">
+                      {storeNameById(c.storeId ?? '')}
+                    </td>
+                  )}
                   <td className="px-4 py-2 text-gray-700">{c.email}</td>
                   <td className="px-4 py-2 text-gray-700">{c.name || '-'}</td>
                   <td className="px-4 py-2 text-gray-600">{c.phone || '-'}</td>
@@ -186,11 +219,14 @@ export function CustomerList() {
         />
       )}
 
-      {selectedEmail && storeId && (
+      {selectedEmail && (selectedStoreId || (!isAllStores && storeId)) && (
         <CustomerDetail
-          storeId={storeId}
+          storeId={selectedStoreId ?? storeId}
           email={selectedEmail}
-          onClose={() => setSelectedEmail(null)}
+          onClose={() => {
+            setSelectedEmail(null);
+            setSelectedStoreId(null);
+          }}
           onPiiExpired={() => {
             setPiiUnlocked(false);
             setShowReprompt(true);

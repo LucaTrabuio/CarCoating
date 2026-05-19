@@ -124,6 +124,10 @@ export interface GetCustomersOptions {
   startAfter?: string;
 }
 
+export interface CustomerRecordWithStore extends CustomerRecord {
+  storeId: string;
+}
+
 export async function getCustomers(opts: GetCustomersOptions): Promise<CustomerRecord[]> {
   const { storeId, q, limit = 50 } = opts;
   const db = getAdminDb();
@@ -149,6 +153,57 @@ export async function getCustomers(opts: GetCustomersOptions): Promise<CustomerR
   }
 
   return all;
+}
+
+/**
+ * Aggregates customers across the given storeIds via per-store fan-out.
+ * Used by super_admin's "全店舗" view. Each returned record carries its
+ * own storeId so the UI can route the detail click to the correct doc.
+ */
+export async function getCustomersAcrossStores(opts: {
+  storeIds: string[];
+  q?: string;
+  limit?: number;
+}): Promise<CustomerRecordWithStore[]> {
+  const { storeIds, q, limit = 50 } = opts;
+  if (storeIds.length === 0) return [];
+  const db = getAdminDb();
+
+  const perStorePromises = storeIds.map(async (storeId) => {
+    const snap = await db
+      .collection('stores')
+      .doc(storeId)
+      .collection('customers')
+      .orderBy('lastInteractionAt', 'desc')
+      .limit(limit)
+      .get();
+    return snap.docs.map((d) => ({
+      ...(d.data() as CustomerRecord),
+      email: d.id,
+      storeId,
+    } as CustomerRecordWithStore));
+  });
+
+  const perStoreResults = await Promise.all(perStorePromises);
+  let merged = perStoreResults.flat();
+
+  // Sort by lastInteractionAt desc, slice to limit
+  merged.sort((a, b) =>
+    (b.lastInteractionAt || '').localeCompare(a.lastInteractionAt || ''),
+  );
+
+  if (q) {
+    const lower = q.toLowerCase();
+    merged = merged.filter(
+      (c) =>
+        c.email.includes(lower) ||
+        (c.name || '').toLowerCase().includes(lower) ||
+        (c.nameKana || '').toLowerCase().includes(lower) ||
+        (c.phone || '').includes(q),
+    );
+  }
+
+  return merged.slice(0, limit);
 }
 
 export async function getCustomer(storeId: string, email: string): Promise<CustomerRecord | null> {
