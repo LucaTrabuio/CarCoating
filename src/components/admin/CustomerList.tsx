@@ -55,17 +55,20 @@ export function CustomerList() {
             store_name: s.store_name,
           }));
           setStores(list);
-          if (!storeId) {
-            // Super_admin defaults to the aggregated 全店舗 view; store_admin
-            // defaults to the first store in their managed list.
-            if (admin.role === 'super_admin') setStoreId(ALL_STORES);
-            else if (list.length > 0) setStoreId(list[0].store_id);
-          }
+          // Super_admin defaults to the aggregated 全店舗 view; store_admin
+          // defaults to the first store in their managed list. admin.role is
+          // stable for the lifetime of the page so reading it here is fine
+          // without putting it in the deps array.
+          setStoreId((prev) => {
+            if (prev) return prev;
+            if (admin.role === 'super_admin') return ALL_STORES;
+            return list.length > 0 ? list[0].store_id : '';
+          });
         }
       })
       .catch(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [admin.role]);
+  }, []);
 
   const fetchCustomers = useCallback(async () => {
     if (!storeId || !piiUnlocked) return;
