@@ -68,6 +68,13 @@ export interface KeeperApiError extends Error {
   code: KeeperErrorCode | string;
   requestId: string | null;
   status: number;
+  /**
+   * Compact server diagnostic for 503 file/CSV signing failures, e.g.
+   * `missing_role_token_creator`. Sourced from the error body's `message`
+   * (`hint=<tag>`) or the `X-MeetsSPI-Sign-Fallback` header. A diagnostic
+   * tag only — never PII.
+   */
+  hint?: string | null;
 }
 
 // ─── Firestore document types ─────────────────────────────────

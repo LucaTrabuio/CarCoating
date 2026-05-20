@@ -452,17 +452,18 @@ async function syncResponsesForSurvey(
 async function recordSurveyAlert(
   title: string,
   err: unknown,
-  payload: { surveyId?: string; code?: string; requestId?: string },
+  payload: { surveyId?: string; code?: string; requestId?: string; hint?: string },
 ): Promise<void> {
   try {
     const code =
       (err as { code?: string })?.code ?? String(err).slice(0, 200);
     const requestId = (err as { requestId?: string })?.requestId ?? undefined;
+    const hint = (err as { hint?: string | null })?.hint ?? undefined;
     await systemAlerts.recordAlert({
       source: 'keeper-sync',
       severity: 'error',
       title: `[keeper-sync] ${title}`,
-      payload: { ...payload, code, requestId },
+      payload: { ...payload, code, requestId, hint },
       dedupeKey: `keeper-sync:surveys${payload.surveyId ? `:${payload.surveyId}` : ''}`,
     });
   } catch {
@@ -473,16 +474,17 @@ async function recordSurveyAlert(
 async function recordFileAlert(
   title: string,
   err: unknown,
-  payload: { fileId?: string; code?: string },
+  payload: { fileId?: string; code?: string; hint?: string },
 ): Promise<void> {
   try {
     const code =
       (err as { code?: string })?.code ?? String(err).slice(0, 200);
+    const hint = (err as { hint?: string | null })?.hint ?? undefined;
     await systemAlerts.recordAlert({
       source: 'keeper-sync',
       severity: 'error',
       title: `[keeper-sync] ${title}`,
-      payload: { ...payload, code },
+      payload: { ...payload, code, hint },
       dedupeKey: `keeper-sync:file:${payload.fileId ?? 'unknown'}`,
     });
   } catch {
@@ -498,11 +500,12 @@ export async function recordCriticalSyncAlert(
     const code = (err as { code?: string })?.code ?? String(err).slice(0, 200);
     const requestId =
       (err as { requestId?: string })?.requestId ?? undefined;
+    const hint = (err as { hint?: string | null })?.hint ?? undefined;
     await systemAlerts.recordAlert({
       source: 'keeper-sync',
       severity: 'critical',
       title: `[keeper-sync] ${title}`,
-      payload: { code, requestId },
+      payload: { code, requestId, hint },
       dedupeKey: 'keeper-sync:auth-failure',
     });
   } catch {

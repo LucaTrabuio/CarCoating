@@ -127,12 +127,25 @@ function makeKeeperError(
   status: number,
   code: KeeperErrorCode | string,
   requestId: string | null,
+  hint: string | null = null,
 ): KeeperApiError {
   const err = new Error(message) as KeeperApiError;
   err.code = code;
   err.status = status;
   err.requestId = requestId;
+  err.hint = hint;
   return err;
+}
+
+/**
+ * Extract the compact server diagnostic tag from a 503 error message of the
+ * form `... hint=<tag>` (e.g. `hint=missing_role_token_creator`). Returns the
+ * tag or null. Pure — exported for unit testing.
+ */
+export function extractHint(message: string | undefined | null): string | null {
+  if (!message) return null;
+  const m = message.match(/hint=([A-Za-z0-9_.-]+)/);
+  return m ? m[1] : null;
 }
 
 // ─── keeperFetch ─────────────────────────────────────────────
@@ -186,22 +199,26 @@ export async function keeperFetch(
       return res.json();
     }
 
-    // Parse error body if possible
+    // Parse error body if possible. 503 file/CSV signing failures carry a
+    // `hint=<tag>` diagnostic in the message and/or the sign-fallback header.
     let code: string = 'internal_error';
+    let hint: string | null = res.headers.get('x-meetsspi-sign-fallback');
     try {
       const body = (await res.json()) as {
-        error?: { code?: string };
+        error?: { code?: string; message?: string };
       };
       code = body?.error?.code ?? code;
+      hint = extractHint(body?.error?.message) ?? hint;
     } catch {
       // ignore parse failure
     }
 
     lastError = makeKeeperError(
-      `Keeper API error ${res.status} (${code})`,
+      `Keeper API error ${res.status} (${code})${hint ? ` [hint=${hint}]` : ''}`,
       res.status,
       code as KeeperErrorCode,
       requestId,
+      hint,
     );
 
     // Don't retry on 4xx (except possibly transient auth issues — but the
@@ -279,11 +296,26 @@ export async function fetchFileBinary(
 
   if (res.status !== 302) {
     const requestId = res.headers.get('x-request-id');
+    // A 503 here is typically a Storage/IAM signing failure; capture the
+    // hint tag (message `hint=<tag>` or the sign-fallback header) so the
+    // system alert is self-diagnosing.
+    let code: string = 'internal_error';
+    let hint: string | null = res.headers.get('x-meetsspi-sign-fallback');
+    try {
+      const body = (await res.json()) as {
+        error?: { code?: string; message?: string };
+      };
+      code = body?.error?.code ?? code;
+      hint = extractHint(body?.error?.message) ?? hint;
+    } catch {
+      // ignore parse failure
+    }
     throw makeKeeperError(
-      `Expected 302 from file endpoint, got ${res.status}`,
+      `Expected 302 from file endpoint, got ${res.status} (${code})${hint ? ` [hint=${hint}]` : ''}`,
       res.status,
-      'internal_error',
+      code as KeeperErrorCode,
       requestId,
+      hint,
     );
   }
 

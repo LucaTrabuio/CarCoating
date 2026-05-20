@@ -4,6 +4,7 @@ import {
   buildCanonicalString,
   EMPTY_BODY_SHA256,
   signRequest,
+  extractHint,
 } from '../lib/keeper-client';
 import { createHash, createHmac } from 'node:crypto';
 
@@ -208,5 +209,35 @@ describe('signRequest SECRET trimEnd', () => {
       .update(canonical)
       .digest('hex');
     expect(sigTrimmed).toBe(sigClean);
+  });
+});
+
+// ─── extractHint ──────────────────────────────────────────────
+
+describe('extractHint', () => {
+  it('extracts the hint tag from a 503 message', () => {
+    expect(extractHint('Signing failed. hint=missing_role_token_creator')).toBe(
+      'missing_role_token_creator',
+    );
+  });
+
+  it('handles a bare hint=tag message', () => {
+    expect(extractHint('hint=storage_unavailable')).toBe('storage_unavailable');
+  });
+
+  it('returns null when no hint is present', () => {
+    expect(extractHint('Authentication failed.')).toBeNull();
+  });
+
+  it('returns null for null/undefined/empty', () => {
+    expect(extractHint(null)).toBeNull();
+    expect(extractHint(undefined)).toBeNull();
+    expect(extractHint('')).toBeNull();
+  });
+
+  it('stops at the first non-tag character', () => {
+    expect(extractHint('hint=abc_123.def-ghi and more text')).toBe(
+      'abc_123.def-ghi',
+    );
   });
 });
