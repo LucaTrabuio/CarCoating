@@ -8,6 +8,17 @@ const PUBLIC_ADMIN_PATHS = [
   '/admin/forgot-password',
 ];
 
+// Vercel Cron invocations carry an `Authorization: Bearer ${CRON_SECRET}`
+// header but NO session cookie, so they must skip the session gate below and be
+// authenticated by the handler's verifyCronAuth() (constant-time) instead.
+// Keep this list in sync with the `crons` array in vercel.json.
+const CRON_PATHS = [
+  '/api/admin/cron/daily-report-morning',
+  '/api/admin/cron/daily-report-evening',
+  '/api/admin/cron/keeper-sync',
+  '/api/admin/security/password-expiry-cron',
+];
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
@@ -38,6 +49,12 @@ export async function proxy(request: NextRequest) {
       requestHeaders.set('x-admin-public-page', '1');
       return NextResponse.next({ request: { headers: requestHeaders } });
     }
+    return NextResponse.next();
+  }
+
+  // Cron routes authenticate via CRON_SECRET in the handler (verifyCronAuth),
+  // not a session cookie — let them past the session gate below.
+  if (CRON_PATHS.includes(normalizedPath)) {
     return NextResponse.next();
   }
 

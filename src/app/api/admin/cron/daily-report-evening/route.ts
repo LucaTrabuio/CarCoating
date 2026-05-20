@@ -3,6 +3,7 @@
 // is available in Vercel Cron invocations.
 import { NextRequest, NextResponse } from 'next/server';
 import { cronEmptyBodySchema } from '@/lib/validations'; // satisfies pre-commit hook import check
+import { verifyCronAuth } from '@/lib/cron-auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { buildEveningReport, type StoreInfo, type ReservationRow, type InquiryRow } from '@/lib/daily-report';
 import { systemAlerts } from '@/lib/system-alerts-instance';
@@ -22,10 +23,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!verifyCronAuth(req.headers.get('authorization'))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

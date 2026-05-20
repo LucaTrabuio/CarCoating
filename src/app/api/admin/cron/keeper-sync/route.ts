@@ -3,16 +3,14 @@
 // is available in Vercel Cron invocations.
 import { NextRequest, NextResponse } from 'next/server';
 import { cronEmptyBodySchema } from '@/lib/validations';
+import { verifyCronAuth } from '@/lib/cron-auth';
 import { syncKeeperSurveys, recordCriticalSyncAlert } from '@/lib/keeper-sync';
 
 // Satisfies the project's validations-import requirement on cron routes.
 cronEmptyBodySchema.parse({});
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!verifyCronAuth(req.headers.get('authorization'))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

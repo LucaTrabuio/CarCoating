@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { verifyCronAuth } from '@/lib/cron-auth';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { daysUntilExpiry, PASSWORD_WARN_DAYS } from '@/lib/password-policy';
 import { generateToken, hashToken } from '@/lib/tokens';
@@ -7,10 +8,7 @@ import { systemAlerts } from '@/lib/system-alerts-instance';
 
 // Authorized by CRON_SECRET Bearer token instead of session auth. // eslint-disable-line car-coating/require-auth
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+  if (!verifyCronAuth(req.headers.get('authorization'))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
