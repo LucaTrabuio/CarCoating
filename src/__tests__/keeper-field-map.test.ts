@@ -14,6 +14,8 @@ import {
   labelList,
   COATING_MENU_LABELS,
   VEHICLE_TYPE_LABELS,
+  KEEPER_FIELD_MAP_MANIFEST,
+  SAMPLE_SURVEY_ANSWERS,
   type KeeperSurveyAnswers,
 } from '../lib/keeper-field-map';
 
@@ -283,5 +285,38 @@ describe('mapSurveyAnswersToStore', () => {
     expect(partial).toEqual({ tel: '03-0000-0000' });
     expect('store_name' in partial).toBe(false);
     expect('business_hours' in partial).toBe(false);
+  });
+});
+
+describe('KEEPER_FIELD_MAP_MANIFEST consistency (drift guard)', () => {
+  const store = mapSurveyAnswersToStore(SAMPLE_SURVEY_ANSWERS) as Record<string, unknown>;
+  const connected = KEEPER_FIELD_MAP_MANIFEST.filter(
+    (e) => e.status === 'direct' || e.status === 'transformed' || e.status === 'derived',
+  );
+
+  it('every connected target is actually produced from the sample', () => {
+    for (const entry of connected) {
+      expect(
+        entry.target in store,
+        `manifest claims ${entry.survey} → ${entry.target} but the transform did not populate it`,
+      ).toBe(true);
+    }
+  });
+
+  it('every store field produced from the sample appears as a connected target', () => {
+    const targets = new Set(connected.map((e) => e.target));
+    for (const key of Object.keys(store)) {
+      expect(
+        targets.has(key),
+        `transform produced "${key}" but the manifest has no connected entry for it`,
+      ).toBe(true);
+    }
+  });
+
+  it('no-source entries are never produced by the transform', () => {
+    const noSource = KEEPER_FIELD_MAP_MANIFEST.filter((e) => e.status === 'no-source');
+    for (const entry of noSource) {
+      expect(entry.target in store).toBe(false);
+    }
   });
 });

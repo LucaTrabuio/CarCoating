@@ -2,6 +2,9 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import type { KeeperSurveyDoc, KeeperResponseDoc } from '@/lib/keeper-types';
+import KeeperFieldMapView from '@/components/admin/KeeperFieldMapView';
+
+type AdminTab = 'sync' | 'mapping';
 
 type SyncResult = {
   ok: boolean;
@@ -20,6 +23,7 @@ export default function KeeperSurveysPage() {
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<SyncResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [tab, setTab] = useState<AdminTab>('sync');
 
   const loadSurveys = useCallback(async () => {
     setLoading(true);
@@ -86,26 +90,42 @@ export default function KeeperSurveysPage() {
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-gray-900">KeePer アンケート連携</h1>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => handleSync(false)}
-            disabled={syncing}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {syncing ? '同期中...' : '今すぐ同期'}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSync(true)}
-            disabled={syncing}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-          >
-            フル同期
-          </button>
-        </div>
+        {tab === 'sync' && (
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => handleSync(false)}
+              disabled={syncing}
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {syncing ? '同期中...' : '今すぐ同期'}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSync(true)}
+              disabled={syncing}
+              className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+            >
+              フル同期
+            </button>
+          </div>
+        )}
       </div>
 
+      {/* Tab bar — sync/responses first, field-mapping last */}
+      <div className="flex gap-1 border-b border-gray-200">
+        <TabButton active={tab === 'sync'} onClick={() => setTab('sync')}>
+          同期・回答
+        </TabButton>
+        <TabButton active={tab === 'mapping'} onClick={() => setTab('mapping')}>
+          フィールドマッピング
+        </TabButton>
+      </div>
+
+      {tab === 'mapping' && <KeeperFieldMapView />}
+
+      {tab === 'sync' && (
+      <>
       {syncResult && (
         <div
           className={`rounded-md p-4 text-sm ${syncResult.ok ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}
@@ -204,7 +224,33 @@ export default function KeeperSurveysPage() {
           )}
         </div>
       </div>
+      </>
+      )}
     </div>
+  );
+}
+
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
+        active
+          ? 'border-blue-600 text-blue-700'
+          : 'border-transparent text-gray-500 hover:text-gray-700'
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 
