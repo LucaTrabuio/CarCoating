@@ -20,6 +20,17 @@ must be added to Vercel production env before the nightly cron
   unmatched responses are flagged in the UI. If too many go
   unmatched, add a manual mapping table.
 
+## Replace best-effort store-name matching with authoritative mapping table
+
+When the user provides the authoritative Keeper store list (shop_194 →
+car-coating store_id + area, etc.), replace / augment the
+`normalizeStoreName` fuzzy match in `src/lib/keeper-sync.ts` with a
+real mapping table (Keeper `store_id` like `shop_194` → car-coating
+`store_id` + display area). This will eliminate false `unmatched`
+entries in the `keeperSync/lastRun` summary doc and in the morning
+daily-report sync section. Surface `area` in the sync summary rows and
+in the admin UI at `src/app/admin/keeper-surveys/`.
+
 ## Verify storefront お知らせ banner shows full content
 
 - **Symptom**: after enabling `getLatestNewsTitle()` to return

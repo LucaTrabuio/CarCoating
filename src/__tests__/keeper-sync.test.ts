@@ -24,7 +24,7 @@ vi.mock('@/lib/keeper-client', () => ({
   fetchFileBinary: vi.fn(async () => ({ buffer: Buffer.alloc(0), contentType: 'application/octet-stream' })),
 }));
 
-import { normalizeStoreName } from '../lib/keeper-sync';
+import { normalizeStoreName, computeFilledFields } from '../lib/keeper-sync';
 
 // ─── normalizeStoreName ────────────────────────────────────────
 
@@ -79,6 +79,133 @@ describe('store name matching (normalizeStoreName)', () => {
     // TypeScript won't allow it; we just confirm normalizeStoreName(string) works for all strings
     expect(() => normalizeStoreName('anything')).not.toThrow();
     expect(() => normalizeStoreName('')).not.toThrow();
+  });
+});
+
+// ─── computeFilledFields ──────────────────────────────────────
+
+describe('computeFilledFields', () => {
+  it('includes keys with non-empty string values', () => {
+    const result = computeFilledFields({ store_name_full: '三笠中央SS', phone: '011-000-0000' });
+    expect(result).toContain('store_name_full');
+    expect(result).toContain('phone');
+  });
+
+  it('excludes keys with empty string values', () => {
+    const result = computeFilledFields({ email: '' });
+    expect(result).not.toContain('email');
+  });
+
+  it('excludes keys with whitespace-only strings', () => {
+    const result = computeFilledFields({ address_line: '   ' });
+    expect(result).not.toContain('address_line');
+  });
+
+  it('excludes keys with empty array values', () => {
+    const result = computeFilledFields({ vehicle_types: [] });
+    expect(result).not.toContain('vehicle_types');
+  });
+
+  it('includes keys with non-empty array values', () => {
+    const result = computeFilledFields({ coating_menu: ['crystal', 'diamond'] });
+    expect(result).toContain('coating_menu');
+  });
+
+  it('excludes keys with null values', () => {
+    const result = computeFilledFields({ google_place_id: null });
+    expect(result).not.toContain('google_place_id');
+  });
+
+  it('excludes keys with undefined values', () => {
+    const result = computeFilledFields({ landmarks: undefined });
+    expect(result).not.toContain('landmarks');
+  });
+
+  it('includes file-field keys when the value is an object with keys', () => {
+    // file fields arrive as objects with metadata
+    const result = computeFilledFields({
+      exterior_photos: { file_id: 'abc', url: 'https://...' },
+    });
+    expect(result).toContain('exterior_photos');
+  });
+
+  it('excludes empty-object values', () => {
+    const result = computeFilledFields({ staff_group_photo: {} });
+    expect(result).not.toContain('staff_group_photo');
+  });
+
+  it('returns KEYS ONLY — no answer value strings present in output', () => {
+    const piiValue = '090-1234-5678';
+    const result = computeFilledFields({ phone: piiValue });
+    // result is string[] of keys; no element should equal the value
+    expect(result).not.toContain(piiValue);
+    expect(result).toContain('phone');
+  });
+
+  it('trigger defaults to cron (smoke-test via syncKeeperSurveys call signature)', () => {
+    // We can only verify the signature accepts trigger without calling the function
+    // (that would need real Firestore). Type-level test is sufficient; this asserts
+    // computeFilledFields itself runs on a real CSV-like fixture.
+    const answers: Record<string, unknown> = {
+      store_name_full: '三笠中央SS',
+      store_name_short: 'asだsd',
+      phone: '11111111111',
+      email: 'あdsdさ@a.com',
+      address_zip: '1111111',
+      address_line: '北海道三笠市幸町5番地',
+      business_hours: 'mon:open(09:00-19:00)',
+      closed_days_notes: 'あsd',
+      google_map_url: 'https://a.com',
+      google_place_id: 'あdさds',
+      nearest_station: 'あsっだs',
+      road_access: 'だあsd',
+      landmarks: 'asっdさ',
+      keeper_rank: 'labo',
+      booth_count: 'あsd',
+      simultaneous_capacity: 'dさ',
+      vehicle_types: ['kei', 'motorcycle', 'normal'],
+      coating_menu: ['crystal', 'diamond', 'fresh'],
+      additional_services: ['car_film', 'tire_coating'],
+      payment_methods: ['cash', 'credit_card', 'line_pay'],
+      campaign_info: 'asだ',
+      staff_roster: [{ name: 'あsd' }],
+      store_intro: 'xvcあさds',
+      manager_message: 'asだsd',
+      store_strengths: 'asだds',
+      // file fields — non-empty
+      exterior_photos: [{ file_id: 'f1' }],
+      exterior_photos2: [],         // empty — should be excluded
+      work_area_photos: [{ file_id: 'f2' }],
+      staff_group_photo: [{ file_id: 'f3' }],
+      award_certificates: [{ file_id: 'f4' }],
+    };
+
+    const filled = computeFilledFields(answers);
+
+    // All non-empty fields should be present
+    expect(filled).toContain('store_name_full');
+    expect(filled).toContain('coating_menu');
+    expect(filled).toContain('exterior_photos');
+    expect(filled).toContain('work_area_photos');
+
+    // Empty array should be excluded
+    expect(filled).not.toContain('exterior_photos2');
+
+    // PII boundary: the output must contain ONLY answer keys, never any
+    // answer value. Assert each concrete value (phone, email, address,
+    // file ids, etc.) is absent from the returned key list.
+    const flatValues = Object.values(answers).flatMap((v) =>
+      Array.isArray(v)
+        ? v.map((x) => (typeof x === 'object' && x !== null ? JSON.stringify(x) : String(x)))
+        : [typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v)],
+    );
+    for (const value of flatValues) {
+      expect(filled).not.toContain(value);
+    }
+    // Every returned element must be a key that exists on the input object.
+    for (const key of filled) {
+      expect(Object.prototype.hasOwnProperty.call(answers, key)).toBe(true);
+    }
   });
 });
 

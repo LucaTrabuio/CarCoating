@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await syncKeeperSurveys({ full: parsed.data.full });
+    const result = await syncKeeperSurveys({ full: parsed.data.full, trigger: 'manual' });
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
     console.error('[keeper-surveys/sync] fatal error:', error);

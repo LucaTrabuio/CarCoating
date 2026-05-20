@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cronEmptyBodySchema } from '@/lib/validations'; // satisfies pre-commit hook import check
 import { getAdminDb } from '@/lib/firebase-admin';
 import { buildMorningReport, type StoreInfo, type ReservationRow } from '@/lib/daily-report';
+import type { KeeperSyncLastRun } from '@/lib/keeper-types';
 import { systemAlerts } from '@/lib/system-alerts-instance';
 import nodemailer from 'nodemailer';
 
@@ -74,7 +75,19 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ ok: true, sent: 0, reason: 'no_recipients' });
     }
 
-    const { subject, html } = buildMorningReport(stores, reservations, dateJstStr);
+    // Read last Keeper sync summary (best-effort; null if not yet run)
+    let keeperLastRun: KeeperSyncLastRun | null = null;
+    try {
+      const lastRunSnap = await db.collection('keeperSync').doc('lastRun').get();
+      if (lastRunSnap.exists) {
+        keeperLastRun = lastRunSnap.data() as KeeperSyncLastRun;
+      }
+    } catch (err) {
+      console.error('[daily-report-morning] Failed to read keeperSync/lastRun:', err);
+    }
+
+    // Pass UTC now — buildMorningReport/buildKeeperSyncSection does its own +9h
+    const { subject, html } = buildMorningReport(stores, reservations, dateJstStr, keeperLastRun, new Date(nowUtc));
 
     const sendResults = await Promise.allSettled(
       recipients.map((to) =>

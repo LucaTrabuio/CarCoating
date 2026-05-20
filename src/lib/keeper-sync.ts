@@ -17,6 +17,8 @@ import type {
   FileRef,
   MirroredFile,
   MatchStatus,
+  KeeperSyncStoreSummary,
+  KeeperSyncLastRun,
 } from './keeper-types';
 
 // ─── Store name normalisation ────────────────────────────────
@@ -106,11 +108,32 @@ async function mirrorFile(
   };
 }
 
+// ─── computeFilledFields — exported for tests ─────────────────
+// Returns only the KEYS of answers whose value is non-empty.
+// NEVER returns answer values — PII boundary.
+export function computeFilledFields(answers: Record<string, unknown>): string[] {
+  const filled: string[] = [];
+  for (const [key, val] of Object.entries(answers)) {
+    if (val === null || val === undefined) continue;
+    if (typeof val === 'string' && val.trim() === '') continue;
+    if (Array.isArray(val) && val.length === 0) continue;
+    if (
+      typeof val === 'object' &&
+      !Array.isArray(val) &&
+      Object.keys(val as Record<string, unknown>).length === 0
+    ) continue;
+    filled.push(key);
+  }
+  return filled;
+}
+
 // ─── Main sync orchestration ──────────────────────────────────
 
 export async function syncKeeperSurveys(opts: {
   full?: boolean;
+  trigger?: 'cron' | 'manual';
 } = {}): Promise<KeeperSyncResult> {
+  const trigger = opts.trigger ?? 'cron';
   const db = getAdminDb();
   const result: KeeperSyncResult = {
     surveys: 0,
@@ -118,6 +141,12 @@ export async function syncKeeperSurveys(opts: {
     filesMirrored: 0,
     unmatched: 0,
   };
+
+  // Accumulator for per-run store summaries (keyed by store_id ?? store_name ?? '(unknown)')
+  const storeSummaryMap = new Map<string, KeeperSyncStoreSummary & {
+    _latestRevision: number;
+    _latestSubmittedAt: string | null;
+  }>();
 
   // 1. Load cursor state
   const stateRef = db.collection('keeperSync').doc('state');
@@ -197,6 +226,7 @@ export async function syncKeeperSurveys(opts: {
         result,
         opts.full ?? false,
         syncStartTime,
+        storeSummaryMap,
       );
     }
 
@@ -215,6 +245,26 @@ export async function syncKeeperSurveys(opts: {
     console.error('[keeper-sync] Failed to write sync state:', err);
   }
 
+  // 6. Write per-run summary to keeperSync/lastRun (best-effort, never aborts sync)
+  try {
+    const stores: KeeperSyncStoreSummary[] = Array.from(
+      storeSummaryMap.values(),
+    ).map(({ _latestRevision: _r, _latestSubmittedAt: _s, ...summary }) => summary);
+
+    const lastRun: KeeperSyncLastRun = {
+      ranAt: syncStartTime,
+      trigger,
+      surveysProcessed: result.surveys,
+      responsesProcessed: result.responses,
+      filesMirrored: result.filesMirrored,
+      stores,
+    };
+    await db.collection('keeperSync').doc('lastRun').set(lastRun);
+  } catch (err) {
+    console.error('[keeper-sync] Failed to write lastRun summary:', err);
+    await recordSurveyAlert('Failed to write lastRun summary', err, {});
+  }
+
   return result;
 }
 
@@ -225,6 +275,10 @@ async function syncResponsesForSurvey(
   result: KeeperSyncResult,
   full: boolean,
   syncStartTime: string,
+  storeSummaryMap: Map<string, KeeperSyncStoreSummary & {
+    _latestRevision: number;
+    _latestSubmittedAt: string | null;
+  }>,
 ): Promise<void> {
   const db = getAdminDb();
   const submittedSince =
@@ -341,6 +395,40 @@ async function syncResponsesForSurvey(
 
         await responseRef.set(responseDoc, { merge: true });
         result.responses++;
+
+        // Update per-store summary accumulator (keys only — no PII values)
+        const summaryKey =
+          response.store_id ?? response.store_name ?? '(unknown)';
+        const existing = storeSummaryMap.get(summaryKey);
+        if (!existing) {
+          storeSummaryMap.set(summaryKey, {
+            storeName: response.store_name ?? summaryKey,
+            keeperStoreId: response.store_id,
+            matchedStoreId,
+            matchStatus,
+            newResponses: 1,
+            filledFields: computeFilledFields(
+              response.answers as Record<string, unknown>,
+            ),
+            _latestRevision: response.revision,
+            _latestSubmittedAt: response.submitted_at,
+          });
+        } else {
+          existing.newResponses++;
+          // Keep latest response by revision (primary), submitted_at (tiebreaker, null-safe)
+          const isNewer =
+            response.revision > existing._latestRevision ||
+            (response.revision === existing._latestRevision &&
+              (response.submitted_at ?? '') >
+                (existing._latestSubmittedAt ?? ''));
+          if (isNewer) {
+            existing._latestRevision = response.revision;
+            existing._latestSubmittedAt = response.submitted_at;
+            existing.filledFields = computeFilledFields(
+              response.answers as Record<string, unknown>,
+            );
+          }
+        }
       } catch (err) {
         console.error(
           `[keeper-sync] Failed to upsert response ${response.response_id}:`,
