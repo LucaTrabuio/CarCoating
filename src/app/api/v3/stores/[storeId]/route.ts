@@ -18,6 +18,14 @@ export async function GET(
   { params }: { params: Promise<{ storeId: string }> }
 ) {
   const { storeId } = await params;
+
+  const auth = await requireAuth();
+  if (auth.error) return auth.error;
+
+  if (!canManageStore(auth.user, storeId)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
   try {
     const store = await getV3StoreById(storeId);
     if (!store) {

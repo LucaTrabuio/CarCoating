@@ -37,7 +37,7 @@ export const NAV_ITEMS: NavItem[] = [
 
   // Stores & organisation
   { label: '店舗マスター', href: '/admin/stores', icon: '🏪', group: 'org', superAdminOnly: true },
-  { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳', group: 'org', superAdminOnly: true },
+  { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳', group: 'org', storeAdminVisible: true },
   { label: 'ユーザー管理', href: '/admin/users', icon: '👥', group: 'org', storeAdminVisible: true },
   { label: '顧客管理', href: '/admin/customers', icon: '🙋', group: 'org', storeAdminVisible: true },
   { label: 'CSVインポート', href: '/admin/stores/import', icon: '📥', group: 'org', storeAdminVisible: true },

@@ -11,7 +11,9 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const includeInactive = searchParams.get('all') === 'true';
 
-    // Including inactive stores requires any authenticated admin
+    // Base list (active stores) is public — the storefront homepage finder
+    // reads it. Including INACTIVE/unpublished stores requires an
+    // authenticated admin (drafts must not be exposed publicly).
     if (includeInactive) {
       const auth = await requireAuth();
       if (auth.error) return auth.error;
@@ -20,6 +22,7 @@ export async function GET(request: Request) {
     const stores = includeInactive
       ? await getAllV3StoresIncludingInactive()
       : await getAllV3Stores();
+
     return NextResponse.json(stores);
   } catch (error) {
     console.error('GET /api/v3/stores error:', error);
