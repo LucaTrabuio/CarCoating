@@ -99,6 +99,7 @@ const criticalSourceAllowlist = [
   'inquiry',
   'reservation',
   'customer-sync',
+  'keeper-sync',
 ];
 
 // Singleton — imported by API routes and cron handlers; never by client code.

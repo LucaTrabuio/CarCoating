@@ -327,3 +327,9 @@ export const notificationOptInSchema = z.object({
 // ─── Cron Empty Body Schema (passthrough so GET-style crons can import) ───
 
 export const cronEmptyBodySchema = z.object({}).passthrough();
+
+// ─── Keeper Survey Sync Schema ───
+
+export const keeperSyncRequestSchema = z
+  .object({ full: z.boolean().optional() })
+  .strict();

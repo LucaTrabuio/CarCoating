@@ -103,5 +103,18 @@ service cloud.firestore {
     match /systemAlerts/{alertId} {
       allow read, write: if false;
     }
+
+    // Keeper survey data: server-side only (Admin SDK via keeper-sync.ts)
+    match /keeperSurveys/{surveyId} {
+      allow read, write: if false;
+    }
+    match /keeperSurveys/{surveyId}/responses/{responseId} {
+      allow read, write: if false;
+    }
+
+    // Keeper sync cursor state: server-side only
+    match /keeperSync/{docId} {
+      allow read, write: if false;
+    }
   }
 }

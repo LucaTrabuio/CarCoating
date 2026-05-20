@@ -21,6 +21,12 @@ service firebase.storage {
       allow write: if false;
     }
 
+    // Keeper survey file mirrors — private; served via super_admin proxy + signed URLs
+    match /keeper-surveys/{allPaths=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+
     // Default deny
     match /{allPaths=**} {
       allow read, write: if false;

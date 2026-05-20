@@ -12,6 +12,10 @@
     {
       "path": "/api/admin/cron/daily-report-evening",
       "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/admin/cron/keeper-sync",
+      "schedule": "0 17 * * *"
     }
   ]
 }

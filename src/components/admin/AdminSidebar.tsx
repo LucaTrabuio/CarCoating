@@ -50,6 +50,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'マスターデータ', href: '/admin/master', icon: '⚙️', group: 'system', superAdminOnly: true },
   { label: '診断', href: '/admin/diagnostics', icon: '🩺', group: 'system', superAdminOnly: true },
   { label: 'システムアラート', href: '/admin/system-alerts', icon: '🚨', group: 'system', superAdminOnly: true },
+  { label: 'アンケート連携', href: '/admin/keeper-surveys', icon: '📋', group: 'system', superAdminOnly: true },
 ];
 
 const GROUP_ORDER: NavGroup[] = ['daily', 'content', 'org', 'system'];
