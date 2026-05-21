@@ -3,6 +3,7 @@ import { resolveSlugToStore, getSubCompanyBySlug, getStoresBySubCompany } from '
 import { getMasterCoatingTiers } from '@/lib/master-data';
 import InquiryForm from '@/components/InquiryForm';
 import type { Metadata } from 'next';
+import { SingleStoreInquiry } from './InquirySingle';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -37,26 +38,40 @@ export default async function InquiryPage({
     if (stores.length > 1) allStores = stores;
   }
 
+  const displayName = resolved.subCompanyName || resolved.store.store_name;
+
+  // Multi-store path: keep the full stores list
+  if (allStores.length > 1) {
+    return (
+      <main>
+        <section className="bg-[#0f1c2e] py-12 px-5 text-center">
+          <h1 className="text-white text-2xl font-bold" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>
+            お問い合わせ
+          </h1>
+          <p className="text-white/40 text-sm mt-1">{displayName}</p>
+          <p className="text-white/30 text-xs mt-2">
+            料金やサービスに関するご質問をお気軽にどうぞ。
+          </p>
+        </section>
+        <InquiryForm
+          store={resolved.store}
+          stores={allStores}
+          tiers={tiers}
+          preselectedTier={preselectedTier}
+          prefillType={prefill}
+        />
+      </main>
+    );
+  }
+
+  // Single-store path
   return (
-    <main>
-      <section className="bg-[#0f1c2e] py-12 px-5 text-center">
-        <h1 className="text-white text-2xl font-bold" style={{ fontFamily: 'var(--site-font, var(--font-noto-serif-jp), serif)' }}>
-          お問い合わせ
-        </h1>
-        <p className="text-white/40 text-sm mt-1">
-          {resolved.subCompanyName || resolved.store.store_name}
-        </p>
-        <p className="text-white/30 text-xs mt-2">
-          料金やサービスに関するご質問をお気軽にどうぞ。
-        </p>
-      </section>
-      <InquiryForm
-        store={resolved.store}
-        stores={allStores.length > 1 ? allStores : undefined}
-        tiers={tiers}
-        preselectedTier={preselectedTier}
-        prefillType={prefill}
-      />
-    </main>
+    <SingleStoreInquiry
+      store={resolved.store}
+      tiers={tiers}
+      preselectedTier={preselectedTier}
+      prefillType={prefill}
+      displayName={displayName}
+    />
   );
 }

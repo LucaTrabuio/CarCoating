@@ -26,5 +26,5 @@ export default async function V3StorePricePage({ params }: { params: Promise<{ s
   const store = applyDefaults(resolved.store, globalDefaults);
   const discountRate = defaults.force_hq_campaign ? defaults.discount : (store.discount_rate ?? defaults.discount);
 
-  return <PriceContent store={store} discountRateOverride={discountRate} />;
+  return <PriceContent store={store} discountRateOverride={discountRate} basePath={`/${slug}`} />;
 }

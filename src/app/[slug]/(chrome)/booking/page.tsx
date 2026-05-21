@@ -2,8 +2,8 @@ import { notFound } from 'next/navigation';
 import { getV3StoreById, getSubCompanyBySlug, getStoresBySubCompany } from '@/lib/firebase-stores';
 import { getGlobalDefaults, applyDefaults } from '@/lib/global-defaults';
 import type { Metadata } from 'next';
-import ReservationForm from '@/components/ReservationForm';
 import BookingStoreSelector from '@/components/BookingStoreSelector';
+import { SingleStoreBooking } from './BookingSingle';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -27,9 +27,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function V3BookingPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  // Resolve global defaults once so the reservation form sees the same
-  // effective options (custom_services) as the rest of the storefront —
-  // per-store overrides layered over the editable global catalog.
   const globalDefaults = await getGlobalDefaults();
 
   // Check sub-company first (multi-store groups win over colliding store_id)
@@ -53,30 +50,14 @@ export default async function V3BookingPage({ params }: { params: Promise<{ slug
     }
 
     // Single-store sub-company — render booking form directly
-    return (
-      <main>
-        <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
-          <h1 className="text-white text-2xl font-bold" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>ご予約</h1>
-          <p className="text-white/40 text-sm mt-1">{stores[0].store_name}</p>
-        </section>
-        <ReservationForm store={stores[0]} />
-      </main>
-    );
+    return <SingleStoreBooking store={stores[0]} />;
   }
 
   // Single store
   const rawStore = await getV3StoreById(slug);
   if (rawStore && rawStore.is_active) {
     const store = applyDefaults(rawStore, globalDefaults);
-    return (
-      <main>
-        <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">
-          <h1 className="text-white text-2xl font-bold" style={{ fontFamily: 'var(--site-font, "Noto Sans JP", sans-serif)' }}>ご予約</h1>
-          <p className="text-white/40 text-sm mt-1">{store.store_name}</p>
-        </section>
-        <ReservationForm store={store} />
-      </main>
-    );
+    return <SingleStoreBooking store={store} />;
   }
 
   notFound();

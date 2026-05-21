@@ -18,10 +18,10 @@ import type { V3StoreData } from '@/lib/v3-types';
 
 const ALL_SIZES: CarSize[] = ['SS', 'S', 'M', 'L', 'LL', 'XL'];
 
-function PriceContentInner({ store }: { store: V3StoreData }) {
+function PriceContentInner({ store, basePath }: { store: V3StoreData; basePath?: string }) {
   const searchParams = useSearchParams();
   const storeId = store.store_id;
-  const base = `/${storeId}`;
+  const base = basePath ?? `/${storeId}`;
 
   // Derive from store prop instead of useEffect fetch
   const discountRate = store.discount_rate ?? 0;
@@ -259,10 +259,10 @@ function PriceContentInner({ store }: { store: V3StoreData }) {
   );
 }
 
-export default function PriceContent({ store, discountRateOverride }: { store: V3StoreData; discountRateOverride?: number }) {
+export default function PriceContent({ store, discountRateOverride, basePath }: { store: V3StoreData; discountRateOverride?: number; basePath?: string }) {
   return (
     <Suspense fallback={<div className="py-20 text-center text-gray-400">読み込み中...</div>}>
-      <PriceContentInner store={discountRateOverride !== undefined ? { ...store, discount_rate: discountRateOverride } : store} />
+      <PriceContentInner store={discountRateOverride !== undefined ? { ...store, discount_rate: discountRateOverride } : store} basePath={basePath} />
     </Suspense>
   );
 }
