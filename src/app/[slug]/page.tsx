@@ -3,10 +3,12 @@ import { getV3StoreById, getV3CampaignDefaults, getSubCompanyBySlug, getStoresBy
 import { parsePageLayout } from '@/lib/block-types';
 import BlockRenderer from '@/components/blocks/BlockRenderer';
 import PageViewTracker from '@/components/PageViewTracker';
-import SubCompanyStoreMap from '@/components/SubCompanyStoreMap';
-import { getMasterAppealPoints } from '@/lib/master-data';
+import { getMasterAppealPoints, getMasterCoatingTiers } from '@/lib/master-data';
 import CoatingComparisonSection from '@/components/CoatingCard/CoatingComparisonSection';
 import { getGlobalDefaults, applyDefaults } from '@/lib/global-defaults';
+import { getAreaLayout } from '@/lib/area-layout';
+import AreaHubBlockRenderer, { type AreaContext } from '@/components/blocks/area/AreaHubBlockRenderer';
+import { DEFAULT_SERVICE_OPTIONS } from '@/lib/area-blocks';
 
 export default async function SlugPage({
   params,
@@ -15,12 +17,13 @@ export default async function SlugPage({
 }) {
   const { slug } = await params;
   // Fetch independent data in parallel; getV3CampaignDefaults was being called up to 3x sequentially.
-  const [appealPointsMaster, subCompany, rawStore, defaults, globalDefaults] = await Promise.all([
+  const [appealPointsMaster, subCompany, rawStore, defaults, globalDefaults, coatingTiers] = await Promise.all([
     getMasterAppealPoints(),
     getSubCompanyBySlug(slug),
     getV3StoreById(slug),
     getV3CampaignDefaults(),
     getGlobalDefaults(),
+    getMasterCoatingTiers(),
   ]);
   // Resolve every defaultable section (page_layout, banners, staff_members, …)
   // against the global-defaults + override-flags policy.
@@ -32,62 +35,31 @@ export default async function SlugPage({
     const rawStores = await getStoresBySubCompany(subCompany.id);
     const stores = rawStores.map(s => applyDefaults(s, globalDefaults));
     if (stores.length > 1) {
-      // Multi-store sub-company — render group view with SubCompanyStoreMap
-      const primaryStore = stores[0];
-      const basePath = `/${slug}`;
-      const campaign = defaults.force_hq_campaign ? {
-        title: defaults.title,
-        discount_rate: defaults.discount,
-        deadline: defaults.end,
-        color: defaults.color,
-      } : {
-        title: primaryStore.campaign_title || defaults.title,
-        discount_rate: primaryStore.discount_rate ?? defaults.discount,
-        deadline: primaryStore.campaign_deadline || defaults.end,
-        color: primaryStore.campaign_color_code || defaults.color,
+      // Multi-store sub-company — render via area hub block system
+      const areaLayout = await getAreaLayout(subCompany.id);
+      const areaContext: AreaContext = {
+        subCompanyName: subCompany.name,
+        stores: stores.map(s => ({
+          store_id: s.store_id,
+          store_name: s.store_name,
+          address: s.address,
+          tel: s.tel,
+          business_hours: s.business_hours,
+          regular_holiday: s.regular_holiday,
+          parking_spaces: s.parking_spaces,
+          landmark: s.landmark,
+          nearby_stations: s.nearby_stations,
+          has_booth: s.has_booth,
+          lat: s.lat,
+          lng: s.lng,
+          store_news: s.store_news ?? '',
+          custom_services: s.custom_services ?? '',
+          offered_coatings: undefined,
+        })),
+        coatingTiers,
+        serviceOptions: DEFAULT_SERVICE_OPTIONS,
       };
-      if (defaults.end && new Date(defaults.end) < new Date()) {
-        campaign.discount_rate = 0;
-      }
-      const layout = parsePageLayout(primaryStore.page_layout, primaryStore);
-
-      return (
-        <main>
-          {layout.blocks
-            .filter(b => b.visible)
-            .filter(b => b.type !== 'access')
-            .sort((a, b) => a.order - b.order)
-            .map(block => (
-              <BlockRenderer
-                key={block.id}
-                block={block}
-                store={primaryStore}
-                basePath={basePath}
-                discountRate={campaign.discount_rate}
-                allStores={stores}
-                appealPointsMaster={appealPointsMaster}
-              />
-            ))}
-          <SubCompanyStoreMap
-            stores={stores.map(s => ({
-              store_id: s.store_id,
-              store_name: s.store_name,
-              address: s.address,
-              tel: s.tel,
-              business_hours: s.business_hours,
-              regular_holiday: s.regular_holiday,
-              parking_spaces: s.parking_spaces,
-              landmark: s.landmark,
-              nearby_stations: s.nearby_stations,
-              has_booth: s.has_booth,
-              lat: s.lat,
-              lng: s.lng,
-            }))}
-            groupName={subCompany.name}
-          />
-          <CoatingComparisonSection />
-        </main>
-      );
+      return <AreaHubBlockRenderer blocks={areaLayout} context={areaContext} />;
     }
   }
 
@@ -139,57 +111,30 @@ export default async function SlugPage({
     const stores = rawStores.map(s => applyDefaults(s, globalDefaults));
     if (stores.length === 0) notFound();
 
-    const primaryStore = stores[0];
-    const basePath = `/${slug}`;
-
-    const campaign = {
-      title: primaryStore.campaign_title || defaults.title,
-      discount_rate: primaryStore.discount_rate ?? defaults.discount,
-      deadline: primaryStore.campaign_deadline || defaults.end,
-      color: primaryStore.campaign_color_code || defaults.color,
+    const areaLayout = await getAreaLayout(subCompany.id);
+    const areaContext: AreaContext = {
+      subCompanyName: subCompany.name,
+      stores: stores.map(s => ({
+        store_id: s.store_id,
+        store_name: s.store_name,
+        address: s.address,
+        tel: s.tel,
+        business_hours: s.business_hours,
+        regular_holiday: s.regular_holiday,
+        parking_spaces: s.parking_spaces,
+        landmark: s.landmark,
+        nearby_stations: s.nearby_stations,
+        has_booth: s.has_booth,
+        lat: s.lat,
+        lng: s.lng,
+        store_news: s.store_news ?? '',
+        custom_services: s.custom_services ?? '',
+        offered_coatings: undefined,
+      })),
+      coatingTiers,
+      serviceOptions: DEFAULT_SERVICE_OPTIONS,
     };
-    if (defaults.end && new Date(defaults.end) < new Date()) {
-      campaign.discount_rate = 0;
-    }
-
-    const layout = parsePageLayout(primaryStore.page_layout, primaryStore);
-
-    return (
-      <main>
-        {layout.blocks
-          .filter(b => b.visible)
-          .filter(b => b.type !== 'access') // Skip single-store access — SubCompanyStoreMap handles it
-          .sort((a, b) => a.order - b.order)
-          .map(block => (
-            <BlockRenderer
-              key={block.id}
-              block={block}
-              store={primaryStore}
-              basePath={basePath}
-              discountRate={campaign.discount_rate}
-              allStores={stores}
-            />
-          ))}
-        <SubCompanyStoreMap
-          stores={stores.map(s => ({
-            store_id: s.store_id,
-            store_name: s.store_name,
-            address: s.address,
-            tel: s.tel,
-            business_hours: s.business_hours,
-            regular_holiday: s.regular_holiday,
-            parking_spaces: s.parking_spaces,
-            landmark: s.landmark,
-            nearby_stations: s.nearby_stations,
-            has_booth: s.has_booth,
-            lat: s.lat,
-            lng: s.lng,
-          }))}
-          groupName={subCompany.name}
-        />
-        <CoatingComparisonSection />
-      </main>
-    );
+    return <AreaHubBlockRenderer blocks={areaLayout} context={areaContext} />;
   }
 
   notFound();

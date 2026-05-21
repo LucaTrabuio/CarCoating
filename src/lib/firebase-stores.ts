@@ -307,6 +307,7 @@ export interface SubCompany {
   stores: string[];
   logo_url: string;
   description: string;
+  page_layout?: unknown[];
 }
 
 export async function getAllSubCompanies(): Promise<SubCompany[]> {
@@ -389,4 +390,12 @@ export async function resolveSlugToStore(slug: string): Promise<{
 export async function upsertSubCompany(subCompany: SubCompany): Promise<void> {
   const db = getAdminDb();
   await db.collection('sub_companies').doc(subCompany.id).set(subCompany, { merge: true });
+}
+
+export async function saveAreaLayout(subCompanyId: string, blocks: unknown[]): Promise<void> {
+  const db = getAdminDb();
+  await db.collection('sub_companies').doc(subCompanyId).set(
+    { page_layout: blocks },
+    { merge: true },
+  );
 }

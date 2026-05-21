@@ -333,3 +333,18 @@ export const cronEmptyBodySchema = z.object({}).passthrough();
 export const keeperSyncRequestSchema = z
   .object({ full: z.boolean().optional() })
   .strict();
+
+// ─── Area Layout Write Schema ───
+
+export const areaLayoutWriteSchema = z.object({
+  blocks: z.array(
+    z.object({
+      id: z.string().min(1).max(200),
+      type: z.string().min(1).max(100),
+      label: z.string().max(200).default(''),
+      visible: z.boolean().default(true),
+      order: z.number().int().min(0).default(0),
+      config: z.record(z.string(), z.unknown()).default({}),
+    }),
+  ).max(50),
+});

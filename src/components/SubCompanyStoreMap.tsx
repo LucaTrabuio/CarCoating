@@ -58,6 +58,7 @@ export default function SubCompanyStoreMap({
   stores,
   groupName,
   embedded = false,
+  linkToStore = false,
 }: {
   stores: StoreLocation[];
   groupName: string;
@@ -65,6 +66,10 @@ export default function SubCompanyStoreMap({
       "店舗一覧・アクセス" heading. Used inside AccessBlock so the access
       section header is not duplicated. */
   embedded?: boolean;
+  /** When true, list-card store names link to /[store_id] and the
+      InfoWindow shows a "店舗ページを見る" anchor. Default false for
+      backwards-compatibility with all existing callers. */
+  linkToStore?: boolean;
 }) {
   const [sortedStores, setSortedStores] = useState<(StoreLocation & { distance: number | null })[]>(
     stores.map(s => ({ ...s, distance: null }))
@@ -116,12 +121,16 @@ export default function SubCompanyStoreMap({
 
         marker.addListener('click', () => {
           setSelectedStore(store.store_id);
+          const storeLink = linkToStore
+            ? `<div style="margin-top:6px"><a href="/${store.store_id}" style="font-size:11px;color:#0C3290;font-weight:bold;text-decoration:underline">店舗ページを見る</a></div>`
+            : '';
           infoWindowRef.current?.setContent(`
             <div style="padding:4px 8px;min-width:200px">
               <div style="font-weight:bold;font-size:14px;margin-bottom:4px">${store.store_name}</div>
               <div style="font-size:11px;color:#666;margin-bottom:2px">${store.address}</div>
               <div style="font-size:11px;color:#666">${store.tel || ''}</div>
               <div style="font-size:11px;color:#999;margin-top:2px">${store.business_hours}</div>
+              ${storeLink}
             </div>
           `);
           infoWindowRef.current?.open(map, marker);
@@ -135,7 +144,7 @@ export default function SubCompanyStoreMap({
       }
       setMapReady(true);
     });
-  }, [stores, mapReady]);
+  }, [stores, mapReady, linkToStore]);
 
   useEffect(() => { initMap(); }, [initMap]);
 
@@ -235,7 +244,11 @@ export default function SubCompanyStoreMap({
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-sm text-[#0C3290]">{store.store_name}</h3>
+                          {linkToStore ? (
+                            <a href={`/${store.store_id}`} className="font-bold text-sm text-[#0C3290] hover:underline" onClick={e => e.stopPropagation()}>{store.store_name}</a>
+                          ) : (
+                            <h3 className="font-bold text-sm text-[#0C3290]">{store.store_name}</h3>
+                          )}
                           <p className="text-xs text-gray-500 mt-0.5">{store.address}</p>
                           <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
                             {store.tel && <span>{store.tel}</span>}

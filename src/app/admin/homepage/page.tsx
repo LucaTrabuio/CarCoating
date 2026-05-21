@@ -19,27 +19,38 @@ import {
   HOMEPAGE_BLOCK_META,
   type HomepageBlock,
 } from '@/lib/homepage-blocks';
+import {
+  DEFAULT_AREA_BLOCKS,
+  AREA_BLOCK_META,
+  type AreaBlock,
+} from '@/lib/area-blocks';
+
+// ─── Unified block type for the editor ───
+
+type EditorBlock = HomepageBlock | AreaBlock;
 
 // ─── Local sortable row ───
 
-function SortableHomepageBlock({
+function SortableEditorBlock({
   block,
   isEditing,
   onToggleVisibility,
   onToggleEdit,
   onDelete,
   onConfigChange,
+  metaMap,
 }: {
-  block: HomepageBlock;
+  block: EditorBlock;
   isEditing: boolean;
   onToggleVisibility: () => void;
   onToggleEdit: () => void;
   onDelete: () => void;
   onConfigChange: (key: string, value: unknown) => void;
+  metaMap: Record<string, { labelJa: string; icon: string }>;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: block.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
-  const meta = HOMEPAGE_BLOCK_META[block.type];
+  const meta = metaMap[block.type];
 
   return (
     <div ref={setNodeRef} style={style} className={`bg-white border rounded-xl mb-2 transition-opacity ${!block.visible ? 'opacity-50 border-gray-100' : 'border-gray-200'}`}>
@@ -151,30 +162,74 @@ function SortableHomepageBlock({
   );
 }
 
+// ─── Types ───
+
+interface SubCompanyOption {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 // ─── Main page ───
 
 export default function HomepagePage() {
   const user = useAdminAuth();
-  const [blocks, setBlocks] = useState<HomepageBlock[]>([]);
+
+  // 'main' = site homepage; area id string = area hub
+  const [target, setTarget] = useState<'main' | string>('main');
+  const [areas, setAreas] = useState<SubCompanyOption[]>([]);
+  const [blocks, setBlocks] = useState<EditorBlock[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [editingBlock, setEditingBlock] = useState<string | null>(null);
   const [showPalette, setShowPalette] = useState(false);
 
+  const isAreaMode = target !== 'main';
+  const activeMetaMap = isAreaMode ? AREA_BLOCK_META : HOMEPAGE_BLOCK_META;
+  const activeDefaults = isAreaMode ? DEFAULT_AREA_BLOCKS : DEFAULT_HOMEPAGE_BLOCKS;
+
+  // Load sub-companies list once
   useEffect(() => {
-    fetch('/api/admin/homepage')
+    fetch('/api/admin/sub-companies')
+      .then(r => r.json())
+      .then((data: SubCompanyOption[]) => {
+        if (Array.isArray(data)) setAreas(data);
+      })
+      .catch(() => { /* ignore */ });
+  }, []);
+
+  // Load layout when target changes
+  useEffect(() => {
+    setLoading(true);
+    setBlocks([]);
+    setEditingBlock(null);
+
+    const url = target === 'main'
+      ? '/api/admin/homepage'
+      : `/api/admin/sub-companies/${target}/layout`;
+
+    fetch(url)
       .then(r => r.json())
       .then(data => {
-        if (data.layout?.blocks && Array.isArray(data.layout.blocks) && data.layout.blocks.length > 0) {
-          setBlocks(data.layout.blocks);
+        if (target === 'main') {
+          if (data.layout?.blocks && Array.isArray(data.layout.blocks) && data.layout.blocks.length > 0) {
+            setBlocks(data.layout.blocks);
+          } else {
+            setBlocks(DEFAULT_HOMEPAGE_BLOCKS);
+          }
         } else {
-          setBlocks(DEFAULT_HOMEPAGE_BLOCKS);
+          if (data.layout && Array.isArray(data.layout) && data.layout.length > 0) {
+            setBlocks(data.layout);
+          } else {
+            setBlocks(DEFAULT_AREA_BLOCKS);
+          }
         }
       })
-      .catch(() => setBlocks(DEFAULT_HOMEPAGE_BLOCKS))
+      .catch(() => setBlocks(activeDefaults))
       .finally(() => setLoading(false));
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [target]);
 
   if (user.role !== 'super_admin') {
     return <div className="p-8 text-gray-500">この機能はスーパー管理者のみ使用できます。</div>;
@@ -183,11 +238,20 @@ export default function HomepagePage() {
   async function handleSave() {
     setSaving(true);
     try {
-      const res = await fetch('/api/admin/homepage', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ blocks }),
-      });
+      let res: Response;
+      if (target === 'main') {
+        res = await fetch('/api/admin/homepage', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ blocks }),
+        });
+      } else {
+        res = await fetch(`/api/admin/sub-companies/${target}/layout`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ blocks }),
+        });
+      }
       if (!res.ok) throw new Error();
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -218,15 +282,15 @@ export default function HomepagePage() {
   }
 
   function addBlock(type: string) {
-    const meta = HOMEPAGE_BLOCK_META[type];
+    const meta = activeMetaMap[type];
     const existingIds = new Set(blocks.map(b => b.id));
     const baseId = type.replace(/_/g, '-');
     let newId = baseId;
     let counter = 2;
     while (existingIds.has(newId)) { newId = `${baseId}-${counter}`; counter++; }
 
-    const template = DEFAULT_HOMEPAGE_BLOCKS.find(b => b.type === type);
-    const newBlock: HomepageBlock = {
+    const template = activeDefaults.find(b => b.type === type);
+    const newBlock: EditorBlock = {
       id: newId,
       type,
       label: meta?.labelJa || type,
@@ -264,11 +328,25 @@ export default function HomepagePage() {
         </div>
       </div>
 
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <label className="block text-xs font-semibold text-gray-500 mb-2">編集対象</label>
+        <select
+          value={target}
+          onChange={e => setTarget(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+        >
+          <option value="main">メインホームページ</option>
+          {areas.map(area => (
+            <option key={area.id} value={area.id}>{area.name}（エリアページ）</option>
+          ))}
+        </select>
+      </div>
+
       {showPalette && (
         <div className="bg-white border border-gray-200 rounded-xl p-4">
           <p className="text-xs font-semibold text-gray-500 mb-3">追加するブロックを選択</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {Object.entries(HOMEPAGE_BLOCK_META).map(([type, meta]) => (
+            {Object.entries(activeMetaMap).map(([type, meta]) => (
               <button
                 key={type}
                 onClick={() => addBlock(type)}
@@ -288,7 +366,7 @@ export default function HomepagePage() {
         <SortableContext items={sorted.map(b => b.id)} strategy={verticalListSortingStrategy}>
           <div>
             {sorted.map(block => (
-              <SortableHomepageBlock
+              <SortableEditorBlock
                 key={block.id}
                 block={block}
                 isEditing={editingBlock === block.id}
@@ -296,6 +374,7 @@ export default function HomepagePage() {
                 onToggleEdit={() => setEditingBlock(editingBlock === block.id ? null : block.id)}
                 onDelete={() => deleteBlock(block.id)}
                 onConfigChange={(key, value) => updateBlockConfig(block.id, key, value)}
+                metaMap={activeMetaMap}
               />
             ))}
           </div>
