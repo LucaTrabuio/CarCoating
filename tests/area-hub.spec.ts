@@ -15,6 +15,11 @@ test.describe('Area Hub (ichihara)', () => {
     await expect(page.locator('footer')).toBeVisible();
   });
 
+  test('area_header h1 is visible', async ({ page }) => {
+    await page.goto(`/${AREA_SLUG}`);
+    await expect(page.locator('h1').first()).toBeVisible();
+  });
+
   test('area_store_map default block renders store list heading', async ({ page }) => {
     await page.goto(`/${AREA_SLUG}`);
     await expect(page.locator('text=店舗一覧・アクセス').first()).toBeVisible();

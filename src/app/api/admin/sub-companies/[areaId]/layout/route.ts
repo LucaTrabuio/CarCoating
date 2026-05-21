@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { requireAuth } from '@/lib/auth';
 import { getAdminDb } from '@/lib/firebase-admin';
-import { saveAreaLayout } from '@/lib/firebase-stores';
+import { saveAreaLayout, getSubCompanyById } from '@/lib/firebase-stores';
 import { areaLayoutWriteSchema } from '@/lib/validations';
 
 export async function GET(
@@ -43,6 +44,12 @@ export async function PUT(
 
   try {
     await saveAreaLayout(areaId, parsed.data.blocks);
+    try {
+      const sc = await getSubCompanyById(areaId);
+      if (sc?.slug) revalidatePath(`/${sc.slug}`);
+    } catch (e) {
+      console.error('revalidatePath after area layout save failed:', e);
+    }
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error(`PUT /api/admin/sub-companies/${areaId}/layout error:`, error);

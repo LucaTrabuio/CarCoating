@@ -43,7 +43,7 @@ export const DEFAULT_AREA_BLOCKS: AreaBlock[] = [
     label: 'エリアヘッダー',
     visible: true,
     order: 0,
-    config: {},
+    config: { title: '', subtitle: '' },
   },
   {
     id: 'area-banners',
@@ -259,3 +259,32 @@ export function resolveAreaBannerRefs(
 }
 
 export { DEFAULT_SERVICE_OPTIONS };
+
+/** Describes which config fields the area 編集 tab renders for each block type.
+ *  Returns 'readonly' for auto-aggregated types that need no admin input. */
+export function areaFieldSpec(
+  type: string,
+): { key: string; kind: 'text' | 'number' | 'picker' }[] | 'readonly' {
+  switch (type) {
+    case 'area_banners':
+      return [{ key: 'refs', kind: 'picker' }];
+    case 'area_header':
+      return [
+        { key: 'title', kind: 'text' },
+        { key: 'subtitle', kind: 'text' },
+      ];
+    case 'area_news':
+      return [{ key: 'max_items', kind: 'number' }];
+    case 'columns':
+      return [
+        { key: 'heading', kind: 'text' },
+        { key: 'max_articles', kind: 'number' },
+      ];
+    case 'aggregated_coatings':
+    case 'aggregated_options':
+    case 'area_store_map':
+      return 'readonly';
+    default:
+      return [];
+  }
+}

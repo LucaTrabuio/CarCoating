@@ -394,6 +394,13 @@ export async function upsertSubCompany(subCompany: SubCompany): Promise<void> {
   await db.collection('sub_companies').doc(subCompany.id).set(subCompany, { merge: true });
 }
 
+export async function getSubCompanyById(id: string): Promise<SubCompany | null> {
+  const db = getAdminDb();
+  const doc = await db.collection('sub_companies').doc(id).get();
+  if (!doc.exists) return null;
+  return { id: doc.id, ...doc.data() } as SubCompany;
+}
+
 export async function saveAreaLayout(subCompanyId: string, blocks: unknown[]): Promise<void> {
   const db = getAdminDb();
   await db.collection('sub_companies').doc(subCompanyId).set(

@@ -85,14 +85,18 @@ export default function AreaHubBlockRenderer({ blocks, context }: Props) {
         if (!block.visible) return null;
 
         switch (block.type) {
-          case 'area_header':
+          case 'area_header': {
+            const cfg = block.config as { title?: string; subtitle?: string };
             return (
               <AreaHeaderBlock
                 key={block.id}
                 groupName={context.subCompanyName}
                 storeCount={context.stores.length}
+                title={cfg.title}
+                subtitle={cfg.subtitle}
               />
             );
+          }
 
           case 'area_banners': {
             const cfg = block.config as { refs?: AreaBannerRef[] };

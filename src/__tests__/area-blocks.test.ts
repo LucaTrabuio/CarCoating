@@ -6,6 +6,7 @@ import {
   aggregateOptions,
   collectAreaBanners,
   resolveAreaBannerRefs,
+  areaFieldSpec,
 } from '../lib/area-blocks';
 import { DEFAULT_SERVICE_OPTIONS } from '../data/service-options';
 import type { CoatingTier } from '../lib/types';
@@ -74,6 +75,13 @@ describe('DEFAULT_AREA_BLOCKS', () => {
   it('area_banners default block is visible', () => {
     const block = DEFAULT_AREA_BLOCKS.find(b => b.type === 'area_banners')!;
     expect(block.visible).toBe(true);
+  });
+
+  it('area_header default block has config.title and config.subtitle both empty strings', () => {
+    const block = DEFAULT_AREA_BLOCKS.find(b => b.type === 'area_header')!;
+    expect(block).toBeDefined();
+    expect(block.config.title).toBe('');
+    expect(block.config.subtitle).toBe('');
   });
 
   it('follows the required order: area_header → area_banners → area_store_map → aggregated_coatings → aggregated_options → area_news → columns', () => {
@@ -251,6 +259,62 @@ describe('resolveAreaBannerRefs', () => {
     const refs = banners.map(b => ({ storeId: 'c', bannerId: `banner:${b.id}` }));
     const resolved = resolveAreaBannerRefs(capStores, refs);
     expect(resolved).toHaveLength(4);
+  });
+});
+
+describe('areaFieldSpec', () => {
+  it('area_banners → picker field for refs', () => {
+    const spec = areaFieldSpec('area_banners');
+    expect(spec).not.toBe('readonly');
+    expect(Array.isArray(spec)).toBe(true);
+    const fields = spec as { key: string; kind: string }[];
+    expect(fields).toHaveLength(1);
+    expect(fields[0]).toEqual({ key: 'refs', kind: 'picker' });
+  });
+
+  it('area_header → title and subtitle text fields', () => {
+    const spec = areaFieldSpec('area_header');
+    expect(spec).not.toBe('readonly');
+    const fields = spec as { key: string; kind: string }[];
+    expect(fields).toHaveLength(2);
+    expect(fields.find(f => f.key === 'title')?.kind).toBe('text');
+    expect(fields.find(f => f.key === 'subtitle')?.kind).toBe('text');
+  });
+
+  it('area_news → max_items number field', () => {
+    const spec = areaFieldSpec('area_news');
+    expect(spec).not.toBe('readonly');
+    const fields = spec as { key: string; kind: string }[];
+    expect(fields).toHaveLength(1);
+    expect(fields[0]).toEqual({ key: 'max_items', kind: 'number' });
+  });
+
+  it('columns → heading text + max_articles number', () => {
+    const spec = areaFieldSpec('columns');
+    expect(spec).not.toBe('readonly');
+    const fields = spec as { key: string; kind: string }[];
+    expect(fields).toHaveLength(2);
+    expect(fields.find(f => f.key === 'heading')?.kind).toBe('text');
+    expect(fields.find(f => f.key === 'max_articles')?.kind).toBe('number');
+  });
+
+  it('aggregated_coatings → readonly', () => {
+    expect(areaFieldSpec('aggregated_coatings')).toBe('readonly');
+  });
+
+  it('aggregated_options → readonly', () => {
+    expect(areaFieldSpec('aggregated_options')).toBe('readonly');
+  });
+
+  it('area_store_map → readonly', () => {
+    expect(areaFieldSpec('area_store_map')).toBe('readonly');
+  });
+
+  it('every type in DEFAULT_AREA_BLOCKS has a spec (not undefined)', () => {
+    DEFAULT_AREA_BLOCKS.forEach(block => {
+      const spec = areaFieldSpec(block.type);
+      expect(spec).toBeDefined();
+    });
   });
 });
 

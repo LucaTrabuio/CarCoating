@@ -26,6 +26,7 @@ import {
   type AreaBannerRef,
   type AreaBannerSource,
   collectAreaBanners,
+  areaFieldSpec,
 } from '@/lib/area-blocks';
 
 const MAX_AREA_BANNERS = 4;
@@ -124,6 +125,7 @@ function AreaBannersPicker({ areaId, currentRefs, onChange }: AreaBannersPickerP
 function SortableEditorBlock({
   block,
   isEditing,
+  showInlineConfig,
   onToggleVisibility,
   onToggleEdit,
   onDelete,
@@ -133,6 +135,7 @@ function SortableEditorBlock({
 }: {
   block: EditorBlock;
   isEditing: boolean;
+  showInlineConfig: boolean;
   onToggleVisibility: () => void;
   onToggleEdit: () => void;
   onDelete: () => void;
@@ -160,12 +163,14 @@ function SortableEditorBlock({
           <div className="font-bold text-sm text-[#0C3290]">{block.label}</div>
           <div className="text-[10px] text-gray-400">{block.type}</div>
         </div>
-        <button
-          onClick={onToggleEdit}
-          className="text-xs text-blue-500 hover:text-blue-700 cursor-pointer"
-        >
-          {isEditing ? '閉じる' : '編集'}
-        </button>
+        {showInlineConfig && (
+          <button
+            onClick={onToggleEdit}
+            className="text-xs text-blue-500 hover:text-blue-700 cursor-pointer"
+          >
+            {isEditing ? '閉じる' : '編集'}
+          </button>
+        )}
         <button
           onClick={onToggleVisibility}
           className={`text-xs px-2 py-1 rounded cursor-pointer ${block.visible ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}
@@ -181,7 +186,7 @@ function SortableEditorBlock({
         </button>
       </div>
 
-      {isEditing && (
+      {showInlineConfig && isEditing && (
         <div className="border-t border-gray-100 px-4 py-4 bg-gray-50 space-y-3">
           {block.type === 'area_banners' && areaId ? (
             <AreaBannersPicker
@@ -285,6 +290,7 @@ export function PageLayoutBuilder({ mode }: { mode: 'main' | 'area' }) {
   const [saved, setSaved] = useState(false);
   const [editingBlock, setEditingBlock] = useState<string | null>(null);
   const [showPalette, setShowPalette] = useState(false);
+  const [activeTab, setActiveTab] = useState<'layout' | 'edit'>('edit');
 
   // Load sub-companies list for area mode; set first area as default
   useEffect(() => {
@@ -478,27 +484,151 @@ export function PageLayoutBuilder({ mode }: { mode: 'main' | 'area' }) {
             </div>
           )}
 
-          <p className="text-xs text-gray-400">セクションのドラッグ並び替え、表示/非表示、テキスト編集ができます。</p>
-
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={sorted.map(b => b.id)} strategy={verticalListSortingStrategy}>
-              <div>
-                {sorted.map(block => (
-                  <SortableEditorBlock
-                    key={block.id}
-                    block={block}
-                    isEditing={editingBlock === block.id}
-                    onToggleVisibility={() => toggleVisibility(block.id)}
-                    onToggleEdit={() => setEditingBlock(editingBlock === block.id ? null : block.id)}
-                    onDelete={() => deleteBlock(block.id)}
-                    onConfigChange={(key, value) => updateBlockConfig(block.id, key, value)}
-                    metaMap={activeMetaMap}
-                    areaId={isAreaMode ? areaId : undefined}
-                  />
-                ))}
+          {isAreaMode ? (
+            <>
+              {/* Tab bar for area mode */}
+              <div className="flex gap-2 border-b border-gray-200 pb-0">
+                <button
+                  onClick={() => setActiveTab('layout')}
+                  className={`px-4 py-2 text-sm font-semibold rounded-t-lg border border-b-0 cursor-pointer transition-colors ${
+                    activeTab === 'layout'
+                      ? 'bg-white border-gray-200 text-[#0C3290]'
+                      : 'bg-gray-50 border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  レイアウト
+                </button>
+                <button
+                  onClick={() => setActiveTab('edit')}
+                  className={`px-4 py-2 text-sm font-semibold rounded-t-lg border border-b-0 cursor-pointer transition-colors ${
+                    activeTab === 'edit'
+                      ? 'bg-white border-gray-200 text-[#0C3290]'
+                      : 'bg-gray-50 border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  編集
+                </button>
               </div>
-            </SortableContext>
-          </DndContext>
+
+              {activeTab === 'layout' ? (
+                <>
+                  <p className="text-xs text-gray-400">セクションのドラッグ並び替え、表示/非表示ができます。</p>
+                  <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={sorted.map(b => b.id)} strategy={verticalListSortingStrategy}>
+                      <div>
+                        {sorted.map(block => (
+                          <SortableEditorBlock
+                            key={block.id}
+                            block={block}
+                            isEditing={false}
+                            showInlineConfig={false}
+                            onToggleVisibility={() => toggleVisibility(block.id)}
+                            onToggleEdit={() => {}}
+                            onDelete={() => deleteBlock(block.id)}
+                            onConfigChange={(key, value) => updateBlockConfig(block.id, key, value)}
+                            metaMap={activeMetaMap}
+                            areaId={areaId}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                </>
+              ) : (
+                <div className="space-y-4">
+                  {sorted.map(block => {
+                    const meta = activeMetaMap[block.type];
+                    const spec = areaFieldSpec(block.type);
+                    return (
+                      <div key={block.id} className="bg-white border border-gray-200 rounded-xl p-4">
+                        <div className="font-bold text-sm text-[#0C3290] mb-3">
+                          {meta?.icon} {block.label}
+                        </div>
+                        {spec === 'readonly' ? (
+                          <p className="text-xs text-gray-400">自動集約（編集不要）</p>
+                        ) : spec.length === 0 ? (
+                          <p className="text-xs text-gray-400">設定項目なし</p>
+                        ) : (
+                          <div className="space-y-3">
+                            {spec.map(field => {
+                              if (field.kind === 'picker') {
+                                return (
+                                  <AreaBannersPicker
+                                    key={field.key}
+                                    areaId={areaId}
+                                    currentRefs={
+                                      Array.isArray((block.config as { refs?: AreaBannerRef[] }).refs)
+                                        ? (block.config as { refs: AreaBannerRef[] }).refs
+                                        : []
+                                    }
+                                    onChange={refs => updateBlockConfig(block.id, 'refs', refs)}
+                                  />
+                                );
+                              }
+                              if (field.kind === 'text') {
+                                const val = (block.config as Record<string, unknown>)[field.key];
+                                return (
+                                  <div key={field.key}>
+                                    <label className="block text-xs font-semibold text-gray-500 mb-1">{field.key}</label>
+                                    <input
+                                      type="text"
+                                      value={typeof val === 'string' ? val : ''}
+                                      onChange={e => updateBlockConfig(block.id, field.key, e.target.value)}
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                    />
+                                  </div>
+                                );
+                              }
+                              if (field.kind === 'number') {
+                                const val = (block.config as Record<string, unknown>)[field.key];
+                                return (
+                                  <div key={field.key}>
+                                    <label className="block text-xs font-semibold text-gray-500 mb-1">{field.key}</label>
+                                    <input
+                                      type="number"
+                                      value={typeof val === 'number' ? val : ''}
+                                      onChange={e => updateBlockConfig(block.id, field.key, Number(e.target.value))}
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                                    />
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-xs text-gray-400">セクションのドラッグ並び替え、表示/非表示、テキスト編集ができます。</p>
+
+              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={sorted.map(b => b.id)} strategy={verticalListSortingStrategy}>
+                  <div>
+                    {sorted.map(block => (
+                      <SortableEditorBlock
+                        key={block.id}
+                        block={block}
+                        isEditing={editingBlock === block.id}
+                        showInlineConfig={true}
+                        onToggleVisibility={() => toggleVisibility(block.id)}
+                        onToggleEdit={() => setEditingBlock(editingBlock === block.id ? null : block.id)}
+                        onDelete={() => deleteBlock(block.id)}
+                        onConfigChange={(key, value) => updateBlockConfig(block.id, key, value)}
+                        metaMap={activeMetaMap}
+                        areaId={undefined}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            </>
+          )}
         </>
       )}
     </div>
