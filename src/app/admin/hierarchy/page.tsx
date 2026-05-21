@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { StoreVisibilityToggle } from '@/components/admin/StoreVisibilityToggle';
+import { storeHref } from '@/lib/store-url';
 
 interface Store {
   store_id: string;
@@ -165,6 +166,7 @@ export default function HierarchyPage() {
                           store={store}
                           isLast={idx === groupStores.length - 1}
                           connectorColor="border-blue-100"
+                          areaSlug={sc.slug}
                         />
                       ))}
                     </div>
@@ -203,11 +205,13 @@ function StoreNode({
   isLast,
   connectorColor,
   showBuilderLink,
+  areaSlug,
 }: {
   store: Store;
   isLast: boolean;
   connectorColor: string;
   showBuilderLink?: boolean;
+  areaSlug?: string;
 }) {
   return (
     <div className={`relative ${isLast ? '' : 'mb-1'}`}>
@@ -244,12 +248,12 @@ function StoreNode({
             )}
           </div>
           <Link
-            href={`/${store.store_id}`}
+            href={storeHref(store, areaSlug)}
             target="_blank"
             onClick={e => e.stopPropagation()}
             className="text-[10px] text-gray-400 hover:text-blue-600 hover:underline"
           >
-            /{store.store_id}
+            {storeHref(store, areaSlug)}
           </Link>
           <StoreVisibilityToggle
             storeId={store.store_id}
@@ -271,7 +275,7 @@ function StoreNode({
             </Link>
           )}
           <Link
-            href={`/${store.store_id}`}
+            href={storeHref(store, areaSlug)}
             target="_blank"
             className="text-[10px] bg-gray-100 text-gray-700 px-2 py-1 rounded font-semibold hover:bg-gray-200"
           >

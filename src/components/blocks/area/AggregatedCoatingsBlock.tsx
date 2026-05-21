@@ -1,11 +1,13 @@
 import type { AggregatedCoatingRow } from '@/lib/area-blocks';
 import Link from 'next/link';
+import { storeHref } from '@/lib/store-url';
 
 interface Props {
   rows: AggregatedCoatingRow[];
+  areaSlug: string;
 }
 
-export default function AggregatedCoatingsBlock({ rows }: Props) {
+export default function AggregatedCoatingsBlock({ rows, areaSlug }: Props) {
   if (rows.length === 0) return null;
 
   return (
@@ -32,7 +34,7 @@ export default function AggregatedCoatingsBlock({ rows }: Props) {
                 {row.storeIds.map((storeId, i) => (
                   <Link
                     key={storeId}
-                    href={`/${storeId}`}
+                    href={storeHref({ store_id: storeId, store_slug: row.storeSlugs?.[i], sub_company_id: areaSlug ? 'set' : undefined }, areaSlug)}
                     className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
                   >
                     {row.storeNames[i]}

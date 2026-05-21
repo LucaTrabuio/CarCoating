@@ -1,10 +1,14 @@
 import { test, expect } from '@playwright/test';
 
+// NOTE: All stores are now area-members; flat /{store_id} URLs redirect 301
+// to /{area}/{store_slug}. Playwright's page.goto() follows redirects by
+// default so the status check below sees 200 after the redirect chain.
+// The flat /{store_id} navigation is still valid UX (301 → nested).
 const STORE = 'eniwa';
 
 test.describe('Store Pages', () => {
   test.describe('Store home (/{storeId})', () => {
-    test('loads with 200', async ({ page }) => {
+    test('loads with 200 (following redirect to nested path)', async ({ page }) => {
       const res = await page.goto(`/${STORE}`);
       expect(res?.status()).toBe(200);
     });

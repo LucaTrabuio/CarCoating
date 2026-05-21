@@ -1,11 +1,14 @@
 import Link from 'next/link';
+import { storeHref } from '@/lib/store-url';
 
 export interface AreaNewsItem {
   id: string;
   title: string;
   date: string;
   storeId: string;
+  storeSlug?: string;
   storeName: string;
+  areaSlug: string;
 }
 
 interface Props {
@@ -30,7 +33,7 @@ export default function AreaNewsBlock({ items, maxItems = 5 }: Props) {
             <li key={item.id} className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
               <time className="text-xs text-gray-400 flex-shrink-0 w-20">{item.date}</time>
               <Link
-                href={`/${item.storeId}`}
+                href={storeHref({ store_id: item.storeId, store_slug: item.storeSlug, sub_company_id: item.areaSlug ? 'set' : undefined }, item.areaSlug)}
                 className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 flex-shrink-0"
               >
                 {item.storeName}

@@ -23,7 +23,7 @@ test.describe('Sub-store routes (/{parent}/{subSlug})', () => {
     expect(childLinks.length).toBeGreaterThan(0);
   });
 
-  test('a child store page loads with 200 (if any exists)', async ({ page }) => {
+  test('a child store page loads with 200 and store-scoped header/footer', async ({ page }) => {
     await page.goto('/ichihara');
     const childHref = await page
       .locator('a[href^="/ichihara/"]')

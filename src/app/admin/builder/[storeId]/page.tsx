@@ -22,6 +22,7 @@ import {
   type PricingConfig,
   type StoreNewsItem,
 } from '@/lib/block-types';
+import { storeHref } from '@/lib/store-url';
 import type { V3StoreData } from '@/lib/v3-types';
 import { coatingTiers } from '@/data/coating-tiers';
 import SortableBlockItem from '../components/SortableBlockItem';
@@ -438,6 +439,8 @@ export default function BuilderPage() {
 
   // News tab state
   const [newsItems, setNewsItems] = useState<StoreNewsItem[]>([]);
+  // Area slug for building nested store URLs in preview/open links
+  const [areaSlug, setAreaSlug] = useState<string | undefined>(undefined);
 
   // Fetch store data on mount
   useEffect(() => {
@@ -497,6 +500,17 @@ export default function BuilderPage() {
         setStoreData(effectiveStoreData as Partial<V3StoreData>);
         // custom_services is edited directly via <ServiceOptionsEditor> driven
         // by storeData.custom_services (overlay-resolved above).
+
+        // Resolve area slug for nested store URL links in the builder preview
+        if (fetchedStoreData.sub_company_id && fetchedStoreData.store_slug) {
+          fetch('/api/v3/sub-companies')
+            .then(r => r.ok ? r.json() : [])
+            .then((scs: { id: string; slug: string }[]) => {
+              const sc = scs.find((s: { id: string; slug: string }) => s.id === fetchedStoreData.sub_company_id);
+              if (sc?.slug) setAreaSlug(sc.slug);
+            })
+            .catch(() => { /* non-fatal */ });
+        }
 
         // Parse store_news — overlay-resolved
         try {
@@ -1482,7 +1496,7 @@ export default function BuilderPage() {
                   Refresh
                 </button>
                 <a
-                  href={`/${storeId}${previewPath}`}
+                  href={`${storeHref({ store_id: storeId, store_slug: storeData.store_slug, sub_company_id: storeData.sub_company_id }, areaSlug)}${previewPath}`}
                   target="_blank"
                   rel="noopener"
                   className="text-xs text-blue-600 hover:underline"
@@ -1493,7 +1507,7 @@ export default function BuilderPage() {
             </div>
             <iframe
               key={iframeKey}
-              src={`/${storeId}${previewPath}`}
+              src={`${storeHref({ store_id: storeId, store_slug: storeData.store_slug, sub_company_id: storeData.sub_company_id }, areaSlug)}${previewPath}`}
               className="flex-1 w-full border-0"
               title="Store Preview"
             />

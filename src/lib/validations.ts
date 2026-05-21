@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isReservedStoreSlug } from './store-url';
 
 // ─── Constants ───
 
@@ -87,7 +88,10 @@ export const v3StoreWriteSchema = z.object({
   store_news: jsonString.optional(),
   banners: jsonString.optional(),
   sub_company_id: z.string().max(100).optional(),
-  store_slug: z.string().max(100).optional(),
+  store_slug: z.string().max(100).refine(
+    val => val === undefined || val === '' || !isReservedStoreSlug(val),
+    { message: 'store_slug must not be a reserved sub-page name' },
+  ).optional(),
   custom_css: z.string().max(10000).optional(),
   estimate_enabled: z.boolean().optional(),
   qr_code_enabled: z.boolean().optional(),

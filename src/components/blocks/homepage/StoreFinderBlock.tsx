@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import type { V3StoreData } from '@/lib/v3-types';
 import { MAPS_API_KEY } from '@/lib/constants';
+import { storeHref } from '@/lib/store-url';
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371;
@@ -120,7 +121,7 @@ export default function StoreFinderBlock() {
               <div style="font-weight:bold;font-size:14px;margin-bottom:4px">${store.store_name}</div>
               <div style="font-size:11px;color:#666;margin-bottom:4px">${store.address}</div>
               <div style="font-size:11px;color:#666">${store.tel || ''}</div>
-              <a href="${(() => { const scId = (store as V3StoreData & { sub_company_id?: string }).sub_company_id; return scId && subCompanyMap[scId] ? '/' + subCompanyMap[scId].slug : '/' + store.store_id + '/'; })()}" style="display:inline-block;margin-top:8px;padding:6px 16px;background:#c49a2a;color:white;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">この店舗を見る →</a>
+              <a href="${(() => { const scId = (store as V3StoreData & { sub_company_id?: string; store_slug?: string }).sub_company_id; const sc = scId ? subCompanyMap[scId] : null; return sc ? storeHref({ store_id: store.store_id, store_slug: (store as V3StoreData & { store_slug?: string }).store_slug, sub_company_id: scId }, sc.slug) : '/' + store.store_id + '/'; })()}" style="display:inline-block;margin-top:8px;padding:6px 16px;background:#c49a2a;color:white;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold">この店舗を見る →</a>
             </div>
           `);
           infoWindowRef.current?.open(map, marker);
@@ -276,7 +277,7 @@ export default function StoreFinderBlock() {
                         {store.distance < 1 ? `${Math.round(store.distance * 1000)}m` : `${store.distance.toFixed(1)}km`}
                       </span>
                     )}
-                    <Link href={(() => { const scId = (store as V3StoreData & { sub_company_id?: string }).sub_company_id; return scId && subCompanyMap[scId] ? `/${subCompanyMap[scId].slug}` : `/${store.store_id}/`; })()}
+                    <Link href={(() => { const scId = (store as V3StoreData & { sub_company_id?: string; store_slug?: string }).sub_company_id; const sc = scId ? subCompanyMap[scId] : null; return sc ? storeHref({ store_id: store.store_id, store_slug: (store as V3StoreData & { store_slug?: string }).store_slug, sub_company_id: scId }, sc.slug) : `/${store.store_id}/`; })()}
                       className="px-3 py-1.5 bg-amber-500 text-[#0C3290] text-[11px] font-bold rounded-md hover:bg-amber-500 transition-colors"
                       onClick={e => e.stopPropagation()}>
                       詳細 →

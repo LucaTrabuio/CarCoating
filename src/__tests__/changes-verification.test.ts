@@ -189,30 +189,30 @@ const SRC = join(__dirname, '..');
 
 describe('Source code verification', () => {
   test('layout.tsx uses ?? not || for discount_rate', () => {
-    const src = readFileSync(join(SRC, 'app/[slug]/layout.tsx'), 'utf-8');
+    const src = readFileSync(join(SRC, 'app/[slug]/(chrome)/layout.tsx'), 'utf-8');
     expect(src).not.toContain('store.discount_rate || defaults.discount');
     expect(src).toContain('store.discount_rate ?? defaults.discount');
   });
 
   test('layout.tsx checks campaign end date for expiry', () => {
-    const src = readFileSync(join(SRC, 'app/[slug]/layout.tsx'), 'utf-8');
+    const src = readFileSync(join(SRC, 'app/[slug]/(chrome)/layout.tsx'), 'utf-8');
     expect(src).toContain("new Date(defaults.end) < new Date()");
   });
 
   test('page.tsx uses ?? not || for discount_rate', () => {
-    const src = readFileSync(join(SRC, 'app/[slug]/page.tsx'), 'utf-8');
+    const src = readFileSync(join(SRC, 'app/[slug]/(chrome)/page.tsx'), 'utf-8');
     expect(src).not.toContain('discount_rate || defaults.discount');
     expect(src).toContain('discount_rate ?? defaults.discount');
   });
 
   test('coatings page uses ?? not || for discount_rate', () => {
-    const src = readFileSync(join(SRC, 'app/[slug]/coatings/page.tsx'), 'utf-8');
+    const src = readFileSync(join(SRC, 'app/[slug]/(chrome)/coatings/page.tsx'), 'utf-8');
     expect(src).not.toContain('discount_rate || defaults.discount');
     expect(src).toContain('discount_rate ?? defaults.discount');
   });
 
   test('PriceContent uses ?? 0 not || 20', () => {
-    const src = readFileSync(join(SRC, 'app/[slug]/price/PriceContent.tsx'), 'utf-8');
+    const src = readFileSync(join(SRC, 'app/[slug]/(chrome)/price/PriceContent.tsx'), 'utf-8');
     expect(src).not.toContain('discount_rate || 20');
     expect(src).toContain('discount_rate ?? 0');
   });

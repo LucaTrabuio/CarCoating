@@ -4,6 +4,7 @@ import SubCompanyStoreMap from '@/components/SubCompanyStoreMap';
 
 interface StoreLocation {
   store_id: string;
+  store_slug?: string;
   store_name: string;
   address: string;
   tel: string;
@@ -20,14 +21,16 @@ interface StoreLocation {
 interface Props {
   stores: StoreLocation[];
   groupName: string;
+  areaSlug: string;
 }
 
-export default function AreaStoreMapBlock({ stores, groupName }: Props) {
+export default function AreaStoreMapBlock({ stores, groupName, areaSlug }: Props) {
   return (
     <SubCompanyStoreMap
       stores={stores}
       groupName={groupName}
       linkToStore
+      areaSlug={areaSlug}
     />
   );
 }

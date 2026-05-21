@@ -100,16 +100,19 @@ export interface AggregatedCoatingRow {
   tier: CoatingTier;
   storeIds: string[];
   storeNames: string[];
+  storeSlugs: (string | undefined)[];
 }
 
 export interface AggregatedOptionRow {
   option: ServiceOption;
   storeIds: string[];
   storeNames: string[];
+  storeSlugs: (string | undefined)[];
 }
 
 export interface StoreForAggregation {
   store_id: string;
+  store_slug?: string;
   store_name: string;
   offered_coatings?: string[];
   custom_services?: string;
@@ -130,6 +133,7 @@ export function aggregateCoatings(
       tier,
       storeIds: matching.map(s => s.store_id),
       storeNames: matching.map(s => s.store_name),
+      storeSlugs: matching.map(s => s.store_slug),
     };
   });
 }
@@ -156,6 +160,7 @@ export function aggregateOptions(
       option,
       storeIds: matching.map(s => s.store_id),
       storeNames: matching.map(s => s.store_name),
+      storeSlugs: matching.map(s => s.store_slug),
     };
   });
 }

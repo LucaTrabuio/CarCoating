@@ -337,7 +337,9 @@ export async function getStoreBySlug(subCompanySlug: string, storeSlug: string):
     .get();
 
   if (snapshot.empty) return null;
-  return normalizeStore(snapshot.docs[0].data());
+  const store = normalizeStore(snapshot.docs[0].data());
+  if (isHiddenNow(store)) return null;
+  return store;
 }
 
 export async function getStoresBySubCompany(subCompanyId: string): Promise<V3StoreData[]> {

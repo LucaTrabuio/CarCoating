@@ -1,5 +1,5 @@
-import { notFound } from 'next/navigation';
-import { getV3StoreById, getV3CampaignDefaults, getSubCompanyBySlug, getStoresBySubCompany } from '@/lib/firebase-stores';
+import { notFound, permanentRedirect } from 'next/navigation';
+import { getV3StoreById, getV3CampaignDefaults, getSubCompanyBySlug, getSubCompanyById, getStoresBySubCompany } from '@/lib/firebase-stores';
 import { parsePageLayout } from '@/lib/block-types';
 import BlockRenderer from '@/components/blocks/BlockRenderer';
 import PageViewTracker from '@/components/PageViewTracker';
@@ -9,6 +9,46 @@ import { getGlobalDefaults, applyDefaults } from '@/lib/global-defaults';
 import { getAreaLayout } from '@/lib/area-layout';
 import AreaHubBlockRenderer, { type AreaContext } from '@/components/blocks/area/AreaHubBlockRenderer';
 import { DEFAULT_SERVICE_OPTIONS, collectStoreBanners } from '@/lib/area-blocks';
+import { storeHref } from '@/lib/store-url';
+import type { V3StoreData } from '@/lib/v3-types';
+
+export interface RenderStorePageProps {
+  store: V3StoreData;
+  basePath: string;
+  discountRate: number;
+  siblingStores?: V3StoreData[];
+  appealPointsMaster: Awaited<ReturnType<typeof getMasterAppealPoints>>;
+}
+
+export function renderStorePage({
+  store,
+  basePath,
+  discountRate,
+  siblingStores,
+  appealPointsMaster,
+}: RenderStorePageProps) {
+  const layout = parsePageLayout(store.page_layout, store);
+  return (
+    <main>
+      <PageViewTracker storeId={store.store_id} />
+      {layout.blocks
+        .filter(b => b.visible)
+        .sort((a, b) => a.order - b.order)
+        .map(block => (
+          <BlockRenderer
+            key={block.id}
+            block={block}
+            store={store}
+            basePath={basePath}
+            discountRate={discountRate}
+            allStores={siblingStores}
+            appealPointsMaster={appealPointsMaster}
+          />
+        ))}
+      <CoatingComparisonSection />
+    </main>
+  );
+}
 
 export default async function SlugPage({
   params,
@@ -42,6 +82,7 @@ export default async function SlugPage({
         stores: stores.map(s => ({
           store_id: s.store_id,
           store_name: s.store_name,
+          store_slug: s.store_slug,
           address: s.address,
           tel: s.tel,
           business_hours: s.business_hours,
@@ -59,6 +100,7 @@ export default async function SlugPage({
         })),
         coatingTiers,
         serviceOptions: DEFAULT_SERVICE_OPTIONS,
+        areaSlug: subCompany.slug,
       };
       return <AreaHubBlockRenderer blocks={areaLayout} context={areaContext} />;
     }
@@ -66,10 +108,18 @@ export default async function SlugPage({
 
   // Single store (or single-store sub-company with matching store_id)
   if (store && store.is_active) {
+    // Area-member store on the flat /{store_id} route → 301 to /{area}/{store_slug}
+    // Only fire from the 1-segment [slug] route to prevent redirect loops.
+    if (store.sub_company_id && store.store_slug) {
+      const owningSubCompany = subCompany ?? await getSubCompanyById(store.sub_company_id).catch(() => null);
+      if (owningSubCompany?.slug) {
+        permanentRedirect(storeHref(store, owningSubCompany.slug));
+      }
+    }
+
     let discountRate = defaults.force_hq_campaign ? defaults.discount : (store.discount_rate ?? defaults.discount);
     if (defaults.end && new Date(defaults.end) < new Date()) discountRate = 0;
     const basePath = `/${slug}`;
-    const layout = parsePageLayout(store.page_layout, store);
 
     // If this single store belongs to a sub-company, surface its sibling
     // stores so the access map can show every store in the same area
@@ -84,26 +134,7 @@ export default async function SlugPage({
       }
     }
 
-    return (
-      <main>
-        <PageViewTracker storeId={slug} />
-        {layout.blocks
-          .filter(b => b.visible)
-          .sort((a, b) => a.order - b.order)
-          .map(block => (
-            <BlockRenderer
-              key={block.id}
-              block={block}
-              store={store}
-              basePath={basePath}
-              discountRate={discountRate}
-              allStores={siblingStores}
-              appealPointsMaster={appealPointsMaster}
-            />
-          ))}
-        <CoatingComparisonSection />
-      </main>
-    );
+    return renderStorePage({ store, basePath, discountRate, siblingStores, appealPointsMaster });
   }
 
   // Fallback: single-store sub-company whose store_id doesn't match the slug
@@ -118,6 +149,7 @@ export default async function SlugPage({
       stores: stores.map(s => ({
         store_id: s.store_id,
         store_name: s.store_name,
+        store_slug: s.store_slug,
         address: s.address,
         tel: s.tel,
         business_hours: s.business_hours,
@@ -135,6 +167,7 @@ export default async function SlugPage({
       })),
       coatingTiers,
       serviceOptions: DEFAULT_SERVICE_OPTIONS,
+      areaSlug: subCompany.slug,
     };
     return <AreaHubBlockRenderer blocks={areaLayout} context={areaContext} />;
   }

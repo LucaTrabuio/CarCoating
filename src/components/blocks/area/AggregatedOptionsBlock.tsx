@@ -1,5 +1,6 @@
 import type { AggregatedOptionRow } from '@/lib/area-blocks';
 import Link from 'next/link';
+import { storeHref } from '@/lib/store-url';
 
 const CATEGORY_LABELS: Record<string, string> = {
   coating: 'コーティング系',
@@ -11,9 +12,10 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 interface Props {
   rows: AggregatedOptionRow[];
+  areaSlug: string;
 }
 
-export default function AggregatedOptionsBlock({ rows }: Props) {
+export default function AggregatedOptionsBlock({ rows, areaSlug }: Props) {
   if (rows.length === 0) return null;
 
   const byCategory = rows.reduce<Record<string, AggregatedOptionRow[]>>((acc, row) => {
@@ -49,7 +51,7 @@ export default function AggregatedOptionsBlock({ rows }: Props) {
                     {row.storeIds.map((storeId, i) => (
                       <Link
                         key={storeId}
-                        href={`/${storeId}`}
+                        href={storeHref({ store_id: storeId, store_slug: row.storeSlugs?.[i], sub_company_id: areaSlug ? 'set' : undefined }, areaSlug)}
                         className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
                       >
                         {row.storeNames[i]}

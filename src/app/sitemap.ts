@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next';
-import { getAllV3Stores } from '@/lib/firebase-stores';
+import { getAllV3Stores, getAllSubCompanies } from '@/lib/firebase-stores';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { SITE_URL as siteUrl } from '@/lib/constants';
+import { storeHref } from '@/lib/store-url';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
@@ -16,17 +17,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // All active store pages
   try {
-    const stores = await getAllV3Stores();
+    const [stores, subCompanies] = await Promise.all([
+      getAllV3Stores(),
+      getAllSubCompanies(),
+    ]);
+
+    // Build a map from sub_company id → slug for fast lookup
+    const scSlugMap = new Map<string, string>();
+    for (const sc of subCompanies) {
+      scSlugMap.set(sc.id, sc.slug);
+    }
+
     for (const store of stores) {
+      const areaSlug = store.sub_company_id ? scSlugMap.get(store.sub_company_id) : undefined;
+      const storeUrl = storeHref(store, areaSlug);
       entries.push({
-        url: `${siteUrl}/${store.store_id}`,
+        url: `${siteUrl}${storeUrl}`,
         changeFrequency: 'weekly',
         priority: 0.8,
       });
       // Key sub-pages
       for (const sub of ['coatings', 'price', 'booking', 'guide', 'access']) {
         entries.push({
-          url: `${siteUrl}/${store.store_id}/${sub}`,
+          url: `${siteUrl}${storeUrl}/${sub}`,
           changeFrequency: 'monthly',
           priority: 0.6,
         });

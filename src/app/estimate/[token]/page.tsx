@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { getV3StoreById } from '@/lib/firebase-stores';
+import { getV3StoreById, getSubCompanyById } from '@/lib/firebase-stores';
 import { SITE_URL } from '@/lib/constants';
+import { storeHref } from '@/lib/store-url';
 
 interface InquiryData {
   id: string;
@@ -55,7 +56,13 @@ export default async function EstimatePage({
   const { token } = await params;
   const inquiry = await fetchInquiry(token);
   const store = inquiry ? await getV3StoreById(inquiry.store_id).catch(() => null) : null;
-  const bookingHref = store?.store_slug ? `/${store.store_slug}/booking` : '/';
+  let bookingHref = '/';
+  if (store?.store_slug) {
+    const subCompany = store.sub_company_id
+      ? await getSubCompanyById(store.sub_company_id).catch(() => null)
+      : null;
+    bookingHref = `${storeHref(store, subCompany?.slug)}/booking`;
+  }
 
   if (!inquiry) {
     return (

@@ -19,6 +19,7 @@ export type { AreaBannerRef };
 
 export interface AreaStoreContext {
   store_id: string;
+  store_slug?: string;
   store_name: string;
   address: string;
   tel: string;
@@ -41,6 +42,7 @@ export interface AreaContext {
   stores: AreaStoreContext[];
   coatingTiers: CoatingTier[];
   serviceOptions: ServiceOption[];
+  areaSlug: string;
 }
 
 interface Props {
@@ -48,7 +50,7 @@ interface Props {
   context: AreaContext;
 }
 
-function buildNewsItems(stores: AreaStoreContext[]): AreaNewsItem[] {
+function buildNewsItems(stores: AreaStoreContext[], areaSlug: string): AreaNewsItem[] {
   const items: AreaNewsItem[] = [];
   for (const store of stores) {
     let newsItems: { id: string; title: string; date: string; visible: boolean }[] = [];
@@ -65,7 +67,9 @@ function buildNewsItems(stores: AreaStoreContext[]): AreaNewsItem[] {
         title: item.title,
         date: item.date,
         storeId: store.store_id,
+        storeSlug: store.store_slug,
         storeName: store.store_name,
+        areaSlug,
       });
     }
   }
@@ -77,7 +81,7 @@ export default function AreaHubBlockRenderer({ blocks, context }: Props) {
   const sorted = [...blocks].sort((a, b) => a.order - b.order);
   const coatingRows = aggregateCoatings(context.stores, context.coatingTiers);
   const optionRows = aggregateOptions(context.stores, context.serviceOptions);
-  const newsItems = buildNewsItems(context.stores);
+  const newsItems = buildNewsItems(context.stores, context.areaSlug);
 
   return (
     <main>
@@ -112,6 +116,7 @@ export default function AreaHubBlockRenderer({ blocks, context }: Props) {
                 <AreaStoreMapBlock
                   stores={context.stores}
                   groupName={context.subCompanyName}
+                  areaSlug={context.areaSlug}
                 />
               </ScrollFadeIn>
             );
@@ -119,14 +124,14 @@ export default function AreaHubBlockRenderer({ blocks, context }: Props) {
           case 'aggregated_coatings':
             return (
               <ScrollFadeIn key={block.id}>
-                <AggregatedCoatingsBlock rows={coatingRows} />
+                <AggregatedCoatingsBlock rows={coatingRows} areaSlug={context.areaSlug} />
               </ScrollFadeIn>
             );
 
           case 'aggregated_options':
             return (
               <ScrollFadeIn key={block.id}>
-                <AggregatedOptionsBlock rows={optionRows} />
+                <AggregatedOptionsBlock rows={optionRows} areaSlug={context.areaSlug} />
               </ScrollFadeIn>
             );
 
