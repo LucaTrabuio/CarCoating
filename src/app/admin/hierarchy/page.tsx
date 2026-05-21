@@ -243,6 +243,14 @@ function StoreNode({
               <span>L2: {store.level2_staff_count}名</span>
             )}
           </div>
+          <Link
+            href={`/${store.store_id}`}
+            target="_blank"
+            onClick={e => e.stopPropagation()}
+            className="text-[10px] text-gray-400 hover:text-blue-600 hover:underline"
+          >
+            /{store.store_id}
+          </Link>
           <StoreVisibilityToggle
             storeId={store.store_id}
             initialHideMode={store.hide_mode}

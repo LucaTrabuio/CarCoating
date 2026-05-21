@@ -75,72 +75,70 @@ export default function BuilderPage() {
           <p className="text-sm text-gray-500">店舗がありません</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Shared sites (one card per sub-company) */}
+        <div className="space-y-8">
+          {/* Sub-company sections (only those with stores visible to this user) */}
           {subCompanies.map(sc => {
             const groupStores = grouped.get(sc.id) || [];
             if (groupStores.length === 0) return null;
-            const primaryStore = groupStores[0];
             return (
-              <Link
-                key={sc.id}
-                href={`/admin/builder/${primaryStore.store_id}`}
-                className="group rounded-xl border-2 border-blue-200 bg-white p-5 transition-shadow hover:shadow-md hover:border-amber-400"
-              >
-                <div className="flex items-start justify-between">
-                  <h2 className="text-sm font-bold text-gray-900 group-hover:text-amber-500">
-                    {sc.name}
-                  </h2>
-                  <span className="rounded bg-blue-100 text-blue-700 px-1.5 py-0.5 text-[10px] font-bold">
-                    共有サイト
-                  </span>
+              <div key={sc.id}>
+                <div className="flex items-center gap-2 mb-3">
+                  <h2 className="text-sm font-bold text-[#0C3290]">{sc.name}</h2>
+                  <span className="rounded bg-blue-100 text-blue-700 px-1.5 py-0.5 text-[10px] font-bold">共有サイト</span>
+                  <span className="text-[10px] text-gray-400">/{sc.slug}</span>
                 </div>
-                <p className="mt-1 text-xs text-gray-500">
-                  {groupStores.length}店舗が共有 — /{sc.slug}
-                </p>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {groupStores.map(s => (
-                    <span key={s.store_id} className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
-                      {s.store_name.replace('キーパープロショップ ', '').replace('キーパープロショップ', '')}
-                    </span>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {groupStores.map(store => (
+                    <StoreBuilderCard key={store.store_id} store={store} />
                   ))}
                 </div>
-                <p className="mt-3 text-xs font-medium text-amber-500 group-hover:text-amber-500">
-                  ビルダーを開く &rarr;
-                </p>
-              </Link>
+              </div>
             );
           })}
 
-          {/* Standalone stores (individual sites) */}
-          {standalone.map(store => (
-            <Link
-              key={store.store_id}
-              href={`/admin/builder/${store.store_id}`}
-              className="group rounded-xl border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
-            >
-              <div className="flex items-start justify-between">
-                <h2 className="text-sm font-bold text-gray-900 group-hover:text-amber-500">
-                  {store.store_name}
-                </h2>
-                <span
-                  className={`rounded px-1.5 py-0.5 text-xs font-medium ${
-                    store.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                  }`}
-                >
-                  {store.is_active ? '有効' : '無効'}
-                </span>
-              </div>
-              {(store.prefecture || store.city) && (
-                <p className="mt-1 text-xs text-gray-500">{store.prefecture}{store.city}</p>
+          {/* Standalone stores */}
+          {standalone.length > 0 && (
+            <div>
+              {(subCompanies.some(sc => (grouped.get(sc.id) || []).length > 0)) && (
+                <h2 className="text-sm font-bold text-gray-600 mb-3">その他</h2>
               )}
-              <p className="mt-3 text-xs font-medium text-amber-500 group-hover:text-amber-500">
-                ビルダーを開く &rarr;
-              </p>
-            </Link>
-          ))}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {standalone.map(store => (
+                  <StoreBuilderCard key={store.store_id} store={store} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
+  );
+}
+
+function StoreBuilderCard({ store }: { store: Store }) {
+  return (
+    <Link
+      href={`/admin/builder/${store.store_id}`}
+      className="group rounded-xl border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md"
+    >
+      <div className="flex items-start justify-between">
+        <h2 className="text-sm font-bold text-gray-900 group-hover:text-amber-500">
+          {store.store_name}
+        </h2>
+        <span
+          className={`rounded px-1.5 py-0.5 text-xs font-medium ${
+            store.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+          }`}
+        >
+          {store.is_active ? '有効' : '無効'}
+        </span>
+      </div>
+      {(store.prefecture || store.city) && (
+        <p className="mt-1 text-xs text-gray-500">{store.prefecture}{store.city}</p>
+      )}
+      <p className="mt-3 text-xs font-medium text-amber-500 group-hover:text-amber-500">
+        ビルダーを開く &rarr;
+      </p>
+    </Link>
   );
 }
