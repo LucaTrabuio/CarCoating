@@ -196,12 +196,13 @@ export function collectStoreBanners(store: { promo_banners?: string }): Banner[]
  */
 export function collectAreaBanners(stores: StoreForBanners[]): AreaBannerSource[] {
   const result: AreaBannerSource[] = [];
-  const seen = new Set<string>();
 
+  // No cross-store dedup: every shop's banners are listed (labeled by shop) so the
+  // picker shows all shops in the area, even when several share the same default
+  // banner. A ref's storeId disambiguates which shop's banner was picked.
   for (const store of stores) {
     for (const banner of store.banners) {
-      if (!banner.id || seen.has(banner.id)) continue;
-      seen.add(banner.id);
+      if (!banner.id) continue;
       result.push({
         storeId: store.store_id,
         storeName: store.store_name,
@@ -253,7 +254,17 @@ export function resolveAreaBanners(
 ): Banner[] {
   const curated = resolveAreaBannerRefs(stores, refs);
   if (curated.length > 0) return curated;
-  return collectAreaBanners(stores).slice(0, MAX_AREA_BANNERS).map(s => s.banner);
+  // Auto-default: the area's banners deduped by image (banner.id) so the hub
+  // doesn't render the same default banner repeatedly across shops, capped at 4.
+  const seen = new Set<string>();
+  const fallback: Banner[] = [];
+  for (const { banner } of collectAreaBanners(stores)) {
+    if (seen.has(banner.id)) continue;
+    seen.add(banner.id);
+    fallback.push(banner);
+    if (fallback.length >= MAX_AREA_BANNERS) break;
+  }
+  return fallback;
 }
 
 export { DEFAULT_SERVICE_OPTIONS };

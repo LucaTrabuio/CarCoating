@@ -245,15 +245,16 @@ describe('collectAreaBanners', () => {
     expect(pool[0].bannerId).toBe('promo-0');
   });
 
-  it('deduplicates a banner id shared across stores (first store wins)', () => {
-    // Shared default banners appear in every store's carousel; the pool shows each once.
+  it('lists every shop without cross-store dedup (all shops appear in the picker)', () => {
+    // Both shops share the same default banner, but the picker must show each shop
+    // so a super_admin can see/curate all shops in the area.
     const stores = [
       { store_id: 's1', store_name: 'S1', banners: [makeBanner('/images/keeper-03.jpg')] },
       { store_id: 's2', store_name: 'S2', banners: [makeBanner('/images/keeper-03.jpg')] },
     ];
     const pool = collectAreaBanners(stores);
-    expect(pool).toHaveLength(1);
-    expect(pool[0].storeId).toBe('s1');
+    expect(pool).toHaveLength(2);
+    expect(pool.map(p => p.storeId)).toEqual(['s1', 's2']);
   });
 });
 
@@ -321,6 +322,15 @@ describe('resolveAreaBanners (curated-or-default)', () => {
 
   it('returns [] when the area has no banners at all', () => {
     expect(resolveAreaBanners([{ store_id: 's', store_name: 'S', banners: [] }], [])).toEqual([]);
+  });
+
+  it('dedups shared banners in the auto-default so the hub never repeats an image', () => {
+    const stores = [
+      { store_id: 's1', store_name: 'S1', banners: [makeBanner('/images/keeper-03.jpg'), makeBanner('/images/keeper-01.jpg')] },
+      { store_id: 's2', store_name: 'S2', banners: [makeBanner('/images/keeper-03.jpg'), makeBanner('/images/keeper-01.jpg')] },
+    ];
+    const resolved = resolveAreaBanners(stores, []);
+    expect(resolved.map(b => b.id)).toEqual(['/images/keeper-03.jpg', '/images/keeper-01.jpg']);
   });
 });
 
