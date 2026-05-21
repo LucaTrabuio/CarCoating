@@ -348,3 +348,68 @@ export const areaLayoutWriteSchema = z.object({
     }),
   ).max(50),
 });
+
+// ─── Reservation Request Schema ───
+
+export const reservationRequestSchema = z
+  .object({
+    type: z.enum(['visit', 'inquiry'], { message: 'type must be "visit" or "inquiry"' }),
+    // .trim() must precede .min(1): the old route checked name.trim()/storeId.trim()
+    // so a whitespace-only value 400'd. With .min(1).trim() Zod runs min BEFORE the
+    // trim transform, letting "   " through — reordering restores the old behaviour.
+    storeId: z.string().trim().min(1),
+    name: z.string().trim().min(1),
+    phone: z.string().trim().min(1),
+    email: z
+      .string()
+      .trim()
+      .min(1)
+      .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email format'),
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+    notes: z.string().optional(),
+    vehicleInfo: z.string().optional(),
+    selectedCoatings: z.array(z.string()).optional(),
+    selectedOptions: z.array(z.string()).optional(),
+    autoConfirm: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === 'visit') {
+      if (!data.date || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'valid date is required (YYYY-MM-DD)',
+          path: ['date'],
+        });
+        return;
+      }
+      if (!data.time || !/^\d{2}:\d{2}$/.test(data.time)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'valid time is required (HH:MM)',
+          path: ['time'],
+        });
+        return;
+      }
+      const parsed = new Date(`${data.date}T${data.time}:00+09:00`);
+      if (isNaN(parsed.getTime())) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Invalid date or time value',
+          path: ['date'],
+        });
+        return;
+      }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (parsed < today) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Booking must be in the future',
+          path: ['date'],
+        });
+      }
+    }
+  });
+
+export type ReservationRequest = z.infer<typeof reservationRequestSchema>;

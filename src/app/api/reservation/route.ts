@@ -8,6 +8,8 @@ import { createCalendarEvent } from '@/lib/google-calendar';
 import { getAdminDb } from '@/lib/firebase-admin';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import { upsertCustomer } from '@/lib/customers';
+import { reservationRequestSchema } from '@/lib/validations';
+import { captureSecurityEvent, detectSuspiciousPatterns } from '@/lib/sentry-security';
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);
@@ -19,51 +21,40 @@ export async function POST(request: Request) {
   let _storeIdForAlert = 'unknown';
 
   try {
-    const body = await request.json();
-    const { type, storeId, name, phone, email, notes, date, time, autoConfirm,
-            vehicleInfo, selectedCoatings, selectedOptions } = body;
+    const body = await request.json().catch(() => null);
+    const parsed = reservationRequestSchema.safeParse(body);
+
+    if (!parsed.success) {
+      const suspicious = detectSuspiciousPatterns(body);
+      captureSecurityEvent({
+        request,
+        type: 'VALIDATION_ERROR',
+        level: 'warning',
+        message: 'Reservation validation failed',
+        extra: { issues: parsed.error.issues, suspicious },
+      });
+      const first = parsed.error.issues[0];
+      const fieldPath = first?.path?.join('.') ?? '';
+      const safeMessage = fieldPath ? `${fieldPath}: ${first.message}` : (first?.message ?? 'Invalid request');
+      return NextResponse.json({ error: safeMessage }, { status: 400 });
+    }
+
+    const {
+      type,
+      storeId,
+      name,
+      phone,
+      email,
+      notes,
+      date,
+      time,
+      autoConfirm,
+      vehicleInfo,
+      selectedCoatings,
+      selectedOptions,
+    } = parsed.data;
+
     if (storeId && typeof storeId === 'string') _storeIdForAlert = storeId;
-
-    // Validate required fields
-    if (!type || !['visit', 'inquiry'].includes(type)) {
-      return NextResponse.json({ error: 'type must be "visit" or "inquiry"' }, { status: 400 });
-    }
-    if (!storeId || typeof storeId !== 'string' || !storeId.trim()) {
-      return NextResponse.json({ error: 'storeId is required' }, { status: 400 });
-    }
-    if (!name || typeof name !== 'string' || !name.trim()) {
-      return NextResponse.json({ error: 'name is required' }, { status: 400 });
-    }
-    if (!phone || typeof phone !== 'string' || !phone.trim()) {
-      return NextResponse.json({ error: 'phone is required' }, { status: 400 });
-    }
-    if (!email || typeof email !== 'string' || !email.trim()) {
-      return NextResponse.json({ error: 'email is required' }, { status: 400 });
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
-    }
-
-    // Validate single date/time for visit type
-    if (type === 'visit') {
-      const dateRe = /^\d{4}-\d{2}-\d{2}$/;
-      const timeRe = /^\d{2}:\d{2}$/;
-      if (!date || !dateRe.test(date)) {
-        return NextResponse.json({ error: 'valid date is required (YYYY-MM-DD)' }, { status: 400 });
-      }
-      if (!time || !timeRe.test(time)) {
-        return NextResponse.json({ error: 'valid time is required (HH:MM)' }, { status: 400 });
-      }
-      const parsed = new Date(`${date}T${time}:00+09:00`);
-      if (isNaN(parsed.getTime())) {
-        return NextResponse.json({ error: 'Invalid date or time value' }, { status: 400 });
-      }
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (parsed < today) {
-        return NextResponse.json({ error: 'Booking must be in the future' }, { status: 400 });
-      }
-    }
 
     // Create the reservation (auto-confirmed by default)
     const shouldConfirm = autoConfirm !== false && type === 'visit';
@@ -111,8 +102,8 @@ export async function POST(request: Request) {
         const result = await createCalendarEvent({
           calendarId: settings.calendarId,
           title: `【来店予約】${name} 様`,
-          date,
-          time,
+          date: date || '',
+          time: time || '',
           customerName: name,
           customerPhone: phone,
           customerEmail: email,
