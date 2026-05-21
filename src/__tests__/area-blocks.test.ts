@@ -7,8 +7,10 @@ import {
   collectAreaBanners,
   collectStoreBanners,
   resolveAreaBannerRefs,
+  resolveAreaBanners,
   areaFieldSpec,
 } from '../lib/area-blocks';
+import { DEFAULT_PROMO_BANNERS } from '../lib/promo-banners';
 import { DEFAULT_SERVICE_OPTIONS } from '../data/service-options';
 import type { CoatingTier } from '../lib/types';
 import type { Banner } from '../lib/block-types';
@@ -174,79 +176,36 @@ describe('aggregateCoatings', () => {
 });
 
 describe('collectStoreBanners', () => {
-  it('returns [] for undefined/empty store', () => {
-    expect(collectStoreBanners({})).toEqual([]);
-    expect(collectStoreBanners({ page_layout: undefined, banners: undefined, promo_banners: undefined })).toEqual([]);
+  it('returns the KeePer default carousel banners for a store with no promo_banners', () => {
+    const result = collectStoreBanners({});
+    expect(result).toHaveLength(DEFAULT_PROMO_BANNERS.length);
+    // id and image_url are the image src; same as the store carousel shows.
+    expect(result.map(b => b.id)).toEqual(DEFAULT_PROMO_BANNERS.map(d => d.src));
+    expect(result.map(b => b.image_url)).toEqual(DEFAULT_PROMO_BANNERS.map(d => d.src));
+    expect(result.map(b => b.title)).toEqual(DEFAULT_PROMO_BANNERS.map(d => d.alt));
+    expect(result.every(b => b.visible)).toBe(true);
   });
 
-  it('extracts visible banners from a visible page_layout banners block', () => {
-    const banner = makeBanner('b1');
-    const layout = JSON.stringify({
-      version: 2,
-      blocks: [
-        { id: 'blk1', type: 'banners', visible: true, order: 0, config: { banners: [banner] } },
-      ],
-    });
-    const result = collectStoreBanners({ page_layout: layout });
-    expect(result).toHaveLength(1);
-    expect(result[0].id).toBe('b1');
-  });
-
-  it('skips banners with visible:false inside a visible block', () => {
-    const banner = makeBanner('b1', { visible: false });
-    const layout = JSON.stringify({
-      version: 2,
-      blocks: [
-        { id: 'blk1', type: 'banners', visible: true, order: 0, config: { banners: [banner] } },
-      ],
-    });
-    expect(collectStoreBanners({ page_layout: layout })).toHaveLength(0);
-  });
-
-  it('skips banners blocks with visible:false', () => {
-    const banner = makeBanner('b1');
-    const layout = JSON.stringify({
-      version: 2,
-      blocks: [
-        { id: 'blk1', type: 'banners', visible: false, order: 0, config: { banners: [banner] } },
-      ],
-    });
-    expect(collectStoreBanners({ page_layout: layout })).toHaveLength(0);
-  });
-
-  it('includes promo_banners as synthetic banners with id promo-0', () => {
-    const promos = [{ src: 'http://img.jpg', alt: 'promo text' }];
+  it('overrides a default slot with the store promo_banner at that index', () => {
+    const promos = [{ src: 'https://custom/0.png', alt: 'custom 0' }];
     const result = collectStoreBanners({ promo_banners: JSON.stringify(promos) });
-    expect(result).toHaveLength(1);
-    expect(result[0].id).toBe('promo-0');
-    expect(result[0].image_url).toBe('http://img.jpg');
-    expect(result[0].title).toBe('promo text');
+    expect(result).toHaveLength(DEFAULT_PROMO_BANNERS.length);
+    expect(result[0].id).toBe('https://custom/0.png');
+    expect(result[0].image_url).toBe('https://custom/0.png');
+    expect(result[0].title).toBe('custom 0');
+    // untouched slots stay default
+    expect(result[1].id).toBe(DEFAULT_PROMO_BANNERS[1].src);
   });
 
-  it('includes legacy store.banners entries with truthy id', () => {
-    const banner = makeBanner('leg1');
-    const result = collectStoreBanners({ banners: JSON.stringify([banner]) });
-    expect(result).toHaveLength(1);
-    expect(result[0].id).toBe('leg1');
+  it('falls back to the default alt when an override omits alt', () => {
+    const promos = [{ src: 'https://custom/0.png' }];
+    const result = collectStoreBanners({ promo_banners: JSON.stringify(promos) });
+    expect(result[0].title).toBe(DEFAULT_PROMO_BANNERS[0].alt);
   });
 
-  it('deduplicates by id (page_layout wins over promo over legacy)', () => {
-    const layoutBanner = makeBanner('shared');
-    const layout = JSON.stringify({
-      version: 2,
-      blocks: [
-        { id: 'blk1', type: 'banners', visible: true, order: 0, config: { banners: [layoutBanner] } },
-      ],
-    });
-    const legacyBanner = makeBanner('shared', { title: 'duplicate' });
-    const result = collectStoreBanners({ page_layout: layout, banners: JSON.stringify([legacyBanner]) });
-    expect(result).toHaveLength(1);
-    expect(result[0].title).toBe('shared');
-  });
-
-  it('does not throw on malformed JSON in banners/promo_banners', () => {
-    expect(() => collectStoreBanners({ banners: 'NOT_JSON', promo_banners: '{broken' })).not.toThrow();
-    expect(collectStoreBanners({ banners: 'NOT_JSON', promo_banners: '{broken' })).toHaveLength(0);
+  it('does not throw on malformed promo_banners (defaults only)', () => {
+    expect(() => collectStoreBanners({ promo_banners: '{broken' })).not.toThrow();
+    expect(collectStoreBanners({ promo_banners: '{broken' })).toHaveLength(DEFAULT_PROMO_BANNERS.length);
   });
 });
 
@@ -284,6 +243,17 @@ describe('collectAreaBanners', () => {
     const pool = collectAreaBanners(stores);
     expect(pool).toHaveLength(1);
     expect(pool[0].bannerId).toBe('promo-0');
+  });
+
+  it('deduplicates a banner id shared across stores (first store wins)', () => {
+    // Shared default banners appear in every store's carousel; the pool shows each once.
+    const stores = [
+      { store_id: 's1', store_name: 'S1', banners: [makeBanner('/images/keeper-03.jpg')] },
+      { store_id: 's2', store_name: 'S2', banners: [makeBanner('/images/keeper-03.jpg')] },
+    ];
+    const pool = collectAreaBanners(stores);
+    expect(pool).toHaveLength(1);
+    expect(pool[0].storeId).toBe('s1');
   });
 });
 
@@ -325,6 +295,32 @@ describe('resolveAreaBannerRefs', () => {
     const refs = banners.map(b => ({ storeId: 'c', bannerId: b.id }));
     const resolved = resolveAreaBannerRefs(capStores, refs);
     expect(resolved).toHaveLength(4);
+  });
+});
+
+describe('resolveAreaBanners (curated-or-default)', () => {
+  const b1 = makeBanner('b1');
+  const b2 = makeBanner('b2');
+  const stores = [{ store_id: 's1', store_name: 'S1', banners: [b1, b2] }];
+
+  it('uses curated refs when they resolve', () => {
+    const resolved = resolveAreaBanners(stores, [{ storeId: 's1', bannerId: 'b2' }]);
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0].id).toBe('b2');
+  });
+
+  it('falls back to the first <=4 pool banners when there are no refs', () => {
+    const resolved = resolveAreaBanners(stores, []);
+    expect(resolved.map(b => b.id)).toEqual(['b1', 'b2']);
+  });
+
+  it('falls back when all refs are stale', () => {
+    const resolved = resolveAreaBanners(stores, [{ storeId: 'gone', bannerId: 'gone' }]);
+    expect(resolved.map(b => b.id)).toEqual(['b1', 'b2']);
+  });
+
+  it('returns [] when the area has no banners at all', () => {
+    expect(resolveAreaBanners([{ store_id: 's', store_name: 'S', banners: [] }], [])).toEqual([]);
   });
 });
 

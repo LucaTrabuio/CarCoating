@@ -2,27 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { V3StoreData } from '@/lib/v3-types';
-
-const DEFAULT_BANNERS = [
-  { src: '/images/keeper-h1.jpg', alt: 'カーコーティング専門店 KeePer PRO SHOP' },
-  { src: '/images/keeper-03.jpg', alt: 'ダイヤⅡキーパー 25%OFF キャンペーン' },
-  { src: '/images/keeper-01.jpg', alt: '純水仕上げで最高品質' },
-  { src: '/images/keeper-02.jpg', alt: 'コーティング専用ブース完備' },
-];
+import { resolveStoreCarouselBanners, type PromoBannerSlot } from '@/lib/promo-banners';
 
 const BASE_SPEED = 50;     // px/sec — normal drift
 const HOVER_SPEED = 260;   // px/sec — accelerated on edge hover
 
 interface PromoBannersBlockProps {
   store?: V3StoreData;
+  /** Explicit banner list (used by the area hub). When omitted, falls back to the
+   *  store's carousel banners (KeePer defaults overridden by store.promo_banners). */
+  banners?: PromoBannerSlot[];
 }
 
-export default function PromoBannersBlock({ store }: PromoBannersBlockProps) {
-  let custom: { src?: string; alt?: string }[] = [];
-  try { custom = JSON.parse(store?.promo_banners || '[]'); } catch { /* empty */ }
-  const banners = DEFAULT_BANNERS.map((def, i) =>
-    custom[i]?.src ? { src: custom[i].src!, alt: custom[i].alt || def.alt } : def,
-  );
+export default function PromoBannersBlock({ store, banners: bannersProp }: PromoBannersBlockProps) {
+  const banners = bannersProp ?? resolveStoreCarouselBanners(store?.promo_banners);
 
   const loop = [...banners, ...banners];
   const N = banners.length;

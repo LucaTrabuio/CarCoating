@@ -1,5 +1,6 @@
 import type { CoatingTier } from './types';
-import { parsePageLayout, type Banner, type BannersConfig } from './block-types';
+import type { Banner } from './block-types';
+import { resolveStoreCarouselBanners } from './promo-banners';
 import type { ServiceOption } from '@/data/service-options';
 import { DEFAULT_SERVICE_OPTIONS } from '@/data/service-options';
 
@@ -167,78 +168,26 @@ export interface StoreForBanners {
 }
 
 /**
- * Pure: collect all visible banners from a single store, source-agnostic.
- *
- * Priority order:
- *  1. Visible 'banners' blocks in page_layout (visible block + visible banner)
- *  2. promo_banners JSON string ({src,alt}[]) → synthetic Banners with id 'promo-<i>'
- *  3. banners JSON string (Banner[]) with a truthy id
- *
- * Deduped by id (first occurrence wins). Falsy ids are dropped.
+ * Pure: the banners actually shown in a store's promo carousel — the KeePer
+ * default set overridden slot-by-slot by the store's `promo_banners`. Each slot
+ * becomes an image Banner whose `id` is its image src (so the same default banner
+ * shared across stores deduplicates in the area pool). This mirrors exactly what
+ * PromoBannersBlock renders on the store page, so the hub aggregates "the banners
+ * showing in the shop carousels".
  */
-export function collectStoreBanners(store: {
-  page_layout?: string;
-  banners?: string;
-  promo_banners?: string;
-}): Banner[] {
-  const seen = new Set<string>();
-  const result: Banner[] = [];
-
-  function add(banner: Banner) {
-    if (!banner.id) return;
-    if (seen.has(banner.id)) return;
-    seen.add(banner.id);
-    result.push(banner);
-  }
-
-  // 1. page_layout — visible 'banners' blocks
-  const layout = parsePageLayout(store.page_layout, undefined);
-  for (const block of layout.blocks) {
-    if (block.type !== 'banners' || !block.visible) continue;
-    const cfg = block.config as BannersConfig;
-    // Guard: a malformed (but version-2) layout block may lack a banners array.
-    if (!Array.isArray(cfg?.banners)) continue;
-    for (const banner of cfg.banners) {
-      if (banner.visible) add(banner);
-    }
-  }
-
-  // 2. promo_banners ({src,alt}[])
-  try {
-    const raw = JSON.parse(store.promo_banners || '[]');
-    if (Array.isArray(raw)) {
-      (raw as { src?: string; alt?: string }[]).forEach((p, i) => {
-        add({
-          id: `promo-${i}`,
-          template_id: '',
-          custom_css: '',
-          title: p.alt ?? '',
-          subtitle: '',
-          image_url: p.src ?? '',
-          original_price: 0,
-          discount_rate: 0,
-          link_url: '',
-          visible: true,
-        });
-      });
-    }
-  } catch {
-    /* skip malformed */
-  }
-
-  // 3. legacy banners JSON string (Banner[])
-  try {
-    const raw = JSON.parse(store.banners || '[]');
-    if (Array.isArray(raw)) {
-      for (const banner of raw as Banner[]) {
-        if (banner.id) add(banner);
-      }
-    }
-  } catch {
-    /* skip malformed */
-  }
-
-  return result;
+export function collectStoreBanners(store: { promo_banners?: string }): Banner[] {
+  return resolveStoreCarouselBanners(store.promo_banners).map(slot => ({
+    id: slot.src,
+    template_id: '',
+    custom_css: '',
+    title: slot.alt,
+    subtitle: '',
+    image_url: slot.src,
+    original_price: 0,
+    discount_rate: 0,
+    link_url: '',
+    visible: true,
+  }));
 }
 
 /**
@@ -247,9 +196,12 @@ export function collectStoreBanners(store: {
  */
 export function collectAreaBanners(stores: StoreForBanners[]): AreaBannerSource[] {
   const result: AreaBannerSource[] = [];
+  const seen = new Set<string>();
 
   for (const store of stores) {
     for (const banner of store.banners) {
+      if (!banner.id || seen.has(banner.id)) continue;
+      seen.add(banner.id);
       result.push({
         storeId: store.store_id,
         storeName: store.store_name,
@@ -286,6 +238,22 @@ export function resolveAreaBannerRefs(
   }
 
   return resolved;
+}
+
+/**
+ * Pure: the banners to RENDER on the area hub. Uses the super_admin's curated
+ * refs when any resolve; otherwise falls back to the first ≤4 banners from the
+ * area's pool, so an un-curated hub still shows the shops' carousel banners
+ * instead of an empty section. Returns [] only when the area has no banners at
+ * all (caller renders null).
+ */
+export function resolveAreaBanners(
+  stores: StoreForBanners[],
+  refs: AreaBannerRef[],
+): Banner[] {
+  const curated = resolveAreaBannerRefs(stores, refs);
+  if (curated.length > 0) return curated;
+  return collectAreaBanners(stores).slice(0, MAX_AREA_BANNERS).map(s => s.banner);
 }
 
 export { DEFAULT_SERVICE_OPTIONS };
