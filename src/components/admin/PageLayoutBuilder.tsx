@@ -274,6 +274,7 @@ interface SubCompanyOption {
   id: string;
   name: string;
   slug: string;
+  store_count?: number;
 }
 
 export function PageLayoutBuilder({ mode }: { mode: 'main' | 'area' }) {
@@ -457,7 +458,9 @@ export function PageLayoutBuilder({ mode }: { mode: 'main' | 'area' }) {
           >
             {areas.length === 0 && <option value="">エリアを選択</option>}
             {areas.map(area => (
-              <option key={area.id} value={area.id}>{area.name}</option>
+              <option key={area.id} value={area.id}>
+                {area.name}（{area.store_count ?? 0}店舗）
+              </option>
             ))}
           </select>
         </div>
