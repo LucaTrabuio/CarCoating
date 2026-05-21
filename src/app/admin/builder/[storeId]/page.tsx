@@ -29,6 +29,7 @@ import BlockEditorSwitch from '../components/editors/BlockEditorSwitch';
 import ImageUploadField from '../components/ImageUploadField';
 import ImageSlot from '../components/ImageSlot';
 import OverrideStateBanner, { type OverrideState } from '@/components/admin/OverrideStateBanner';
+import ServiceOptionsEditor from '@/components/admin/section-editors/ServiceOptionsEditor';
 import BannerPresetPicker from '@/components/admin/BannerPresetPicker';
 import TemplateValuesModal from '@/components/admin/TemplateValuesModal';
 import { presetToBanner, type BannerPreset } from '@/lib/banner-presets-shared';
@@ -38,36 +39,6 @@ import type { DefaultableKey, GlobalDefaults, OverrideFlags } from '@/lib/global
 // ─── Types ───
 
 type TabId = 'blocks' | 'settings' | 'pricing' | 'options' | 'news' | 'guide' | 'banners' | 'cases';
-
-interface ServiceOption {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  time?: string;
-  popular?: boolean;
-  blur_price?: boolean;
-}
-
-const DEFAULT_SERVICE_OPTIONS: ServiceOption[] = [
-  { id: 'window-full', name: '超撥水ウィンドウコーティング（全面）', description: '雨の日の視界を良好に', price: 8270, time: '15分', popular: true, category: 'window' },
-  { id: 'wheel-single', name: 'ホイールコーティング（シングル）', description: 'ガラス被膜でホイールを保護', price: 10700, time: '30分', popular: true, category: 'coating' },
-  { id: 'lens', name: 'レンズコーティング', description: '専用ガラス被膜でライトレンズを保護', price: 6810, time: '30分', popular: true, category: 'coating' },
-  { id: 'headlight', name: 'ヘッドライトクリーン＆コーティング', description: '黄ばみ・くすみを除去しコーティング', price: 11630, time: '45分', popular: false, category: 'coating' },
-  { id: 'wheel-double', name: 'ホイールコーティング（ダブル）', description: 'より艶と水弾きを長期間キープ', price: 15900, time: '90分', popular: false, category: 'coating' },
-  { id: 'fender', name: '樹脂フェンダーキーパー', description: '無塗装樹脂パーツの色褪せを防止', price: 6280, time: '30分', popular: false, category: 'coating' },
-  { id: 'window-front', name: '超撥水ウィンドウコーティング（フロント）', description: 'フロントガラスのみ施工', price: 3720, time: '15分', popular: false, category: 'window' },
-  { id: 'window-scale', name: 'ウィンドウウロコ取り（サイド）', description: '窓ガラスの水垢・ウロコを除去', price: 6480, time: '10分/枚', popular: false, category: 'window' },
-  { id: 'window-scale-full', name: 'ウィンドウウロコ取り（全面）', description: 'フロント・リア・ルーフ含む全面', price: 12970, time: '10分/枚', popular: false, category: 'window' },
-  { id: 'polish', name: '細密研磨', description: '塗装表面のキズのエッジを細密に磨き取る', price: 18600, time: '60分', popular: false, category: 'body' },
-  { id: 'oil-film-full', name: '油膜取り（全面）', description: 'ギラギラの油膜を特殊ケミカルで除去', price: 4750, time: '15分', popular: false, category: 'chemical' },
-  { id: 'oil-film-front', name: '油膜取り（フロント）', description: 'フロントガラスのみ', price: 1690, time: '10分', popular: false, category: 'chemical' },
-  { id: 'iron', name: '鉄粉取り（上面）', description: 'ボディのザラザラ鉄粉をすっきり除去', price: 2830, time: '15分', popular: false, category: 'chemical' },
-  { id: 'sap', name: '樹液取り', description: '松ヤニ等を専用ケミカルで安全に除去', price: 2750, time: '15分', popular: false, category: 'chemical' },
-  { id: 'wheel-clean', name: 'ホイールクリーニング', description: 'ブレーキダスト・油汚れを専用道具で除去', price: 2270, time: '10分', popular: false, category: 'chemical' },
-  { id: 'disinfect', name: '車内除菌抗菌「オールクリア」', description: '車内清掃＋除菌・抗菌処理', price: 4650, time: '30分', popular: false, category: 'interior' },
-];
 
 // ─── Inline helper: settings field ───
 
@@ -465,8 +436,6 @@ export default function BuilderPage() {
   // When a template preset is picked, this opens the values-entry modal.
   const [builderTemplatePreset, setBuilderTemplatePreset] = useState<BannerPreset | null>(null);
 
-  // Options tab state
-  const [serviceOptions, setServiceOptions] = useState<ServiceOption[]>([]);
   // News tab state
   const [newsItems, setNewsItems] = useState<StoreNewsItem[]>([]);
 
@@ -526,15 +495,8 @@ export default function BuilderPage() {
           }
         }
         setStoreData(effectiveStoreData as Partial<V3StoreData>);
-
-        // Parse custom_services — use the overlay-resolved value
-        try {
-          const parsed = JSON.parse((effectiveStoreData.custom_services as string) || '[]');
-          const opts = Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_SERVICE_OPTIONS;
-          setServiceOptions(opts);
-        } catch {
-          setServiceOptions(DEFAULT_SERVICE_OPTIONS);
-        }
+        // custom_services is edited directly via <ServiceOptionsEditor> driven
+        // by storeData.custom_services (overlay-resolved above).
 
         // Parse store_news — overlay-resolved
         try {
@@ -706,31 +668,11 @@ export default function BuilderPage() {
 
   // ─── Options tab helpers ───
 
-  function updateServiceOptions(next: ServiceOption[]) {
-    setServiceOptions(next);
-    setStoreData(prev => ({ ...prev, custom_services: JSON.stringify(next) }));
+  // custom_services is edited via the shared <ServiceOptionsEditor>, which
+  // emits the full serialized JSON array on every change.
+  function handleServiceOptionsChange(json: string) {
+    setStoreData(prev => ({ ...prev, custom_services: json }));
     setDirty(true);
-  }
-
-  function addServiceOption() {
-    const newOpt: ServiceOption = {
-      id: `svc_${Date.now()}`,
-      name: '',
-      description: '',
-      price: 0,
-      category: '',
-    };
-    updateServiceOptions([...serviceOptions, newOpt]);
-  }
-
-  function updateServiceOption(id: string, field: keyof ServiceOption, value: string | number | boolean) {
-    updateServiceOptions(serviceOptions.map(s =>
-      s.id === id ? { ...s, [field]: value } : s
-    ));
-  }
-
-  function deleteServiceOption(id: string) {
-    updateServiceOptions(serviceOptions.filter(s => s.id !== id));
   }
 
   // ─── News tab helpers ───
@@ -1254,101 +1196,13 @@ export default function BuilderPage() {
                 </p>
               </div>
 
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-gray-800">カスタムサービス一覧</h3>
-                <button
-                  onClick={addServiceOption}
-                  className="px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  + 追加
-                </button>
+              <div>
+                <h3 className="text-sm font-bold text-gray-800 mb-3">カスタムサービス一覧</h3>
+                <ServiceOptionsEditor
+                  value={(storeData.custom_services as string) || ''}
+                  onChange={handleServiceOptionsChange}
+                />
               </div>
-
-              {serviceOptions.length === 0 && (
-                <p className="text-xs text-gray-400 py-4 text-center">サービスオプションがありません。「+ 追加」で作成してください。</p>
-              )}
-
-              {serviceOptions.map((opt, idx) => (
-                <div key={opt.id} className="bg-white border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-gray-500">#{idx + 1}</span>
-                    <button
-                      onClick={() => deleteServiceOption(opt.id)}
-                      className="text-xs text-red-500 hover:text-red-700"
-                    >
-                      削除
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">サービス名</label>
-                      <input
-                        type="text"
-                        value={opt.name}
-                        onChange={e => updateServiceOption(opt.id, 'name', e.target.value)}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">カテゴリ</label>
-                      <input
-                        type="text"
-                        value={opt.category}
-                        onChange={e => updateServiceOption(opt.id, 'category', e.target.value)}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">価格（円）</label>
-                      <input
-                        type="number"
-                        value={opt.price}
-                        onChange={e => updateServiceOption(opt.id, 'price', Number(e.target.value))}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">時間</label>
-                      <input
-                        type="text"
-                        value={opt.time || ''}
-                        onChange={e => updateServiceOption(opt.id, 'time', e.target.value)}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
-                        placeholder="15分"
-                      />
-                    </div>
-                    <div className="col-span-2">
-                      <label className="block text-xs font-medium text-gray-600 mb-1">説明</label>
-                      <textarea
-                        value={opt.description}
-                        onChange={e => updateServiceOption(opt.id, 'description', e.target.value)}
-                        rows={2}
-                        className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
-                      />
-                    </div>
-                    <div className="col-span-2 flex gap-4">
-                      <label className="flex items-center gap-2 text-sm">
-                        <input
-                          type="checkbox"
-                          checked={!!opt.popular}
-                          onChange={e => updateServiceOption(opt.id, 'popular', e.target.checked)}
-                          className="rounded border-gray-300"
-                        />
-                        人気
-                      </label>
-                      <label className="flex items-center gap-2 text-sm">
-                        <input
-                          type="checkbox"
-                          checked={!!opt.blur_price}
-                          onChange={e => updateServiceOption(opt.id, 'blur_price', e.target.checked)}
-                          className="rounded border-gray-300"
-                        />
-                        価格ブラー
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
           )}
 

@@ -7,6 +7,7 @@ import { FONT_PRESETS } from '@/lib/types';
 import LayoutBlocksEditor from '@/components/admin/section-editors/LayoutBlocksEditor';
 import BannersEditor from '@/components/admin/section-editors/BannersEditor';
 import PromoBannersEditor from '@/components/admin/section-editors/PromoBannersEditor';
+import ServiceOptionsEditor from '@/components/admin/section-editors/ServiceOptionsEditor';
 
 const SECTION_LABELS: Record<DefaultableKey, { label: string; description: string }> = {
   page_layout: { label: 'ページレイアウト', description: 'ブロックの順番・表示/非表示・各ブロックの設定（USP、FAQ、クイズ、Process、Benefits等の共通コンテンツ含む）' },
@@ -378,6 +379,8 @@ export default function GlobalDefaultsPage() {
             <BannersEditor value={editedValue} onChange={setEditedValue} />
           ) : activeKey === 'promo_banners' ? (
             <PromoBannersEditor value={editedValue} onChange={setEditedValue} />
+          ) : activeKey === 'custom_services' ? (
+            <ServiceOptionsEditor value={editedValue} onChange={setEditedValue} />
           ) : (
             <>
               <textarea
