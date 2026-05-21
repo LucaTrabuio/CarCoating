@@ -25,6 +25,7 @@ const ADMIN_PAGES = [
   '/admin/security',
   '/admin/customers',
   '/admin/change-password',
+  '/admin/area-hub',
 ];
 
 test.describe('Admin Pages — route existence', () => {

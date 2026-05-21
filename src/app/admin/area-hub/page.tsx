@@ -2,6 +2,6 @@
 
 import { PageLayoutBuilder } from '@/components/admin/PageLayoutBuilder';
 
-export default function HomepagePage() {
-  return <PageLayoutBuilder mode="main" />;
+export default function AreaHubPage() {
+  return <PageLayoutBuilder mode="area" />;
 }

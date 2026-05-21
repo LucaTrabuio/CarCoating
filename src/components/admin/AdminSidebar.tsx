@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAdminAuth } from './AdminAuthProvider';
 import { useNavBadges, NavBadge } from './NavBadges';
 
-export type NavGroup = 'daily' | 'content' | 'org' | 'system';
+export type NavGroup = 'daily' | 'pages' | 'content' | 'org' | 'system';
 
 export interface NavItem {
   label: string;
@@ -24,41 +24,45 @@ export const NAV_ITEMS: NavItem[] = [
   { label: '予約管理', href: '/admin/bookings', icon: '📅', group: 'daily', storeAdminVisible: true },
   { label: 'お問い合わせ', href: '/admin/inquiries', icon: '💬', group: 'daily', storeAdminVisible: true },
   { label: 'チケット', href: '/admin/tickets', icon: '🎫', group: 'daily', storeAdminVisible: true },
+  { label: '顧客管理', href: '/admin/customers', icon: '🙋', group: 'daily', storeAdminVisible: true },
+
+  // Page editing
+  { label: '店舗ページ', href: '/admin/builder', icon: '🧱', group: 'pages', storeAdminVisible: true },
+  { label: 'トップページ', href: '/admin/homepage', icon: '🏠', group: 'pages', superAdminOnly: true },
+  { label: 'エリアハブ', href: '/admin/area-hub', icon: '🗺️', group: 'pages', superAdminOnly: true },
+  { label: 'バナーメーカー', href: '/admin/banners', icon: '📑', group: 'pages', storeAdminVisible: true },
 
   // Content authoring
-  { label: 'ページビルダー', href: '/admin/builder', icon: '🧱', group: 'content', storeAdminVisible: true },
-  { label: 'バナーメーカー', href: '/admin/banners', icon: '📑', group: 'content', storeAdminVisible: true },
   { label: 'お知らせ管理', href: '/admin/news', icon: '📢', group: 'content', storeAdminVisible: true },
   { label: '施工事例', href: '/admin/cases', icon: '📸', group: 'content', superAdminOnly: true },
   { label: 'ブログ管理', href: '/admin/blog', icon: '✏️', group: 'content', superAdminOnly: true },
-  { label: 'ブログ CSV', href: '/admin/blog/import', icon: '📝', group: 'content', superAdminOnly: true },
-  { label: 'トップページ', href: '/admin/homepage', icon: '🏠', group: 'content', superAdminOnly: true },
+  { label: 'ブログCSV', href: '/admin/blog/import', icon: '📝', group: 'content', superAdminOnly: true },
   { label: 'キャンペーン', href: '/admin/campaigns', icon: '🎯', group: 'content', superAdminOnly: true },
 
   // Stores & organisation
   { label: '店舗マスター', href: '/admin/stores', icon: '🏪', group: 'org', superAdminOnly: true },
   { label: '店舗構成図', href: '/admin/hierarchy', icon: '🌳', group: 'org', storeAdminVisible: true },
   { label: 'ユーザー管理', href: '/admin/users', icon: '👥', group: 'org', storeAdminVisible: true },
-  { label: '顧客管理', href: '/admin/customers', icon: '🙋', group: 'org', storeAdminVisible: true },
   { label: 'CSVインポート', href: '/admin/stores/import', icon: '📥', group: 'org', storeAdminVisible: true },
   { label: 'インポート履歴', href: '/admin/imports', icon: '🕘', group: 'org', storeAdminVisible: true },
 
   // System / measurement
   { label: 'KPIダッシュボード', href: '/admin/kpi', icon: '📊', group: 'system', storeAdminVisible: true },
-  { label: 'セキュリティ', href: '/admin/security', icon: '🔒', group: 'system', storeAdminVisible: true },
+  { label: 'アンケート連携', href: '/admin/keeper-surveys', icon: '📋', group: 'system', superAdminOnly: true },
   { label: 'グローバルデフォルト', href: '/admin/defaults', icon: '🌐', group: 'system', superAdminOnly: true },
   { label: 'マスターデータ', href: '/admin/master', icon: '⚙️', group: 'system', superAdminOnly: true },
   { label: '診断', href: '/admin/diagnostics', icon: '🩺', group: 'system', superAdminOnly: true },
   { label: 'システムアラート', href: '/admin/system-alerts', icon: '🚨', group: 'system', superAdminOnly: true },
-  { label: 'アンケート連携', href: '/admin/keeper-surveys', icon: '📋', group: 'system', superAdminOnly: true },
+  { label: 'セキュリティ', href: '/admin/security', icon: '🔒', group: 'system', storeAdminVisible: true },
 ];
 
-const GROUP_ORDER: NavGroup[] = ['daily', 'content', 'org', 'system'];
-const GROUP_LABEL: Record<NavGroup, string> = {
+export const GROUP_ORDER: NavGroup[] = ['daily', 'pages', 'content', 'org', 'system'];
+export const GROUP_LABEL: Record<NavGroup, string> = {
   daily: '日々の業務',
+  pages: 'ページ編集',
   content: 'コンテンツ',
   org: '店舗・組織',
-  system: 'システム',
+  system: '分析・システム',
 };
 
 const COLLAPSED_KEY = 'admin:nav:collapsed';
