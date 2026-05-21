@@ -28,6 +28,7 @@ import {
   collectAreaBanners,
   areaFieldSpec,
 } from '@/lib/area-blocks';
+import type { Banner } from '@/lib/block-types';
 
 const MAX_AREA_BANNERS = 4;
 
@@ -47,7 +48,7 @@ function AreaBannersPicker({ areaId, currentRefs, onChange }: AreaBannersPickerP
     let active = true;
     fetch(`/api/admin/sub-companies/${areaId}/stores`)
       .then(r => r.json())
-      .then((data: { stores?: { store_id: string; store_name: string; banners: string; promo_banners: string }[] }) => {
+      .then((data: { stores?: { store_id: string; store_name: string; banners: Banner[] }[] }) => {
         if (active && data.stores && Array.isArray(data.stores)) {
           setPool(collectAreaBanners(data.stores));
         }

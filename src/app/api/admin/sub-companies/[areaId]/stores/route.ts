@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { getStoresBySubCompany } from '@/lib/firebase-stores';
+import { collectStoreBanners } from '@/lib/area-blocks';
 
 export async function GET(
   _req: NextRequest,
@@ -16,8 +17,7 @@ export async function GET(
     const stores = rawStores.map(s => ({
       store_id: s.store_id,
       store_name: s.store_name,
-      banners: s.banners ?? '',
-      promo_banners: s.promo_banners ?? '',
+      banners: collectStoreBanners(s),
     }));
     return NextResponse.json({ stores });
   } catch (err) {

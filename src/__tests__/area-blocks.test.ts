@@ -5,11 +5,13 @@ import {
   aggregateCoatings,
   aggregateOptions,
   collectAreaBanners,
+  collectStoreBanners,
   resolveAreaBannerRefs,
   areaFieldSpec,
 } from '../lib/area-blocks';
 import { DEFAULT_SERVICE_OPTIONS } from '../data/service-options';
 import type { CoatingTier } from '../lib/types';
+import type { Banner } from '../lib/block-types';
 
 // ─── Minimal CoatingTier fixtures ───
 
@@ -36,6 +38,22 @@ function makeTier(id: string): CoatingTier {
 }
 
 const TIERS = [makeTier('crystal-keeper'), makeTier('diamond-keeper'), makeTier('w-diamond')];
+
+function makeBanner(id: string, overrides: Partial<Banner> = {}): Banner {
+  return {
+    id,
+    template_id: '',
+    custom_css: '',
+    title: id,
+    subtitle: '',
+    image_url: '',
+    original_price: 0,
+    discount_rate: 0,
+    link_url: '',
+    visible: true,
+    ...overrides,
+  };
+}
 
 describe('DEFAULT_AREA_BLOCKS', () => {
   it('has exactly 7 blocks', () => {
@@ -155,75 +173,125 @@ describe('aggregateCoatings', () => {
   });
 });
 
+describe('collectStoreBanners', () => {
+  it('returns [] for undefined/empty store', () => {
+    expect(collectStoreBanners({})).toEqual([]);
+    expect(collectStoreBanners({ page_layout: undefined, banners: undefined, promo_banners: undefined })).toEqual([]);
+  });
+
+  it('extracts visible banners from a visible page_layout banners block', () => {
+    const banner = makeBanner('b1');
+    const layout = JSON.stringify({
+      version: 2,
+      blocks: [
+        { id: 'blk1', type: 'banners', visible: true, order: 0, config: { banners: [banner] } },
+      ],
+    });
+    const result = collectStoreBanners({ page_layout: layout });
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('b1');
+  });
+
+  it('skips banners with visible:false inside a visible block', () => {
+    const banner = makeBanner('b1', { visible: false });
+    const layout = JSON.stringify({
+      version: 2,
+      blocks: [
+        { id: 'blk1', type: 'banners', visible: true, order: 0, config: { banners: [banner] } },
+      ],
+    });
+    expect(collectStoreBanners({ page_layout: layout })).toHaveLength(0);
+  });
+
+  it('skips banners blocks with visible:false', () => {
+    const banner = makeBanner('b1');
+    const layout = JSON.stringify({
+      version: 2,
+      blocks: [
+        { id: 'blk1', type: 'banners', visible: false, order: 0, config: { banners: [banner] } },
+      ],
+    });
+    expect(collectStoreBanners({ page_layout: layout })).toHaveLength(0);
+  });
+
+  it('includes promo_banners as synthetic banners with id promo-0', () => {
+    const promos = [{ src: 'http://img.jpg', alt: 'promo text' }];
+    const result = collectStoreBanners({ promo_banners: JSON.stringify(promos) });
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('promo-0');
+    expect(result[0].image_url).toBe('http://img.jpg');
+    expect(result[0].title).toBe('promo text');
+  });
+
+  it('includes legacy store.banners entries with truthy id', () => {
+    const banner = makeBanner('leg1');
+    const result = collectStoreBanners({ banners: JSON.stringify([banner]) });
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('leg1');
+  });
+
+  it('deduplicates by id (page_layout wins over promo over legacy)', () => {
+    const layoutBanner = makeBanner('shared');
+    const layout = JSON.stringify({
+      version: 2,
+      blocks: [
+        { id: 'blk1', type: 'banners', visible: true, order: 0, config: { banners: [layoutBanner] } },
+      ],
+    });
+    const legacyBanner = makeBanner('shared', { title: 'duplicate' });
+    const result = collectStoreBanners({ page_layout: layout, banners: JSON.stringify([legacyBanner]) });
+    expect(result).toHaveLength(1);
+    expect(result[0].title).toBe('shared');
+  });
+
+  it('does not throw on malformed JSON in banners/promo_banners', () => {
+    expect(() => collectStoreBanners({ banners: 'NOT_JSON', promo_banners: '{broken' })).not.toThrow();
+    expect(collectStoreBanners({ banners: 'NOT_JSON', promo_banners: '{broken' })).toHaveLength(0);
+  });
+});
+
 describe('collectAreaBanners', () => {
   it('returns empty array for stores with no banners', () => {
-    const stores = [
-      { store_id: 'a', store_name: 'A', banners: '', promo_banners: '' },
-    ];
+    const stores = [{ store_id: 'a', store_name: 'A', banners: [] }];
     expect(collectAreaBanners(stores)).toHaveLength(0);
   });
 
-  it('gathers named banners with banner:<id> scheme', () => {
-    const banner = { id: 'b1', title: 'B1', template_id: '', custom_css: '', subtitle: '', image_url: '', original_price: 0, discount_rate: 0, link_url: '', visible: true };
-    const stores = [
-      { store_id: 'a', store_name: 'A', banners: JSON.stringify([banner]), promo_banners: '' },
-    ];
+  it('gathers banners with bare banner.id as bannerId', () => {
+    const banner = makeBanner('b1');
+    const stores = [{ store_id: 'a', store_name: 'A', banners: [banner] }];
     const pool = collectAreaBanners(stores);
     expect(pool).toHaveLength(1);
-    expect(pool[0].bannerId).toBe('banner:b1');
+    expect(pool[0].bannerId).toBe('b1');
     expect(pool[0].storeId).toBe('a');
   });
 
-  it('gathers promo_banners with promo:<index> scheme', () => {
-    const promos = [{ src: 'http://img', alt: 'promo' }];
-    const stores = [
-      { store_id: 'b', store_name: 'B', banners: '', promo_banners: JSON.stringify(promos) },
-    ];
-    const pool = collectAreaBanners(stores);
-    expect(pool).toHaveLength(1);
-    expect(pool[0].bannerId).toBe('promo:0');
-    expect(pool[0].storeId).toBe('b');
-  });
-
-  it('namespaces do not collide: banner:0 !== promo:0', () => {
-    const banner = { id: '0', title: 'named', template_id: '', custom_css: '', subtitle: '', image_url: '', original_price: 0, discount_rate: 0, link_url: '', visible: true };
-    const stores = [
-      { store_id: 'x', store_name: 'X', banners: JSON.stringify([banner]), promo_banners: JSON.stringify([{ src: 'url', alt: 'alt' }]) },
-    ];
-    const pool = collectAreaBanners(stores);
-    const ids = pool.map(p => p.bannerId);
-    expect(ids).toContain('banner:0');
-    expect(ids).toContain('promo:0');
-    expect(new Set(ids).size).toBe(ids.length);
-  });
-
-  it('skips stores with malformed JSON (no throw)', () => {
-    const stores = [
-      { store_id: 'bad', store_name: 'Bad', banners: 'NOT_JSON', promo_banners: '{broken' },
-    ];
-    expect(() => collectAreaBanners(stores)).not.toThrow();
-    expect(collectAreaBanners(stores)).toHaveLength(0);
-  });
-
   it('gathers banners across multiple stores', () => {
-    const b1 = { id: 'x1', title: 'X1', template_id: '', custom_css: '', subtitle: '', image_url: '', original_price: 0, discount_rate: 0, link_url: '', visible: true };
-    const b2 = { id: 'x2', title: 'X2', template_id: '', custom_css: '', subtitle: '', image_url: '', original_price: 0, discount_rate: 0, link_url: '', visible: true };
+    const b1 = makeBanner('x1');
+    const b2 = makeBanner('x2');
     const stores = [
-      { store_id: 's1', store_name: 'S1', banners: JSON.stringify([b1]), promo_banners: '' },
-      { store_id: 's2', store_name: 'S2', banners: JSON.stringify([b2]), promo_banners: '' },
+      { store_id: 's1', store_name: 'S1', banners: [b1] },
+      { store_id: 's2', store_name: 'S2', banners: [b2] },
     ];
     const pool = collectAreaBanners(stores);
     expect(pool).toHaveLength(2);
     expect(pool.map(p => p.storeId)).toContain('s1');
     expect(pool.map(p => p.storeId)).toContain('s2');
   });
+
+  it('includes promo synthetic banners passed via banners array', () => {
+    const promoSynth: Banner = { id: 'promo-0', template_id: '', custom_css: '', title: 'P', subtitle: '', image_url: 'u', original_price: 0, discount_rate: 0, link_url: '', visible: true };
+    const stores = [{ store_id: 'b', store_name: 'B', banners: [promoSynth] }];
+    const pool = collectAreaBanners(stores);
+    expect(pool).toHaveLength(1);
+    expect(pool[0].bannerId).toBe('promo-0');
+  });
 });
 
 describe('resolveAreaBannerRefs', () => {
-  const banner1 = { id: 'b1', title: 'B1', template_id: '', custom_css: '', subtitle: '', image_url: '', original_price: 0, discount_rate: 0, link_url: '', visible: true };
-  const banner2 = { id: 'b2', title: 'B2', template_id: '', custom_css: '', subtitle: '', image_url: '', original_price: 0, discount_rate: 0, link_url: '', visible: true };
+  const banner1 = makeBanner('b1');
+  const banner2 = makeBanner('b2');
   const stores = [
-    { store_id: 's1', store_name: 'S1', banners: JSON.stringify([banner1, banner2]), promo_banners: '' },
+    { store_id: 's1', store_name: 'S1', banners: [banner1, banner2] },
   ];
 
   it('returns empty array for empty refs', () => {
@@ -232,8 +300,8 @@ describe('resolveAreaBannerRefs', () => {
 
   it('resolves valid refs and preserves order', () => {
     const refs = [
-      { storeId: 's1', bannerId: 'banner:b2' },
-      { storeId: 's1', bannerId: 'banner:b1' },
+      { storeId: 's1', bannerId: 'b2' },
+      { storeId: 's1', bannerId: 'b1' },
     ];
     const resolved = resolveAreaBannerRefs(stores, refs);
     expect(resolved).toHaveLength(2);
@@ -243,8 +311,8 @@ describe('resolveAreaBannerRefs', () => {
 
   it('drops stale refs silently', () => {
     const refs = [
-      { storeId: 's1', bannerId: 'banner:nonexistent' },
-      { storeId: 's1', bannerId: 'banner:b1' },
+      { storeId: 's1', bannerId: 'nonexistent' },
+      { storeId: 's1', bannerId: 'b1' },
     ];
     const resolved = resolveAreaBannerRefs(stores, refs);
     expect(resolved).toHaveLength(1);
@@ -252,11 +320,9 @@ describe('resolveAreaBannerRefs', () => {
   });
 
   it('caps at 4 banners', () => {
-    const banners = Array.from({ length: 6 }, (_, i) => ({
-      id: `cap${i}`, title: `C${i}`, template_id: '', custom_css: '', subtitle: '', image_url: '', original_price: 0, discount_rate: 0, link_url: '', visible: true,
-    }));
-    const capStores = [{ store_id: 'c', store_name: 'C', banners: JSON.stringify(banners), promo_banners: '' }];
-    const refs = banners.map(b => ({ storeId: 'c', bannerId: `banner:${b.id}` }));
+    const banners = Array.from({ length: 6 }, (_, i) => makeBanner(`cap${i}`));
+    const capStores = [{ store_id: 'c', store_name: 'C', banners }];
+    const refs = banners.map(b => ({ storeId: 'c', bannerId: b.id }));
     const resolved = resolveAreaBannerRefs(capStores, refs);
     expect(resolved).toHaveLength(4);
   });

@@ -8,7 +8,7 @@ import CoatingComparisonSection from '@/components/CoatingCard/CoatingComparison
 import { getGlobalDefaults, applyDefaults } from '@/lib/global-defaults';
 import { getAreaLayout } from '@/lib/area-layout';
 import AreaHubBlockRenderer, { type AreaContext } from '@/components/blocks/area/AreaHubBlockRenderer';
-import { DEFAULT_SERVICE_OPTIONS } from '@/lib/area-blocks';
+import { DEFAULT_SERVICE_OPTIONS, collectStoreBanners } from '@/lib/area-blocks';
 
 export default async function SlugPage({
   params,
@@ -54,8 +54,7 @@ export default async function SlugPage({
           lng: s.lng,
           store_news: s.store_news ?? '',
           custom_services: s.custom_services ?? '',
-          banners: s.banners ?? '',
-          promo_banners: s.promo_banners ?? '',
+          banners: collectStoreBanners(s),
           offered_coatings: undefined,
         })),
         coatingTiers,
@@ -131,8 +130,7 @@ export default async function SlugPage({
         lng: s.lng,
         store_news: s.store_news ?? '',
         custom_services: s.custom_services ?? '',
-        banners: s.banners ?? '',
-        promo_banners: s.promo_banners ?? '',
+        banners: collectStoreBanners(s),
         offered_coatings: undefined,
       })),
       coatingTiers,

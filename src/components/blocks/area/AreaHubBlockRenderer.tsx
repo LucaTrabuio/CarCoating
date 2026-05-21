@@ -4,6 +4,7 @@ import type { AreaBlock, AreaBannerRef } from '@/lib/area-blocks';
 import { aggregateCoatings, aggregateOptions } from '@/lib/area-blocks';
 import type { CoatingTier } from '@/lib/types';
 import type { ServiceOption } from '@/data/service-options';
+import type { Banner } from '@/lib/block-types';
 import type { AreaNewsItem } from './AreaNewsBlock';
 import ScrollFadeIn from '@/components/ScrollFadeIn';
 import AreaHeaderBlock from './AreaHeaderBlock';
@@ -31,8 +32,7 @@ export interface AreaStoreContext {
   lng: number;
   store_news: string;
   custom_services: string;
-  banners: string;
-  promo_banners: string;
+  banners: Banner[];
   offered_coatings?: string[];
 }
 

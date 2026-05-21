@@ -1,5 +1,5 @@
 import type { CoatingTier } from './types';
-import type { Banner } from './block-types';
+import { parsePageLayout, type Banner, type BannersConfig } from './block-types';
 import type { ServiceOption } from '@/data/service-options';
 import { DEFAULT_SERVICE_OPTIONS } from '@/data/service-options';
 
@@ -159,73 +159,104 @@ export function aggregateOptions(
   });
 }
 
-/** Stores passed to the area banner helpers — carry raw JSON strings. */
+/** Stores passed to the area banner helpers — carry resolved Banner[]. */
 export interface StoreForBanners {
   store_id: string;
   store_name: string;
+  banners: Banner[];
+}
+
+/**
+ * Pure: collect all visible banners from a single store, source-agnostic.
+ *
+ * Priority order:
+ *  1. Visible 'banners' blocks in page_layout (visible block + visible banner)
+ *  2. promo_banners JSON string ({src,alt}[]) → synthetic Banners with id 'promo-<i>'
+ *  3. banners JSON string (Banner[]) with a truthy id
+ *
+ * Deduped by id (first occurrence wins). Falsy ids are dropped.
+ */
+export function collectStoreBanners(store: {
+  page_layout?: string;
   banners?: string;
   promo_banners?: string;
+}): Banner[] {
+  const seen = new Set<string>();
+  const result: Banner[] = [];
+
+  function add(banner: Banner) {
+    if (!banner.id) return;
+    if (seen.has(banner.id)) return;
+    seen.add(banner.id);
+    result.push(banner);
+  }
+
+  // 1. page_layout — visible 'banners' blocks
+  const layout = parsePageLayout(store.page_layout, undefined);
+  for (const block of layout.blocks) {
+    if (block.type !== 'banners' || !block.visible) continue;
+    const cfg = block.config as BannersConfig;
+    // Guard: a malformed (but version-2) layout block may lack a banners array.
+    if (!Array.isArray(cfg?.banners)) continue;
+    for (const banner of cfg.banners) {
+      if (banner.visible) add(banner);
+    }
+  }
+
+  // 2. promo_banners ({src,alt}[])
+  try {
+    const raw = JSON.parse(store.promo_banners || '[]');
+    if (Array.isArray(raw)) {
+      (raw as { src?: string; alt?: string }[]).forEach((p, i) => {
+        add({
+          id: `promo-${i}`,
+          template_id: '',
+          custom_css: '',
+          title: p.alt ?? '',
+          subtitle: '',
+          image_url: p.src ?? '',
+          original_price: 0,
+          discount_rate: 0,
+          link_url: '',
+          visible: true,
+        });
+      });
+    }
+  } catch {
+    /* skip malformed */
+  }
+
+  // 3. legacy banners JSON string (Banner[])
+  try {
+    const raw = JSON.parse(store.banners || '[]');
+    if (Array.isArray(raw)) {
+      for (const banner of raw as Banner[]) {
+        if (banner.id) add(banner);
+      }
+    }
+  } catch {
+    /* skip malformed */
+  }
+
+  return result;
 }
 
 /**
  * Pure: collect the union of all banners across the area's stores.
- *
- * bannerId scheme:
- *  - `banner:<banner.id>` for entries from `banners` (Banner[], each has .id)
- *  - `promo:<index>` for entries from `promo_banners` ({src,alt}[])
- *
- * Malformed JSON fields are skipped silently.
+ * bannerId is bare banner.id (no namespace prefix).
  */
 export function collectAreaBanners(stores: StoreForBanners[]): AreaBannerSource[] {
   const result: AreaBannerSource[] = [];
 
   for (const store of stores) {
-    // Named banners (Banner[])
-    let parsedBanners: Banner[] = [];
-    try {
-      const raw = JSON.parse(store.banners || '[]');
-      if (Array.isArray(raw)) parsedBanners = raw as Banner[];
-    } catch {
-      /* skip malformed */
-    }
-    for (const banner of parsedBanners) {
-      if (!banner.id) continue;
+    for (const banner of store.banners) {
       result.push({
         storeId: store.store_id,
         storeName: store.store_name,
-        bannerId: `banner:${banner.id}`,
+        bannerId: banner.id,
         banner,
       });
     }
-
-    // Promo banners ({src,alt}[]) — synthesise a minimal Banner for rendering
-    let parsedPromo: { src: string; alt: string }[] = [];
-    try {
-      const raw = JSON.parse(store.promo_banners || '[]');
-      if (Array.isArray(raw)) parsedPromo = raw as { src: string; alt: string }[];
-    } catch {
-      /* skip malformed */
-    }
-    parsedPromo.forEach((p, index) => {
-      const syntheticBanner: Banner = {
-        id: `promo-${store.store_id}-${index}`,
-        template_id: '',
-        custom_css: '',
-        title: p.alt || '',
-        subtitle: '',
-        image_url: p.src || '',
-        original_price: 0,
-        discount_rate: 0,
-        link_url: '',
-        visible: true,
-      };
-      result.push({
-        storeId: store.store_id,
-        storeName: store.store_name,
-        bannerId: `promo:${index}`,
-        banner: syntheticBanner,
-      });
-    });
   }
 
   return result;
@@ -244,15 +275,14 @@ export function resolveAreaBannerRefs(
 ): Banner[] {
   if (!refs || refs.length === 0) return [];
 
-  const pool = collectAreaBanners(stores);
   const resolved: Banner[] = [];
 
   for (const ref of refs) {
     if (resolved.length >= MAX_AREA_BANNERS) break;
-    const found = pool.find(
-      entry => entry.storeId === ref.storeId && entry.bannerId === ref.bannerId,
-    );
-    if (found) resolved.push(found.banner);
+    const store = stores.find(s => s.store_id === ref.storeId);
+    if (!store) continue;
+    const banner = store.banners.find(b => b.id === ref.bannerId);
+    if (banner) resolved.push(banner);
   }
 
   return resolved;
