@@ -23,11 +23,107 @@ import {
   DEFAULT_AREA_BLOCKS,
   AREA_BLOCK_META,
   type AreaBlock,
+  type AreaBannerRef,
+  type AreaBannerSource,
+  collectAreaBanners,
 } from '@/lib/area-blocks';
+
+const MAX_AREA_BANNERS = 4;
 
 // ─── Unified block type for the editor ───
 
 type EditorBlock = HomepageBlock | AreaBlock;
+
+// ─── Banner picker for area_banners block ───
+
+interface AreaBannersPickerProps {
+  areaId: string;
+  currentRefs: AreaBannerRef[];
+  onChange: (refs: AreaBannerRef[]) => void;
+}
+
+function AreaBannersPicker({ areaId, currentRefs, onChange }: AreaBannersPickerProps) {
+  const [pool, setPool] = useState<AreaBannerSource[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    fetch(`/api/admin/sub-companies/${areaId}/stores`)
+      .then(r => r.json())
+      .then((data: { stores?: { store_id: string; store_name: string; banners: string; promo_banners: string }[] }) => {
+        if (active && data.stores && Array.isArray(data.stores)) {
+          setPool(collectAreaBanners(data.stores));
+        }
+      })
+      .catch(() => { /* ignore */ })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [areaId]);
+
+  function isSelected(src: AreaBannerSource) {
+    return currentRefs.some(r => r.storeId === src.storeId && r.bannerId === src.bannerId);
+  }
+
+  function toggleBanner(src: AreaBannerSource) {
+    if (isSelected(src)) {
+      onChange(currentRefs.filter(r => !(r.storeId === src.storeId && r.bannerId === src.bannerId)));
+    } else {
+      if (currentRefs.length >= MAX_AREA_BANNERS) return;
+      onChange([...currentRefs, { storeId: src.storeId, bannerId: src.bannerId }]);
+    }
+  }
+
+  if (loading) {
+    return <p className="text-xs text-gray-400">バナーを読み込み中...</p>;
+  }
+
+  if (pool.length === 0) {
+    return <p className="text-xs text-gray-400">このエリアの店舗にバナーがありません。</p>;
+  }
+
+  return (
+    <div className="space-y-2">
+      <p className="text-xs text-gray-500">
+        最大{MAX_AREA_BANNERS}枚まで選択できます（{currentRefs.length}/{MAX_AREA_BANNERS}）
+      </p>
+      <div className="grid grid-cols-2 gap-2">
+        {pool.map(src => {
+          const selected = isSelected(src);
+          const limitReached = !selected && currentRefs.length >= MAX_AREA_BANNERS;
+          return (
+            <button
+              key={`${src.storeId}:${src.bannerId}`}
+              onClick={() => toggleBanner(src)}
+              disabled={limitReached}
+              className={`text-left border rounded-lg p-2 text-xs cursor-pointer transition-colors ${
+                selected
+                  ? 'border-amber-400 bg-amber-50'
+                  : limitReached
+                    ? 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed'
+                    : 'border-gray-200 hover:border-amber-300 hover:bg-amber-50'
+              }`}
+            >
+              {src.banner.image_url && (
+                <img
+                  src={src.banner.image_url}
+                  alt={src.banner.title}
+                  className="w-full h-16 object-cover rounded mb-1"
+                />
+              )}
+              <div className="font-semibold text-[#0C3290] truncate">
+                {src.banner.title || src.bannerId}
+              </div>
+              <div className="text-gray-400 truncate">{src.storeName}</div>
+              {selected && (
+                <div className="text-amber-600 font-bold mt-1">✓ 選択済み</div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 // ─── Local sortable row ───
 
@@ -39,6 +135,7 @@ function SortableEditorBlock({
   onDelete,
   onConfigChange,
   metaMap,
+  areaId,
 }: {
   block: EditorBlock;
   isEditing: boolean;
@@ -47,6 +144,7 @@ function SortableEditorBlock({
   onDelete: () => void;
   onConfigChange: (key: string, value: unknown) => void;
   metaMap: Record<string, { labelJa: string; icon: string }>;
+  areaId?: string;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: block.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
@@ -91,7 +189,17 @@ function SortableEditorBlock({
 
       {isEditing && (
         <div className="border-t border-gray-100 px-4 py-4 bg-gray-50 space-y-3">
-          {Object.entries(block.config).map(([key, value]) => {
+          {block.type === 'area_banners' && areaId ? (
+            <AreaBannersPicker
+              areaId={areaId}
+              currentRefs={
+                Array.isArray((block.config as { refs?: AreaBannerRef[] }).refs)
+                  ? (block.config as { refs: AreaBannerRef[] }).refs
+                  : []
+              }
+              onChange={refs => onConfigChange('refs', refs)}
+            />
+          ) : Object.entries(block.config).map(([key, value]) => {
             if (typeof value === 'string') {
               return (
                 <div key={key}>
@@ -375,6 +483,7 @@ export default function HomepagePage() {
                 onDelete={() => deleteBlock(block.id)}
                 onConfigChange={(key, value) => updateBlockConfig(block.id, key, value)}
                 metaMap={activeMetaMap}
+                areaId={isAreaMode ? target : undefined}
               />
             ))}
           </div>

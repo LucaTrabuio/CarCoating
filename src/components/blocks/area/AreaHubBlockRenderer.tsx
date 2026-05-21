@@ -1,6 +1,6 @@
 'use client';
 
-import type { AreaBlock } from '@/lib/area-blocks';
+import type { AreaBlock, AreaBannerRef } from '@/lib/area-blocks';
 import { aggregateCoatings, aggregateOptions } from '@/lib/area-blocks';
 import type { CoatingTier } from '@/lib/types';
 import type { ServiceOption } from '@/data/service-options';
@@ -11,7 +11,10 @@ import AreaStoreMapBlock from './AreaStoreMapBlock';
 import AggregatedCoatingsBlock from './AggregatedCoatingsBlock';
 import AggregatedOptionsBlock from './AggregatedOptionsBlock';
 import AreaNewsBlock from './AreaNewsBlock';
+import AreaBannersBlock from './AreaBannersBlock';
 import BlogSectionBlock from '@/components/blocks/homepage/BlogSectionBlock';
+
+export type { AreaBannerRef };
 
 export interface AreaStoreContext {
   store_id: string;
@@ -28,6 +31,8 @@ export interface AreaStoreContext {
   lng: number;
   store_news: string;
   custom_services: string;
+  banners: string;
+  promo_banners: string;
   offered_coatings?: string[];
 }
 
@@ -88,6 +93,14 @@ export default function AreaHubBlockRenderer({ blocks, context }: Props) {
                 storeCount={context.stores.length}
               />
             );
+
+          case 'area_banners': {
+            const cfg = block.config as { refs?: AreaBannerRef[] };
+            const refs = Array.isArray(cfg.refs) ? cfg.refs : [];
+            return (
+              <AreaBannersBlock key={block.id} refs={refs} stores={context.stores} />
+            );
+          }
 
           case 'area_store_map':
             return (
