@@ -346,7 +346,9 @@ export async function getStoresBySubCompany(subCompanyId: string): Promise<V3Sto
     .where('sub_company_id', '==', subCompanyId)
     .where('is_active', '==', true)
     .get();
-  return snapshot.docs.map(doc => normalizeStore(doc.data()));
+  return snapshot.docs
+    .map(doc => normalizeStore(doc.data()))
+    .filter(s => !isHiddenNow(s));
 }
 
 /**
