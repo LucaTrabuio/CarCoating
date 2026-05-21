@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getV3StoreById, getSubCompanyBySlug, getStoresBySubCompany } from '@/lib/firebase-stores';
+import { getGlobalDefaults, applyDefaults } from '@/lib/global-defaults';
 import type { Metadata } from 'next';
 import ReservationForm from '@/components/ReservationForm';
 import BookingStoreSelector from '@/components/BookingStoreSelector';
@@ -26,10 +27,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function V3BookingPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
+  // Resolve global defaults once so the reservation form sees the same
+  // effective options (custom_services) as the rest of the storefront —
+  // per-store overrides layered over the editable global catalog.
+  const globalDefaults = await getGlobalDefaults();
+
   // Check sub-company first (multi-store groups win over colliding store_id)
   const subCompany = await getSubCompanyBySlug(slug);
   if (subCompany) {
-    const stores = await getStoresBySubCompany(subCompany.id);
+    const stores = (await getStoresBySubCompany(subCompany.id)).map(s => applyDefaults(s, globalDefaults));
     if (stores.length === 0) notFound();
 
     // Multi-store — show map + store selector before booking form
@@ -59,8 +65,9 @@ export default async function V3BookingPage({ params }: { params: Promise<{ slug
   }
 
   // Single store
-  const store = await getV3StoreById(slug);
-  if (store && store.is_active) {
+  const rawStore = await getV3StoreById(slug);
+  if (rawStore && rawStore.is_active) {
+    const store = applyDefaults(rawStore, globalDefaults);
     return (
       <main>
         <section className="bg-[#0C3290] py-6 md:py-12 px-5 text-center">

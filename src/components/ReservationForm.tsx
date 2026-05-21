@@ -1,20 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { V3StoreData } from '@/lib/v3-types';
 import type { SlotAvailability } from '@/lib/reservation-types';
 import { coatingTiers } from '@/data/coating-tiers';
+import { DEFAULT_SERVICE_OPTIONS, CATEGORY_LABELS } from '@/data/service-options';
 import { trackEvent } from '@/lib/track';
 import GoogleAutoFill from './GoogleAutoFill';
 
-const DEFAULT_OPTIONS = [
-  { id: 'hydrophilic-wheel', name: 'ホイール親水ガラスコーティング' },
-  { id: 'iron-remover', name: 'アイアンバスター' },
-  { id: 'polymer-wheel', name: 'ポリマーホイールコーティング' },
-  { id: 'under-coat', name: '下廻りコーティング' },
-  { id: 'wheel-clean', name: 'ホイールクリーニング' },
-  { id: 'disinfect', name: '車内除菌抗菌' },
-];
+// Store-level options may include extra fields and can omit some, so accept a loose shape.
+interface ReservationOption {
+  id: string;
+  name: string;
+  category?: string;
+}
 
 interface Props {
   store: V3StoreData;
@@ -49,6 +48,21 @@ export default function ReservationForm({ store }: Props) {
   // Selected services
   const [coatings, setCoatings] = useState<string[]>(['']);
   const [options, setOptions] = useState<string[]>([]);
+
+  // Available options for this store: use per-store custom_services when set,
+  // otherwise the full default catalog. Mirrors the resolution in [slug]/options.
+  const storeOptions = useMemo<ReservationOption[]>(() => {
+    try {
+      const parsed = JSON.parse(store.custom_services || '[]');
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed as ReservationOption[];
+    } catch { /* fall through to defaults */ }
+    return DEFAULT_SERVICE_OPTIONS;
+  }, [store.custom_services]);
+
+  const optionCategories = useMemo(
+    () => [...new Set(storeOptions.map(o => o.category || 'other'))],
+    [storeOptions],
+  );
 
   // Fetch available dates for the month — abort superseded requests so a slow earlier
   // response can't overwrite the latest month's data.
@@ -311,20 +325,29 @@ export default function ReservationForm({ store }: Props) {
               {/* Options */}
               <div>
                 <label className="block text-xs text-gray-500 mb-2">オプション（複数選択可）</label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {DEFAULT_OPTIONS.map(opt => (
-                    <label key={opt.id} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1.5 border border-gray-200 rounded-lg hover:border-amber-300">
-                      <input
-                        type="checkbox"
-                        checked={options.includes(opt.id)}
-                        onChange={e => {
-                          if (e.target.checked) setOptions(prev => [...prev, opt.id]);
-                          else setOptions(prev => prev.filter(o => o !== opt.id));
-                        }}
-                        className="rounded"
-                      />
-                      <span className="text-gray-700">{opt.name}</span>
-                    </label>
+                <div className="space-y-4">
+                  {optionCategories.map(cat => (
+                    <div key={cat}>
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                        {CATEGORY_LABELS[cat] || cat}
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {storeOptions.filter(o => (o.category || 'other') === cat).map(opt => (
+                          <label key={opt.id} className="flex items-center gap-2 text-sm cursor-pointer px-2 py-1.5 border border-gray-200 rounded-lg hover:border-amber-300">
+                            <input
+                              type="checkbox"
+                              checked={options.includes(opt.id)}
+                              onChange={e => {
+                                if (e.target.checked) setOptions(prev => [...prev, opt.id]);
+                                else setOptions(prev => prev.filter(o => o !== opt.id));
+                              }}
+                              className="rounded"
+                            />
+                            <span className="text-gray-700">{opt.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
